@@ -10,3 +10,7 @@
   box-shadow: 10px 5px 5px #ebebeb;
   background-color: #f8f8f8;
 }
+
+.toast:hover {
+  background-color: #ebebeb;
+}
