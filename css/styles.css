@@ -1,1 +1,12 @@
+.plgrph {
+    border-top: 1px solid #ebebeb;
+    padding-top: 30px;
+}
 
+.toast {
+  border: 1px solid grey;
+  padding:20px;
+  border-radius:8px;
+  box-shadow: 10px 5px 5px lightgray;
+  background-color: #f8f8f8;
+}
