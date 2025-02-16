@@ -14,3 +14,13 @@
 .toast:hover {
   background-color: #ebebeb;
 }
+
+#footer {
+    text-align: center; /* Центруємо блок */
+}
+
+.text-block {
+    display: flex;
+    justify-content: center; /* Центруємо елементи */
+    gap: 50px; /* Відстань між посиланнями */
+}
