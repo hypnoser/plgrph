@@ -19,6 +19,21 @@
     text-align: center; /* Центруємо блок */
 }
 
+#footer.container {
+  position: absolute;
+  left: 0%;
+  top: auto;
+  right: 0%;
+  bottom: 0%;
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 40px;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .text-block {
     display: flex;
     justify-content: center; /* Центруємо елементи */
