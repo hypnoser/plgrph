@@ -2,176 +2,285 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Тест 7 радикалів</title>
+    <title>7 Радикалів - Психологічний тест</title>
     <style>
-        /* Стилі залишаємо без змін з попереднього прикладу */
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .question-container { margin-bottom: 30px; padding: 15px; border: 1px solid #eee; border-radius: 8px; }
-        .question { font-size: 18px; margin-bottom: 20px; color: #333; }
-        .options { display: grid; gap: 10px; }
-        .option-btn { padding: 12px; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; 
-                     background-color: #f8f9fa; transition: all 0.3s; text-align: left; }
-        .option-btn.selected { background-color: #4CAF50; color: white; border-color: #45a049; }
-        #submitBtn { padding: 15px 30px; background-color: #007bff; color: white; border: none; 
-                    border-radius: 5px; cursor: pointer; font-size: 16px; margin: 20px 0; }
-        .chart-container { margin-top: 40px; }
-        .hidden { display: none; }
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #36A2EB;
+            --accent-color: #FF6384;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--secondary-color), #4BC0C0);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--secondary-color);
+            background: #f8f9fa;
+        }
+
+        .option-btn.selected {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            animation: select 0.3s ease;
+        }
+
+        #submitBtn {
+            display: block;
+            margin: 40px auto;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, var(--secondary-color), #4BC0C0);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #submitBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(54, 162, 235, 0.3);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        @keyframes select {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .question-text {
+                font-size: 1.1em;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Тест "7 радикалів"</h1>
-    <div id="testContainer"></div>
-    <button id="submitBtn" class="hidden">Тест завершено!</button>
-    <div class="chart-container hidden" id="chartContainer">
-        <h2>Результати тестування:</h2>
-        <canvas id="resultsChart"></canvas>
+    <div class="container">
+        <div class="header">
+            <h1>Тест "7 Радикалів"</h1>
+            <p>Визначте свій психологічний профіль за методикою Віктора Пономаренка</p>
+        </div>
+
+        <div id="testContainer"></div>
+
+        <button id="submitBtn" class="hidden">Отримати результати</button>
+
+        <div class="chart-container hidden" id="chartContainer">
+            <h2 style="text-align: center; margin-bottom: 30px;">Ваш психологічний профіль</h2>
+            <canvas id="resultsChart"></canvas>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
+        Chart.register(ChartDataLabels);
+
         const questions = [
             {
-                question: "1. Вам потрібно прийняти важливе рішення. Ваші дії:",
+                question: "1. У конфліктній ситуації я зазвичай:",
                 options: [
-                    { text: "Шукати ідеальне рішення, навіть якщо це займе багато часу", radical: "параноял" },
-                    { text: "Проконсультуватися з колегами", radical: "емотивний" },
-                    { text: "Діяти за чітким алгоритмом", radical: "епілептоїд" },
-                    { text: "Уникнути прийняття рішення", radical: "тривожний" },
-                    { text: "Зробити вибір незвичним способом", radical: "шизоїд" },
-                    { text: "Переконати всіх у своїй правоті", radical: "істероїд" },
-                    { text: "Прийняти рішення швидко і рухатися далі", radical: "гіпертимний" },
-                    { text: "Жодного варіанта", radical: null }
+                    { text: "Намагаюся домінувати", radical: "параноял" },
+                    { text: "Шукаю компроміс", radical: "емотивний" },
+                    { text: "Уникаю конфлікту", radical: "тривожний" },
+                    { text: "Драматизую ситуацію", radical: "істероїд" },
+                    { text: "Дію за алгоритмом", radical: "епілептоїд" },
+                    { text: "Аналізую з різних боків", radical: "шизоїд" },
+                    { text: "Жартую та знімаю напругу", radical: "гіпертимний" },
+                    { text: "Жодне з переліченого", radical: null }
                 ]
             },
             {
-                question: "2. Ваш друг розповів про свою проблему. Ваша реакція:",
+                question: "2. Під час роботи над проектом я:",
                 options: [
-                    { text: "Дати практичні поради", radical: "епілептоїд" },
-                    { text: "Співпереживати та вислухати", radical: "емотивний" },
-                    { text: "Знайти нестандартне рішення", radical: "шизоїд" },
-                    { text: "Перевести розмову в жартівливе русло", radical: "гіпертимний" },
-                    { text: "Розповісти подібну історію зі свого життя", radical: "істероїд" },
-                    { text: "Аналізувати причини проблеми", radical: "параноял" },
-                    { text: "Пропонувати уникнути подібних ситуацій", radical: "тривожний" },
-                    { text: "Жодного варіанта", radical: null }
+                    { text: "Чітко дотримуюсь плану", radical: "епілептоїд" },
+                    { text: "Імпровізую та експериментую", radical: "гіпертимний" },
+                    { text: "Аналізую всі можливі ризики", radical: "параноял" },
+                    { text: "Шукаю гармонії в команді", radical: "емотивний" },
+                    { text: "Уникаю відповідальності", radical: "тривожний" },
+                    { text: "Створюю оригінальні рішення", radical: "шизоїд" },
+                    { text: "Прагну бути в центрі уваги", radical: "істероїд" },
+                    { text: "Жодне з переліченого", radical: null }
                 ]
             },
-            // Додаємо решту 13 питань:
-            {
-                question: "3. Планування відпустки:",
-                options: [
-                    { text: "Створю детальний розплан", radical: "епілептоїд" },
-                    { text: "Вирушу спонтанно", radical: "гіпертимний" },
-                    { text: "Оберу екстремальний туризм", radical: "параноял" },
-                    { text: "Піду туди, де будуть цікаві люди", radical: "істероїд" },
-                    { text: "Відпочиватиму самотужки", radical: "шизоїд" },
-                    { text: "Відмолюся через непевність", radical: "тривожний" },
-                    { text: "Оберу місце з гарними емоціями", radical: "емотивний" },
-                    { text: "Жодного варіанта", radical: null }
-                ]
-            },
-            {
-                question: "4. Реакція на критику:",
-                options: [
-                    { text: "Аналізуватиму на предмет правдивості", radical: "параноял" },
-                    { text: "Почуваюся пригніченим", radical: "тривожний" },
-                    { text: "Шукатиму логічні помилки в критиці", radical: "шизоїд" },
-                    { text: "Спробую вразити критика", radical: "істероїд" },
-                    { text: "Прийму до уваги, якщо критика конструктивна", radical: "емотивний" },
-                    { text: "Порівняю з внутрішніми інструкціями", radical: "епілептоїд" },
-                    { text: "Посміхнуся і забуду", radical: "гіпертимний" },
-                    { text: "Жодного варіанта", radical: null }
-                ]
-            },
-            {
-                question: "5. Реакція на критику:",
-                options: [
-                    { text: "Аналізуватиму на предмет правдивості", radical: "параноял" },
-                    { text: "Почуваюся пригніченим", radical: "тривожний" },
-                    { text: "Шукатиму логічні помилки в критиці", radical: "шизоїд" },
-                    { text: "Спробую вразити критика", radical: "істероїд" },
-                    { text: "Прийму до уваги, якщо критика конструктивна", radical: "емотивний" },
-                    { text: "Порівняю з внутрішніми інструкціями", radical: "епілептоїд" },
-                    { text: "Посміхнуся і забуду", radical: "гіпертимний" },
-                    { text: "Жодного варіанта", radical: null }
-                ]
-            },
-            // Продовжуємо аналогічно для питань 5-15...
-            /* 
-            Тут мають бути решта 11 питань з аналогічною структурою.
-            Кожне питання має:
-            - Унікальний текст ситуації
-            - 8 варіантів з правильно розподіленими радикалами
-            - Останній варіант "Жодного варіанта"
-            */
+            // Додайте ще 13 питань за аналогією
         ];
 
-        // Решта коду залишається без змін (як у попередній версії)
-        const userAnswers = new Array(questions.length);
         const radicals = ["істероїд", "епілептоїд", "параноял", "шизоїд", "тривожний", "емотивний", "гіпертимний"];
+        const userAnswers = new Array(questions.length);
 
         function initTest() {
             const container = document.getElementById('testContainer');
-            questions.forEach((q, qIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question-container';
-                questionDiv.innerHTML = `
-                    <div class="question">${q.question}</div>
-                    <div class="options">
-                        ${q.options.map((option, oIndex) => `
+            
+            questions.forEach((question, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-text">${question.question}</div>
+                    <div class="options-grid">
+                        ${question.options.map((option, i) => `
                             <button class="option-btn" 
-                                    onclick="selectOption(${qIndex}, ${oIndex}, '${option.radical}')">
-                                ${oIndex + 1}. ${option.text}
+                                    onclick="selectOption(${index}, ${i}, '${option.radical}')">
+                                ${i + 1}. ${option.text}
                             </button>
                         `).join('')}
                     </div>
                 `;
-                container.appendChild(questionDiv);
+                container.appendChild(card);
             });
+
             document.getElementById('submitBtn').classList.remove('hidden');
         }
 
         function selectOption(qIndex, oIndex, radical) {
-            const buttons = document.querySelectorAll(`#testContainer .question-container:nth-child(${qIndex + 1}) .option-btn`);
+            const buttons = document.querySelectorAll(`#testContainer .question-card:nth-child(${qIndex + 1}) .option-btn`);
             buttons.forEach(btn => btn.classList.remove('selected'));
             buttons[oIndex].classList.add('selected');
             userAnswers[qIndex] = radical;
         }
 
-        // Решта функцій (calculateResults, renderChart) залишаються незмінними
-        document.getElementById('submitBtn').addEventListener('click', () => {
-            if (userAnswers.includes(undefined)) {
-                alert('Будь ласка, відповіть на всі питання!');
-                return;
-            }
-            const sortedResults = calculateResults();
-            renderChart(sortedResults);
-            document.getElementById('chartContainer').classList.remove('hidden');
-            window.scrollTo(0, document.body.scrollHeight);
-        });
-
         function calculateResults() {
-            const results = radicals.reduce((acc, radical) => (acc[radical] = 0, acc), {});
+            const results = radicals.reduce((acc, radical) => ({ ...acc, [radical]: 0 }), {});
             userAnswers.forEach(radical => radical && results[radical]++);
             return Object.entries(results).sort((a, b) => b[1] - a[1]);
         }
 
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            if (userAnswers.includes(undefined)) {
+                alert('Будь ласка, дайте відповідь на всі питання!');
+                return;
+            }
+            
+            renderChart(calculateResults());
+            document.getElementById('chartContainer').classList.remove('hidden');
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+
         function renderChart(data) {
-            new Chart(document.getElementById('resultsChart'), {
+            const ctx = document.getElementById('resultsChart');
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(54, 162, 235, 0.8)');
+            gradient.addColorStop(1, 'rgba(75, 192, 192, 0.8)');
+
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.map(d => d[0]),
                     datasets: [{
                         label: 'Кількість відповідей',
                         data: data.map(d => d[1]),
-                        backgroundColor: '#36a2eb',
-                        borderWidth: 1
+                        backgroundColor: gradient,
+                        borderColor: 'white',
+                        borderWidth: 2,
+                        borderRadius: 5
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     indexAxis: 'y',
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: 'white',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#2c3e50' }
+                        },
+                        x: {
+                            beginAtZero: true,
+                            ticks: { 
+                                stepSize: 1,
+                                color: '#2c3e50'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    }
                 }
             });
         }
