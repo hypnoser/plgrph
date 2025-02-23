@@ -31,43 +31,47 @@
         }
 
         .question-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
 
-        .question-text {
-            font-size: 1.1em;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
+.question-text {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
 
-        .options-grid {
-            display: grid;
-            gap: 10px;
-            grid-template-columns: 1fr; /* Тільки один стовпець */
-        }
+.options-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+}
 
-        .option-btn {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
-            box-sizing: border-box; /* Щоб кнопки не виходили за межі контейнера */
-        }
+.option-btn {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
 
-        .option-btn.selected {
-            background: var(--secondary);
-            color: white;
-            border-color: var(--secondary);
-        }
+.option-btn:hover {
+    border-color: var(--secondary);
+    background: #f8f9fa;
+}
 
+.option-btn.selected {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+}
         #submitBtn {
             display: block;
             margin: 40px auto;
