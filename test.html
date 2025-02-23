@@ -2,21 +2,21 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>7 Радикалів - Психологічний тест</title>
+    <title>Тест 7 Радикалів</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #36A2EB;
-            --accent-color: #FF6384;
-            --background-color: #f8f9fa;
+            --primary: #2c3e50;
+            --secondary: #36A2EB;
+            --accent: #FF6384;
+            --background: #f8f9fa;
         }
 
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
-            background: var(--background-color);
-            color: var(--primary-color);
+            background: var(--background);
+            color: var(--primary);
         }
 
         .container {
@@ -27,39 +27,31 @@
         .header {
             text-align: center;
             padding: 40px 0;
-            background: linear-gradient(135deg, var(--secondary-color), #4BC0C0);
-            color: white;
-            border-radius: 15px;
             margin-bottom: 30px;
         }
 
         .question-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .question-card:hover {
-            transform: translateY(-3px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
 
         .question-text {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin-bottom: 20px;
             font-weight: 500;
         }
 
         .options-grid {
             display: grid;
+            gap: 10px;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 12px;
         }
 
         .option-btn {
-            padding: 15px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             background: white;
@@ -68,34 +60,23 @@
             transition: all 0.2s;
         }
 
-        .option-btn:hover {
-            border-color: var(--secondary-color);
-            background: #f8f9fa;
-        }
-
         .option-btn.selected {
-            background: var(--secondary-color);
+            background: var(--secondary);
             color: white;
-            border-color: var(--secondary-color);
-            animation: select 0.3s ease;
+            border-color: var(--secondary);
         }
 
         #submitBtn {
             display: block;
             margin: 40px auto;
-            padding: 18px 45px;
-            background: linear-gradient(135deg, var(--secondary-color), #4BC0C0);
+            padding: 15px 40px;
+            background: var(--secondary);
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             font-size: 1.1em;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        #submitBtn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(54, 162, 235, 0.3);
+            transition: transform 0.2s;
         }
 
         .chart-container {
@@ -103,31 +84,7 @@
             border-radius: 15px;
             padding: 30px;
             margin: 40px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        @keyframes select {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .question-text {
-                font-size: 1.1em;
-            }
-            
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-            .chart-container canvas {
-            max-height: 600px;
-            margin: 20px 0;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -135,222 +92,131 @@
     <div class="container">
         <div class="header">
             <h1>Тест "7 Радикалів"</h1>
-            <p>Визначте свій психологічний профіль за методикою Віктора Пономаренка</p>
+            <p>Визначте свій психотип за методикою В.Пономаренка</p>
         </div>
 
         <div id="testContainer"></div>
-
-        <button id="submitBtn" class="hidden">Отримати результати</button>
-
+        <button id="submitBtn">Показати результати</button>
         <div class="chart-container hidden" id="chartContainer">
-            <h2 style="text-align: center; margin-bottom: 30px;">Ваш психологічний профіль</h2>
+            <h2 style="text-align:center; margin-bottom:30px;">Результати тестування</h2>
             <canvas id="resultsChart"></canvas>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
-        Chart.register(ChartDataLabels);
-
         const questions = [
             {
-                question: "1. У конфліктній ситуації я зазвичай:",
+                question: "1. У конфліктній ситуації я:",
                 options: [
                     { text: "Намагаюся домінувати", radical: "параноял" },
                     { text: "Шукаю компроміс", radical: "емотивний" },
                     { text: "Уникаю конфлікту", radical: "тривожний" },
-                    { text: "Драматизую ситуацію", radical: "істероїд" },
-                    { text: "Дію за алгоритмом", radical: "епілептоїд" },
-                    { text: "Аналізую з різних боків", radical: "шизоїд" },
-                    { text: "Жартую та знімаю напругу", radical: "гіпертимний" },
+                    { text: "Драматизую", radical: "істероїд" },
+                    { text: "Дію за правилами", radical: "епілептоїд" },
+                    { text: "Аналізую з усіх боків", radical: "шизоїд" },
+                    { text: "Жартую", radical: "гіпертимний" },
                     { text: "Жодне з переліченого", radical: null }
                 ]
             },
-            {
-                question: "2. Під час роботи над проектом я:",
-                options: [
-                    { text: "Чітко дотримуюсь плану", radical: "епілептоїд" },
-                    { text: "Імпровізую та експериментую", radical: "гіпертимний" },
-                    { text: "Аналізую всі можливі ризики", radical: "параноял" },
-                    { text: "Шукаю гармонії в команді", radical: "емотивний" },
-                    { text: "Уникаю відповідальності", radical: "тривожний" },
-                    { text: "Створюю оригінальні рішення", radical: "шизоїд" },
-                    { text: "Прагну бути в центрі уваги", radical: "істероїд" },
-                    { text: "Жодне з переліченого", radical: null }
-                ]
-            },
-            // Додайте ще 13 питань за аналогією
+            // Додайте ще 14 питань тут
         ];
 
         const radicals = ["істероїд", "епілептоїд", "параноял", "шизоїд", "тривожний", "емотивний", "гіпертимний"];
-        const userAnswers = new Array(questions.length);
+        const userAnswers = [];
+        let chartInstance = null;
 
         function initTest() {
             const container = document.getElementById('testContainer');
-            
-            questions.forEach((question, index) => {
+            questions.forEach((q, index) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 card.innerHTML = `
-                    <div class="question-text">${question.question}</div>
+                    <div class="question-text">${q.question}</div>
                     <div class="options-grid">
-                        ${question.options.map((option, i) => `
+                        ${q.options.map((opt, i) => `
                             <button class="option-btn" 
-                                    onclick="selectOption(${index}, ${i}, '${option.radical}')">
-                                ${i + 1}. ${option.text}
+                                onclick="selectAnswer(${index}, ${i}, '${opt.radical}')">
+                                ${i+1}. ${opt.text}
                             </button>
                         `).join('')}
                     </div>
                 `;
                 container.appendChild(card);
             });
-
-            document.getElementById('submitBtn').classList.remove('hidden');
         }
 
-        function selectOption(qIndex, oIndex, radical) {
-            const buttons = document.querySelectorAll(`#testContainer .question-card:nth-child(${qIndex + 1}) .option-btn`);
+        function selectAnswer(qIndex, oIndex, radical) {
+            const buttons = document.querySelectorAll(`.question-card:nth-child(${qIndex+1}) .option-btn`);
             buttons.forEach(btn => btn.classList.remove('selected'));
             buttons[oIndex].classList.add('selected');
             userAnswers[qIndex] = radical;
         }
 
         function calculateResults() {
-            const results = radicals.reduce((acc, radical) => ({ ...acc, [radical]: 0 }), {});
-            userAnswers.forEach(radical => radical && results[radical]++);
-            return Object.entries(results).sort((a, b) => b[1] - a[1]);
+            const results = radicals.reduce((acc, r) => ({...acc, [r]: 0}), {});
+            userAnswers.forEach(r => r && results[r]++);
+            return Object.entries(results).sort((a,b) => b[1]-a[1]);
         }
 
         document.getElementById('submitBtn').addEventListener('click', () => {
-            if (userAnswers.includes(undefined)) {
-                alert('Будь ласка, дайте відповідь на всі питання!');
+            if(userAnswers.length < questions.length) {
+                alert('Дайте відповіді на всі питання!');
                 return;
             }
             
-            renderChart(calculateResults());
-            document.getElementById('chartContainer').classList.remove('hidden');
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
-        });
-
-        function renderChart(data) {
-            const ctx = document.getElementById('resultsChart');
-            ctx.height = 400; // Фіксуємо висоту полотна
+            if(chartInstance) chartInstance.destroy();
             
-            // Генеруємо кольорову палітру
-            const colors = [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                '#9966FF', '#FF9F40', '#E7E9ED'
-            ];
+            const data = calculateResults();
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(54, 162, 235, 0.3)');
+            gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
 
-            new Chart(ctx, {
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.map(d => d[0]),
                     datasets: [{
-                        label: 'Кількість відповідей',
+                        label: 'Відповіді',
                         data: data.map(d => d[1]),
                         borderColor: '#36A2EB',
                         borderWidth: 4,
-                        borderDash: [0],
                         tension: 0.4,
                         fill: true,
-                        backgroundColor: context => {
-                            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                            gradient.addColorStop(0, 'rgba(54, 162, 235, 0.2)');
-                            gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
-                            return gradient;
-                        },
-                        pointBackgroundColor: colors,
-                        pointBorderColor: 'white',
-                        pointBorderWidth: 3,
+                        backgroundColor: gradient,
+                        pointBackgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED'],
+                        pointBorderColor: '#fff',
                         pointRadius: 7,
                         pointHoverRadius: 10
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: '#2c3e50',
-                            bodyColor: '#fff',
-                            titleColor: '#fff',
-                            borderColor: '#36A2EB',
-                            borderWidth: 2,
-                            padding: 12,
-                            cornerRadius: 8
-                        },
-                        datalabels: {
-                            align: 'top',
-                            color: '#2c3e50',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            formatter: value => value > 0 ? value : ''
-                        }
-                    },
                     scales: {
                         x: {
-                            grid: {
-                                color: '#f0f0f0',
-                                drawOnChartArea: false
-                            },
-                            ticks: {
-                                color: '#666',
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Типи радикалів',
-                                color: '#666',
-                                font: {
-                                    size: 16,
-                                    weight: 'bold'
-                                }
-                            }
+                            title: {display: true, text: 'Типи радикалів', color: '#666'},
+                            grid: {display: false}
                         },
                         y: {
+                            title: {display: true, text: 'Кількість відповідей', color: '#666'},
                             beginAtZero: true,
-                            grid: {
-                                color: '#f0f0f0'
-                            },
-                            ticks: {
-                                color: '#666',
-                                stepSize: 1
-                            },
-                            title: {
-                                display: true,
-                                text: 'Кількість відповідей',
-                                color: '#666',
-                                font: {
-                                    size: 16,
-                                    weight: 'bold'
-                                }
-                            }
+                            ticks: {stepSize: 1}
                         }
                     },
-                    elements: {
-                        line: {
-                            cubicInterpolationMode: 'monotone'
-                        }
+                    plugins: {
+                        legend: {display: false},
+                        tooltip: {backgroundColor: '#2c3e50', bodyColor: '#fff'}
                     },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeInOutQuart'
-                    }
+                    animation: {duration: 1500}
                 }
             });
-        }
+            
+            document.getElementById('chartContainer').classList.remove('hidden');
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+        });
+
+        initTest();
     </script>
 </body>
 </html>
