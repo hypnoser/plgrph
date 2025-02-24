@@ -2,26 +2,31 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Тест визначення психотипу особистості</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 7 Радикалів</title>
     <style>
         :root {
             --primary: #2c3e50;
             --secondary: #36A2EB;
             --accent: #FF6384;
             --background: #f8f9fa;
+            --text-color: #333;
+            --button-hover: #1c8adb;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
             background: var(--background);
-            color: var(--primary);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         .header {
@@ -30,60 +35,89 @@
             margin-bottom: 30px;
         }
 
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
         .question-card {
             background: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
-        
+
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+
         .question-text {
-            *font-size: 1.1em;
-            margin-bottom: 20px;
-            font-weight: 500;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--primary);
         }
-        
+
         .options-grid {
             display: grid;
-            gap: 10px;
-            grid-template-columns: 1fr;
+            gap: 15px;
         }
-        
+
         .option-btn {
             width: 100%;
-            padding: 15px;
+            padding: 20px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 12px;
             background: white;
             cursor: pointer;
             text-align: left;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--text-color);
             box-sizing: border-box;
         }
-        
+
         .option-btn:hover {
             border-color: var(--secondary);
-            background: #f8f9fa;
+            background: #f0f8ff;
+            transform: scale(1.02);
         }
-        
+
         .option-btn.selected {
             background: var(--secondary);
             color: white;
             border-color: var(--secondary);
+            box-shadow: 0 4px 8px rgba(54, 162, 235, 0.3);
         }
 
         #submitBtn {
             display: block;
+            width: 100%;
+            max-width: 300px;
             margin: 40px auto;
-            padding: 15px 40px;
+            padding: 18px;
             background: var(--secondary);
             color: white;
             border: none;
-            border-radius: 25px;
-            *font-size: 1.1em;
+            border-radius: 30px;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(54, 162, 235, 0.2);
+        }
+
+        #submitBtn:hover {
+            background: var(--button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(54, 162, 235, 0.3);
         }
 
         .chart-container {
@@ -93,13 +127,60 @@
             margin: 40px 0;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+            }
+
+            .option-btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            #submitBtn {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px 0;
+            }
+
+            .question-card {
+                padding: 15px;
+            }
+
+            .option-btn {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Тест визначення психотипу особистості</h1>
-            <p>Оберіть один варіант в життєвій ситуації, який наімовірніше ви б обрали в реальності. Відповідайте чесно, неправильних відповідей не існує!</p>
+            <h1>Тест "7 Радикалів"</h1>
+            <p>Визначте свій психотип за методикою В.Пономаренка</p>
         </div>
 
         <div id="testContainer"></div>
