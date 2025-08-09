@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Питання за психологічними радикалами для поліграфологічних досліджень</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Стилі авторизації */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .auth-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 350px;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .auth-overlay:not(.hidden) .auth-form {
+            transform: scale(1);
+        }
+        
+        .auth-header h2 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .auth-header p {
+            color: #5a6c7d;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        
+        .auth-form input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .auth-form input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .auth-form button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        
+        .main-content-blurred {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 0;
+        }
+        
+        .radical-section {
+            padding: 30px;
+            border-bottom: 1px solid #e8ecf4;
+            transition: all 0.3s ease;
+        }
+        
+        .radical-section:last-child {
+            border-bottom: none;
+        }
+        
+        .radical-section:hover {
+            background-color: #f8fafc;
+        }
+        
+        .radical-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .radical-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .hysterioid .radical-icon { background: #e74c3c; }
+        .epileptoid .radical-icon { background: #e67e22; }
+        .paranoid .radical-icon { background: #f39c12; }
+        .emotive .radical-icon { background: #27ae60; }
+        .schizoid .radical-icon { background: #3498db; }
+        .hyperthymic .radical-icon { background: #9b59b6; }
+        .anxious .radical-icon { background: #1abc9c; }
+        
+        .radical-description {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #5a6c7d;
+            font-size: 0.95rem;
+        }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .question-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .question-item:hover {
+            background: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .question-number {
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .question-text {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2d3748;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            body {
+                background: white !important;
+                padding: 0 !important;
+                font-size: 12px !important;
+            }
+            
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                max-width: 100% !important;
+            }
+            
+            .header {
+                background: #1e3c72 !important;
+                color: white !important;
+                padding: 20px !important;
+                margin-bottom: 0 !important;
+            }
+            
+            .print-button {
+                display: none !important;
+            }
+            
+            .radical-section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                padding: 15px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .radical-title {
+                color: #1e3c72 !important;
+                font-size: 16px !important;
+                font-weight: bold !important;
+            }
+            
+            .radical-description {
+                background: #f8f9fa !important;
+                border-left: 3px solid #667eea !important;
+                padding: 10px !important;
+                margin-bottom: 15px !important;
+                font-size: 11px !important;
+            }
+            
+            .questions-grid {
+                display: block !important;
+            }
+            
+            .question-item {
+                background: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+                padding: 8px !important;
+                margin-bottom: 8px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                border-radius: 4px !important;
+            }
+            
+            .question-number {
+                position: static !important;
+                background: #667eea !important;
+                color: white !important;
+                padding: 2px 6px !important;
+                border-radius: 8px !important;
+                font-size: 10px !important;
+                font-weight: bold !important;
+                display: inline-block !important;
+                margin-right: 8px !important;
+            }
+            
+            .question-text {
+                display: inline !important;
+                margin-top: 0 !important;
+                font-size: 11px !important;
+            }
+            
+            .footer {
+                background: #2c3e50 !important;
+                color: white !important;
+                text-align: center !important;
+                padding: 10px !important;
+            }
+            
+            .radical-icon {
+                width: 6px !important;
+                height: 6px !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .radical-section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Форма авторизації -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-form">
+            <div class="auth-header">
+                <h2>🔒 Авторизація</h2>
+                <p>Введіть пароль для доступу до матеріалів</p>
+            </div>
+            <form id="passwordForm">
+                <input type="password" id="passwordInput" placeholder="Пароль" required>
+                <button type="submit">Увійти</button>
+                <div id="errorMessage" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent">
+        <div class="header">
+            <h1>Питання за психологічними радикалами</h1>
+            <p>Для поліграфологічних досліджень і профілювання особистості</p>
+        </div>
+        
+        <div class="content">
+            <!-- Істероїдний радикал -->
+            <div class="radical-section hysterioid">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ІСТЕРОЇДНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Істероїди найбільше переживають через загрозу іміджу. Больові точки: ігнорування, втрата уваги, критика зовнішності/статусу. Фокус: втрата популярності, критика зовнішності, ігнорування.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь перебільшували свої досягнення, щоб справити враження на оточуючих?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь привласнювали собі чужі ідеї або заслуги?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь навмисно применшували досягнення колег, щоб виглядати краще?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь поширювали плітки про когось, щоб відвернути від них увагу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь брехали про свій статус або становище в суспільстві?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь ігнорували прохання близьких, коли вони заважали вашим планам?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь використовували чужі слабкості для власної вигоди?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися визнавати свої помилки публічно?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь маніпулювали емоціями інших для досягнення своїх цілей?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь ображали когось через те, що вам не приділили достатньо уваги?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь одягалися неприпустимо відкрито або зухвало на робочому місці?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь переривали інших під час важливих зустрічей, щоб привернути увагу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь флiртували з одруженими колегами заради розваги?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь свідомо створювали драматичні ситуації, щоб стати центром уваги?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь витрачали корпоративні кошти на власні потреби?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь розповідали чужі особисті таємниці на вечірках або зборах?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь імітували хворобу або проблеми, щоб отримати співчуття?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь критикували зовнішність або стиль інших людей публічно?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися працювати з тими, хто виглядав краще за вас?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь заздрили успіхам інших і намагалися їх применшити?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Епілептоїдний радикал -->
+            <div class="radical-section epileptoid">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ЕПІЛЕПТОЇДНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Епілептоїди найбільше переживають через втрату контролю та справедливості. Больові точки: втрата контролю, непокора, порушення справедливості. Фокус: порушення порядку, втрата влади, несправедливість.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь у гніві говорили комусь те, що могло серйозно їх образити?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь використовували своє службове становище для особистої помсти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь свідомо порушували встановлені правила або процедури?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь погрожували комусь фізичною розправою?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь несправедливо покарали підлеглого через свій поганий настрій?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь грубо поводилися з тими, хто не міг вам відповісти тим же?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь зловживали довірою близьких у моменти їхньої слабкості?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь навмисно ігнорували чиїсь права або інтереси?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь приховували інформацію, яка могла б комусь допомогти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь використовували силу чи тиск там, де можна було вирішити питання мирно?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь псували чуже майно у стані роздратування?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися виконувати розпорядження законного керівництва?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь створювали конфліктні ситуації через дрібні порушення правил?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь кричали на підлеглих при інших співробітниках?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь мстилися колегам за критику ваших рішень?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь навмисно ускладнювали роботу тим, хто вам не подобався?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися допомогти колегам через особисту неприязнь?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь порушували черговість або встановлені процедури для власної вигоди?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь втрачали самоконтроль у присутності керівництва?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь змушували інших робити вашу роботу під загрозою покарання?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Паранойяльний радикал -->
+            <div class="radical-section paranoid">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ПАРАНОЙЯЛЬНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Паранойяли найбільше переживають через питання довіри та досягнення цілей. Больові точки: зрада довіри, підрив авторитету, перешкоди цілям. Фокус: втрата довіри, підрив планів, загроза позиціям.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь підозрювали когось безпідставно у змові проти вас?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь свідомо усували конкурентів нечесними методами?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь приховували важливу інформацію від партнерів або колег?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь використовували довірчу інформацію проти тих, хто вам її повідомив?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь свідомо вводили в оману людей щодо своїх справжніх намірів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь жертвували інтересами команди заради власних цілей?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися визнавати свою неправоту, навіть маючи докази?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь намагалися контролювати або обмежувати свободу близьких?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь свідомо ставили під сумнів репутацію конкурентів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь брехали про свої наміри, щоб досягти довгострокових цілей?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь читали чужі особисті повідомлення або документи?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь створювали коаліції проти окремих співробітників?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь поширювали непідтверджені чутки про конкурентів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь приховували від партнерів ризики спільних проектів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь використовували службову інформацію для особистого збагачення?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь свідомо саботували чужі ініціативи?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь записували розмови без відома співрозмовників?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь поширювали неправдиву інформацію про діяльність організації?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь укладали таємні угоди, шкодячи інтересам роботодавця?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь шантажували когось компрометуючою інформацією?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Емотивний радикал -->
+            <div class="radical-section emotive">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ЕМОТИВНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Емотиви найбільше переживають через можливість завдання болю іншим. Больові точки: завдання болю іншим, байдужість, егоїзм. Фокус: завдання страждань, байдужість до потреб інших.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь ігнорували чиїсь страждання, коли могли допомогти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь говорили комусь жорстоку правду, яка їх дуже засмутила?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь відмовляли у допомозі тому, хто її дійсно потребував?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь забували про важливі події у житті близьких людей?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь приховували свої справжні почуття, коли їх вираження могло б комусь допомогти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь поводилися байдуже до чужого горя чи проблем?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь свідомо ігнорували когось у важкий для нього момент?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь ставили власні інтереси вище за потреби дітей або немічних?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь кривдили тварин або були байдужі до їхніх страждань?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися пробачити комусь, хто щиро каявся?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь ухилялись піти на похорон близьких через власні справи?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь ігнорували плач або благання про допомогу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь відмовляли у грошовій допомозі нужденним родичам?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь були грубі з людьми похилого віку або інвалідами?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь ухилялись відвідати хворих друзів або родичів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь викидали чужі особисті речі без попередження?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь ігнорували дитячі прохання про увагу або допомогу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися від благодійності, маючи можливість допомогти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь були байдужі до сімейних проблем або кризисних ситуацій?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь ставились байдуже до утисків або знущань слабших?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Шизоїдний радикал -->
+            <div class="radical-section schizoid">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ШИЗОЇДНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Шизоїди найбільше переживають через порушення особистих кордонів. Больові точки: порушення особистих кордонів, примус до соціальності. Фокус: порушення меж, вимушена соціальність.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь свідомо ігнорували соціальні зобов'язання перед колегами?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь приховували важливу інформацію, яка могла б комусь допомогти?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися від участі у важливих сімейних подіях?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь нехтували своїми обов'язками заради особистих інтересів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь були неввічливі з людьми через небажання спілкуватися?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь давали обіцянки, які не мали наміру виконувати?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь свідомо уникали допомоги іншим у критичних ситуаціях?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь ігнорували прохання про підтримку від близьких людей?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися пояснити свої дії, коли це було важливо для інших?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь були байдужі до наслідків своєї поведінки для оточуючих?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь уникали важливі корпоративні заходи без поважної причини?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь ігнорували дзвінки від керівництва або клієнтів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися від участі у командних проектах?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь замовчували від колег важливу робочу інформацію?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь уникали надання пояснень щодо своїх професійних рішень?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь працювали над особистими проектами в робочий час?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися від підтримки або навчання молодших колег?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь ігнорували корпоративні правила комунікації?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь свідомо створювали незручності іншим через власну відстороненість?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь відмовлялися пояснювати свою відсутність на робочому місці?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Гіпертимний радикал -->
+            <div class="radical-section hyperthymic">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ГІПЕРТИМНИЙ РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Гіпертими найбільше переживають через обмеження та відповідальність. Больові точки: нудьга, рутина, обмеження свободи, відповідальність. Фокус: обмеження, рутина, відповідальність.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь кидали розпочаті справи, підводячи тих, хто на вас розраховував?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь брали на себе зобов'язання, заздалегідь знаючи, що не виконаєте їх?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь витрачали чужі гроші або ресурси без дозволу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь ігнорували важливі терміни або дедлайни?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь обіцяли те, що не могли виконати, заради миттєвої вигоди?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь уникали відповідальності, перекладаючи її на інших?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь порушували домовленості через появу більш цікавих планів?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь приховували від близьких свої необдумані вчинки?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь діяли імпульсивно, не думаючи про наслідки для інших?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь відволікали колег від важливої роботи заради розваг?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь запізнювалися на важливі зустрічі або наради?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь відволікалися на особисті справи під час робочих завдань?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь залишали робоче місце без попередження керівництва?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь забували про важливі службові доручення?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь переключалися на нові проекти, не завершивши поточні?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь порушували встановлений графік роботи заради розваг?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь використовували робочий час для особистих телефонних розмов?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь нехтували веденням необхідної документації?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь втягували колег у розваги під час робочого процесу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь імпровізували там, де потрібно було дотримуватися інструкцій?</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Тривожний радикал -->
+            <div class="radical-section anxious">
+                <h2 class="radical-title">
+                    <span class="radical-icon"></span>
+                    ТРИВОЖНИЙ (ПСИХАСТЕНІЧНИЙ) РАДИКАЛ
+                </h2>
+                <div class="radical-description">
+                    Тривожні найбільше переживають через помилки та невизначеність. Больові точки: помилки, невизначеність, відповідальність за інших. Фокус: помилки в рішеннях, невиконані обов'язки.
+                </div>
+                <div class="questions-grid">
+                    <div class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-text">Ви коли-небудь приймали важливі рішення, не маючи достатньо інформації?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-text">Ви коли-небудь уникали прийняття рішень, коли від них залежала доля інших?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-text">Ви коли-небудь помилялися у важливих питаннях через власну нерішучість?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-text">Ви коли-небудь замовчували про ризики для інших, знаючи про них?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-text">Ви коли-небудь перекладали відповідальність за свої рішення на інших?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">6</div>
+                        <div class="question-text">Ви коли-небудь діяли всупереч своїм принципам через страх конфлікту?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">7</div>
+                        <div class="question-text">Ви коли-небудь приховували свої сумніви у важливих професійних питаннях?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">8</div>
+                        <div class="question-text">Ви коли-небудь давали поради, в яких самі не були впевнені?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">9</div>
+                        <div class="question-text">Ви коли-небудь мовчали про помічені помилки інших через страх втрутитися?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">10</div>
+                        <div class="question-text">Ви коли-небудь відкладали важливі рішення до критичного моменту?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">11</div>
+                        <div class="question-text">Ви коли-небудь підписували документи, не перевіривши їх ретельно?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">12</div>
+                        <div class="question-text">Ви коли-небудь відкладали важливі рішення через страх помилитися?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">13</div>
+                        <div class="question-text">Ви коли-небудь через боязнь конфронтації ігнорували наявність помилок?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">14</div>
+                        <div class="question-text">Ви коли-небудь погоджувалися з неправильними рішеннями через невпевненість?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">15</div>
+                        <div class="question-text">Ви коли-небудь приховували свою некомпетентність у важливих питаннях?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">16</div>
+                        <div class="question-text">Ви коли-небудь ставились формально до інформації перед її передачею керівництву?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">17</div>
+                        <div class="question-text">Ви коли-небудь уникали контролю якості через страх знайти проблеми?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">18</div>
+                        <div class="question-text">Ви коли-небудь мовчали у важливих питаннях через сором показати своє незнання?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">19</div>
+                        <div class="question-text">Ви коли-небудь діяли за шаблоном у ситуаціях, що вимагали індивідуального підходу?</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-number">20</div>
+                        <div class="question-text">Ви коли-небудь мовчали про важливі застереження через власну невпевненість?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Розроблено для професійного використання поліграфологами • © 2025
+        </div>
+    </div>
+
+    <button class="print-button" onclick="window.print()">
+        📄 Зберегти як PDF
+    </button>
+
+    <script>
+        // Система авторизації
+        const PASSWORD = "polygraph2025"; // Змініть на свій пароль
+        const authOverlay = document.getElementById('authOverlay');
+        const mainContent = document.getElementById('mainContent');
+        const passwordForm = document.getElementById('passwordForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Перевірка чи є збережена авторизація
+        if (sessionStorage.getItem('polygraphAuth') === 'true') {
+            hideAuthOverlay();
+        } else {
+            showAuthOverlay();
+        }
+        
+        // Обробка форми авторизації
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === PASSWORD) {
+                sessionStorage.setItem('polygraphAuth', 'true');
+                hideAuthOverlay();
+                errorMessage.textContent = '';
+            } else {
+                errorMessage.textContent = '❌ Неправильний пароль';
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Ефект струшування
+                passwordForm.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    passwordForm.style.animation = '';
+                }, 500);
+            }
+        });
+        
+        function showAuthOverlay() {
+            authOverlay.classList.remove('hidden');
+            mainContent.classList.add('main-content-blurred');
+            setTimeout(() => passwordInput.focus(), 100);
+        }
+        
+        function hideAuthOverlay() {
+            authOverlay.classList.add('hidden');
+            mainContent.classList.remove('main-content-blurred');
+            
+            // Анімація появи контенту
+            setTimeout(() => {
+                const sections = document.querySelectorAll('.radical-section');
+                sections.forEach((section, index) => {
+                    section.style.opacity = '0';
+                    section.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        section.style.transition = 'all 0.6s ease';
+                        section.style.opacity = '1';
+                        section.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 300);
+        }
+        
+        // Додаткові стилі для анімації струшування
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+                
