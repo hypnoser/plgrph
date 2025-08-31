@@ -60,7 +60,7 @@
             font-size: 16px;
             color: #0079c5;
             opacity: 0;
-            transition: opacity 3s ease-in-out; /* Плавний перехід для тексту */
+            transition: opacity 1s ease-in-out; /* Плавний перехід для тексту */
             margin-top: 10px;
             text-align: center;
             max-width: 640px;
@@ -197,14 +197,14 @@
                 // Показати h2 через 1 секунди після h1
                 setTimeout(function() {
                     sloganContainer.classList.add('visible');
-                }, 500); // 1000 мілісекунд затримки (0,5 секунди)
+                }, 1000); // 1000 мілісекунд затримки (1 секунда)
                 
                 // Показати емейл через 1 секунду після h1
                 setTimeout(function() {
                     if (email) {
                         email.classList.add('visible');
                     }
-                }, 1000); // 1000 мілісекунд затримки (1 секунда)
+                }, 2000); // 1000 мілісекунд затримки (1 секунда)
             };
         });
     </script>
