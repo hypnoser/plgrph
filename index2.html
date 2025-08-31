@@ -57,7 +57,7 @@
             font-size: 16px;
             color: #0079c5;
             opacity: 0;
-            transition: opacity 2s ease-in-out; /* Плавний перехід для тексту */
+            transition: opacity 3s ease-in-out; /* Плавний перехід для тексту */
             margin-top: 10px;
             text-align: center;
             max-width: 640px;
@@ -185,10 +185,10 @@
                 // Показати h1 одразу після завершення відео
                 textContainer.classList.add('visible');
                 
-                // Показати h2 через 0,5 секунди після h1
+                // Показати h2 через 1 секунди після h1
                 setTimeout(function() {
                     sloganContainer.classList.add('visible');
-                }, 500); // 500 мілісекунд затримки (0,5 секунди)
+                }, 500); // 1000 мілісекунд затримки (0,5 секунди)
                 
                 // Показати емейл через 1 секунду після h1
                 setTimeout(function() {
