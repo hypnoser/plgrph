@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESS-M Polygraph Calculator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f5; color: #222;
+    }
+    .ess-module-container { max-width: 960px; margin: 0 auto; }
+
+    .ess-export-btn, .ess-save-file-btn, .ess-load-file-btn {
+      width: 100%; padding: 8px; font-size: 13px; font-weight: bold;
+      border: 1px solid #3a7cfd; border-radius: 5px; cursor: pointer;
+      background-color: transparent; color: #3a7cfd; transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .ess-export-btn:hover, .ess-save-file-btn:hover, .ess-load-file-btn:hover {
+      background-color: rgba(58, 124, 253, 0.1);
+    }
+    .ess-btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .ess-btn-row button { flex: 1; }
+
+    .ess-global-save-btn {
+      width: 100%; padding: 8px; font-size: 13px; font-weight: bold;
+      border: none; border-radius: 5px; cursor: pointer;
+      background-color: #2e7d32; color: #fff; transition: all 0.3s ease;
+      margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .ess-global-save-btn:hover { opacity: 0.9; }
+    .ess-global-save-btn.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); }
+    }
+
+    .ess-test-wrapper {
+      margin-bottom: 15px; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px;
+      background-color: #fff; width: 100%;
+    }
+    .ess-test-top-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed #ccc;
+    }
+    .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ess-type-toggle {
+      display: flex; background: rgba(128,128,128,0.12); border-radius: 4px;
+      padding: 1px; border: 1px solid #ccc;
+    }
+    .ess-type-toggle label {
+      padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+      border-radius: 3px; user-select: none; line-height: 1.2;
+    }
+    .ess-type-toggle input { display: none; }
+    .ess-type-toggle input:checked + label { background: #3a7cfd; color: #fff; }
+
+    .ess-btn {
+      padding: 2px 6px; font-size: 11px; font-weight: bold; border: none;
+      border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2;
+    }
+    .ess-clear-btn { color: #ff0000; background: transparent; border: 1px solid #ff0000; }
+    .ess-clear-btn:hover { background: rgba(255, 0, 0, 0.15); }
+    .ess-delete-btn {
+      font-size: 16px; font-weight: bold; color: #ff0000; background: rgba(255, 0, 0, 0.1);
+      border: 1px solid #ff0000; border-radius: 4px; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      padding: 0; line-height: 1;
+    }
+    .ess-delete-btn:hover { background-color: #ff0000; color: #fff; }
+
+    .ess-test-title-area {
+      display: flex; align-items: baseline; width: 100%; margin-bottom: 2px;
+      font-size: 14px; font-weight: 700;
+    }
+    .ess-test-num-label { font-size: 13px; color: #666; }
+    .ess-test-title-area input[type="text"] {
+      flex-grow: 1; margin-left: 6px; border: none; border-bottom: 1px solid transparent;
+      background: transparent; font-size: 14px; font-weight: 700; color: inherit;
+      padding: 0 4px; outline: none; line-height: 1.1;
+    }
+    .ess-test-title-area input[type="text"]:focus {
+      border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0;
+    }
+
+    .ess-table { width: 100%; border-collapse: collapse; margin: 0 0 6px 0; table-layout: fixed; }
+    .ess-table th, .ess-table td {
+      border: 1px solid #ccc; padding: 0px 2px; text-align: center;
+      vertical-align: middle; height: 20px; line-height: 1.1;
+    }
+    .ess-table th {
+      background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 14px;
+      color: #222; padding: 3px 2px;
+    }
+
+    .chart-header {
+      text-align: left; font-weight: 600; font-size: 11.5px;
+      background-color: rgba(128,128,128,0.06); padding-left: 6px;
+      color: #3a7cfd; height: 16px;
+    }
+    .chart-toggle-label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
+    .chart-toggle-label input { cursor: pointer; margin: 0; }
+
+    .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
+    .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
+    .chart-disabled input[type="number"] { color: transparent !important; }
+    .chart-disabled .bg-artifact { background-color: #d7ccc8 !important; color: #6d4c41 !important; }
+
+    .ess-table input[type="number"] {
+      width: 100%; height: 18px; border: none; background: transparent;
+      text-align: center; font-size: 13px; font-weight: 600; color: inherit;
+      padding: 0; outline: none; font-family: inherit; margin: 0;
+      transition: background-color 0.2s;
+    }
+    .ess-table input[type="number"]:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
+    .ess-table input[type="number"]::-webkit-outer-spin-button,
+    .ess-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .ess-table input[type="number"] { -moz-appearance: textfield; }
+    .ess-table input[type="number"]:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
+
+    .ess-table .calc-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.06); }
+    .ess-table .chart-total-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.1); }
+    .ess-table .total-label { font-weight: 600; font-size: 12px; text-align: right; padding-right: 6px; background-color: rgba(128,128,128,0.05); }
+    .ess-table .row-label { text-align: left; padding-left: 6px; font-weight: 500; font-size: 12px; transition: opacity 0.2s; }
+
+    .status-cell { font-weight: bold; transition: all 0.2s ease; line-height: 1.1; }
+    .status-badge { display: inline-block; padding: 1px 3px; border-radius: 2px; font-weight: 800; font-size: 11.5px; letter-spacing: 0.2px; }
+    .prob-text { font-size: 9.5px; font-weight: 600; margin-top: 1px; display: block; }
+
+    .bg-sr { background-color: #ff0000 !important; color: #ffffff !important; }
+    .bg-nsr { background-color: #2e7d32 !important; color: #ffffff !important; }
+    .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
+    .bg-na { background-color: transparent !important; color: #888 !important; }
+    .bg-artifact { background-color: #ffb300 !important; color: #000000 !important; font-weight: 800; }
+
+    .ess-scale-container {
+      margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05);
+      border-radius: 4px; border: 1px solid #ccc;
+    }
+    .ess-scale-title { font-size: 10px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
+    .ess-scale-track {
+      position: relative; height: 6px; border-radius: 3px;
+      background: linear-gradient(to right, #ff0000 0%, #ff0000 37.5%, #ffee00 37.5%, #ffee00 62.5%, #00cc44 62.5%, #00cc44 100%);
+      border: 1px solid #777; margin: 10px 0 4px 0;
+    }
+    .ess-scale-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .ess-scale-labels { display: flex; justify-content: space-between; font-size: 9px; font-weight: bold; }
+
+    .ess-add-btn {
+      color: #fff; background-color: #3a7cfd; display: block; width: 100%;
+      margin-top: 10px; padding: 6px 0; font-size: 13px; text-align: center;
+      border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+    }
+    .ess-add-btn:hover { opacity: 0.9; }
+
+    .ess-error-message {
+      color: #d32f2f; font-weight: bold; margin: 4px 0; padding: 4px 8px;
+      background: rgba(211, 47, 47, 0.1); border-radius: 4px;
+      border-left: 3px solid #d32f2f;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .ess-export-btn, .ess-save-file-btn, .ess-load-file-btn, .ess-global-save-btn,
+      .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn,
+      .chart-toggle-label input, .ess-error-message, .ess-btn-row { display: none !important; }
+      .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
+      .chart-disabled { display: none !important; }
+      .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
+      .ess-table, .ess-scale-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text { color: white !important; }
+      .bg-inc { color: black !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <input type="file" id="file-import" accept=".json" style="display:none">
+
+  <script>
+    // ==========================================
+    // 0. ІНІЦІАЛІЗАЦІЯ КОНТЕЙНЕРА
+    // ==========================================
+    const appRoot = document.getElementById("app");
+    const container = document.createElement("div");
+    container.className = "ess-module-container";
+    appRoot.appendChild(container);
+    let isUnsaved = false;
+
+    // ==========================================
+    // 1. БЕЗПЕКА ТА УТИЛІТИ
+    // ==========================================
+    const escapeHtml = (str) => {
+      if (str === null || str === undefined) return "";
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    };
+
+    const debounce = (fn, delay) => {
+      let timer;
+      return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+    };
+
+    const showError = (msg) => {
+      const errDiv = document.createElement("div");
+      errDiv.className = "ess-error-message";
+      errDiv.textContent = msg;
+      container.insertBefore(errDiv, container.firstChild);
+      setTimeout(() => errDiv.remove(), 10000);
+    };
+
+    // ==========================================
+    // 2. ІНТЕРФЕЙС
+    // ==========================================
+    const exportBtn = document.createElement("button");
+    exportBtn.className = "ess-export-btn";
+    exportBtn.innerHTML = "📄 Експорт даних (PDF / Друк)";
+    exportBtn.onclick = () => setTimeout(() => window.print(), 150);
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "ess-btn-row";
+
+    const saveFileBtn = document.createElement("button");
+    saveFileBtn.className = "ess-save-file-btn";
+    saveFileBtn.innerHTML = "💾 Зберегти у файл (.json)";
+    saveFileBtn.onclick = () => saveToFile();
+
+    const loadFileBtn = document.createElement("button");
+    loadFileBtn.className = "ess-load-file-btn";
+    loadFileBtn.innerHTML = "📂 Відкрити з файлу";
+    loadFileBtn.onclick = () => document.getElementById("file-import").click();
+
+    btnRow.appendChild(saveFileBtn);
+    btnRow.appendChild(loadFileBtn);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.className = "ess-global-save-btn";
+    saveBtn.textContent = "💾 Дані збережено (Актуально)";
+
+    const testsContainer = document.createElement("div");
+    const addBtnBottom = document.createElement("button");
+    addBtnBottom.className = "ess-add-btn";
+    addBtnBottom.textContent = "+ Додати обрахунок";
+
+    container.appendChild(exportBtn);
+    container.appendChild(btnRow);
+    container.appendChild(saveBtn);
+    container.appendChild(testsContainer);
+    container.appendChild(addBtnBottom);
+
+    // ==========================================
+    // 3. ЗБЕРЕЖЕННЯ / ЗАВАНТАЖЕННЯ
+    // ==========================================
+    let autoSaveTimeout;
+    let warningTimeout;
+    const STORAGE_KEY = "ess_polygraph_data";
+
+    const collectState = () => {
+      return Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(wrapper => {
+        const ce = wrapper._cachedElements;
+        const titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
+        const typeRadio = wrapper.querySelector(".toggle-type input[type='radio']:checked");
+        const chartToggle4 = wrapper.querySelector(".chart-toggle[data-chart='4']");
+        const chartToggle5 = wrapper.querySelector(".chart-toggle[data-chart='5']");
+        const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input[type='number']"));
+        const values = {};
+        inputs.forEach(inp => {
+          values[`${inp.getAttribute('data-chart')}_${inp.getAttribute('data-col')}_${inp.getAttribute('data-row')}`] = inp.value;
+        });
+        return {
+          title: titleInput ? titleInput.value : "",
+          type: typeRadio ? typeRadio.value : "screening",
+          chartToggles: {
+            4: chartToggle4 ? chartToggle4.checked : true,
+            5: chartToggle5 ? chartToggle5.checked : true
+          },
+          values
+        };
+      });
+    };
+
+    const performSave = () => {
+      if (!isUnsaved) return;
+      saveBtn.textContent = "⏳ Запис...";
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+        isUnsaved = false;
+        saveBtn.classList.remove("unsaved");
+        saveBtn.textContent = "💾 Дані збережено";
+      } catch (error) {
+        console.error("Помилка збереження:", error);
+        saveBtn.textContent = "❌ Помилка збереження!";
+        saveBtn.classList.add("unsaved");
+        showError("Помилка запису в localStorage: " + error.message);
+      }
+    };
+
+    const saveToFile = () => {
+      const data = collectState();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ess-polygraph-" + new Date().toISOString().slice(0,10) + ".json";
+      a.click();
+      URL.revokeObjectURL(url);
+      isUnsaved = false;
+      saveBtn.classList.remove("unsaved");
+      saveBtn.textContent = "💾 Дані збережено у файл";
+    };
+
+    const loadFromFile = (file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!Array.isArray(data)) throw new Error("Невірний формат файлу");
+          testsContainer.innerHTML = "";
+          data.forEach(d => createTestTable(d));
+          performSave();
+          saveBtn.textContent = "💾 Дані завантажено з файлу";
+        } catch (err) {
+          showError("Помилка завантаження файлу: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    document.getElementById("file-import").addEventListener("change", (e) => {
+      if (e.target.files[0]) loadFromFile(e.target.files[0]);
+      e.target.value = "";
+    });
+
+    const markUnsaved = () => {
+      if (!isUnsaved) { isUnsaved = true; saveBtn.classList.add("unsaved"); }
+      saveBtn.textContent = "⚠️ Є незбережені зміни! (Натисніть, щоб зберегти)";
+      if (warningTimeout) clearTimeout(warningTimeout);
+      if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+      warningTimeout = setTimeout(() => { if (isUnsaved) saveBtn.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
+      autoSaveTimeout = setTimeout(() => performSave(), 60000);
+    };
+
+    saveBtn.onclick = () => {
+      if (warningTimeout) clearTimeout(warningTimeout);
+      if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+      performSave();
+    };
+
+    window.addEventListener('beforeunload', (e) => {
+      if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }
+    });
+
+    container.addEventListener('focusout', (e) => {
+      if (!container.contains(e.relatedTarget) && isUnsaved) {
+        if (warningTimeout) clearTimeout(warningTimeout);
+        if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+        performSave();
+      }
+    });
+
+    // ==========================================
+    // 4. МАТЕМАТИКА
+    // ==========================================
+    const calcPneumoESS = (v, n) => {
+      if (v === 0 && n === 0) return { val: 0, art: false };
+      if (v === n) return { val: v, art: false };
+      if (v === 0) return { val: n, art: false };
+      if (n === 0) return { val: v, art: false };
+      if (v + n === 0) return { val: 0, art: true };
+      return { val: 0, art: false };
+    };
+
+    const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
+    const getGrandProbValue = (val) => {
+      const v = Math.abs(val);
+      if (v >= 20) return "Pr > 99%";
+      if (gtProbs[v]) return `Pr ~ ${gtProbs[v]}%`;
+      return "p > 0.05";
+    };
+
+    const getScreeningProbValue = (val) => {
+      if (val <= -12) return "Pr > 99%";
+      if (val === -11) return "Pr ~ 99%";
+      if (val === -10) return "Pr ~ 98%";
+      if (val === -9) return "Pr ~ 97%";
+      if (val === -8) return "Pr ~ 95%";
+      if (val === -7) return "Pr ~ 92%";
+      if (val === -6) return "Pr ~ 89%";
+      if (val === -5) return "Pr ~ 85%";
+      if (val === -4) return "Pr ~ 79%";
+      if (val === -3) return "Pr ~ 73%";
+      if (val >= 6) return "Pr > 99%";
+      if (val === 5) return "Pr ~ 99%";
+      if (val === 4) return "Pr ~ 98%";
+      if (val === 3) return "Pr ~ 95%";
+      if (val === 2) return "Pr ~ 88%";
+      if (val === 1) return "Pr ~ 73%";
+      return "p > 0.05";
+    };
+
+    const senterProbsMap = new Map([
+      [-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]
+    ]);
+    const getSenterProbValue = (val) => {
+      const numVal = Number(val);
+      if (numVal <= -14) return "Pr > 99.9%";
+      if (senterProbsMap.has(numVal)) return `Pr ~ ${senterProbsMap.get(numVal).toFixed(1)}%`;
+      return "p > 0.05";
+    };
+
+    const getSpotInfo = (val, testType) => {
+      if (testType === "screening") {
+        if (val <= -3) return { status: "SR", prob: getScreeningProbValue(val), cls: "bg-sr" };
+        if (val >= 1) return { status: "NSR", prob: getScreeningProbValue(val), cls: "bg-nsr" };
+        return { status: "INC", prob: "p > 0.05", cls: "bg-inc" };
+      } else {
+        if (val <= -7) return { status: "SR", prob: getSenterProbValue(val), cls: "bg-sr" };
+        return { status: "-", prob: "", cls: "bg-na" };
+      }
+    };
+
+    const getGrandProb = (grandTotal, activeSpotVals, testType, minSpot, hasAnySR) => {
+      if (activeSpotVals.length === 0) return { status: "N/A", prob: "Немає даних", cls: "bg-na" };
+      if (testType === "screening") {
+        if (hasAnySR) return { status: "SR", prob: "Spot Rule (Є SR)", cls: "bg-sr" };
+        if (activeSpotVals.every(v => v >= 1)) return { status: "NSR", prob: "All Spots NSR", cls: "bg-nsr" };
+        return { status: "INC", prob: "Spot Rule (INC)", cls: "bg-inc" };
+      }
+      if (grandTotal <= -3) return { status: "SR", prob: getGrandProbValue(grandTotal), cls: "bg-sr" };
+      if (minSpot <= -7) {
+        const senterP = getSenterProbValue(minSpot).replace('Pr ~ ', '');
+        return { status: "SR", prob: `Сентер (${senterP})`, cls: "bg-sr" };
+      }
+      if (grandTotal >= 3) return { status: "NSR", prob: getGrandProbValue(grandTotal), cls: "bg-nsr" };
+      return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
+    };
+
+    // ==========================================
+    // 5. РОЗРАХУНОК
+    // ==========================================
+    const calculateTest = (wrapper) => {
+      const ce = wrapper._cachedElements;
+      if (!ce) return;
+
+      let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
+      let colHasData = { 1: false, 2: false, 3: false, 4: false };
+
+      const currentTestType = ce.typeRadios.find(r => r.checked)?.value || "screening";
+      if (ce.contamWrapper) ce.contamWrapper.style.display = (currentTestType === "screening") ? "inline-flex" : "none";
+      const isContamActive = ce.contamToggle?.checked ?? true;
+
+      const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
+      const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
+      const activeCharts = {
+        1: true, 2: true, 3: true,
+        4: chartToggle4 ? chartToggle4.checked : true,
+        5: chartToggle5 ? chartToggle5.checked : true
+      };
+
+      for (let c = 1; c <= 5; c++) {
+        const cStr = c.toString();
+        const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
+        const chartInputs = ce.inputs.filter(i => i.getAttribute('data-chart') === cStr);
+        if (!activeCharts[c]) {
+          rows.forEach(r => r.classList.add("chart-disabled"));
+          chartInputs.forEach(i => i.setAttribute("disabled", "true"));
+        } else {
+          rows.forEach(r => r.classList.remove("chart-disabled"));
+          chartInputs.forEach(i => i.removeAttribute("disabled"));
+        }
+      }
+
+      const getVal = (chart, col, row) => {
+        const key = `${chart}_${col}_${row}`;
+        const input = ce.inputsMap[key];
+        if (!input || input.disabled) return 0;
+        const val = input.value.trim();
+        if (val !== "" && val !== "-" && activeCharts[chart]) colHasData[col] = true;
+        return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
+      };
+
+      for (let c = 1; c <= 5; c++) {
+        let currentChartSum = 0;
+        const cStr = c.toString();
+        for (let col = 1; col <= 4; col++) {
+          const colStr = col.toString();
+          const pv = getVal(cStr, colStr, 'pneumo-v');
+          const pn = getVal(cStr, colStr, 'pneumo-n');
+          const pneumo = calcPneumoESS(pv, pn);
+          const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
+          if (spanPneumo) {
+            if (pneumo.art) { spanPneumo.textContent = "0 ⚠"; spanPneumo.className = "bg-artifact"; }
+            else { spanPneumo.textContent = pneumo.val; spanPneumo.className = ""; }
+          }
+          const colSum = pneumo.val + getVal(cStr, colStr, 'eda') + getVal(cStr, colStr, 'cardio') + getVal(cStr, colStr, 'ppg');
+          if (activeCharts[c]) subtotals[col] += colSum;
+          currentChartSum += colSum;
+        }
+        const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === cStr);
+        if (spanChartTotal) {
+          spanChartTotal.textContent = activeCharts[c] ? currentChartSum : "—";
+          spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
+        }
+      }
+
+      let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
+      for (let col = 1; col <= 4; col++) {
+        if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
+        const val = subtotals[col];
+        activeSpotVals.push(val);
+        if (val < minSpotVal) minSpotVal = val;
+        let info = getSpotInfo(val, currentTestType);
+        spotInfos[col] = info;
+        if (info.status === "SR") hasAnySR = true;
+      }
+
+      if (currentTestType === "screening" && hasAnySR && isContamActive) {
+        for (let col = 1; col <= 4; col++) {
+          if (colHasData[col] && spotInfos[col].status === "NSR") {
+            spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
+          }
+        }
+      }
+
+      let grandTotal = 0;
+      for (let col = 1; col <= 4; col++) {
+        const colStr = col.toString();
+        const spanSub = ce.subtotals.find(s => s.getAttribute('data-col') === colStr);
+        if (spanSub) spanSub.textContent = colHasData[col] ? subtotals[col] : "-";
+        const info = spotInfos[col];
+        const cellStatus = ce.statuses.find(s => s.getAttribute('data-col') === colStr);
+        if (cellStatus) {
+          cellStatus.className = `status-cell ${info.cls}`;
+          cellStatus.innerHTML = (info.status === "N/A" || info.status === "-")
+            ? `<span style="color:#888;">${info.status}</span>`
+            : `<span class="status-badge">${info.status}</span><span class="prob-text">${info.prob}</span>`;
+        }
+        if (colHasData[col]) grandTotal += subtotals[col];
+      }
+
+      if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : "0";
+      const grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
+      if (ce.grandStatus) {
+        ce.grandStatus.className = `status-cell ${grandInfo.cls}`;
+        ce.grandStatus.innerHTML = grandInfo.status === "N/A"
+          ? `<span style="color:#888;">Немає даних</span>`
+          : `<span class="status-badge" style="font-size:14px;">${grandInfo.status}</span><span class="prob-text" style="font-size:11px;">${grandInfo.prob}</span>`;
+      }
+
+      if (ce.scaleLabels) {
+        if (currentTestType === "diagnostic") {
+          ce.scaleLabels.innerHTML = `<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (+3 і більше) ▶</span>`;
+        } else {
+          ce.scaleLabels.innerHTML = `<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (Всі ≥ +1) ▶</span>`;
+        }
+      }
+
+      if (ce.scaleMarker) {
+        const minVal = -12, maxVal = 12;
+        const clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
+        const percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
+        ce.scaleMarker.style.left = activeSpotVals.length > 0 ? `${percentage}%` : "50%";
+      }
+    };
+
+    // ==========================================
+    // 6. ГЕНЕРАЦІЯ ТАБЛИЦІ
+    // ==========================================
+    const createTestTable = (savedData = null) => {
+      const currentNumber = testsContainer.querySelectorAll(".ess-test-wrapper").length + 1;
+      const uid = Math.random().toString(36).substr(2, 9);
+      const wrapper = document.createElement("div");
+      wrapper.className = "ess-test-wrapper";
+
+      const rows = [
+        { id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' },
+        { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }
+      ];
+
+      const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
+      const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
+      const radioName = `test_type_${uid}`;
+
+      let tableHtml = `
+        <div class="ess-test-top-bar">
+          <div class="ess-top-bar-left">
+            <div class="ess-type-toggle toggle-type">
+              <input type="radio" id="scr_${uid}" name="${radioName}" value="screening" ${typeVal === 'screening' ? 'checked' : ''} />
+              <label for="scr_${uid}">📋 Скринінговий</label>
+              <input type="radio" id="diag_${uid}" name="${radioName}" value="diagnostic" ${typeVal === 'diagnostic' ? 'checked' : ''} />
+              <label for="diag_${uid}">🔍 Діагностичний</label>
+            </div>
+            <button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам'ять</button>
+          </div>
+          <button class="ess-delete-btn" title="Видалити цей тест">×</button>
+        </div>
+        <div class="ess-test-title-area">
+          <span class="ess-test-num-label">Тест №${currentNumber}:</span>
+          <input type="text" placeholder="Назва тесту (напр., 3 AFMGQT...)" value="${titleVal}" />
+        </div>
+        <table class="ess-table">
+          <thead>
+            <tr>
+              <th style="width: 18%;">ESS</th>
+              <th colspan="2" style="width: 18%;">R1 (R4)</th><th colspan="2" style="width: 18%;">R2 (R5)</th>
+              <th colspan="2" style="width: 18%;">R3 (R7)</th><th colspan="2" style="width: 18%;">R4 (R8)</th>
+              <th style="width: 10%;">Динаміка</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      for (let c = 1; c <= 5; c++) {
+        let headerText = `Chart #${c}`;
+        if (c === 4 || c === 5) {
+          const isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
+          headerText = `<label class="chart-toggle-label" title="Увімкнути/Вимкнути цей чарт з розрахунку"><input type="checkbox" class="chart-toggle" data-chart="${c}" ${isChecked}> Chart #${c}</label>`;
+        }
+        tableHtml += `<tr data-chart-group="${c}"><td colspan="10" class="chart-header">${headerText}</td></tr>`;
+        for (let r = 0; r < rows.length; r++) {
+          tableHtml += `<tr data-chart-group="${c}"><td class="row-label" data-row-label="${rows[r].id}">${rows[r].label}</td>`;
+          for (let col = 1; col <= 4; col++) {
+            const cellKey = `${c}_${col}_${rows[r].id}`;
+            const cellVal = savedData?.values?.[cellKey] !== undefined ? escapeHtml(savedData.values[cellKey]) : "";
+            if (rows[r].id === 'pneumo-v') {
+              tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>`;
+              tableHtml += `<td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
+            } else if (rows[r].id === 'pneumo-n') {
+              tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
+            } else if (rows[r].id === 'eda') {
+              tableHtml += `<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
+            } else {
+              tableHtml += `<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
+            }
+          }
+          if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
+          tableHtml += `</tr>`;
+        }
+      }
+
+      tableHtml += `
+        <tr>
+          <td rowspan="2" class="total-label" style="text-align:center; padding: 2px;">
+            Subtotals<br>
+            <label class="contam-toggle-wrapper" style="display: ${typeVal === 'screening' ? 'inline-flex' : 'none'}; align-items: center; justify-content: center; gap: 2px; font-size: 9.5px; font-weight: normal; cursor: pointer; color: #666; margin-top: 2px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
+              <input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 
+              🔒 Контам.
+            </label>
+          </td>`;
+      for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="${col}">-</td>`;
+      tableHtml += `<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:11px; color:#666;">Динаміка<br>чартів</td></tr><tr>`;
+      for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="${col}">-</span></td>`;
+      tableHtml += `</tr>
+        <tr>
+          <td class="total-label" style="text-align:center;">Grand Total</td>
+          <td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
+          <td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td>
+        </tr>
+      </tbody></table>
+      <div class="ess-scale-container">
+        <div class="ess-scale-title">Графічний баланс реактивності (Grand Total)</div>
+        <div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div>
+        <div class="ess-scale-labels"></div>
+      </div>`;
+
+      wrapper.innerHTML = tableHtml;
+
+      const inputsArray = Array.from(wrapper.querySelectorAll("input[type='number']"));
+      const inputsMap = {};
+      inputsArray.forEach(i => { inputsMap[`${i.getAttribute('data-chart')}_${i.getAttribute('data-col')}_${i.getAttribute('data-row')}`] = i; });
+
+      wrapper._cachedElements = {
+        titleInput: wrapper.querySelector(".ess-test-title-area input[type='text']"),
+        typeRadios: Array.from(wrapper.querySelectorAll(".toggle-type input[type='radio']")),
+        chartToggles: Array.from(wrapper.querySelectorAll(".chart-toggle")),
+        inputs: inputsArray,
+        inputsMap: inputsMap,
+        pneumoSums: Array.from(wrapper.querySelectorAll('[data-calc="pneumo-sum"]')),
+        chartTotals: Array.from(wrapper.querySelectorAll('[data-calc="chart-total"]')),
+        subtotals: Array.from(wrapper.querySelectorAll('[data-calc="subtotal"]')),
+        statuses: Array.from(wrapper.querySelectorAll('[data-calc-cell="status"]')),
+        grandTotal: wrapper.querySelector('[data-calc="grand-total"]'),
+        grandStatus: wrapper.querySelector('[data-calc-cell="grand-status"]'),
+        scaleLabels: wrapper.querySelector(".ess-scale-labels"),
+        scaleMarker: wrapper.querySelector(".ess-scale-marker"),
+        contamToggle: wrapper.querySelector(".contam-toggle"),
+        contamWrapper: wrapper.querySelector(".contam-toggle-wrapper"),
+        rows: Array.from(wrapper.querySelectorAll("tr[data-chart-group]"))
+      };
+
+      let calcTimeout;
+      const debouncedCalc = () => {
+        clearTimeout(calcTimeout);
+        calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50);
+      };
+
+      wrapper.querySelectorAll('.chart-toggle').forEach(el => el.addEventListener('change', debouncedCalc));
+      wrapper.querySelector(".contam-toggle")?.addEventListener("change", () => calculateTest(wrapper));
+      wrapper.querySelector(".ess-test-title-area input[type='text']")?.addEventListener('input', markUnsaved);
+      wrapper.querySelectorAll("input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
+
+      wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
+        if (confirm("Ви впевнені, що хочете видалити цей тест?")) {
+          wrapper.remove();
+          Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => {
+            w.querySelector(".ess-test-num-label").textContent = `Тест №${idx + 1}:`;
+          });
+          markUnsaved();
+        }
+      });
+
+      wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
+        if (confirm("Очистити всі введені цифри в цій таблиці?")) {
+          wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
+          debouncedCalc();
+        }
+      });
+
+      wrapper.addEventListener('input', (e) => {
+        const el = e.target;
+        if (el.tagName === 'INPUT' && el.type === 'number') {
+          const val = el.value.trim();
+          if (val !== "" && val !== "-") {
+            const num = Number(val);
+            if (el.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) el.value = "";
+            else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
+          }
+          debouncedCalc();
+        }
+      });
+
+      wrapper.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+          const currentInput = e.target;
+          if (e.key === '-' || e.key === 'Subtract' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
+            e.preventDefault();
+            currentInput.value = (currentInput.getAttribute('data-row') === 'eda') ? "-2" : "-1";
+            debouncedCalc();
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const activeInputs = wrapper._cachedElements.inputs.filter(i => !i.disabled);
+            let nextInput = null;
+            for (let i = activeInputs.indexOf(currentInput) + 1; i < activeInputs.length; i++) {
+              if (activeInputs[i].getAttribute('data-col') === currentInput.getAttribute('data-col')) { nextInput = activeInputs[i]; break; }
+            }
+            if (nextInput) { nextInput.focus(); nextInput.select(); }
+          }
+        }
+      });
+
+      testsContainer.appendChild(wrapper);
+      calculateTest(wrapper);
+    };
+
+    addBtnBottom.addEventListener("click", () => { createTestTable(); markUnsaved(); });
+
+    // ==========================================
+    // 7. ІНІЦІАЛІЗАЦІЯ
+    // ==========================================
+    const init = () => {
+      let loadedData = null;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) loadedData = JSON.parse(raw);
+      } catch (e) {
+        console.error("Помилка читання localStorage:", e);
+        showError("Помилка завантаження даних з localStorage. Почато з порожньої таблиці.");
+      }
+
+      if (loadedData && Array.isArray(loadedData) && loadedData.length > 0) {
+        loadedData.forEach(data => createTestTable(data));
+      } else {
+        createTestTable();
+      }
+    };
+
+    init();
+  </script>
+</body>
+</html>
