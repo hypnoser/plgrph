@@ -3,40 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v2.1</title>
+  <title>ESS-M Calculator v2.2</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; }
     .ess-module-container { max-width: 960px; margin: 0 auto; }
-
-    /* ===== КОМПАКТНА ПАНЕЛЬ ІКОНОК ===== */
-    .ess-toolbar {
-      display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
-      background: #fff; border: 1px solid #ddd; border-radius: 6px;
-      padding: 4px 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .ess-toolbar-btn {
-      width: 32px; height: 32px; border: 1px solid transparent; border-radius: 5px;
-      background: transparent; cursor: pointer; display: flex; align-items: center;
-      justify-content: center; font-size: 17px; line-height: 1; padding: 0;
-      transition: all 0.2s ease; color: #555; position: relative;
-    }
-    .ess-toolbar-btn:hover {
-      background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd;
-    }
+    .ess-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 4px 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .ess-toolbar-btn { width: 32px; height: 32px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
+    .ess-toolbar-btn:hover { background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd; }
     .ess-toolbar-btn:active { transform: scale(0.92); }
     .ess-toolbar-sep { width: 1px; height: 20px; background: #ddd; margin: 0 2px; }
-
-    .ess-global-save-btn {
-      width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: none;
-      border-radius: 5px; cursor: pointer; background-color: #2e7d32; color: #fff;
-      transition: all 0.3s ease; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .ess-global-save-btn:hover { opacity: 0.9; }
-    .ess-global-save-btn.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
+    .ess-save-status { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border-radius: 5px; text-align: center; margin-bottom: 15px; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; }
+    .ess-save-status.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
-
     .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px; background-color: #fff; width: 100%; }
     .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed #ccc; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -92,8 +72,12 @@
     .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 10px; padding: 6px 0; font-size: 13px; text-align: center; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
     .ess-add-btn:hover { opacity: 0.9; }
     .ess-error-message { color: #d32f2f; font-weight: bold; margin: 4px 0; padding: 4px 8px; background: rgba(211, 47, 47, 0.1); border-radius: 4px; border-left: 3px solid #d32f2f; }
-
-    /* Модалка */
+    .ess-dynamics-container { margin-top: 8px; padding: 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
+    .ess-dynamics-title { font-size: 10px; font-weight: bold; margin-bottom: 4px; text-align: center; text-transform: uppercase; color: #666; }
+    .ess-dynamics-chart { width: 100%; height: 90px; }
+    .ess-dynamics-svg { width: 100%; height: 100%; display: block; }
+    .ess-dynamics-legend { display: flex; justify-content: center; gap: 12px; font-size: 9px; margin-top: 4px; flex-wrap: wrap; }
+    .ess-dynamics-text { font-size: 10.5px; text-align: center; margin-top: 6px; color: #444; font-weight: 500; line-height: 1.4; padding: 4px; background: rgba(255,255,255,0.6); border-radius: 3px; }
     .ess-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .ess-modal-overlay.active { display: flex; }
     .ess-modal { background: #fff; border-radius: 8px; padding: 16px; width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
@@ -109,26 +93,25 @@
     .ess-modal-save:hover { opacity: 0.9; }
     .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
-
     @media print {
       body { background: #fff; padding: 0; }
-      .ess-toolbar, .ess-global-save-btn, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper,
-      .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
       .chart-disabled { display: none !important; }
       .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
-      .ess-table, .ess-scale-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text { color: white !important; }
       .bg-inc { color: black !important; }
     }
   </style>
+  <base target="_blank">
 <base target="_blank">
 </head>
 <body>
   <div id="app"></div>
   <input type="file" id="file-import" accept=".json" style="display:none">
-
 <script>
+
   const appRoot = document.getElementById("app");
   const container = document.createElement("div");
   container.className = "ess-module-container";
@@ -137,14 +120,7 @@
 
   const escapeHtml = (str) => {
     if (str === null || str === undefined) return "";
-    return String(str).replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
-  };
-
-  const debounce = (fn, delay) => {
-    let timer;
-    return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   };
 
   const showError = (msg) => {
@@ -155,7 +131,91 @@
     setTimeout(() => errDiv.remove(), 10000);
   };
 
-  // ===== КОМПАКТНА ПАНЕЛЬ ІКОНОК =====
+  const openHelpPage = () => {
+    const helpContent = `<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>ESS-M Calculator — Довідка</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
+  h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; }
+  h2 { color: #2e7d32; margin-top: 28px; }
+  h3 { color: #555; }
+  .warning-box { background: #fff3e0; border-left: 4px solid #f57c00; padding: 12px 16px; margin: 20px 0; border-radius: 4px; }
+  .warning-box strong { color: #e65100; }
+  .feature-list { background: #e8f5e9; border-radius: 6px; padding: 16px 20px; }
+  .feature-list li { margin-bottom: 8px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  .methodology { background: #e3f2fd; border-radius: 6px; padding: 16px 20px; margin: 16px 0; }
+</style>
+</head>
+<body>
+  <h1>ESS-M Calculator — Довідкова інформація</h1>
+  <h2>📋 Можливості таблиці</h2>
+  <p>ESS-M Calculator — це спеціалізований інструмент для обчислення результатів поліграфологічних тестів за методикою ESS-M (Empirical Scoring System — Multi-issue), яка широко використовується в американських методиках поліграфного тестування.</p>
+  <div class="feature-list">
+    <ul>
+      <li><strong>Автоматичне обчислення:</strong> Система миттєво розраховує підсумки по кожному чарту, спотові оцінки та Grand Total.</li>
+      <li><strong>Підтримка форматів:</strong> N/A, DLST, AFMGQT (2RQ–4RQ), BOST, UTAH ZCT, UTAH MGQT.</li>
+      <li><strong>Два режими:</strong> Скринінговий та Діагностичний (з правилом Сентера).</li>
+      <li><strong>Візуалізація:</strong> Графічний баланс реактивності та динаміка стану респондента по чартах.</li>
+      <li><strong>Керування чартами:</strong> Можливість увімкнення/вимкнення Chart #4 та Chart #5.</li>
+      <li><strong>Правило контамінації:</strong> Автоматичне блокування NSR при наявності SR у скринінговому режимі.</li>
+      <li><strong>Експорт:</strong> Збереження даних у форматі JSON або друк/PDF.</li>
+    </ul>
+  </div>
+  <div class="methodology">
+    <h3>🎯 Корисність для поліграфологів</h3>
+    <p>Таблиця розроблена спеціально для поліграфологів, які працюють за американськими методиками (Backster, Utah, AFMGQT). Вона:</p>
+    <ul>
+      <li>Знижує ймовірність арифметичних помилок при ручному підрахунку ESS.</li>
+      <li>Візуалізує тренди реактивності для глибшого аналізу поведінки респондента.</li>
+      <li>Дозволяє швидко перемикатися між скринінговим та діагностичним режимами.</li>
+      <li>Забезпечує стандартизований підхід до оцінки відповідно до сучасних протоколів.</li>
+    </ul>
+  </div>
+  <h2>📖 Інструкція з користування</h2>
+  <ol>
+    <li><strong>Створення тесту:</strong> Натисніть «+ Додати обрахунок». Введіть назву тесту та оберіть формат (або залиште N/A).</li>
+    <li><strong>Вибір режиму:</strong> Оберіть «Скринінговий» або «Діагностичний» режим.</li>
+    <li><strong>Введення даних:</strong> Заповніть комірки для кожного чарту:
+      <ul>
+        <li><code>Дихання "В"</code> та <code>Дихання "Н"</code>: значення -1, 0 або 1.</li>
+        <li><code>ЕДА</code>: значення -2, 0 або 2.</li>
+        <li><code>Кардіо</code> та <code>ФПГ</code>: значення -1, 0 або 1.</li>
+      </ul>
+    </li>
+    <li><strong>Питання:</strong> Натисніть 📝 Питання, щоб додати текст R1–R4 для друку.</li>
+    <li><strong>Аналіз:</strong> Спостерігайте за автоматично розрахованими статусами (SR/NSR/INC) та графіками.</li>
+    <li><strong>Збереження:</strong> Використовуйте кнопки на панелі інструментів для збереження в localStorage, експорту в JSON або друку в PDF.</li>
+  </ol>
+  <h3>⌨️ Гарячі клавіші</h3>
+  <ul>
+    <li><code>-</code> (мінус): швидке введення -1 (або -2 для ЕДА).</li>
+    <li><code>Enter</code>: перехід до наступного поля в тій самій колонці.</li>
+  </ul>
+  <div class="warning-box">
+    <strong>⚠️ Важлива інформація про зберігання даних</strong><br>
+    Дані, введені в цю таблицю, <strong>не зберігаються на жодному сервері</strong> та <strong>не передаються через Інтернет</strong>. 
+    Вони тимчасово зберігаються лише в локальному кеші вашого браузера (localStorage) на цьому пристрої.<br><br>
+    Це означає, що:
+    <ul>
+      <li>При очищенні кешу браузера або localStorage дані будуть втрачені.</li>
+      <li>Дані недоступні з інших пристроїв або браузерів.</li>
+      <li>Для збереження на довгий термін обов'язково використовуйте експорт у файл <code>.json</code> або друк у PDF.</li>
+    </ul>
+    Ви самостійно контролюєте свої дані: вносите, редагуєте, експортуєте та видаляєте їх.
+  </div>
+  <p style="text-align:center; color:#888; margin-top:40px; font-size:12px;">ESS-M Calculator v2.2</p>
+</body>
+</html>`;
+    const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank", "noopener,noreferrer");
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  };
+
   const toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
@@ -165,17 +225,19 @@
   btnOpen.title = "Відкрити з файлу (.json)";
   btnOpen.onclick = () => document.getElementById("file-import").click();
 
-  const btnSave = document.createElement("button");
-  btnSave.className = "ess-toolbar-btn";
-  btnSave.innerHTML = "💾";
-  btnSave.title = "Зберегти дані";
-  btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
-
   const btnSaveJson = document.createElement("button");
   btnSaveJson.className = "ess-toolbar-btn";
   btnSaveJson.innerHTML = "📥";
   btnSaveJson.title = "Зберегти у файл .json";
   btnSaveJson.onclick = () => saveToFile();
+
+  const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
+
+  const btnSave = document.createElement("button");
+  btnSave.className = "ess-toolbar-btn";
+  btnSave.innerHTML = "💾";
+  btnSave.title = "Зберегти дані";
+  btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
 
   const btnPrint = document.createElement("button");
   btnPrint.className = "ess-toolbar-btn";
@@ -183,17 +245,25 @@
   btnPrint.title = "Експорт PDF / Друк";
   btnPrint.onclick = () => setTimeout(() => window.print(), 150);
 
-  const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
+  const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
+
+  const btnHelp = document.createElement("button");
+  btnHelp.className = "ess-toolbar-btn";
+  btnHelp.innerHTML = "❓";
+  btnHelp.title = "Довідка / Інструкція";
+  btnHelp.onclick = () => openHelpPage();
 
   toolbar.appendChild(btnOpen);
-  toolbar.appendChild(btnSave);
-  toolbar.appendChild(sep1);
   toolbar.appendChild(btnSaveJson);
+  toolbar.appendChild(sep1);
+  toolbar.appendChild(btnSave);
   toolbar.appendChild(btnPrint);
+  toolbar.appendChild(sep2);
+  toolbar.appendChild(btnHelp);
 
-  const saveBtn = document.createElement("button");
-  saveBtn.className = "ess-global-save-btn";
-  saveBtn.textContent = "💾 Дані збережено (Актуально)";
+  const saveStatus = document.createElement("div");
+  saveStatus.className = "ess-save-status";
+  saveStatus.textContent = "💾 Дані збережено (Актуально)";
 
   const testsContainer = document.createElement("div");
   const addBtnBottom = document.createElement("button");
@@ -201,7 +271,7 @@
   addBtnBottom.textContent = "+ Додати обрахунок";
 
   container.appendChild(toolbar);
-  container.appendChild(saveBtn);
+  container.appendChild(saveStatus);
   container.appendChild(testsContainer);
   container.appendChild(addBtnBottom);
 
@@ -210,7 +280,7 @@
   const STORAGE_KEY = "ess_polygraph_data";
 
   const TEST_FORMATS = [
-    "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)",
+    "N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)",
     "BOST", "UTAH ZCT", "UTAH MGQT"
   ];
 
@@ -226,13 +296,13 @@
       const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
       const values = {};
       inputs.forEach(inp => {
-        values[`${inp.getAttribute('data-chart')}_${inp.getAttribute('data-col')}_${inp.getAttribute('data-row')}`] = inp.value;
+        values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value;
       });
       const questions = {};
       qInputs.forEach(inp => { questions[inp.getAttribute('data-q')] = inp.value; });
       return {
         title: titleInput ? titleInput.value : "",
-        format: formatSelect ? formatSelect.value : "AFMGQT (3RQ)",
+        format: formatSelect ? formatSelect.value : "N/A",
         questions: questions,
         type: typeRadio ? typeRadio.value : "screening",
         chartToggles: {
@@ -246,16 +316,16 @@
 
   const performSave = () => {
     if (!isUnsaved) return;
-    saveBtn.textContent = "⏳ Запис...";
+    saveStatus.textContent = "⏳ Запис...";
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
       isUnsaved = false;
-      saveBtn.classList.remove("unsaved");
-      saveBtn.textContent = "💾 Дані збережено";
+      saveStatus.classList.remove("unsaved");
+      saveStatus.textContent = "💾 Дані збережено";
     } catch (error) {
       console.error("Помилка збереження:", error);
-      saveBtn.textContent = "❌ Помилка збереження!";
-      saveBtn.classList.add("unsaved");
+      saveStatus.textContent = "❌ Помилка збереження!";
+      saveStatus.classList.add("unsaved");
       showError("Помилка запису в localStorage: " + error.message);
     }
   };
@@ -270,8 +340,8 @@
     a.click();
     URL.revokeObjectURL(url);
     isUnsaved = false;
-    saveBtn.classList.remove("unsaved");
-    saveBtn.textContent = "💾 Дані збережено у файл";
+    saveStatus.classList.remove("unsaved");
+    saveStatus.textContent = "💾 Дані збережено у файл";
   };
 
   const loadFromFile = (file) => {
@@ -283,7 +353,7 @@
         testsContainer.innerHTML = "";
         data.forEach(d => createTestTable(d));
         performSave();
-        saveBtn.textContent = "💾 Дані завантажено з файлу";
+        saveStatus.textContent = "💾 Дані завантажено з файлу";
       } catch (err) {
         showError("Помилка завантаження файлу: " + err.message);
       }
@@ -297,18 +367,12 @@
   });
 
   const markUnsaved = () => {
-    if (!isUnsaved) { isUnsaved = true; saveBtn.classList.add("unsaved"); }
-    saveBtn.textContent = "⚠️ Є незбережені зміни! (Натисніть, щоб зберегти)";
+    if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
+    saveStatus.textContent = "⚠️ Є незбережені зміни! (Натисніть 💾, щоб зберегти)";
     if (warningTimeout) clearTimeout(warningTimeout);
     if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-    warningTimeout = setTimeout(() => { if (isUnsaved) saveBtn.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
+    warningTimeout = setTimeout(() => { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
     autoSaveTimeout = setTimeout(() => performSave(), 60000);
-  };
-
-  saveBtn.onclick = () => {
-    if (warningTimeout) clearTimeout(warningTimeout);
-    if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-    performSave();
   };
 
   window.addEventListener('beforeunload', (e) => {
@@ -323,7 +387,119 @@
     }
   });
 
-  // МАТЕМАТИКА
+  const updateDynamicsChart = (wrapper, values, ce) => {
+    const svg = ce.dynamicsSvg;
+    const textDiv = ce.dynamicsText;
+    if (!svg) return;
+    svg.innerHTML = '';
+    const width = 400, height = 80, centerY = 40;
+    const maxVal = 12, minVal = -12;
+    const padding = 40;
+    const chartWidth = width - padding * 2;
+    const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    zeroLine.setAttribute("x1", padding); zeroLine.setAttribute("y1", centerY);
+    zeroLine.setAttribute("x2", width - padding); zeroLine.setAttribute("y2", centerY);
+    zeroLine.setAttribute("stroke", "#bbb"); zeroLine.setAttribute("stroke-width", "1");
+    zeroLine.setAttribute("stroke-dasharray", "3,3");
+    svg.appendChild(zeroLine);
+    const topLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    topLabel.setAttribute("x", width/2); topLabel.setAttribute("y", 12);
+    topLabel.setAttribute("text-anchor", "middle"); topLabel.setAttribute("font-size", "8");
+    topLabel.setAttribute("fill", "#aaa"); topLabel.textContent = "+ Порівняння (заспокоєння)";
+    svg.appendChild(topLabel);
+    const bottomLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    bottomLabel.setAttribute("x", width/2); bottomLabel.setAttribute("y", height - 2);
+    bottomLabel.setAttribute("text-anchor", "middle"); bottomLabel.setAttribute("font-size", "8");
+    bottomLabel.setAttribute("fill", "#aaa"); bottomLabel.textContent = "- Релевантні (напруга)";
+    svg.appendChild(bottomLabel);
+    if (values.length === 0) {
+      textDiv.textContent = "Немає даних для аналізу динаміки";
+      return;
+    }
+    const stepX = values.length > 1 ? chartWidth / (values.length - 1) : chartWidth / 2;
+    let pathD = "";
+    values.forEach((v, i) => {
+      const x = padding + (values.length > 1 ? i * stepX : chartWidth / 2);
+      const clamped = Math.max(minVal, Math.min(maxVal, v.value));
+      const y = centerY - (clamped / maxVal) * 30;
+      if (i === 0) pathD += "M " + x + " " + y;
+      else pathD += " L " + x + " " + y;
+    });
+    if (values.length > 1) {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", pathD); path.setAttribute("fill", "none");
+      path.setAttribute("stroke", "#3a7cfd"); path.setAttribute("stroke-width", "2"); path.setAttribute("opacity", "0.5");
+      svg.appendChild(path);
+    }
+    values.forEach((v, i) => {
+      const x = padding + (values.length > 1 ? i * stepX : chartWidth / 2);
+      const clamped = Math.max(minVal, Math.min(maxVal, v.value));
+      const y = centerY - (clamped / maxVal) * 30;
+      const radius = Math.max(5, Math.min(10, 5 + Math.abs(v.value) * 0.5));
+      let color;
+      if (v.value < 0) {
+        const intensity = Math.min(1, Math.abs(v.value) / 8);
+        const r = Math.floor(220 - intensity * 80);
+        const g = Math.floor(80 - intensity * 60);
+        const b = Math.floor(80 - intensity * 60);
+        color = "rgb(" + r + "," + g + "," + b + ")";
+      } else if (v.value > 0) {
+        const intensity = Math.min(1, v.value / 8);
+        const r = Math.floor(80 - intensity * 40);
+        const g = Math.floor(180 - intensity * 60);
+        const b = Math.floor(80 - intensity * 40);
+        color = "rgb(" + r + "," + g + "," + b + ")";
+      } else {
+        color = "#999";
+      }
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", radius);
+      circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1.5");
+      svg.appendChild(circle);
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("x", x); label.setAttribute("y", height - 12);
+      label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "8");
+      label.setAttribute("fill", "#666"); label.setAttribute("font-weight", "bold");
+      label.textContent = "C" + v.chart;
+      svg.appendChild(label);
+      const valText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      valText.setAttribute("x", x); valText.setAttribute("y", y - radius - 3);
+      valText.setAttribute("text-anchor", "middle"); valText.setAttribute("font-size", "8");
+      valText.setAttribute("fill", "#444"); valText.setAttribute("font-weight", "bold");
+      valText.textContent = v.value;
+      svg.appendChild(valText);
+    });
+    const vals = values.map(v => v.value);
+    const allNegative = vals.every(v => v < 0);
+    const allPositive = vals.every(v => v > 0);
+    const allZero = vals.every(v => v === 0);
+    const firstNeg = vals[0] < 0;
+    const lastPos = vals[vals.length - 1] > 0;
+    const trend = vals[vals.length - 1] - vals[0];
+    let interpretation = "";
+    if (allZero) {
+      interpretation = "Нейтральна динаміка: відсутня виражена реактивність або респондент перебуває в стані очікування.";
+    } else if (allNegative) {
+      const deepening = vals.every((v, i) => i === 0 || v <= vals[i-1]);
+      if (deepening) {
+        interpretation = "Тенденція до поглиблення негативної реактивності: респондент укорінюється в релевантні питання, реакції посилюються.";
+      } else {
+        interpretation = "Стабільно негативна динаміка: постійна орієнтація на релевантні питання.";
+      }
+    } else if (allPositive) {
+      interpretation = "Позитивна динаміка: респондент стабільно орієнтується на питання порівняння, стан заспокоєння.";
+    } else if (firstNeg && lastPos && trend > 0) {
+      interpretation = "Позитивний тренд: респондент адаптується, увага поступово переміщується від релевантних питань до питань порівняння.";
+    } else if (firstNeg && lastPos && trend < 0) {
+      interpretation = "Негативний тренд: незважаючи на початкову адаптацію, реактивність зростає до релевантних питань.";
+    } else if (vals.some(v => v < 0) && vals.some(v => v > 0)) {
+      interpretation = "Нестабільна динаміка: коливання між релевантними питаннями та порівнянням. Можлива протидія або емоційна нестабільність.";
+    } else {
+      interpretation = "Змішана динаміка: спостерігаються зміни стану респондента між чартами.";
+    }
+    textDiv.textContent = interpretation;
+  };
+
   const calcPneumoESS = (v, n) => {
     if (v === 0 && n === 0) return { val: 0, art: false };
     if (v === n) return { val: v, art: false };
@@ -337,7 +513,7 @@
   const getGrandProbValue = (val) => {
     const v = Math.abs(val);
     if (v >= 20) return "Pr > 99%";
-    if (gtProbs[v]) return `Pr ~ ${gtProbs[v]}%`;
+    if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%";
     return "p > 0.05";
   };
 
@@ -367,7 +543,7 @@
   const getSenterProbValue = (val) => {
     const numVal = Number(val);
     if (numVal <= -14) return "Pr > 99.9%";
-    if (senterProbsMap.has(numVal)) return `Pr ~ ${senterProbsMap.get(numVal).toFixed(1)}%`;
+    if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%";
     return "p > 0.05";
   };
 
@@ -392,7 +568,7 @@
     if (grandTotal <= -3) return { status: "SR", prob: getGrandProbValue(grandTotal), cls: "bg-sr" };
     if (minSpot <= -7) {
       const senterP = getSenterProbValue(minSpot).replace('Pr ~ ', '');
-      return { status: "SR", prob: `Сентер (${senterP})`, cls: "bg-sr" };
+      return { status: "SR", prob: "Сентер (" + senterP + ")", cls: "bg-sr" };
     }
     if (grandTotal >= 3) return { status: "NSR", prob: getGrandProbValue(grandTotal), cls: "bg-nsr" };
     return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
@@ -424,7 +600,7 @@
     }
 
     const getVal = (chart, col, row) => {
-      const key = `${chart}_${col}_${row}`;
+      const key = chart + '_' + col + '_' + row;
       const input = ce.inputsMap[key];
       if (!input || input.disabled) return 0;
       const val = input.value.trim();
@@ -483,8 +659,8 @@
       const info = spotInfos[col];
       const cellStatus = ce.statuses.find(s => s.getAttribute('data-col') === colStr);
       if (cellStatus) {
-        cellStatus.className = `status-cell ${info.cls}`;
-        cellStatus.innerHTML = (info.status === "N/A" || info.status === "-") ? `<span style="color:#888;">${info.status}</span>` : `<span class="status-badge">${info.status}</span><span class="prob-text">${info.prob}</span>`;
+        cellStatus.className = "status-cell " + info.cls;
+        cellStatus.innerHTML = (info.status === "N/A" || info.status === "-") ? '<span style="color:#888;">' + info.status + '</span>' : '<span class="status-badge">' + info.status + '</span><span class="prob-text">' + info.prob + '</span>';
       }
       if (colHasData[col]) grandTotal += subtotals[col];
     }
@@ -492,23 +668,34 @@
     if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : "0";
     const grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     if (ce.grandStatus) {
-      ce.grandStatus.className = `status-cell ${grandInfo.cls}`;
-      ce.grandStatus.innerHTML = grandInfo.status === "N/A" ? `<span style="color:#888;">Немає даних</span>` : `<span class="status-badge" style="font-size:14px;">${grandInfo.status}</span><span class="prob-text" style="font-size:11px;">${grandInfo.prob}</span>`;
+      ce.grandStatus.className = "status-cell " + grandInfo.cls;
+      ce.grandStatus.innerHTML = grandInfo.status === "N/A" ? '<span style="color:#888;">Немає даних</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:11px;">' + grandInfo.prob + '</span>';
     }
 
     if (ce.scaleLabels) {
       if (currentTestType === "diagnostic") {
-        ce.scaleLabels.innerHTML = `<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (+3 і більше) ▶</span>`;
+        ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (+3 і більше) ▶</span>';
       } else {
-        ce.scaleLabels.innerHTML = `<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (Всі ≥ +1) ▶</span>`;
+        ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (Всі ≥ +1) ▶</span>';
       }
     }
     if (ce.scaleMarker) {
       const minVal = -12, maxVal = 12;
       const clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
       const percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
-      ce.scaleMarker.style.left = activeSpotVals.length > 0 ? `${percentage}%` : "50%";
+      ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
+
+    const dynamicsValues = [];
+    for (let c = 1; c <= 5; c++) {
+      if (activeCharts[c]) {
+        const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === c.toString());
+        const text = spanChartTotal ? spanChartTotal.textContent : "0";
+        const val = text === "—" ? 0 : parseFloat(text) || 0;
+        dynamicsValues.push({chart: c, value: val});
+      }
+    }
+    updateDynamicsChart(wrapper, dynamicsValues, ce);
   };
 
   const createTestTable = (savedData = null) => {
@@ -524,21 +711,21 @@
 
     const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
     const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
-    const formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "AFMGQT (3RQ)";
+    const formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "N/A";
     const savedQuestions = savedData?.questions || {};
-    const radioName = `test_type_${uid}`;
+    const radioName = "test_type_" + uid;
 
-    const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
+    const formatOptions = TEST_FORMATS.map(f => '<option value="' + escapeHtml(f) + '"' + (f === formatVal ? ' selected' : '') + '>' + escapeHtml(f) + '</option>').join('');
 
     let tableHtml = `
       <div class="ess-test-top-bar">
         <div class="ess-top-bar-left">
-          <select class="ess-format-select" title="Формат тестування">${formatOptions}</select>
+          <select class="ess-format-select" title="Формат тестування">` + formatOptions + `</select>
           <div class="ess-type-toggle toggle-type">
-            <input type="radio" id="scr_${uid}" name="${radioName}" value="screening" ${typeVal === 'screening' ? 'checked' : ''} />
-            <label for="scr_${uid}">📋 Скринінговий</label>
-            <input type="radio" id="diag_${uid}" name="${radioName}" value="diagnostic" ${typeVal === 'diagnostic' ? 'checked' : ''} />
-            <label for="diag_${uid}">🔍 Діагностичний</label>
+            <input type="radio" id="scr_` + uid + `" name="` + radioName + `" value="screening" ` + (typeVal === 'screening' ? 'checked' : '') + ` />
+            <label for="scr_` + uid + `">📋 Скринінговий</label>
+            <input type="radio" id="diag_` + uid + `" name="` + radioName + `" value="diagnostic" ` + (typeVal === 'diagnostic' ? 'checked' : '') + ` />
+            <label for="diag_` + uid + `">🔍 Діагностичний</label>
           </div>
           <button class="ess-btn ess-questions-btn" title="Редагувати питання R1–R4">📝 Питання</button>
           <button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам'ять</button>
@@ -546,17 +733,17 @@
         <button class="ess-delete-btn" title="Видалити цей тест">×</button>
       </div>
       <div class="ess-test-title-area">
-        <span class="ess-test-num-label">Тест №${currentNumber}:</span>
-        <input type="text" placeholder="Назва тесту (напр., 3 AFMGQT...)" value="${titleVal}" />
+        <span class="ess-test-num-label">Тест №` + currentNumber + `:</span>
+        <input type="text" placeholder="Назва тесту (напр., 3 AFMGQT...)" value="` + titleVal + `" />
       </div>
       <table class="ess-table">
         <thead>
           <tr>
             <th style="width: 18%;">ESS</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="1" title="${escapeHtml(savedQuestions.R1 || '')}">R1 (R4)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="2" title="${escapeHtml(savedQuestions.R2 || '')}">R2 (R5)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="3" title="${escapeHtml(savedQuestions.R3 || '')}">R3 (R7)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="4" title="${escapeHtml(savedQuestions.R4 || '')}">R4 (R8)</th>
+            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="1" title="` + escapeHtml(savedQuestions.R1 || '') + `">R1 (R4)</th>
+            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="2" title="` + escapeHtml(savedQuestions.R2 || '') + `">R2 (R5)</th>
+            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="3" title="` + escapeHtml(savedQuestions.R3 || '') + `">R3 (R7)</th>
+            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="4" title="` + escapeHtml(savedQuestions.R4 || '') + `">R4 (R8)</th>
             <th style="width: 10%;">Динаміка</th>
           </tr>
         </thead>
@@ -564,30 +751,30 @@
     `;
 
     for (let c = 1; c <= 5; c++) {
-      let headerText = `Chart #${c}`;
+      let headerText = "Chart #" + c;
       if (c === 4 || c === 5) {
         const isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
-        headerText = `<label class="chart-toggle-label" title="Увімкнути/Вимкнути цей чарт з розрахунку"><input type="checkbox" class="chart-toggle" data-chart="${c}" ${isChecked}> Chart #${c}</label>`;
+        headerText = '<label class="chart-toggle-label" title="Увімкнути/Вимкнути цей чарт з розрахунку"><input type="checkbox" class="chart-toggle" data-chart="' + c + '" ' + isChecked + '> Chart #' + c + '</label>';
       }
-      tableHtml += `<tr data-chart-group="${c}"><td colspan="10" class="chart-header">${headerText}</td></tr>`;
+      tableHtml += '<tr data-chart-group="' + c + '"><td colspan="10" class="chart-header">' + headerText + '</td></tr>';
       for (let r = 0; r < rows.length; r++) {
-        tableHtml += `<tr data-chart-group="${c}"><td class="row-label" data-row-label="${rows[r].id}">${rows[r].label}</td>`;
+        tableHtml += '<tr data-chart-group="' + c + '"><td class="row-label" data-row-label="' + rows[r].id + '">' + rows[r].label + '</td>';
         for (let col = 1; col <= 4; col++) {
-          const cellKey = `${c}_${col}_${rows[r].id}`;
+          const cellKey = c + '_' + col + '_' + rows[r].id;
           const cellVal = savedData?.values?.[cellKey] !== undefined ? escapeHtml(savedData.values[cellKey]) : "";
           if (rows[r].id === 'pneumo-v') {
-            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>`;
-            tableHtml += `<td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
+            tableHtml += '<td><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="pneumo-v" value="' + cellVal + '"></td>';
+            tableHtml += '<td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="' + c + '" data-col="' + col + '">0</span></td>';
           } else if (rows[r].id === 'pneumo-n') {
-            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
+            tableHtml += '<td><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="pneumo-n" value="' + cellVal + '"></td>';
           } else if (rows[r].id === 'eda') {
-            tableHtml += `<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
+            tableHtml += '<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="' + c + '" data-col="' + col + '" data-row="eda" value="' + cellVal + '"></td>';
           } else {
-            tableHtml += `<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
+            tableHtml += '<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="' + rows[r].id + '" value="' + cellVal + '"></td>';
           }
         }
-        if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
-        tableHtml += `</tr>`;
+        if (r === 0) tableHtml += '<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="' + c + '">0</span></td>';
+        tableHtml += '</tr>';
       }
     }
 
@@ -595,14 +782,14 @@
       <tr>
         <td rowspan="2" class="total-label" style="text-align:center; padding: 2px;">
           Subtotals<br>
-          <label class="contam-toggle-wrapper" style="display: ${typeVal === 'screening' ? 'inline-flex' : 'none'}; align-items: center; justify-content: center; gap: 2px; font-size: 9.5px; font-weight: normal; cursor: pointer; color: #666; margin-top: 2px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
+          <label class="contam-toggle-wrapper" style="display: ` + (typeVal === 'screening' ? 'inline-flex' : 'none') + `; align-items: center; justify-content: center; gap: 2px; font-size: 9.5px; font-weight: normal; cursor: pointer; color: #666; margin-top: 2px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
             <input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;">
             🔒 Контам.
           </label>
         </td>`;
-    for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="${col}">-</td>`;
-    tableHtml += `<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:11px; color:#666;">Динаміка<br>чартів</td></tr><tr>`;
-    for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="${col}">-</span></td>`;
+    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + col + '">-</td>';
+    tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:11px; color:#666;">Динаміка<br>чартів</td></tr><tr>';
+    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + col + '">-</span></td>';
     tableHtml += `</tr>
       <tr>
         <td class="total-label" style="text-align:center;">Grand Total</td>
@@ -615,17 +802,31 @@
       <div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div>
       <div class="ess-scale-labels"></div>
     </div>
+    <div class="ess-dynamics-container">
+      <div class="ess-dynamics-title">Динаміка стану респондента по чартах</div>
+      <svg class="ess-dynamics-svg" viewBox="0 0 400 80" preserveAspectRatio="xMidYMid meet">
+        <line x1="20" y1="40" x2="380" y2="40" stroke="#ddd" stroke-width="1" stroke-dasharray="4,2"/>
+        <text x="200" y="15" text-anchor="middle" font-size="9" fill="#888">+ Порівняння (заспокоєння)</text>
+        <text x="200" y="75" text-anchor="middle" font-size="9" fill="#888">- Релевантні (напруга)</text>
+      </svg>
+      <div class="ess-dynamics-legend">
+        <span style="color:#d32f2f; font-size:9px;">● Негативна (релевантні)</span>
+        <span style="color:#888; font-size:9px;">● Нейтральна</span>
+        <span style="color:#388e3c; font-size:9px;">● Позитивна (порівняння)</span>
+      </div>
+      <div class="ess-dynamics-text" style="font-size:10.5px; text-align:center; margin-top:4px; color:#444;"></div>
+    </div>
     <div class="ess-modal-overlay">
       <div class="ess-modal">
         <div class="ess-modal-header">
-          <h3>📝 Питання тесту №${currentNumber}</h3>
+          <h3>📝 Питання тесту №` + currentNumber + `</h3>
           <button class="ess-modal-close">&times;</button>
         </div>
         <div class="ess-modal-body">
-          <label>R1 (Relevant 1 / R4): <input type="text" class="ess-question-input" data-q="R1" value="${escapeHtml(savedQuestions.R1 || '')}" placeholder="Введіть текст питання R1..."></label>
-          <label>R2 (Relevant 2 / R5): <input type="text" class="ess-question-input" data-q="R2" value="${escapeHtml(savedQuestions.R2 || '')}" placeholder="Введіть текст питання R2..."></label>
-          <label>R3 (Relevant 3 / R7): <input type="text" class="ess-question-input" data-q="R3" value="${escapeHtml(savedQuestions.R3 || '')}" placeholder="Введіть текст питання R3..."></label>
-          <label>R4 (Relevant 4 / R8): <input type="text" class="ess-question-input" data-q="R4" value="${escapeHtml(savedQuestions.R4 || '')}" placeholder="Введіть текст питання R4..."></label>
+          <label>R1 (Relevant 1 / R4): <input type="text" class="ess-question-input" data-q="R1" value="` + escapeHtml(savedQuestions.R1 || '') + `" placeholder="Введіть текст питання R1..."></label>
+          <label>R2 (Relevant 2 / R5): <input type="text" class="ess-question-input" data-q="R2" value="` + escapeHtml(savedQuestions.R2 || '') + `" placeholder="Введіть текст питання R2..."></label>
+          <label>R3 (Relevant 3 / R7): <input type="text" class="ess-question-input" data-q="R3" value="` + escapeHtml(savedQuestions.R3 || '') + `" placeholder="Введіть текст питання R3..."></label>
+          <label>R4 (Relevant 4 / R8): <input type="text" class="ess-question-input" data-q="R4" value="` + escapeHtml(savedQuestions.R4 || '') + `" placeholder="Введіть текст питання R4..."></label>
         </div>
         <div class="ess-modal-footer">
           <button class="ess-btn ess-modal-save">💾 Зберегти</button>
@@ -639,7 +840,7 @@
 
     const inputsArray = Array.from(wrapper.querySelectorAll("input[type='number']"));
     const inputsMap = {};
-    inputsArray.forEach(i => { inputsMap[`${i.getAttribute('data-chart')}_${i.getAttribute('data-col')}_${i.getAttribute('data-row')}`] = i; });
+    inputsArray.forEach(i => { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
 
     const modalOverlay = wrapper.querySelector(".ess-modal-overlay");
     const questionBtn = wrapper.querySelector(".ess-questions-btn");
@@ -657,7 +858,7 @@
         const qKey = inp.getAttribute('data-q');
         const colNum = qKey.replace('R','');
         const th = thQuestions.find(t => t.getAttribute('data-th-col') === colNum);
-        if (th) th.title = inp.value ? `${qKey}: ${inp.value}` : '';
+        if (th) th.title = inp.value ? qKey + ": " + inp.value : '';
       });
       closeModal();
       markUnsaved();
@@ -687,7 +888,9 @@
       scaleMarker: wrapper.querySelector(".ess-scale-marker"),
       contamToggle: wrapper.querySelector(".contam-toggle"),
       contamWrapper: wrapper.querySelector(".contam-toggle-wrapper"),
-      rows: Array.from(wrapper.querySelectorAll("tr[data-chart-group]"))
+      rows: Array.from(wrapper.querySelectorAll("tr[data-chart-group]")),
+      dynamicsSvg: wrapper.querySelector(".ess-dynamics-svg"),
+      dynamicsText: wrapper.querySelector(".ess-dynamics-text")
     };
 
     let calcTimeout;
@@ -706,7 +909,7 @@
       if (confirm("Ви впевнені, що хочете видалити цей тест?")) {
         wrapper.remove();
         Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => {
-          w.querySelector(".ess-test-num-label").textContent = `Тест №${idx + 1}:`;
+          w.querySelector(".ess-test-num-label").textContent = "Тест №" + (idx + 1) + ":";
         });
         markUnsaved();
       }
