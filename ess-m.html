@@ -14,6 +14,7 @@
     .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
     .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
     .ess-toolbar-btn:hover:not(:disabled) { background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd; }
+    .ess-toolbar-btn.danger-btn:hover:not(:disabled) { background: rgba(211, 47, 47, 0.1); border-color: rgba(211, 47, 47, 0.25); color: #d32f2f; }
     .ess-toolbar-btn:active:not(:disabled) { transform: scale(0.92); }
     .ess-toolbar-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     .ess-toolbar-sep { width: 1px; height: 22px; background: #ddd; margin: 0 4px; }
@@ -206,12 +207,12 @@
     </ul>
   </div>
 
-  <h2>📈 Професійний аналіз динаміки (Нове у v4.3)</h2>
+  <h2>📈 Професійний аналіз динаміки</h2>
   <p>Графік "Динаміка стану" було повністю перероблено для глибокого аналізу поведінки респондента:</p>
   <ul>
     <li><strong>Два режими перегляду:</strong> Перемикач над графіком дозволяє дивитися як <em>загальну суму чарту</em>, так і деталізовані лінії по кожному питанню (<em>R1-R4</em>).</li>
     <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга на фоні графіка показує зону фізіологічної невизначеності (від -3 до +3). Коливання в цій зоні не є статистично значущими.</li>
-    <li><strong>Маркування артефактів:</strong> Якщо дихальні канали суперечать один одному (+1 та -1), клітинка забарвлюється в оранжевий колір з попередженням ⚠️. На графіку такий "хибний нуль" відображається <strong>яскравим оранжевим трикутником</strong>, щоб ви не сплутали його з реальним заспокоєнням.</li>
+    <li><strong>Маркування артефактів:</strong> Якщо дихальні канали суперечать один одному (+1 та -1), клітинка забарвлюється в оранжевий колір з попередженням ⚠️. На графіку такий "хибний нуль" відображається <strong>яскравим оранжевим трикутником</strong>.</li>
     <li><strong>Розумна аналітика:</strong> Текст під графіком автоматично аналізує тренди (габітуація, сенсибілізація) та виявляє домінанту (стійкий фокус уваги на конкретному питанні).</li>
   </ul>
 
@@ -221,7 +222,7 @@
     <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА) у відповідні клітинки. 
       <br><span style="color:#666; font-size:14px;"><em>💡 Підказка:</em> Використовуйте клавішу <code>-</code> (мінус) для швидкого введення від'ємних значень. Натискайте <code>Enter</code> для переходу вниз.</span>
     </li>
-    <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє всі цифри в таблиці, а також очищує поле П.І.Б.</li>
+    <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє всі цифри в поточній таблиці. Кнопка "🗑️" в головному меню повністю скидає всі таблиці та ПІБ (Нова сесія).</li>
     <li><strong>Експорт:</strong> Використовуйте <code>🖨️</code> для збереження звіту у PDF та <code>📥</code> для завантаження файлу (.json).</li>
   </ol>
 
@@ -343,14 +344,26 @@
     btnRedo.disabled = historyIndex >= stateHistory.length - 1;
   };
 
-  const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.onclick = () => setTimeout(() => window.print(), 150);
   const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
+  const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.onclick = () => setTimeout(() => window.print(), 150);
+  
+  const btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; 
+  btnClearAll.onclick = () => {
+    if (confirm("Ви впевнені, що хочете повністю очистити всі таблиці та П.І.Б. респондента? (Буде створено нову чисту сесію)")) {
+      respondentInput.value = "";
+      testsContainer.innerHTML = "";
+      createTestTable();
+      markUnsaved();
+    }
+  };
+
+  const sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
   const btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.onclick = () => openHelpPage();
   const saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
 
   toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson); toolbar.appendChild(sep1); toolbar.appendChild(btnSave);
-  toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(btnPrint); toolbar.appendChild(sep2);
-  toolbar.appendChild(btnHelp); toolbar.appendChild(saveStatus);
+  toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep2); toolbar.appendChild(btnPrint); 
+  toolbar.appendChild(btnClearAll); toolbar.appendChild(sep3); toolbar.appendChild(btnHelp); toolbar.appendChild(saveStatus);
 
   // ПІБ
   const respondentArea = document.createElement("div"); respondentArea.className = "ess-respondent-area";
@@ -431,7 +444,6 @@
     const chartHeight = height - paddingY * 2;
     const centerY = height / 2;
     
-    // Динамічний ліміт шкали Y (мінімум 10, максимум по найбільшому значенню)
     let maxAbs = 10;
     chartDataArray.forEach(d => {
       if (mode === 'total') {
@@ -440,12 +452,11 @@
         Object.values(d.spots).forEach(val => { if (Math.abs(val) > maxAbs) maxAbs = Math.abs(val); });
       }
     });
-    maxAbs = Math.ceil(maxAbs / 2) * 2; // округлення до парного
+    maxAbs = Math.ceil(maxAbs / 2) * 2;
     
     const getY = (val) => centerY - (val / maxAbs) * (chartHeight / 2);
     const getX = (idx, len) => paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2);
 
-    // Малюємо сіру зону (Шум -3 до +3)
     const incZoneTop = getY(3);
     const incZoneBottom = getY(-3);
     const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -454,7 +465,6 @@
     incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
     svg.appendChild(incRect);
 
-    // Осі та підписи
     const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
     zeroLine.setAttribute("x2", width - paddingX); zeroLine.setAttribute("y2", centerY);
@@ -550,13 +560,11 @@
       }
     }
 
-    // Текстова інтерпретація
     let interpText = "";
     const totals = chartDataArray.map(d => d.total);
     const first = totals[0], last = totals[totals.length - 1];
     const trend = last - first;
     
-    // Розрахунок середніх для фокусу
     let dominantSpot = null; let minAvg = 0;
     if (chartDataArray.length > 0) {
       for(let c=1; c<=4; c++) {
@@ -681,7 +689,7 @@
         const colSum = pneumo.val + getVal(cStr, colStr, 'eda') + getVal(cStr, colStr, 'cardio') + getVal(cStr, colStr, 'ppg');
         if (activeCharts[c]) {
           subtotals[col] += colSum;
-          if(colHasData[col]) cSpots[col] = colSum; // save spot val if cell has data
+          if(colHasData[col]) cSpots[col] = colSum;
         }
         currentChartSum += colSum;
       }
@@ -772,7 +780,7 @@
             <label for="diag_${uid}">🔍 Діагностичний</label>
           </div>
           <button class="ess-btn ess-questions-btn" title="Редагувати питання">📝 Питання</button>
-          <button class="ess-btn ess-clear-btn" title="Очистити цифри">Очистити пам'ять</button>
+          <button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам'ять</button>
         </div>
         <button class="ess-delete-btn" title="Видалити тест">×</button>
       </div>
@@ -939,9 +947,9 @@
     });
 
     wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
-      if (confirm("Очистити цифри в таблиці та ПІБ?")) {
+      if (confirm("Очистити всі введені цифри в цій таблиці?")) {
         wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
-        respondentInput.value = ""; debouncedCalc();
+        debouncedCalc();
       }
     });
 
