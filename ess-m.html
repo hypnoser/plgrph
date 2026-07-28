@@ -8,101 +8,121 @@
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; }
-    .ess-module-container { max-width: 960px; margin: 0 auto; }
-    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 4px 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-    .ess-toolbar-btn { width: 32px; height: 32px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
+    
+    /* Оптимальна ширина для ПК */
+    .ess-module-container { max-width: 880px; margin: 0 auto; }
+    
+    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
     .ess-toolbar-btn:hover:not(:disabled) { background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd; }
     .ess-toolbar-btn:active:not(:disabled) { transform: scale(0.92); }
     .ess-toolbar-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .ess-toolbar-sep { width: 1px; height: 20px; background: #ddd; margin: 0 2px; }
+    .ess-toolbar-sep { width: 1px; height: 22px; background: #ddd; margin: 0 4px; }
     
-    .ess-save-status { width: auto; margin-left: auto; padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 5px; text-align: center; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; white-space: nowrap; }
+    .ess-save-status { width: auto; margin-left: auto; padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 5px; text-align: center; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; white-space: nowrap; }
     .ess-save-status.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
     
-    /* Нові стилі для поля ПІБ респондента */
-    .ess-respondent-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 15px; background: #fff; padding: 12px 16px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .ess-respondent-label { font-size: 16px; font-weight: 700; color: #555; white-space: nowrap; }
-    .ess-respondent-area input[type="text"] { flex-grow: 1; margin-left: 10px; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 18px; font-weight: 800; color: #222; padding: 2px 8px; outline: none; transition: all 0.2s ease; line-height: 1.2; }
+    /* Адаптивне поле ПІБ */
+    .ess-respondent-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; margin-bottom: 15px; background: #fff; padding: 12px 16px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ess-respondent-label { font-size: 15px; font-weight: 700; color: #555; white-space: nowrap; }
+    .ess-respondent-area input[type="text"] { flex-grow: 1; flex-basis: 200px; min-width: 0; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 17px; font-weight: 800; color: #222; padding: 4px 8px; outline: none; transition: all 0.2s ease; line-height: 1.2; }
     .ess-respondent-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 4px 4px 0 0; }
     .ess-respondent-area input[type="text"]::placeholder { font-weight: 500; color: #999; }
 
-    .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px; background-color: #fff; width: 100%; }
-    .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed #ccc; }
+    .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; background-color: #fff; width: 100%; }
+    .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .ess-format-select { padding: 2px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 22px; color: #333; }
-    .ess-type-toggle { display: flex; background: rgba(128,128,128,0.12); border-radius: 4px; padding: 1px; border: 1px solid #ccc; }
-    .ess-type-toggle label { padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; }
+    .ess-format-select { padding: 4px 8px; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 26px; color: #333; }
+    .ess-type-toggle { display: flex; background: rgba(128,128,128,0.12); border-radius: 4px; padding: 2px; border: 1px solid #ccc; }
+    .ess-type-toggle label { padding: 3px 8px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; }
     .ess-type-toggle input { display: none; }
     .ess-type-toggle input:checked + label { background: #3a7cfd; color: #fff; }
-    .ess-btn { padding: 2px 6px; font-size: 11px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2; }
-    .ess-clear-btn { color: #ff0000; background: transparent; border: 1px solid #ff0000; }
-    .ess-clear-btn:hover { background: rgba(255, 0, 0, 0.15); }
+    .ess-btn { padding: 4px 8px; font-size: 11px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2; height: 26px; display: flex; align-items: center; }
+    .ess-clear-btn { color: #d32f2f; background: transparent; border: 1px solid #d32f2f; }
+    .ess-clear-btn:hover { background: rgba(211, 47, 47, 0.1); }
     .ess-questions-btn { color: #3a7cfd; background: rgba(58,124,253,0.08); border: 1px solid #3a7cfd; }
     .ess-questions-btn:hover { background: rgba(58,124,253,0.18); }
-    .ess-delete-btn { font-size: 16px; font-weight: bold; color: #ff0000; background: rgba(255, 0, 0, 0.1); border: 1px solid #ff0000; border-radius: 4px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; line-height: 1; }
-    .ess-delete-btn:hover { background-color: #ff0000; color: #fff; }
-    .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 2px; font-size: 14px; font-weight: 700; }
-    .ess-test-num-label { font-size: 13px; color: #666; }
-    .ess-test-title-area input[type="text"] { flex-grow: 1; margin-left: 6px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 14px; font-weight: 700; color: inherit; padding: 0 4px; outline: none; line-height: 1.1; }
+    .ess-delete-btn { font-size: 18px; font-weight: bold; color: #d32f2f; background: rgba(211, 47, 47, 0.1); border: 1px solid #d32f2f; border-radius: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; line-height: 1; }
+    .ess-delete-btn:hover { background-color: #d32f2f; color: #fff; }
+    .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 14px; font-weight: 700; flex-wrap: wrap; }
+    .ess-test-num-label { font-size: 13px; color: #666; margin-right: 6px; }
+    .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 14px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
     .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
-    .ess-table { width: 100%; border-collapse: collapse; margin: 0 0 6px 0; table-layout: fixed; }
-    .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 0px 2px; text-align: center; vertical-align: middle; height: 20px; line-height: 1.1; }
-    .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 14px; color: #222; padding: 3px 2px; }
+    
+    /* Скрол для таблиці на мобільних */
+    .ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
+    .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
+    .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; }
+    .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 13px; color: #222; padding: 4px 2px; }
     .ess-th-question { cursor: help; }
-    .chart-header { text-align: left; font-weight: 600; font-size: 11.5px; background-color: rgba(128,128,128,0.06); padding-left: 6px; color: #3a7cfd; height: 16px; }
-    .chart-toggle-label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
-    .chart-toggle-label input { cursor: pointer; margin: 0; }
+    .chart-header { text-align: left; font-weight: 600; font-size: 12px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 20px; }
+    .chart-toggle-label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .chart-toggle-label input { cursor: pointer; margin: 0; width: 14px; height: 14px; }
     .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input[type="number"] { color: transparent !important; }
     .chart-disabled .bg-artifact { background-color: #d7ccc8 !important; color: #6d4c41 !important; }
-    .ess-table input[type="number"] { width: 100%; height: 18px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
+    .ess-table input[type="number"] { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 14px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
     .ess-table input[type="number"]:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
     .ess-table input[type="number"]::-webkit-outer-spin-button, .ess-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .ess-table input[type="number"] { -moz-appearance: textfield; }
     .ess-table input[type="number"]:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
     .ess-table .calc-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.06); }
-    .ess-table .chart-total-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.1); }
-    .ess-table .total-label { font-weight: 600; font-size: 12px; text-align: right; padding-right: 6px; background-color: rgba(128,128,128,0.05); }
-    .ess-table .row-label { text-align: left; padding-left: 6px; font-weight: 500; font-size: 12px; transition: opacity 0.2s; }
+    .ess-table .chart-total-cell { font-weight: 700; font-size: 14px; background-color: rgba(128,128,128,0.1); }
+    .ess-table .total-label { font-weight: 600; font-size: 12px; text-align: right; padding-right: 8px; background-color: rgba(128,128,128,0.05); }
+    .ess-table .row-label { text-align: left; padding-left: 8px; font-weight: 500; font-size: 12px; transition: opacity 0.2s; white-space: nowrap; }
     .status-cell { font-weight: bold; transition: all 0.2s ease; line-height: 1.1; }
-    .status-badge { display: inline-block; padding: 1px 3px; border-radius: 2px; font-weight: 800; font-size: 11.5px; letter-spacing: 0.2px; }
-    .prob-text { font-size: 9.5px; font-weight: 600; margin-top: 1px; display: block; }
-    .bg-sr { background-color: #ff0000 !important; color: #ffffff !important; }
+    .status-badge { display: inline-block; padding: 2px 4px; border-radius: 3px; font-weight: 800; font-size: 11.5px; letter-spacing: 0.2px; }
+    .prob-text { font-size: 9.5px; font-weight: 600; margin-top: 2px; display: block; }
+    
+    .bg-sr { background-color: #d32f2f !important; color: #ffffff !important; }
     .bg-nsr { background-color: #2e7d32 !important; color: #ffffff !important; }
     .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     .bg-artifact { background-color: #ffb300 !important; color: #000000 !important; font-weight: 800; }
-    .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
+    
+    .ess-scale-container { margin-top: 6px; padding: 6px 10px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
     .ess-scale-title { font-size: 10px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
-    .ess-scale-track { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(to right, #ff0000 0%, #ff0000 37.5%, #ffee00 37.5%, #ffee00 62.5%, #00cc44 62.5%, #00cc44 100%); border: 1px solid #777; margin: 10px 0 4px 0; }
-    .ess-scale-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .ess-scale-track { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(to right, #d32f2f 0%, #d32f2f 37.5%, #fbc02d 37.5%, #fbc02d 62.5%, #2e7d32 62.5%, #2e7d32 100%); border: 1px solid #999; margin: 12px 0 6px 0; }
+    .ess-scale-marker { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 16px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .ess-scale-labels { display: flex; justify-content: space-between; font-size: 9px; font-weight: bold; }
-    .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 10px; padding: 6px 0; font-size: 13px; text-align: center; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .ess-add-btn:hover { opacity: 0.9; }
-    .ess-error-message { color: #d32f2f; font-weight: bold; margin: 4px 0; padding: 4px 8px; background: rgba(211, 47, 47, 0.1); border-radius: 4px; border-left: 3px solid #d32f2f; }
-    .ess-dynamics-container { margin-top: 8px; padding: 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
-    .ess-dynamics-title { font-size: 10px; font-weight: bold; margin-bottom: 4px; text-align: center; text-transform: uppercase; color: #666; }
-    .ess-dynamics-chart { width: 100%; height: 90px; }
+    
+    .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 15px; padding: 10px 0; font-size: 14px; text-align: center; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+    .ess-add-btn:hover { background-color: #2a68e0; }
+    
+    .ess-error-message { color: #d32f2f; font-weight: bold; margin: 4px 0 10px 0; padding: 8px 12px; background: rgba(211, 47, 47, 0.1); border-radius: 4px; border-left: 4px solid #d32f2f; }
+    
+    .ess-dynamics-container { margin-top: 10px; padding: 10px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
+    .ess-dynamics-title { font-size: 11px; font-weight: bold; margin-bottom: 6px; text-align: center; text-transform: uppercase; color: #666; }
+    .ess-dynamics-chart { width: 100%; height: 100px; }
     .ess-dynamics-svg { width: 100%; height: 100%; display: block; }
-    .ess-dynamics-legend { display: flex; justify-content: center; gap: 12px; font-size: 9px; margin-top: 4px; flex-wrap: wrap; }
-    .ess-dynamics-text { font-size: 10.5px; text-align: center; margin-top: 6px; color: #444; font-weight: 500; line-height: 1.4; padding: 4px; background: rgba(255,255,255,0.6); border-radius: 3px; }
+    .ess-dynamics-legend { display: flex; justify-content: center; gap: 15px; font-size: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .ess-dynamics-text { font-size: 11px; text-align: center; margin-top: 8px; color: #444; font-weight: 500; line-height: 1.4; padding: 6px; background: rgba(255,255,255,0.7); border-radius: 4px; border: 1px solid #eee; }
+    
     .ess-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .ess-modal-overlay.active { display: flex; }
-    .ess-modal { background: #fff; border-radius: 8px; padding: 16px; width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
-    .ess-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .ess-modal-header h3 { margin: 0; font-size: 15px; color: #222; }
-    .ess-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #666; line-height: 1; padding: 0; width: 28px; height: 28px; }
+    .ess-modal { background: #fff; border-radius: 8px; padding: 20px; width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
+    .ess-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .ess-modal-header h3 { margin: 0; font-size: 16px; color: #222; }
+    .ess-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; line-height: 1; padding: 0; width: 30px; height: 30px; }
     .ess-modal-close:hover { color: #000; }
-    .ess-modal-body label { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #444; }
-    .ess-modal-body input[type="text"] { width: 100%; padding: 6px 8px; margin-top: 4px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
+    .ess-modal-body label { display: block; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: #444; }
+    .ess-modal-body input[type="text"] { width: 100%; padding: 8px 10px; margin-top: 6px; border: 1px solid #bbb; border-radius: 4px; font-size: 14px; font-family: inherit; }
     .ess-modal-body input[type="text"]:focus { outline: none; border-color: #3a7cfd; box-shadow: 0 0 0 2px rgba(58,124,253,0.15); }
-    .ess-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 10px; border-top: 1px solid #eee; }
-    .ess-modal-save { background: #2e7d32; color: #fff; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .ess-modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; padding-top: 12px; border-top: 1px solid #eee; }
+    .ess-modal-save { background: #2e7d32; color: #fff; padding: 6px 16px; font-size: 13px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-save:hover { opacity: 0.9; }
-    .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 6px 16px; font-size: 13px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
+    
+    /* Мобільні адаптації */
+    @media (max-width: 650px) {
+      .ess-toolbar { justify-content: center; }
+      .ess-save-status { margin: 4px auto 0 auto; width: 100%; }
+      .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
+      .ess-delete-btn { align-self: flex-end; margin-top: -30px; }
+    }
     
     @media print {
       body { background: #fff; padding: 0; }
@@ -110,6 +130,8 @@
       .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
       .ess-respondent-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
+      .ess-table-responsive { overflow: visible !important; }
+      .ess-table { min-width: 100% !important; width: 100% !important; }
       .chart-disabled { display: none !important; }
       .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
       .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -147,26 +169,72 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ESS-M Calculator — Довідка</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
-  h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; }
-  h2 { color: #2e7d32; margin-top: 28px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
+  h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
+  h2 { color: #2e7d32; margin-top: 32px; font-size: 20px; }
   h3 { color: #555; }
-  .warning-box { background: #fff3e0; border-left: 4px solid #f57c00; padding: 12px 16px; margin: 20px 0; border-radius: 4px; }
-  .warning-box strong { color: #e65100; }
-  .feature-list { background: #e8f5e9; border-radius: 6px; padding: 16px 20px; }
-  .feature-list li { margin-bottom: 8px; }
-  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-  .methodology { background: #e3f2fd; border-radius: 6px; padding: 16px 20px; margin: 16px 0; }
+  .warning-box { background: #fff3e0; border-left: 5px solid #d32f2f; padding: 16px 20px; margin: 24px 0; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .warning-box strong { color: #d32f2f; font-size: 16px; display: block; margin-bottom: 8px; }
+  .feature-list { background: #e8f5e9; border-radius: 6px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .feature-list ul { margin: 0; padding-left: 20px; }
+  .feature-list li { margin-bottom: 10px; }
+  code { background: #f0f0f0; padding: 3px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: #d32f2f; }
+  .methodology { background: #e3f2fd; border-radius: 6px; padding: 20px 24px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .methodology ul { margin-bottom: 0; }
+  ol { padding-left: 20px; }
+  ol li { margin-bottom: 12px; }
+  @media (max-width: 600px) { body { padding: 16px; } }
 </style>
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <div class="warning-box">
-    <strong>⚠️ Важлива інформація про зберігання даних</strong><br>
-    Дані тимчасово зберігаються лише в локальному кеші вашого браузера.
+  <p><strong>ESS-M Calculator v2.2</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  
+  <div class="methodology">
+    <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
+    <p>Цей інструмент є надійним помічником для спеціалістів, які використовують у своїй роботі американські поліграфологічні методики (такі як AFMGQT, Utah ZCT, Utah MGQT, DLST, BOST тощо). Калькулятор дозволяє:</p>
+    <ul>
+      <li><strong>Мінімізувати ризик математичних помилок</strong> при ручному підрахунку балів.</li>
+      <li><strong>Автоматизувати застосування складних правил</strong>, таких як правило контамінації (Spot Rule) у скринінгу або правило Сентера (Senter's Rules) у діагностичних тестах.</li>
+      <li><strong>Миттєво візуалізувати динаміку</strong> реактивності респондента від чарту до чарту, що допомагає виявляти тренди адаптації або ймовірної протидії.</li>
+      <li><strong>Економити час</strong> на підготовку підсумкових звітів (швидкий експорт готових таблиць у PDF).</li>
+    </ul>
   </div>
+
+  <h2>📋 Можливості таблиці</h2>
+  <div class="feature-list">
+    <ul>
+      <li><strong>Два режими оцінки:</strong> <em>Скринінговий</em> (з автоматичним блокуванням NSR при наявності хоча б одного SR-споту) та <em>Діагностичний</em> (з виведенням Grand Total та застосуванням правила Сентера).</li>
+      <li><strong>Автоматичний підрахунок:</strong> Система самостійно сумує бали (ESS) по кожному релевантному питанню (Spot), враховує артефакти дихання та виводить підсумкові ймовірності (Pr %).</li>
+      <li><strong>Підтримка до 5 чартів:</strong> Можливість гнучко вмикати/вимикати Chart #4 та Chart #5 з розрахунку (за допомогою галочок).</li>
+      <li><strong>Історія дій:</strong> Відміна (Undo ↩️) та повторення (Redo ↪️) будь-яких введених даних, що страхує від випадкових натискань.</li>
+    </ul>
+  </div>
+
+  <h2>📖 Інструкція з користування</h2>
+  <ol>
+    <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента у верхньому полі. Натисніть кнопку <code>+ Додати обрахунок</code> внизу сторінки, щоб створити нову таблицю для тесту.</li>
+    <li><strong>Налаштування тесту:</strong> Оберіть формат тесту з випадаючого списку (напр., <em>AFMGQT (3RQ)</em>). Виберіть тип розрахунку: <em>Скринінговий</em> чи <em>Діагностичний</em>. Натисніть кнопку <code>📝 Питання</code>, щоб ввести текст релевантних питань (R1-R4) для зручності.</li>
+    <li><strong>Введення балів:</strong> Вносьте оцінки для кожного параметру у відповідні клітинки. 
+      <br><span style="color:#666; font-size:14px;"><em>💡 Підказка:</em> Використовуйте клавішу <code>-</code> (мінус) на клавіатурі для швидкого введення від'ємних значень (система автоматично підставить -1, або -2 для ЕДА). Натискайте <code>Enter</code> для швидкого переходу до наступного поля в колонці.</span>
+    </li>
+    <li><strong>Аналіз результатів:</strong> Спостерігайте за автоматично розрахованими статусами (SR, NSR, INC) внизу таблиці та вивчайте графік динаміки стану респондента праворуч.</li>
+    <li><strong>Експорт та збереження:</strong> Використовуйте кнопку <code>🖨️</code> для збереження звіту у PDF (або прямого друку) та <code>📥</code> для завантаження резервної копії (.json) на ваш комп'ютер.</li>
+  </ol>
+
+  <div class="warning-box">
+    <strong>⚠️ Важливе зауваження щодо безпеки та збереження даних</strong>
+    Усі введені вами дані (включаючи П.І.Б. респондента та результати поліграфологічного тестування) <strong>абсолютно конфіденційні, не передаються в Інтернет і не зберігаються на жодному віддаленому сервері</strong>. 
+    <br><br>
+    Дані зберігаються <em>виключно тимчасово</em>, у локальному кеші вашого браузера на поточному пристрої. Це означає, що при очищенні історії браузера (кешу) всі таблиці будуть втрачені. 
+    <br><br>
+    Ви повністю та самостійно контролюєте свої дані. Для надійного та довгострокового збереження результатів поліграфологічних перевірок <strong>обов'язково експортуйте їх у формат <code>.json</code> (кнопка 📥) або зберігайте як PDF-документ (кнопка 🖨️)</strong> після завершення роботи з респондентом.
+  </div>
+  
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -187,7 +255,7 @@
   let isRestoringHistory = false;
   let recordTimeout;
 
-  // Парсер стану для забезпечення сумісності (якщо імпортується старий масив або новий об'єкт)
+  // Парсер стану для забезпечення сумісності
   const parseStateData = (data) => {
     if (Array.isArray(data)) {
       return { respondentName: "", tests: data };
@@ -365,7 +433,7 @@
   addBtnBottom.textContent = "+ Додати обрахунок";
 
   container.appendChild(toolbar);
-  container.appendChild(respondentArea); // Новий елемент ПІБ
+  container.appendChild(respondentArea); 
   container.appendChild(testsContainer);
   container.appendChild(addBtnBottom);
 
@@ -503,15 +571,15 @@
       let color;
       if (v.value < 0) {
         const intensity = Math.min(1, Math.abs(v.value) / 8);
-        const r = Math.floor(220 - intensity * 80);
-        const g = Math.floor(80 - intensity * 60);
-        const b = Math.floor(80 - intensity * 60);
+        const r = Math.floor(211 - intensity * 60);
+        const g = Math.floor(47 - intensity * 20);
+        const b = Math.floor(47 - intensity * 20);
         color = "rgb(" + r + "," + g + "," + b + ")";
       } else if (v.value > 0) {
         const intensity = Math.min(1, v.value / 8);
-        const r = Math.floor(80 - intensity * 40);
-        const g = Math.floor(180 - intensity * 60);
-        const b = Math.floor(80 - intensity * 40);
+        const r = Math.floor(46 - intensity * 20);
+        const g = Math.floor(125 - intensity * 40);
+        const b = Math.floor(50 - intensity * 20);
         color = "rgb(" + r + "," + g + "," + b + ")";
       } else {
         color = "#999";
@@ -738,9 +806,9 @@
 
     if (ce.scaleLabels) {
       if (currentTestType === "diagnostic") {
-        ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (+3 і більше) ▶</span>';
+        ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (+3 і більше) ▶</span>';
       } else {
-        ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #66bb6a;">NSR (Всі ≥ +1) ▶</span>';
+        ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
       }
     }
     if (ce.scaleMarker) {
@@ -800,14 +868,16 @@
         <span class="ess-test-num-label">Тест №` + currentNumber + `:</span>
         <input type="text" placeholder="Назва тесту (напр., 3 AFMGQT...)" value="` + titleVal + `" />
       </div>
+      
+      <div class="ess-table-responsive">
       <table class="ess-table">
         <thead>
           <tr>
-            <th style="width: 18%;">ESS</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="1" title="` + escapeHtml(savedQuestions.R1 || '') + `">R1 (R4)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="2" title="` + escapeHtml(savedQuestions.R2 || '') + `">R2 (R5)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="3" title="` + escapeHtml(savedQuestions.R3 || '') + `">R3 (R7)</th>
-            <th colspan="2" style="width: 18%;" class="ess-th-question" data-th-col="4" title="` + escapeHtml(savedQuestions.R4 || '') + `">R4 (R8)</th>
+            <th style="width: 14%;">ESS</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="1" title="` + escapeHtml(savedQuestions.R1 || '') + `">R1 (R4)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="2" title="` + escapeHtml(savedQuestions.R2 || '') + `">R2 (R5)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="3" title="` + escapeHtml(savedQuestions.R3 || '') + `">R3 (R7)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="4" title="` + escapeHtml(savedQuestions.R4 || '') + `">R4 (R8)</th>
             <th style="width: 10%;">Динаміка</th>
           </tr>
         </thead>
@@ -846,21 +916,23 @@
       <tr>
         <td rowspan="2" class="total-label" style="text-align:center; padding: 2px;">
           Subtotals<br>
-          <label class="contam-toggle-wrapper" style="display: ` + (typeVal === 'screening' ? 'inline-flex' : 'none') + `; align-items: center; justify-content: center; gap: 2px; font-size: 9.5px; font-weight: normal; cursor: pointer; color: #666; margin-top: 2px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
-            <input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;">
+          <label class="contam-toggle-wrapper" style="display: ` + (typeVal === 'screening' ? 'inline-flex' : 'none') + `; align-items: center; justify-content: center; gap: 2px; font-size: 10px; font-weight: normal; cursor: pointer; color: #666; margin-top: 4px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
+            <input type="checkbox" class="contam-toggle" checked style="margin:0; width:12px; height:12px; cursor:pointer;">
             🔒 Контам.
           </label>
         </td>`;
     for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + col + '">-</td>';
-    tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:11px; color:#666;">Динаміка<br>чартів</td></tr><tr>';
+    tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:12px; color:#666; line-height: 1.2;">Динаміка<br>чартів</td></tr><tr>';
     for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + col + '">-</span></td>';
     tableHtml += `</tr>
       <tr>
         <td class="total-label" style="text-align:center;">Grand Total</td>
-        <td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
+        <td colspan="6" class="calc-cell" style="font-size: 16px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
         <td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td>
       </tr>
     </tbody></table>
+    </div> <!-- Закриття .ess-table-responsive -->
+    
     <div class="ess-scale-container">
       <div class="ess-scale-title">Графічний баланс реактивності (Grand Total)</div>
       <div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div>
@@ -874,11 +946,11 @@
         <text x="200" y="75" text-anchor="middle" font-size="9" fill="#888">- Релевантні (напруга)</text>
       </svg>
       <div class="ess-dynamics-legend">
-        <span style="color:#d32f2f; font-size:9px;">● Негативна (релевантні)</span>
-        <span style="color:#888; font-size:9px;">● Нейтральна</span>
-        <span style="color:#388e3c; font-size:9px;">● Позитивна (порівняння)</span>
+        <span style="color:#d32f2f; font-size:10px;">● Негативна (релевантні)</span>
+        <span style="color:#888; font-size:10px;">● Нейтральна</span>
+        <span style="color:#388e3c; font-size:10px;">● Позитивна (порівняння)</span>
       </div>
-      <div class="ess-dynamics-text" style="font-size:10.5px; text-align:center; margin-top:4px; color:#444;"></div>
+      <div class="ess-dynamics-text"></div>
     </div>
     <div class="ess-modal-overlay">
       <div class="ess-modal">
