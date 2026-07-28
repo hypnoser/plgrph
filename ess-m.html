@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.6.1</title>
+  <title>ESS-M Calculator v4.7.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -59,12 +59,12 @@
     .chart-toggle-label input { cursor: pointer; margin: 0; width: 12px; height: 12px; }
     .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
-    .chart-disabled input[type="number"] { color: transparent !important; }
-    .ess-table input[type="number"] { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
-    .ess-table input[type="number"]:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
-    .ess-table input[type="number"]::-webkit-outer-spin-button, .ess-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .ess-table input[type="number"] { -moz-appearance: textfield; }
-    .ess-table input[type="number"]:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
+    .chart-disabled input.score-input { color: transparent !important; }
+    
+    .ess-table input.score-input { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
+    .ess-table input.score-input:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
+    .ess-table input.score-input:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
+    
     .ess-table .calc-cell { font-weight: 700; font-size: 12px; background-color: rgba(128,128,128,0.06); }
     .ess-table .chart-total-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.1); }
     .ess-table .total-label { font-weight: 600; font-size: 11px; text-align: right; padding-right: 8px; background-color: rgba(128,128,128,0.05); }
@@ -78,9 +78,11 @@
     .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Відновлений фон для всієї клітинки з артефактом */
+    /* Артефакти */
     .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
+    .bg-local-artifact { background-color: #f57c00 !important; }
+    .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
     
     .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
     .ess-scale-title { font-size: 9px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
@@ -88,7 +90,6 @@
     .ess-scale-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .ess-scale-labels { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: bold; }
     
-    /* Блок динаміки */
     .ess-dynamics-container { margin-top: 8px; padding: 6px 10px; background: rgba(128,128,128,0.03); border-radius: 4px; border: 1px solid #ddd; }
     .ess-dynamics-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 4px; }
     .ess-dynamics-title { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #555; letter-spacing: 0.5px; }
@@ -97,7 +98,6 @@
     .dyn-mode-toggle label { padding: 3px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; border: 1px solid transparent; transition: all 0.15s; }
     .dyn-mode-toggle input { display: none; }
     
-    /* Кольори кнопок-легенди (Colorblind safe: Okabe-Ito palette) */
     .dyn-mode-toggle label[for*="_tot_"] { color: #424242; border-color: #ccc; }
     .dyn-mode-toggle input:checked + label[for*="_tot_"] { background: #424242; color: #fff; border-color: #424242; }
     .dyn-mode-toggle label[for*="_r1_"] { color: #0072B2; border-color: rgba(0,114,178,0.3); }
@@ -157,9 +157,10 @@
       .ess-table-responsive { overflow: visible !important; }
       .ess-table { min-width: 100% !important; width: 100% !important; }
       .chart-disabled { display: none !important; }
-      .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
-      .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-artifact { color: white !important; }
+      .ess-table input.score-input, .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
+      .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact, .bg-local-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-artifact, .bg-local-artifact { color: white !important; }
+      .ess-table td.bg-local-artifact input.score-input { color: white !important; }
       .bg-inc { color: black !important; }
       
       .dyn-mode-toggle label { border: 1px solid #ccc !important; }
@@ -201,7 +202,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.6.1</title>
+<title>ESS-M Calculator — Довідка v4.7.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -222,7 +223,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.6.1</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.7.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -233,21 +234,21 @@
     </ul>
   </div>
 
-  <h2>📈 Професійний аналіз динаміки (Оновлено)</h2>
+  <h2>📈 Професійний аналіз динаміки</h2>
   <p>Графік "Динаміка стану" забезпечує глибокий візуальний та математичний аналіз:</p>
   <ul>
     <li><strong>Незалежні перемикачі (Комбінування):</strong> Ви можете вмикати будь-які питання (R1-R4) та Суму одночасно для порівняння. Самі кнопки виконують роль легенди.</li>
     <li><strong>Кольори Colorblind Safe:</strong> Використано спеціальну наукову палітру (Okabe-Ito), що гарантує відмінну контрастність ліній навіть для людей з порушенням колірного сприйняття (без жовтого та білого).</li>
     <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає зону фізіологічної невизначеності.</li>
     <li><strong>Міні-Профіль (Гістограма):</strong> Праворуч на графіку відображається міні-гістограма, яка показує середній бал кожного питання за весь тест. Це дозволяє миттєво побачити "переможця" (найсильнішу реакцію).</li>
-    <li><strong>Маркування артефактів:</strong> Артефакти дихання маркуються оранжевим кольором у таблиці та трикутником (⚠️) на лінії Загальної суми.</li>
-    <li><strong>Лаконічна аналітика:</strong> Текст під графіком видає коротку вижимку: тенденцію (сенсибілізація/габітуація) та виражену домінанту.</li>
+    <li><strong>Маркування артефактів:</strong> Артефакти маркуються оранжевим кольором у таблиці та трикутником (⚠️) на лінії Загальної суми графіка.</li>
   </ul>
 
   <h2>📖 Інструкція з користування</h2>
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та натисніть <code>+ Додати обрахунок</code>.</li>
     <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
+    <li><strong>Локальні артефакти:</strong> Якщо в окремому каналі відбувся збій (артефакт), ви можете виключити його з розрахунку. Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0.</li>
     <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в меню скидає всю сесію.</li>
     <li><strong>Експорт:</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json).</li>
   </ol>
@@ -257,7 +258,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.6.1 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.7.0 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -271,7 +272,6 @@
   const STORAGE_KEY = "ess_polygraph_data";
   const TEST_FORMATS = ["N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
 
-  // Кольори графіків (Okabe-Ito Colorblind Safe Palette)
   const colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
 
   let stateHistory = [];
@@ -302,7 +302,7 @@
         r4: wrapper.querySelector(`input[id^="dyn_r4_"]`)?.checked ?? false
       };
 
-      const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input[type='number']"));
+      const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
       const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
       
       const values = {};
@@ -457,7 +457,6 @@
   window.addEventListener('beforeunload', (e) => { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
   container.addEventListener('focusout', (e) => { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
 
-  // ЛОГІКА МАЛЮВАННЯ ГРАФІКА
   const updateDynamicsChart = (wrapper, chartDataArray, ce) => {
     const svg = ce.dynamicsSvg;
     const textDiv = ce.dynamicsText;
@@ -652,7 +651,7 @@
     }
 
     if (hasAnyArtifact) {
-      interpLines.push(`<span style="color:#d32f2f;"><b>⚠️ Артефакти:</b> Суперечливе дихання, тренд може бути спотворений!</span>`);
+      interpLines.push(`<span style="color:#d32f2f;"><b>⚠️ Артефакти:</b> Присутні локальні артефакти, тренд може бути спотворений!</span>`);
     }
 
     textDiv.innerHTML = "<ul>" + interpLines.map(line => `<li>${line}</li>`).join('') + "</ul>";
@@ -728,6 +727,16 @@
       const input = ce.inputsMap[chart + '_' + col + '_' + row];
       if (!input || input.disabled) return 0;
       const val = input.value.trim();
+      
+      const td = input.parentElement;
+      if (val === "∅" || val === "А" || val === "A") {
+        td.classList.add("bg-local-artifact");
+        if (activeCharts[chart]) colHasData[col] = true;
+        return 0;
+      } else {
+        td.classList.remove("bg-local-artifact");
+      }
+
       if (val !== "" && val !== "-" && activeCharts[chart]) colHasData[col] = true;
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
@@ -742,11 +751,19 @@
       
       for (let col = 1; col <= 4; col++) {
         const colStr = col.toString();
+        
+        // Зчитуємо сирі значення, щоб перевірити чи немає локального артефакту
+        const pvRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-v']?.value || "";
+        const pnRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-n']?.value || "";
+        
         const pv = getVal(cStr, colStr, 'pneumo-v');
         const pn = getVal(cStr, colStr, 'pneumo-n');
+        
         const pneumo = calcPneumoESS(pv, pn);
         
-        if(pneumo.art) chartHasArt = true;
+        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pnRaw === "∅" || pnRaw === "А") {
+            chartHasArt = true;
+        }
         
         const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
         if (spanPneumo) {
@@ -754,7 +771,18 @@
           else { spanPneumo.textContent = pneumo.val; spanPneumo.parentElement.classList.remove("bg-artifact"); }
         }
         
-        const colSum = pneumo.val + getVal(cStr, colStr, 'eda') + getVal(cStr, colStr, 'cardio') + getVal(cStr, colStr, 'ppg');
+        const eda = getVal(cStr, colStr, 'eda');
+        const cardio = getVal(cStr, colStr, 'cardio');
+        const ppg = getVal(cStr, colStr, 'ppg');
+        
+        const edaRaw = ce.inputsMap[cStr + '_' + colStr + '_eda']?.value || "";
+        const carRaw = ce.inputsMap[cStr + '_' + colStr + '_cardio']?.value || "";
+        const ppgRaw = ce.inputsMap[cStr + '_' + colStr + '_ppg']?.value || "";
+        if (edaRaw === "∅" || edaRaw === "А" || carRaw === "∅" || carRaw === "А" || ppgRaw === "∅" || ppgRaw === "А") {
+            chartHasArt = true;
+        }
+
+        const colSum = pneumo.val + eda + cardio + ppg;
         if (activeCharts[c]) {
           subtotals[col] += colSum;
           if(colHasData[col]) cSpots[col] = colSum;
@@ -883,14 +911,14 @@
         for (let col = 1; col <= 4; col++) {
           const cellVal = savedData?.values?.[`${c}_${col}_${rows[r].id}`] !== undefined ? escapeHtml(savedData.values[`${c}_${col}_${rows[r].id}`]) : "";
           if (rows[r].id === 'pneumo-v') {
-            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>
+            tableHtml += `<td><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>
                           <td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
           } else if (rows[r].id === 'pneumo-n') {
-            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
+            tableHtml += `<td><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
           } else if (rows[r].id === 'eda') {
-            tableHtml += `<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
+            tableHtml += `<td colspan="2"><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
           } else {
-            tableHtml += `<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
+            tableHtml += `<td colspan="2"><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
           }
         }
         if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
@@ -955,7 +983,7 @@
 
     wrapper.innerHTML = tableHtml;
 
-    const inputsArray = Array.from(wrapper.querySelectorAll("input[type='number']"));
+    const inputsArray = Array.from(wrapper.querySelectorAll("input.score-input"));
     const inputsMap = {};
     inputsArray.forEach(i => { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
 
@@ -1025,19 +1053,31 @@
     });
 
     wrapper.addEventListener('input', (e) => {
-      if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
-        const val = e.target.value.trim();
-        if (val !== "" && val !== "-") {
-          const num = Number(val);
-          if (e.target.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) e.target.value = "";
-          else if (e.target.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) e.target.value = "";
+      if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
+        const el = e.target;
+        let val = el.value.toLowerCase();
+        
+        if (val === 'a' || val === 'а' || val === 'f' || val === 'ф') {
+            el.value = 'А';
+        } else if (val === '00') {
+            el.value = '∅';
+        } else if (val !== '∅' && val !== 'а' && val !== 'a' && val !== 'А') {
+            if (val !== "" && val !== "-") {
+              const num = Number(val);
+              if (isNaN(num)) {
+                el.value = "";
+              } else {
+                if (el.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) el.value = "";
+                else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
+              }
+            }
         }
         debouncedCalc();
       }
     });
 
     wrapper.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+      if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
         if (e.key === '-' || e.key === 'Subtract' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
           e.preventDefault(); e.target.value = (e.target.getAttribute('data-row') === 'eda') ? "-2" : "-1"; debouncedCalc();
         } else if (e.key === 'Enter') {
