@@ -16,12 +16,17 @@
     .ess-toolbar-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     .ess-toolbar-sep { width: 1px; height: 20px; background: #ddd; margin: 0 2px; }
     
-    /* Оновлений стиль для статусу збереження всередині тулбара */
     .ess-save-status { width: auto; margin-left: auto; padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 5px; text-align: center; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; white-space: nowrap; }
     .ess-save-status.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
-    
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
     
+    /* Нові стилі для поля ПІБ респондента */
+    .ess-respondent-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 15px; background: #fff; padding: 12px 16px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ess-respondent-label { font-size: 16px; font-weight: 700; color: #555; white-space: nowrap; }
+    .ess-respondent-area input[type="text"] { flex-grow: 1; margin-left: 10px; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 18px; font-weight: 800; color: #222; padding: 2px 8px; outline: none; transition: all 0.2s ease; line-height: 1.2; }
+    .ess-respondent-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 4px 4px 0 0; }
+    .ess-respondent-area input[type="text"]::placeholder { font-weight: 500; color: #999; }
+
     .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px; background-color: #fff; width: 100%; }
     .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed #ccc; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -98,9 +103,12 @@
     .ess-modal-save:hover { opacity: 0.9; }
     .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
+    
     @media print {
       body { background: #fff; padding: 0; }
       .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
+      .ess-respondent-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
       .chart-disabled { display: none !important; }
       .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
@@ -155,7 +163,6 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <!-- Контент довідки без змін -->
   <div class="warning-box">
     <strong>⚠️ Важлива інформація про зберігання даних</strong><br>
     Дані тимчасово зберігаються лише в локальному кеші вашого браузера.
@@ -180,8 +187,18 @@
   let isRestoringHistory = false;
   let recordTimeout;
 
+  // Парсер стану для забезпечення сумісності (якщо імпортується старий масив або новий об'єкт)
+  const parseStateData = (data) => {
+    if (Array.isArray(data)) {
+      return { respondentName: "", tests: data };
+    } else if (data && data.tests) {
+      return data;
+    }
+    return { respondentName: "", tests: [] };
+  };
+
   const collectState = () => {
-    return Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(wrapper => {
+    const tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(wrapper => {
       const ce = wrapper._cachedElements;
       const titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
       const typeRadio = wrapper.querySelector(".toggle-type input[type='radio']:checked");
@@ -208,6 +225,11 @@
         values
       };
     });
+
+    return {
+      respondentName: respondentInput.value,
+      tests: tests
+    };
   };
 
   const recordState = () => {
@@ -232,10 +254,14 @@
     isRestoringHistory = true;
     historyIndex = index;
     const stateToRestore = stateHistory[index];
-    testsContainer.innerHTML = "";
-    stateToRestore.forEach(d => createTestTable(d));
     
-    // При відновленні відразу зберігаємо у localStorage, щоб не втратити стан
+    // Відновлення ПІБ
+    respondentInput.value = stateToRestore.respondentName || "";
+    
+    // Відновлення тестів
+    testsContainer.innerHTML = "";
+    stateToRestore.tests.forEach(d => createTestTable(d));
+    
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToRestore));
       isUnsaved = false;
@@ -271,7 +297,6 @@
   btnSave.title = "Зберегти дані";
   btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
 
-  // Кнопки Назад / Вперед
   const btnUndo = document.createElement("button");
   btnUndo.className = "ess-toolbar-btn";
   btnUndo.innerHTML = "↩️";
@@ -316,7 +341,23 @@
   toolbar.appendChild(btnPrint);
   toolbar.appendChild(sep2);
   toolbar.appendChild(btnHelp);
-  toolbar.appendChild(saveStatus); // Статус переміщено у тулбар
+  toolbar.appendChild(saveStatus);
+
+  // Створення поля ПІБ респондента
+  const respondentArea = document.createElement("div");
+  respondentArea.className = "ess-respondent-area";
+  const respondentLabel = document.createElement("span");
+  respondentLabel.className = "ess-respondent-label";
+  respondentLabel.textContent = "П.І.Б. респондента:";
+  const respondentInput = document.createElement("input");
+  respondentInput.type = "text";
+  respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
+  respondentInput.addEventListener("input", () => {
+    markUnsaved();
+  });
+  
+  respondentArea.appendChild(respondentLabel);
+  respondentArea.appendChild(respondentInput);
 
   const testsContainer = document.createElement("div");
   const addBtnBottom = document.createElement("button");
@@ -324,7 +365,7 @@
   addBtnBottom.textContent = "+ Додати обрахунок";
 
   container.appendChild(toolbar);
-  // Блок статусу під тулбаром прибрано
+  container.appendChild(respondentArea); // Новий елемент ПІБ
   container.appendChild(testsContainer);
   container.appendChild(addBtnBottom);
 
@@ -362,10 +403,13 @@
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const data = JSON.parse(e.target.result);
-        if (!Array.isArray(data)) throw new Error("Невірний формат файлу");
+        const rawData = JSON.parse(e.target.result);
+        const stateToRestore = parseStateData(rawData);
+        
+        respondentInput.value = stateToRestore.respondentName || "";
         testsContainer.innerHTML = "";
-        data.forEach(d => createTestTable(d));
+        stateToRestore.tests.forEach(d => createTestTable(d));
+        
         performSave();
         saveStatus.textContent = "🟢 Дані завантажено";
         stateHistory = [];
@@ -391,7 +435,6 @@
     warningTimeout = setTimeout(() => { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
     autoSaveTimeout = setTimeout(() => performSave(), 60000);
     
-    // Запис в історію при будь-якій незбереженій зміні
     debouncedRecordState();
   };
 
@@ -982,16 +1025,24 @@
   addBtnBottom.addEventListener("click", () => { createTestTable(); markUnsaved(); });
 
   const init = () => {
-    let loadedData = null;
+    let loadedData = { respondentName: "", tests: [] };
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) loadedData = JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        loadedData = parseStateData(parsed);
+      }
     } catch (e) {
       console.error("Помилка читання localStorage:", e);
       showError("Помилка завантаження даних з localStorage. Почато з порожньої таблиці.");
     }
-    if (loadedData && Array.isArray(loadedData) && loadedData.length > 0) {
-      loadedData.forEach(data => createTestTable(data));
+    
+    // Встановлення ПІБ
+    respondentInput.value = loadedData.respondentName || "";
+
+    // Створення тестів
+    if (loadedData.tests && loadedData.tests.length > 0) {
+      loadedData.tests.forEach(data => createTestTable(data));
     } else {
       createTestTable();
     }
