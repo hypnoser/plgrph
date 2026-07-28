@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.6.0</title>
+  <title>ESS-M Calculator v4.6.1</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -60,7 +60,6 @@
     .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input[type="number"] { color: transparent !important; }
-    .chart-disabled .bg-artifact { background-color: #f57c00 !important; color: #000 !important; font-weight: 800; }
     .ess-table input[type="number"] { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
     .ess-table input[type="number"]:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
     .ess-table input[type="number"]::-webkit-outer-spin-button, .ess-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -79,13 +78,17 @@
     .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
+    /* Відновлений фон для всієї клітинки з артефактом */
+    .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
+    .chart-disabled .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
+    
     .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
     .ess-scale-title { font-size: 9px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
     .ess-scale-track { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(to right, #d32f2f 0%, #d32f2f 37.5%, #fbc02d 37.5%, #fbc02d 62.5%, #2e7d32 62.5%, #2e7d32 100%); border: 1px solid #999; margin: 10px 0 4px 0; }
     .ess-scale-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .ess-scale-labels { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: bold; }
     
-    /* Новий блок динаміки */
+    /* Блок динаміки */
     .ess-dynamics-container { margin-top: 8px; padding: 6px 10px; background: rgba(128,128,128,0.03); border-radius: 4px; border: 1px solid #ddd; }
     .ess-dynamics-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 4px; }
     .ess-dynamics-title { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #555; letter-spacing: 0.5px; }
@@ -156,9 +159,9 @@
       .chart-disabled { display: none !important; }
       .ess-table input[type="number"], .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
       .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text { color: white !important; }
+      .bg-sr, .bg-nsr, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-artifact { color: white !important; }
       .bg-inc { color: black !important; }
-      /* Print colors for dynamic chart toggles */
+      
       .dyn-mode-toggle label { border: 1px solid #ccc !important; }
       .dyn-mode-toggle input:checked + label[for*="_tot_"] { background: #424242 !important; color: white !important; }
       .dyn-mode-toggle input:checked + label[for*="_r1_"] { background: #0072B2 !important; color: white !important; }
@@ -198,7 +201,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.6.0</title>
+<title>ESS-M Calculator — Довідка v4.6.1</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -219,7 +222,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.6.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.6.1</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -254,7 +257,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.6.0 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.6.1 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -459,7 +462,6 @@
     const svg = ce.dynamicsSvg;
     const textDiv = ce.dynamicsText;
     
-    // Зчитуємо стан чекбоксів
     const showTot = wrapper.querySelector(`input[id^="dyn_tot_"]`)?.checked ?? true;
     const showR1 = wrapper.querySelector(`input[id^="dyn_r1_"]`)?.checked ?? false;
     const showR2 = wrapper.querySelector(`input[id^="dyn_r2_"]`)?.checked ?? false;
@@ -472,13 +474,12 @@
     const width = 400, height = 90;
     const paddingX = 25, paddingY = 15;
     
-    // Розділяємо простір: 80% лінійний графік, 20% міні-гістограма
     const profileStartX = 330; 
     const chartWidth = profileStartX - paddingX * 2;
     const chartHeight = height - paddingY * 2;
     const centerY = height / 2;
     
-    let maxAbs = 6; // Мінімальний ліміт осі Y
+    let maxAbs = 6;
     chartDataArray.forEach(d => {
       if (showTot && Math.abs(d.total) > maxAbs) maxAbs = Math.abs(d.total);
       if (showR1 && d.spots[1] !== undefined && Math.abs(d.spots[1]) > maxAbs) maxAbs = Math.abs(d.spots[1]);
@@ -491,7 +492,6 @@
     const getY = (val) => centerY - (val / maxAbs) * (chartHeight / 2);
     const getX = (idx, len) => paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2);
 
-    // 1. Сіра зона (Шум)
     const incZoneTop = getY(3);
     const incZoneBottom = getY(-3);
     const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -500,7 +500,6 @@
     incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
     svg.appendChild(incRect);
 
-    // 2. Осі та підписи
     const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
     zeroLine.setAttribute("x2", profileStartX); zeroLine.setAttribute("y2", centerY);
@@ -526,7 +525,6 @@
     let counts = {1:0, 2:0, 3:0, 4:0};
     let totAvg = 0;
 
-    // Підрахунок середніх значень
     chartDataArray.forEach((d) => {
       totAvg += d.total;
       for(let col=1; col<=4; col++) {
@@ -536,7 +534,6 @@
     totAvg = totAvg / chartDataArray.length;
     for(let col=1; col<=4; col++) { if(counts[col] > 0) spotAverages[col] = spotAverages[col] / counts[col]; }
 
-    // Функція малювання ліній
     const drawLine = (key, dataSelector, color, isTotal) => {
       let pathD = ""; let pointCount = 0;
       chartDataArray.forEach((d, i) => {
@@ -563,7 +560,7 @@
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", color); path.setAttribute("stroke-width", isTotal ? "2" : "1.5");
         if(!isTotal) path.setAttribute("stroke-dasharray", "4,2");
-        svg.insertBefore(path, svg.firstChild); // лінія під точками
+        svg.insertBefore(path, svg.firstChild); 
       }
     };
 
@@ -573,7 +570,6 @@
     if (showR4) drawLine("R4", d => d.spots[4], colors[4], false);
     if (showTot) {
       drawLine("Tot", d => d.total, colors.tot, true);
-      // Підписи чартів тільки якщо є Тотал, щоб не перевантажувати
       chartDataArray.forEach((d, i) => {
         const x = getX(i, chartDataArray.length);
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -583,7 +579,6 @@
       });
     }
 
-    // 3. Міні-Профіль (Гістограма середніх балів)
     const profCenterX = 365;
     const divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     divLine.setAttribute("x1", profileStartX); divLine.setAttribute("y1", 10);
@@ -629,13 +624,11 @@
     drawProfileBar(4, 54, colors[4]);
 
 
-    // 4. Текстова аналітика (Буліти)
     let interpLines = [];
     const totals = chartDataArray.map(d => d.total);
     const first = totals[0], last = totals[totals.length - 1];
     const trend = last - first;
     
-    // Аналіз вектора (Сума)
     let vectorText = "Нейтральний стан / Фізіологічний шум";
     if (totals.every(v => v === 0)) vectorText = "Нейтральний стан (шум)";
     else if (totals.every(v => v <= 0) && trend < 0) vectorText = "Сенсибілізація (накопичення напруги)";
@@ -647,8 +640,7 @@
     
     interpLines.push(`<b>Вектор:</b> ${vectorText}`);
 
-    // Пошук домінанти
-    let dominantSpot = null; let minAvg = -1.0; // Поріг значущості для виділення
+    let dominantSpot = null; let minAvg = -1.0; 
     for(let c=1; c<=4; c++) {
       if(counts[c] > 0 && spotAverages[c] <= minAvg) { minAvg = spotAverages[c]; dominantSpot = c; }
     }
@@ -844,7 +836,6 @@
     const savedQuestions = savedData?.questions || {};
     const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
 
-    // Відновлення стану чекбоксів графіка
     const ds = savedData?.dynState || { tot: true, r1: false, r2: false, r3: false, r4: false };
 
     let tableHtml = `
