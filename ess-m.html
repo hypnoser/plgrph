@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.2</title>
+  <title>ESS-M Calculator v4.3</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; }
     
-    /* Оптимальна ширина для ПК */
     .ess-module-container { max-width: 880px; margin: 0 auto; }
     
-    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
     .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
     .ess-toolbar-btn:hover:not(:disabled) { background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd; }
     .ess-toolbar-btn:active:not(:disabled) { transform: scale(0.92); }
@@ -23,110 +22,114 @@
     .ess-save-status.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
     
-    /* Адаптивне поле ПІБ */
-    .ess-respondent-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; margin-bottom: 15px; background: #fff; padding: 12px 16px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .ess-respondent-label { font-size: 15px; font-weight: 700; color: #555; white-space: nowrap; }
-    .ess-respondent-area input[type="text"] { flex-grow: 1; flex-basis: 200px; min-width: 0; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 17px; font-weight: 800; color: #222; padding: 4px 8px; outline: none; transition: all 0.2s ease; line-height: 1.2; }
+    .ess-respondent-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; margin-bottom: 15px; background: #fff; padding: 10px 16px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ess-respondent-label { font-size: 14px; font-weight: 700; color: #555; white-space: nowrap; }
+    .ess-respondent-area input[type="text"] { flex-grow: 1; flex-basis: 200px; min-width: 0; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 16px; font-weight: 800; color: #222; padding: 2px 8px; outline: none; transition: all 0.2s ease; line-height: 1.2; }
     .ess-respondent-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 4px 4px 0 0; }
     .ess-respondent-area input[type="text"]::placeholder { font-weight: 500; color: #999; }
 
     .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; background-color: #fff; width: 100%; }
     .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .ess-format-select { padding: 4px 8px; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 26px; color: #333; }
+    .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; }
     .ess-type-toggle { display: flex; background: rgba(128,128,128,0.12); border-radius: 4px; padding: 2px; border: 1px solid #ccc; }
-    .ess-type-toggle label { padding: 3px 8px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; }
+    .ess-type-toggle label { padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; }
     .ess-type-toggle input { display: none; }
     .ess-type-toggle input:checked + label { background: #3a7cfd; color: #fff; }
-    .ess-btn { padding: 4px 8px; font-size: 11px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2; height: 26px; display: flex; align-items: center; }
+    .ess-btn { padding: 3px 8px; font-size: 11px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2; height: 24px; display: flex; align-items: center; }
     .ess-clear-btn { color: #d32f2f; background: transparent; border: 1px solid #d32f2f; }
     .ess-clear-btn:hover { background: rgba(211, 47, 47, 0.1); }
     .ess-questions-btn { color: #3a7cfd; background: rgba(58,124,253,0.08); border: 1px solid #3a7cfd; }
     .ess-questions-btn:hover { background: rgba(58,124,253,0.18); }
-    .ess-delete-btn { font-size: 18px; font-weight: bold; color: #d32f2f; background: rgba(211, 47, 47, 0.1); border: 1px solid #d32f2f; border-radius: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; line-height: 1; }
+    .ess-delete-btn { font-size: 16px; font-weight: bold; color: #d32f2f; background: rgba(211, 47, 47, 0.1); border: 1px solid #d32f2f; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; line-height: 1; }
     .ess-delete-btn:hover { background-color: #d32f2f; color: #fff; }
-    .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 14px; font-weight: 700; flex-wrap: wrap; }
-    .ess-test-num-label { font-size: 13px; color: #666; margin-right: 6px; }
-    .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 14px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
+    .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 13px; font-weight: 700; flex-wrap: wrap; }
+    .ess-test-num-label { font-size: 12px; color: #666; margin-right: 6px; }
+    .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 13px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
     .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
     
-    /* Скрол для таблиці на мобільних */
     .ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
     .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
     .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; transition: background-color 0.2s; }
-    .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 13px; color: #222; padding: 4px 2px; }
+    .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 12px; color: #222; padding: 4px 2px; }
     .ess-th-question { cursor: help; }
-    .chart-header { text-align: left; font-weight: 600; font-size: 12px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 20px; }
+    .chart-header { text-align: left; font-weight: 600; font-size: 11px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 18px; }
     .chart-toggle-label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
-    .chart-toggle-label input { cursor: pointer; margin: 0; width: 14px; height: 14px; }
+    .chart-toggle-label input { cursor: pointer; margin: 0; width: 12px; height: 12px; }
     .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input[type="number"] { color: transparent !important; }
     .chart-disabled .bg-artifact { background-color: #d7ccc8 !important; color: #6d4c41 !important; }
-    .ess-table input[type="number"] { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 14px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
+    .ess-table input[type="number"] { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
     .ess-table input[type="number"]:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
     .ess-table input[type="number"]::-webkit-outer-spin-button, .ess-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .ess-table input[type="number"] { -moz-appearance: textfield; }
     .ess-table input[type="number"]:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
-    .ess-table .calc-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.06); }
-    .ess-table .chart-total-cell { font-weight: 700; font-size: 14px; background-color: rgba(128,128,128,0.1); }
-    .ess-table .total-label { font-weight: 600; font-size: 12px; text-align: right; padding-right: 8px; background-color: rgba(128,128,128,0.05); }
-    .ess-table .row-label { text-align: left; padding-left: 8px; font-weight: 500; font-size: 12px; transition: opacity 0.2s; white-space: nowrap; }
+    .ess-table .calc-cell { font-weight: 700; font-size: 12px; background-color: rgba(128,128,128,0.06); }
+    .ess-table .chart-total-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.1); }
+    .ess-table .total-label { font-weight: 600; font-size: 11px; text-align: right; padding-right: 8px; background-color: rgba(128,128,128,0.05); }
+    .ess-table .row-label { text-align: left; padding-left: 8px; font-weight: 500; font-size: 11px; transition: opacity 0.2s; white-space: nowrap; }
     .status-cell { font-weight: bold; transition: all 0.2s ease; line-height: 1.1; }
-    .status-badge { display: inline-block; padding: 2px 4px; border-radius: 3px; font-weight: 800; font-size: 11.5px; letter-spacing: 0.2px; }
-    .prob-text { font-size: 9.5px; font-weight: 600; margin-top: 2px; display: block; }
+    .status-badge { display: inline-block; padding: 2px 4px; border-radius: 3px; font-weight: 800; font-size: 11px; letter-spacing: 0.2px; }
+    .prob-text { font-size: 9px; font-weight: 600; margin-top: 2px; display: block; }
     
     .bg-sr { background-color: #d32f2f !important; color: #ffffff !important; }
     .bg-nsr { background-color: #2e7d32 !important; color: #ffffff !important; }
     .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
-    .bg-artifact { background-color: #ffb300 !important; color: #000000 !important; font-weight: 800; }
+    .bg-artifact { background-color: #ffb300 !important; color: #000 !important; font-weight: 800; }
     
-    .ess-scale-container { margin-top: 6px; padding: 6px 10px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
-    .ess-scale-title { font-size: 10px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
-    .ess-scale-track { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(to right, #d32f2f 0%, #d32f2f 37.5%, #fbc02d 37.5%, #fbc02d 62.5%, #2e7d32 62.5%, #2e7d32 100%); border: 1px solid #999; margin: 12px 0 6px 0; }
-    .ess-scale-marker { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 16px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .ess-scale-labels { display: flex; justify-content: space-between; font-size: 9px; font-weight: bold; }
+    .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
+    .ess-scale-title { font-size: 9px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
+    .ess-scale-track { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(to right, #d32f2f 0%, #d32f2f 37.5%, #fbc02d 37.5%, #fbc02d 62.5%, #2e7d32 62.5%, #2e7d32 100%); border: 1px solid #999; margin: 10px 0 4px 0; }
+    .ess-scale-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #222; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .ess-scale-labels { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: bold; }
     
-    .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 15px; padding: 10px 0; font-size: 14px; text-align: center; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+    /* Компактний блок динаміки */
+    .ess-dynamics-container { margin-top: 8px; padding: 6px 10px; background: rgba(128,128,128,0.03); border-radius: 4px; border: 1px solid #ddd; }
+    .ess-dynamics-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .ess-dynamics-title { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #555; letter-spacing: 0.5px; }
+    .dyn-mode-toggle { display: flex; background: rgba(0,0,0,0.06); border-radius: 3px; padding: 1px; }
+    .dyn-mode-toggle label { padding: 2px 6px; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 2px; user-select: none; color: #555; }
+    .dyn-mode-toggle input { display: none; }
+    .dyn-mode-toggle input:checked + label { background: #3a7cfd; color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    
+    .ess-dynamics-chart { width: 100%; height: 80px; position: relative; }
+    .ess-dynamics-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .ess-dynamics-text { font-size: 10px; text-align: center; margin-top: 6px; color: #333; font-weight: 500; line-height: 1.3; }
+    .dyn-legend { display: flex; justify-content: center; gap: 8px; font-size: 9px; margin-top: 2px; font-weight: 600; color: #666; }
+    
+    .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 15px; padding: 8px 0; font-size: 13px; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
     .ess-add-btn:hover { background-color: #2a68e0; }
     
-    .ess-error-message { color: #d32f2f; font-weight: bold; margin: 4px 0 10px 0; padding: 8px 12px; background: rgba(211, 47, 47, 0.1); border-radius: 4px; border-left: 4px solid #d32f2f; }
-    
-    .ess-dynamics-container { margin-top: 10px; padding: 10px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
-    .ess-dynamics-title { font-size: 11px; font-weight: bold; margin-bottom: 6px; text-align: center; text-transform: uppercase; color: #666; }
-    .ess-dynamics-chart { width: 100%; height: 100px; }
-    .ess-dynamics-svg { width: 100%; height: 100%; display: block; }
-    .ess-dynamics-legend { display: flex; justify-content: center; gap: 15px; font-size: 10px; margin-top: 6px; flex-wrap: wrap; }
-    .ess-dynamics-text { font-size: 11px; text-align: center; margin-top: 8px; color: #444; font-weight: 500; line-height: 1.4; padding: 6px; background: rgba(255,255,255,0.7); border-radius: 4px; border: 1px solid #eee; }
+    .ess-error-message { color: #d32f2f; font-weight: bold; margin: 4px 0 10px 0; padding: 6px 10px; background: rgba(211, 47, 47, 0.1); border-radius: 4px; border-left: 3px solid #d32f2f; font-size: 12px; }
     
     .ess-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .ess-modal-overlay.active { display: flex; }
-    .ess-modal { background: #fff; border-radius: 8px; padding: 20px; width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
-    .ess-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .ess-modal-header h3 { margin: 0; font-size: 16px; color: #222; }
-    .ess-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; line-height: 1; padding: 0; width: 30px; height: 30px; }
+    .ess-modal { background: #fff; border-radius: 8px; padding: 16px; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
+    .ess-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .ess-modal-header h3 { margin: 0; font-size: 15px; color: #222; }
+    .ess-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #666; line-height: 1; padding: 0; width: 28px; height: 28px; }
     .ess-modal-close:hover { color: #000; }
-    .ess-modal-body label { display: block; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: #444; }
-    .ess-modal-body input[type="text"] { width: 100%; padding: 8px 10px; margin-top: 6px; border: 1px solid #bbb; border-radius: 4px; font-size: 14px; font-family: inherit; }
+    .ess-modal-body label { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #444; }
+    .ess-modal-body input[type="text"] { width: 100%; padding: 6px 8px; margin-top: 4px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
     .ess-modal-body input[type="text"]:focus { outline: none; border-color: #3a7cfd; box-shadow: 0 0 0 2px rgba(58,124,253,0.15); }
-    .ess-modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; padding-top: 12px; border-top: 1px solid #eee; }
-    .ess-modal-save { background: #2e7d32; color: #fff; padding: 6px 16px; font-size: 13px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .ess-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 10px; border-top: 1px solid #eee; }
+    .ess-modal-save { background: #2e7d32; color: #fff; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-save:hover { opacity: 0.9; }
-    .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 6px 16px; font-size: 13px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
     
-    /* Мобільні адаптації */
     @media (max-width: 650px) {
       .ess-toolbar { justify-content: center; }
       .ess-save-status { margin: 4px auto 0 auto; width: 100%; }
       .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
-      .ess-delete-btn { align-self: flex-end; margin-top: -30px; }
+      .ess-delete-btn { align-self: flex-end; margin-top: -26px; }
     }
     
     @media print {
       body { background: #fff; padding: 0; }
-      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay, .dyn-mode-toggle { display: none !important; }
       .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
       .ess-respondent-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
@@ -170,7 +173,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка</title>
+<title>ESS-M Calculator — Довідка v4.3</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -191,7 +194,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.2</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.3</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -199,42 +202,35 @@
     <ul>
       <li><strong>Мінімізувати ризик математичних помилок</strong> при ручному підрахунку балів.</li>
       <li><strong>Автоматизувати застосування складних правил</strong>, таких як правило контамінації (Spot Rule) у скринінгу або правило Сентера (Senter's Rules) у діагностичних тестах.</li>
-      <li><strong>Миттєво візуалізувати динаміку</strong> реактивності респондента від чарту до чарту, що допомагає виявляти тренди адаптації або ймовірної протидії.</li>
       <li><strong>Економити час</strong> на підготовку підсумкових звітів (швидкий експорт готових таблиць у PDF).</li>
     </ul>
   </div>
 
-  <h2>📋 Можливості таблиці</h2>
-  <div class="feature-list">
-    <ul>
-      <li><strong>Два режими оцінки:</strong> <em>Скринінговий</em> (з автоматичним блокуванням NSR при наявності хоча б одного SR-споту) та <em>Діагностичний</em> (з виведенням Grand Total та застосуванням правила Сентера).</li>
-      <li><strong>Автоматичний підрахунок:</strong> Система самостійно сумує бали (ESS) по кожному релевантному питанню (Spot), враховує артефакти дихання та виводить підсумкові ймовірності (Pr %).</li>
-      <li><strong>Підтримка до 5 чартів:</strong> Можливість гнучко вмикати/вимикати Chart #4 та Chart #5 з розрахунку (за допомогою галочок).</li>
-      <li><strong>Історія дій:</strong> Відміна (Undo ↩️) та повторення (Redo ↪️) будь-яких введених даних, що страхує від випадкових натискань.</li>
-    </ul>
-  </div>
+  <h2>📈 Професійний аналіз динаміки (Нове у v4.3)</h2>
+  <p>Графік "Динаміка стану" було повністю перероблено для глибокого аналізу поведінки респондента:</p>
+  <ul>
+    <li><strong>Два режими перегляду:</strong> Перемикач над графіком дозволяє дивитися як <em>загальну суму чарту</em>, так і деталізовані лінії по кожному питанню (<em>R1-R4</em>).</li>
+    <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга на фоні графіка показує зону фізіологічної невизначеності (від -3 до +3). Коливання в цій зоні не є статистично значущими.</li>
+    <li><strong>Маркування артефактів:</strong> Якщо дихальні канали суперечать один одному (+1 та -1), клітинка забарвлюється в оранжевий колір з попередженням ⚠️. На графіку такий "хибний нуль" відображається <strong>яскравим оранжевим трикутником</strong>, щоб ви не сплутали його з реальним заспокоєнням.</li>
+    <li><strong>Розумна аналітика:</strong> Текст під графіком автоматично аналізує тренди (габітуація, сенсибілізація) та виявляє домінанту (стійкий фокус уваги на конкретному питанні).</li>
+  </ul>
 
   <h2>📖 Інструкція з користування</h2>
   <ol>
-    <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента у верхньому полі. Натисніть кнопку <code>+ Додати обрахунок</code> внизу сторінки, щоб створити нову таблицю для тесту.</li>
-    <li><strong>Налаштування тесту:</strong> Оберіть формат тесту з випадаючого списку (напр., <em>AFMGQT (3RQ)</em>). Виберіть тип розрахунку: <em>Скринінговий</em> чи <em>Діагностичний</em>. Натисніть кнопку <code>📝 Питання</code>, щоб ввести текст релевантних питань (R1-R4) для зручності.</li>
-    <li><strong>Введення балів:</strong> Вносьте оцінки для кожного параметру у відповідні клітинки. 
-      <br><span style="color:#666; font-size:14px;"><em>💡 Підказка:</em> Використовуйте клавішу <code>-</code> (мінус) на клавіатурі для швидкого введення від'ємних значень (система автоматично підставить -1, або -2 для ЕДА). Натискайте <code>Enter</code> для швидкого переходу до наступного поля в колонці.</span>
+    <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента. Натисніть кнопку <code>+ Додати обрахунок</code>, щоб створити таблицю.</li>
+    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА) у відповідні клітинки. 
+      <br><span style="color:#666; font-size:14px;"><em>💡 Підказка:</em> Використовуйте клавішу <code>-</code> (мінус) для швидкого введення від'ємних значень. Натискайте <code>Enter</code> для переходу вниз.</span>
     </li>
-    <li><strong>Аналіз результатів:</strong> Спостерігайте за автоматично розрахованими статусами (SR, NSR, INC) внизу таблиці та вивчайте графік динаміки стану респондента праворуч.</li>
-    <li><strong>Експорт та збереження:</strong> Використовуйте кнопку <code>🖨️</code> для збереження звіту у PDF (або прямого друку) та <code>📥</code> для завантаження резервної копії (.json) на ваш комп'ютер.</li>
+    <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє всі цифри в таблиці, а також очищує поле П.І.Б.</li>
+    <li><strong>Експорт:</strong> Використовуйте <code>🖨️</code> для збереження звіту у PDF та <code>📥</code> для завантаження файлу (.json).</li>
   </ol>
 
   <div class="warning-box">
-    <strong>⚠️ Важливе зауваження щодо безпеки та збереження даних</strong>
-    Усі введені вами дані (включаючи П.І.Б. респондента та результати поліграфологічного тестування) <strong>абсолютно конфіденційні, не передаються в Інтернет і не зберігаються на жодному віддаленому сервері</strong>. 
-    <br><br>
-    Дані зберігаються <em>виключно тимчасово</em>, у локальному кеші вашого браузера на поточному пристрої. Це означає, що при очищенні історії браузера (кешу) всі таблиці будуть втрачені. 
-    <br><br>
-    Ви повністю та самостійно контролюєте свої дані. Для надійного та довгострокового збереження результатів поліграфологічних перевірок <strong>обов'язково експортуйте їх у формат <code>.json</code> (кнопка 📥) або зберігайте як PDF-документ (кнопка 🖨️)</strong> після завершення роботи з респондентом.
+    <strong>⚠️ Важливе зауваження щодо збереження даних</strong>
+    Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження результатів поліграфологічних перевірок <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.3 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -243,25 +239,19 @@
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   };
 
-  // Системні змінні
   let autoSaveTimeout;
   let warningTimeout;
   const STORAGE_KEY = "ess_polygraph_data";
   const TEST_FORMATS = ["N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
 
-  // Логіка Історії (Undo/Redo)
   let stateHistory = [];
   let historyIndex = -1;
   let isRestoringHistory = false;
   let recordTimeout;
 
-  // Парсер стану для забезпечення сумісності
   const parseStateData = (data) => {
-    if (Array.isArray(data)) {
-      return { respondentName: "", tests: data };
-    } else if (data && data.tests) {
-      return data;
-    }
+    if (Array.isArray(data)) return { respondentName: "", tests: data };
+    else if (data && data.tests) return data;
     return { respondentName: "", tests: [] };
   };
 
@@ -273,19 +263,21 @@
       const formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
       const chartToggle4 = wrapper.querySelector(".chart-toggle[data-chart='4']");
       const chartToggle5 = wrapper.querySelector(".chart-toggle[data-chart='5']");
+      const dynToggle = wrapper.querySelector(".dyn-mode-toggle input:checked");
       const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input[type='number']"));
       const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
+      
       const values = {};
-      inputs.forEach(inp => {
-        values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value;
-      });
+      inputs.forEach(inp => { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
       const questions = {};
       qInputs.forEach(inp => { questions[inp.getAttribute('data-q')] = inp.value; });
+      
       return {
         title: titleInput ? titleInput.value : "",
         format: formatSelect ? formatSelect.value : "N/A",
         questions: questions,
         type: typeRadio ? typeRadio.value : "screening",
+        dynMode: dynToggle ? dynToggle.value : "total",
         chartToggles: {
           4: chartToggle4 ? chartToggle4.checked : true,
           5: chartToggle5 ? chartToggle5.checked : true
@@ -294,10 +286,7 @@
       };
     });
 
-    return {
-      respondentName: respondentInput.value,
-      tests: tests
-    };
+    return { respondentName: respondentInput.value, tests: tests };
   };
 
   const recordState = () => {
@@ -323,10 +312,7 @@
     historyIndex = index;
     const stateToRestore = stateHistory[index];
     
-    // Відновлення ПІБ
     respondentInput.value = stateToRestore.respondentName || "";
-    
-    // Відновлення тестів
     testsContainer.innerHTML = "";
     stateToRestore.tests.forEach(d => createTestTable(d));
     
@@ -341,101 +327,42 @@
     setTimeout(() => { isRestoringHistory = false; }, 100);
   };
 
-  // UI Тулбара
+  // Тулбар
   const toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
-  const btnOpen = document.createElement("button");
-  btnOpen.className = "ess-toolbar-btn";
-  btnOpen.innerHTML = "📂";
-  btnOpen.title = "Відкрити з файлу (.json)";
-  btnOpen.onclick = () => document.getElementById("file-import").click();
-
-  const btnSaveJson = document.createElement("button");
-  btnSaveJson.className = "ess-toolbar-btn";
-  btnSaveJson.innerHTML = "📥";
-  btnSaveJson.title = "Зберегти у файл .json";
-  btnSaveJson.onclick = () => saveToFile();
-
+  const btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.onclick = () => document.getElementById("file-import").click();
+  const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.onclick = () => saveToFile();
   const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
-
-  const btnSave = document.createElement("button");
-  btnSave.className = "ess-toolbar-btn";
-  btnSave.innerHTML = "💾";
-  btnSave.title = "Зберегти дані";
-  btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
-
-  const btnUndo = document.createElement("button");
-  btnUndo.className = "ess-toolbar-btn";
-  btnUndo.innerHTML = "↩️";
-  btnUndo.title = "Назад (Відмінити дію)";
-  btnUndo.onclick = () => restoreState(historyIndex - 1);
-
-  const btnRedo = document.createElement("button");
-  btnRedo.className = "ess-toolbar-btn";
-  btnRedo.innerHTML = "↪️";
-  btnRedo.title = "Вперед (Повторити дію)";
-  btnRedo.onclick = () => restoreState(historyIndex + 1);
-
+  const btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
+  const btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.onclick = () => restoreState(historyIndex - 1);
+  const btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.onclick = () => restoreState(historyIndex + 1);
+  
   const updateUndoRedoButtons = () => {
     btnUndo.disabled = historyIndex <= 0;
     btnRedo.disabled = historyIndex >= stateHistory.length - 1;
   };
 
-  const btnPrint = document.createElement("button");
-  btnPrint.className = "ess-toolbar-btn";
-  btnPrint.innerHTML = "🖨️";
-  btnPrint.title = "Експорт PDF / Друк";
-  btnPrint.onclick = () => setTimeout(() => window.print(), 150);
-
+  const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.onclick = () => setTimeout(() => window.print(), 150);
   const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
+  const btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.onclick = () => openHelpPage();
+  const saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
 
-  const btnHelp = document.createElement("button");
-  btnHelp.className = "ess-toolbar-btn";
-  btnHelp.innerHTML = "❓";
-  btnHelp.title = "Довідка / Інструкція";
-  btnHelp.onclick = () => openHelpPage();
+  toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson); toolbar.appendChild(sep1); toolbar.appendChild(btnSave);
+  toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(btnPrint); toolbar.appendChild(sep2);
+  toolbar.appendChild(btnHelp); toolbar.appendChild(saveStatus);
 
-  const saveStatus = document.createElement("div");
-  saveStatus.className = "ess-save-status";
-  saveStatus.textContent = "🟢 Дані збережено";
-
-  toolbar.appendChild(btnOpen);
-  toolbar.appendChild(btnSaveJson);
-  toolbar.appendChild(sep1);
-  toolbar.appendChild(btnSave);
-  toolbar.appendChild(btnUndo);
-  toolbar.appendChild(btnRedo);
-  toolbar.appendChild(btnPrint);
-  toolbar.appendChild(sep2);
-  toolbar.appendChild(btnHelp);
-  toolbar.appendChild(saveStatus);
-
-  // Створення поля ПІБ респондента
-  const respondentArea = document.createElement("div");
-  respondentArea.className = "ess-respondent-area";
-  const respondentLabel = document.createElement("span");
-  respondentLabel.className = "ess-respondent-label";
-  respondentLabel.textContent = "П.І.Б. респондента:";
-  const respondentInput = document.createElement("input");
-  respondentInput.type = "text";
-  respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
-  respondentInput.addEventListener("input", () => {
-    markUnsaved();
-  });
-  
-  respondentArea.appendChild(respondentLabel);
-  respondentArea.appendChild(respondentInput);
+  // ПІБ
+  const respondentArea = document.createElement("div"); respondentArea.className = "ess-respondent-area";
+  const respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
+  const respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
+  respondentInput.addEventListener("input", () => markUnsaved());
+  respondentArea.appendChild(respondentLabel); respondentArea.appendChild(respondentInput);
 
   const testsContainer = document.createElement("div");
-  const addBtnBottom = document.createElement("button");
-  addBtnBottom.className = "ess-add-btn";
-  addBtnBottom.textContent = "+ Додати обрахунок";
+  const addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
 
-  container.appendChild(toolbar);
-  container.appendChild(respondentArea); 
-  container.appendChild(testsContainer);
-  container.appendChild(addBtnBottom);
+  container.appendChild(toolbar); container.appendChild(respondentArea); container.appendChild(testsContainer); container.appendChild(addBtnBottom);
 
   const performSave = () => {
     if (!isUnsaved) return;
@@ -446,190 +373,213 @@
       saveStatus.classList.remove("unsaved");
       saveStatus.textContent = "🟢 Дані збережено";
     } catch (error) {
-      console.error("Помилка збереження:", error);
-      saveStatus.textContent = "❌ Помилка збереження!";
-      saveStatus.classList.add("unsaved");
-      showError("Помилка запису в localStorage: " + error.message);
+      saveStatus.textContent = "❌ Помилка збереження!"; saveStatus.classList.add("unsaved"); showError("Помилка запису в localStorage: " + error.message);
     }
   };
 
   const saveToFile = () => {
-    const data = collectState();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ess-polygraph-" + new Date().toISOString().slice(0,10) + ".json";
-    a.click();
+    const a = document.createElement("a"); a.href = url; a.download = "ess-polygraph-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
     URL.revokeObjectURL(url);
-    isUnsaved = false;
-    saveStatus.classList.remove("unsaved");
-    saveStatus.textContent = "🟢 Дані збережено";
+    isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
   };
 
   const loadFromFile = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const rawData = JSON.parse(e.target.result);
-        const stateToRestore = parseStateData(rawData);
-        
+        const stateToRestore = parseStateData(JSON.parse(e.target.result));
         respondentInput.value = stateToRestore.respondentName || "";
         testsContainer.innerHTML = "";
         stateToRestore.tests.forEach(d => createTestTable(d));
-        
         performSave();
         saveStatus.textContent = "🟢 Дані завантажено";
-        stateHistory = [];
-        historyIndex = -1;
-        recordState();
-      } catch (err) {
-        showError("Помилка завантаження файлу: " + err.message);
-      }
+        stateHistory = []; historyIndex = -1; recordState();
+      } catch (err) { showError("Помилка завантаження файлу: " + err.message); }
     };
     reader.readAsText(file);
   };
 
-  document.getElementById("file-import").addEventListener("change", (e) => {
-    if (e.target.files[0]) loadFromFile(e.target.files[0]);
-    e.target.value = "";
-  });
+  document.getElementById("file-import").addEventListener("change", (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); e.target.value = ""; });
 
   const markUnsaved = () => {
     if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
     saveStatus.textContent = "🟠 ⚠️ Є незбережені зміни!";
-    if (warningTimeout) clearTimeout(warningTimeout);
-    if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+    if (warningTimeout) clearTimeout(warningTimeout); if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
     warningTimeout = setTimeout(() => { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
     autoSaveTimeout = setTimeout(() => performSave(), 60000);
-    
     debouncedRecordState();
   };
 
-  window.addEventListener('beforeunload', (e) => {
-    if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }
-  });
+  window.addEventListener('beforeunload', (e) => { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
+  container.addEventListener('focusout', (e) => { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
 
-  container.addEventListener('focusout', (e) => {
-    if (!container.contains(e.relatedTarget) && isUnsaved) {
-      if (warningTimeout) clearTimeout(warningTimeout);
-      if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-      performSave();
-    }
-  });
-
-  // Вся логіка графіків та розрахунків ESS залишається без змін
-  const updateDynamicsChart = (wrapper, values, ce) => {
+  // ЛОГІКА МАЛЮВАННЯ ГРАФІКА
+  const updateDynamicsChart = (wrapper, chartDataArray, ce) => {
     const svg = ce.dynamicsSvg;
     const textDiv = ce.dynamicsText;
+    const legendDiv = wrapper.querySelector('.dyn-legend');
+    const mode = ce.dynToggles.find(r => r.checked)?.value || "total";
+    
     if (!svg) return;
     svg.innerHTML = '';
-    const width = 400, height = 80, centerY = 40;
-    const maxVal = 12, minVal = -12;
-    const padding = 40;
-    const chartWidth = width - padding * 2;
+    
+    const width = 400, height = 80;
+    const paddingX = 30, paddingY = 15;
+    const chartWidth = width - paddingX * 2;
+    const chartHeight = height - paddingY * 2;
+    const centerY = height / 2;
+    
+    // Динамічний ліміт шкали Y (мінімум 10, максимум по найбільшому значенню)
+    let maxAbs = 10;
+    chartDataArray.forEach(d => {
+      if (mode === 'total') {
+        if (Math.abs(d.total) > maxAbs) maxAbs = Math.abs(d.total);
+      } else {
+        Object.values(d.spots).forEach(val => { if (Math.abs(val) > maxAbs) maxAbs = Math.abs(val); });
+      }
+    });
+    maxAbs = Math.ceil(maxAbs / 2) * 2; // округлення до парного
+    
+    const getY = (val) => centerY - (val / maxAbs) * (chartHeight / 2);
+    const getX = (idx, len) => paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2);
+
+    // Малюємо сіру зону (Шум -3 до +3)
+    const incZoneTop = getY(3);
+    const incZoneBottom = getY(-3);
+    const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    incRect.setAttribute("x", paddingX); incRect.setAttribute("y", incZoneTop);
+    incRect.setAttribute("width", chartWidth); incRect.setAttribute("height", incZoneBottom - incZoneTop);
+    incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
+    svg.appendChild(incRect);
+
+    // Осі та підписи
     const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    zeroLine.setAttribute("x1", padding); zeroLine.setAttribute("y1", centerY);
-    zeroLine.setAttribute("x2", width - padding); zeroLine.setAttribute("y2", centerY);
-    zeroLine.setAttribute("stroke", "#bbb"); zeroLine.setAttribute("stroke-width", "1");
-    zeroLine.setAttribute("stroke-dasharray", "3,3");
+    zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
+    zeroLine.setAttribute("x2", width - paddingX); zeroLine.setAttribute("y2", centerY);
+    zeroLine.setAttribute("stroke", "#ccc"); zeroLine.setAttribute("stroke-width", "1");
+    zeroLine.setAttribute("stroke-dasharray", "2,2");
     svg.appendChild(zeroLine);
-    const topLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    topLabel.setAttribute("x", width/2); topLabel.setAttribute("y", 12);
-    topLabel.setAttribute("text-anchor", "middle"); topLabel.setAttribute("font-size", "8");
-    topLabel.setAttribute("fill", "#aaa"); topLabel.textContent = "+ Порівняння (заспокоєння)";
-    svg.appendChild(topLabel);
-    const bottomLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    bottomLabel.setAttribute("x", width/2); bottomLabel.setAttribute("y", height - 2);
-    bottomLabel.setAttribute("text-anchor", "middle"); bottomLabel.setAttribute("font-size", "8");
-    bottomLabel.setAttribute("fill", "#aaa"); bottomLabel.textContent = "- Релевантні (напруга)";
-    svg.appendChild(bottomLabel);
-    if (values.length === 0) {
-      textDiv.textContent = "Немає даних для аналізу динаміки";
+    
+    const labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    labelPos.setAttribute("x", width/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "7.5"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння (заспокоєння)";
+    svg.appendChild(labelPos);
+    
+    const labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    labelNeg.setAttribute("x", width/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "7.5"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні (напруга)";
+    svg.appendChild(labelNeg);
+
+    if (chartDataArray.length === 0) {
+      textDiv.textContent = "Немає даних";
+      if(legendDiv) legendDiv.innerHTML = "";
       return;
     }
-    const stepX = values.length > 1 ? chartWidth / (values.length - 1) : chartWidth / 2;
-    let pathD = "";
-    values.forEach((v, i) => {
-      const x = padding + (values.length > 1 ? i * stepX : chartWidth / 2);
-      const clamped = Math.max(minVal, Math.min(maxVal, v.value));
-      const y = centerY - (clamped / maxVal) * 30;
-      if (i === 0) pathD += "M " + x + " " + y;
-      else pathD += " L " + x + " " + y;
-    });
-    if (values.length > 1) {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", pathD); path.setAttribute("fill", "none");
-      path.setAttribute("stroke", "#3a7cfd"); path.setAttribute("stroke-width", "2"); path.setAttribute("opacity", "0.5");
-      svg.appendChild(path);
-    }
-    values.forEach((v, i) => {
-      const x = padding + (values.length > 1 ? i * stepX : chartWidth / 2);
-      const clamped = Math.max(minVal, Math.min(maxVal, v.value));
-      const y = centerY - (clamped / maxVal) * 30;
-      const radius = Math.max(5, Math.min(10, 5 + Math.abs(v.value) * 0.5));
-      let color;
-      if (v.value < 0) {
-        const intensity = Math.min(1, Math.abs(v.value) / 8);
-        const r = Math.floor(211 - intensity * 60);
-        const g = Math.floor(47 - intensity * 20);
-        const b = Math.floor(47 - intensity * 20);
-        color = "rgb(" + r + "," + g + "," + b + ")";
-      } else if (v.value > 0) {
-        const intensity = Math.min(1, v.value / 8);
-        const r = Math.floor(46 - intensity * 20);
-        const g = Math.floor(125 - intensity * 40);
-        const b = Math.floor(50 - intensity * 20);
-        color = "rgb(" + r + "," + g + "," + b + ")";
-      } else {
-        color = "#999";
+
+    let hasAnyArtifact = chartDataArray.some(d => d.hasArtifact);
+    let spotAverages = {1:0, 2:0, 3:0, 4:0};
+    let counts = {1:0, 2:0, 3:0, 4:0};
+
+    if (mode === 'total') {
+      if(legendDiv) legendDiv.innerHTML = '<span style="color:#d32f2f;">● Релевантні</span> <span style="color:#888;">● Нейтральна</span> <span style="color:#388e3c;">● Порівняння</span> <span style="color:#f57c00;">▲ Артефакт</span>';
+      
+      let pathD = "";
+      chartDataArray.forEach((d, i) => {
+        const x = getX(i, chartDataArray.length); const y = getY(d.total);
+        if (i === 0) pathD += "M " + x + " " + y; else pathD += " L " + x + " " + y;
+      });
+      if (chartDataArray.length > 1) {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", "#999"); path.setAttribute("stroke-width", "1.5");
+        svg.appendChild(path);
       }
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", radius);
-      circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1.5");
-      svg.appendChild(circle);
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", x); label.setAttribute("y", height - 12);
-      label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "8");
-      label.setAttribute("fill", "#666"); label.setAttribute("font-weight", "bold");
-      label.textContent = "C" + v.chart;
-      svg.appendChild(label);
-      const valText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      valText.setAttribute("x", x); valText.setAttribute("y", y - radius - 3);
-      valText.setAttribute("text-anchor", "middle"); valText.setAttribute("font-size", "8");
-      valText.setAttribute("fill", "#444"); valText.setAttribute("font-weight", "bold");
-      valText.textContent = v.value;
-      svg.appendChild(valText);
-    });
-    const vals = values.map(v => v.value);
-    const allNegative = vals.every(v => v < 0);
-    const allPositive = vals.every(v => v > 0);
-    const allZero = vals.every(v => v === 0);
-    const firstNeg = vals[0] < 0;
-    const lastPos = vals[vals.length - 1] > 0;
-    const trend = vals[vals.length - 1] - vals[0];
-    let interpretation = "";
-    if (allZero) {
-      interpretation = "Нейтральна динаміка: відсутня виражена реактивність або респондент перебуває в стані очікування.";
-    } else if (allNegative) {
-      const deepening = vals.every((v, i) => i === 0 || v <= vals[i-1]);
-      if (deepening) {
-        interpretation = "Тенденція до поглиблення негативної реактивності: респондент укорінюється в релевантні питання, реакції посилюються.";
-      } else {
-        interpretation = "Стабільно негативна динаміка: постійна орієнтація на релевантні питання.";
-      }
-    } else if (allPositive) {
-      interpretation = "Позитивна динаміка: респондент стабільно орієнтується на питання порівняння, стан заспокоєння.";
-    } else if (firstNeg && lastPos && trend > 0) {
-      interpretation = "Позитивний тренд: респондент адаптується, увага поступово переміщується від релевантних питань до питань порівняння.";
-    } else if (firstNeg && lastPos && trend < 0) {
-      interpretation = "Негативний тренд: незважаючи на початкову адаптацію, реактивність зростає до релевантних питань.";
-    } else if (vals.some(v => v < 0) && vals.some(v => v > 0)) {
-      interpretation = "Нестабільна динаміка: коливання між релевантними питаннями та порівнянням. Можлива протидія або емоційна нестабільність.";
+      
+      chartDataArray.forEach((d, i) => {
+        const x = getX(i, chartDataArray.length); const y = getY(d.total);
+        const intensity = Math.min(1, Math.abs(d.total) / 8);
+        let color = "#888";
+        if (d.total < 0) color = "rgb(" + Math.floor(211 - intensity*60) + ",47,47)";
+        else if (d.total > 0) color = "rgb(46," + Math.floor(125 - intensity*40) + ",50)";
+        
+        if (d.hasArtifact) {
+          const tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+          tri.setAttribute("points", `${x},${y-6} ${x-5},${y+4} ${x+5},${y+4}`);
+          tri.setAttribute("fill", "#f57c00"); tri.setAttribute("stroke", "#fff"); tri.setAttribute("stroke-width", "1");
+          svg.appendChild(tri);
+        } else {
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", "3.5");
+          circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1");
+          svg.appendChild(circle);
+        }
+        
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "7.5"); label.setAttribute("fill", "#aaa"); label.setAttribute("font-weight", "bold");
+        label.textContent = "C" + d.chart;
+        if(d.total !== 0 || d.hasArtifact) svg.appendChild(label);
+      });
     } else {
-      interpretation = "Змішана динаміка: спостерігаються зміни стану респондента між чартами.";
+      const colors = { 1: "#1976d2", 2: "#9c27b0", 3: "#00796b", 4: "#e64a19" };
+      let lgnd = "";
+      for (let col = 1; col <= 4; col++) {
+        let hasData = chartDataArray.some(d => d.spots[col] !== undefined);
+        if (hasData) lgnd += `<span style="color:${colors[col]};">■ R${col}</span> `;
+      }
+      if(legendDiv) legendDiv.innerHTML = lgnd;
+
+      for (let col = 1; col <= 4; col++) {
+        let pathD = ""; let pointCount = 0;
+        chartDataArray.forEach((d, i) => {
+          if (d.spots[col] !== undefined) {
+            spotAverages[col] += d.spots[col]; counts[col]++;
+            const x = getX(i, chartDataArray.length); const y = getY(d.spots[col]);
+            if (pointCount === 0) pathD += "M " + x + " " + y; else pathD += " L " + x + " " + y;
+            
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", "2.5");
+            circle.setAttribute("fill", colors[col]);
+            svg.appendChild(circle);
+            pointCount++;
+          }
+        });
+        if (pointCount > 1) {
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", colors[col]); path.setAttribute("stroke-width", "1.5"); path.setAttribute("opacity", "0.7");
+          svg.appendChild(path);
+        }
+      }
     }
-    textDiv.textContent = interpretation;
+
+    // Текстова інтерпретація
+    let interpText = "";
+    const totals = chartDataArray.map(d => d.total);
+    const first = totals[0], last = totals[totals.length - 1];
+    const trend = last - first;
+    
+    // Розрахунок середніх для фокусу
+    let dominantSpot = null; let minAvg = 0;
+    if (chartDataArray.length > 0) {
+      for(let c=1; c<=4; c++) {
+        if(counts[c] === 0) continue;
+        let avg = chartDataArray.reduce((acc, d) => acc + (d.spots[c] || 0), 0) / counts[c];
+        if (avg < -1.5 && avg < minAvg) { minAvg = avg; dominantSpot = c; }
+      }
+    }
+
+    if (totals.every(v => v === 0)) interpText = "Нейтральний стан (шум). ";
+    else if (totals.every(v => v < 0)) {
+      if (totals.every((v, i) => i === 0 || v <= totals[i-1])) interpText = "Сенсибілізація (постійне накопичення напруги). ";
+      else interpText = "Стабільна негативна напруга. ";
+    }
+    else if (totals.every(v => v > 0)) interpText = "Стійка орієнтація на порівняння (заспокоєння). ";
+    else if (first < 0 && last >= 0 && trend > 0) interpText = "Габітуація (адаптація та спад напруги). ";
+    else if (first >= 0 && last < 0 && trend < 0) interpText = "Наростання реактивності до кінця тесту. ";
+    else interpText = "Змішана динаміка (нестабільний стан). ";
+
+    if (dominantSpot) interpText += `<br>🎯 <b>Фокус уваги:</b> чітко виражений на питанні <b>R${dominantSpot}</b>. `;
+    if (hasAnyArtifact) interpText += `<br><span style="color:#d32f2f;">⚠️ Увага: присутні дихальні артефакти, тренд може бути спотворений.</span>`;
+
+    textDiv.innerHTML = interpText;
   };
 
   const calcPneumoESS = (v, n) => {
@@ -642,42 +592,17 @@
   };
 
   const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
-  const getGrandProbValue = (val) => {
-    const v = Math.abs(val);
-    if (v >= 20) return "Pr > 99%";
-    if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%";
-    return "p > 0.05";
-  };
+  const getGrandProbValue = (val) => { const v = Math.abs(val); if (v >= 20) return "Pr > 99%"; if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%"; return "p > 0.05"; };
 
   const getScreeningProbValue = (val) => {
-    if (val <= -12) return "Pr > 99%";
-    if (val === -11) return "Pr ~ 99%";
-    if (val === -10) return "Pr ~ 98%";
-    if (val === -9) return "Pr ~ 97%";
-    if (val === -8) return "Pr ~ 95%";
-    if (val === -7) return "Pr ~ 92%";
-    if (val === -6) return "Pr ~ 89%";
-    if (val === -5) return "Pr ~ 85%";
-    if (val === -4) return "Pr ~ 79%";
-    if (val === -3) return "Pr ~ 73%";
-    if (val >= 6) return "Pr > 99%";
-    if (val === 5) return "Pr ~ 99%";
-    if (val === 4) return "Pr ~ 98%";
-    if (val === 3) return "Pr ~ 95%";
-    if (val === 2) return "Pr ~ 88%";
-    if (val === 1) return "Pr ~ 73%";
-    return "p > 0.05";
+    if (val <= -12) return "Pr > 99%"; if (val === -11) return "Pr ~ 99%"; if (val === -10) return "Pr ~ 98%"; if (val === -9) return "Pr ~ 97%";
+    if (val === -8) return "Pr ~ 95%"; if (val === -7) return "Pr ~ 92%"; if (val === -6) return "Pr ~ 89%"; if (val === -5) return "Pr ~ 85%";
+    if (val === -4) return "Pr ~ 79%"; if (val === -3) return "Pr ~ 73%"; if (val >= 6) return "Pr > 99%"; if (val === 5) return "Pr ~ 99%";
+    if (val === 4) return "Pr ~ 98%"; if (val === 3) return "Pr ~ 95%"; if (val === 2) return "Pr ~ 88%"; if (val === 1) return "Pr ~ 73%"; return "p > 0.05";
   };
 
-  const senterProbsMap = new Map([
-    [-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]
-  ]);
-  const getSenterProbValue = (val) => {
-    const numVal = Number(val);
-    if (numVal <= -14) return "Pr > 99.9%";
-    if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%";
-    return "p > 0.05";
-  };
+  const senterProbsMap = new Map([[-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]]);
+  const getSenterProbValue = (val) => { const numVal = Number(val); if (numVal <= -14) return "Pr > 99.9%"; if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%"; return "p > 0.05"; };
 
   const getSpotInfo = (val, testType) => {
     if (testType === "screening") {
@@ -698,10 +623,7 @@
       return { status: "INC", prob: "Spot Rule (INC)", cls: "bg-inc" };
     }
     if (grandTotal <= -3) return { status: "SR", prob: getGrandProbValue(grandTotal), cls: "bg-sr" };
-    if (minSpot <= -7) {
-      const senterP = getSenterProbValue(minSpot).replace('Pr ~ ', '');
-      return { status: "SR", prob: "Сентер (" + senterP + ")", cls: "bg-sr" };
-    }
+    if (minSpot <= -7) return { status: "SR", prob: "Сентер (" + getSenterProbValue(minSpot).replace('Pr ~ ', '') + ")", cls: "bg-sr" };
     if (grandTotal >= 3) return { status: "NSR", prob: getGrandProbValue(grandTotal), cls: "bg-nsr" };
     return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
   };
@@ -722,59 +644,63 @@
       const cStr = c.toString();
       const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
       const chartInputs = ce.inputs.filter(i => i.getAttribute('data-chart') === cStr);
-      if (!activeCharts[c]) {
-        rows.forEach(r => r.classList.add("chart-disabled"));
-        chartInputs.forEach(i => i.setAttribute("disabled", "true"));
-      } else {
-        rows.forEach(r => r.classList.remove("chart-disabled"));
-        chartInputs.forEach(i => i.removeAttribute("disabled"));
-      }
+      if (!activeCharts[c]) { rows.forEach(r => r.classList.add("chart-disabled")); chartInputs.forEach(i => i.setAttribute("disabled", "true")); } 
+      else { rows.forEach(r => r.classList.remove("chart-disabled")); chartInputs.forEach(i => i.removeAttribute("disabled")); }
     }
 
     const getVal = (chart, col, row) => {
-      const key = chart + '_' + col + '_' + row;
-      const input = ce.inputsMap[key];
+      const input = ce.inputsMap[chart + '_' + col + '_' + row];
       if (!input || input.disabled) return 0;
       const val = input.value.trim();
       if (val !== "" && val !== "-" && activeCharts[chart]) colHasData[col] = true;
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
 
+    const dynamicsValues = [];
+
     for (let c = 1; c <= 5; c++) {
       let currentChartSum = 0;
+      let chartHasArt = false;
+      let cSpots = {};
       const cStr = c.toString();
+      
       for (let col = 1; col <= 4; col++) {
         const colStr = col.toString();
         const pv = getVal(cStr, colStr, 'pneumo-v');
         const pn = getVal(cStr, colStr, 'pneumo-n');
         const pneumo = calcPneumoESS(pv, pn);
+        
+        if(pneumo.art) chartHasArt = true;
+        
         const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
         if (spanPneumo) {
-          if (pneumo.art) { 
-            spanPneumo.textContent = "0 ⚠"; 
-            spanPneumo.parentElement.classList.add("bg-artifact"); 
-          }
-          else { 
-            spanPneumo.textContent = pneumo.val; 
-            spanPneumo.parentElement.classList.remove("bg-artifact"); 
-          }
+          if (pneumo.art) { spanPneumo.textContent = "0 ⚠"; spanPneumo.parentElement.classList.add("bg-artifact"); }
+          else { spanPneumo.textContent = pneumo.val; spanPneumo.parentElement.classList.remove("bg-artifact"); }
         }
+        
         const colSum = pneumo.val + getVal(cStr, colStr, 'eda') + getVal(cStr, colStr, 'cardio') + getVal(cStr, colStr, 'ppg');
-        if (activeCharts[c]) subtotals[col] += colSum;
+        if (activeCharts[c]) {
+          subtotals[col] += colSum;
+          if(colHasData[col]) cSpots[col] = colSum; // save spot val if cell has data
+        }
         currentChartSum += colSum;
       }
+      
       const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === cStr);
       if (spanChartTotal) {
         spanChartTotal.textContent = activeCharts[c] ? currentChartSum : "—";
         spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
+      }
+
+      if (activeCharts[c]) {
+        dynamicsValues.push({ chart: c, total: currentChartSum, hasArtifact: chartHasArt, spots: cSpots });
       }
     }
 
     let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
     for (let col = 1; col <= 4; col++) {
       if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
-      const val = subtotals[col];
-      activeSpotVals.push(val);
+      const val = subtotals[col]; activeSpotVals.push(val);
       if (val < minSpotVal) minSpotVal = val;
       let info = getSpotInfo(val, currentTestType);
       spotInfos[col] = info;
@@ -783,9 +709,7 @@
 
     if (currentTestType === "screening" && hasAnySR && isContamActive) {
       for (let col = 1; col <= 4; col++) {
-        if (colHasData[col] && spotInfos[col].status === "NSR") {
-          spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
-        }
+        if (colHasData[col] && spotInfos[col].status === "NSR") spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
       }
     }
 
@@ -807,15 +731,12 @@
     const grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     if (ce.grandStatus) {
       ce.grandStatus.className = "status-cell " + grandInfo.cls;
-      ce.grandStatus.innerHTML = grandInfo.status === "N/A" ? '<span style="color:#888;">Немає даних</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:11px;">' + grandInfo.prob + '</span>';
+      ce.grandStatus.innerHTML = grandInfo.status === "N/A" ? '<span style="color:#888;">Немає даних</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:10px;">' + grandInfo.prob + '</span>';
     }
 
     if (ce.scaleLabels) {
-      if (currentTestType === "diagnostic") {
-        ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (+3 і більше) ▶</span>';
-      } else {
-        ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
-      }
+      if (currentTestType === "diagnostic") ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (+3 і більше) ▶</span>';
+      else ce.scaleLabels.innerHTML = '<span style="color: #d32f2f;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
     }
     if (ce.scaleMarker) {
       const minVal = -12, maxVal = 12;
@@ -824,55 +745,40 @@
       ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
 
-    const dynamicsValues = [];
-    for (let c = 1; c <= 5; c++) {
-      if (activeCharts[c]) {
-        const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === c.toString());
-        const text = spanChartTotal ? spanChartTotal.textContent : "0";
-        const val = text === "—" ? 0 : parseFloat(text) || 0;
-        dynamicsValues.push({chart: c, value: val});
-      }
-    }
     updateDynamicsChart(wrapper, dynamicsValues, ce);
   };
 
   const createTestTable = (savedData = null) => {
     const currentNumber = testsContainer.querySelectorAll(".ess-test-wrapper").length + 1;
     const uid = Math.random().toString(36).substr(2, 9);
-    const wrapper = document.createElement("div");
-    wrapper.className = "ess-test-wrapper";
+    const wrapper = document.createElement("div"); wrapper.className = "ess-test-wrapper";
 
-    const rows = [
-      { id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' },
-      { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }
-    ];
-
+    const rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
     const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
     const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
+    const dynModeVal = savedData?.dynMode !== undefined ? escapeHtml(savedData.dynMode) : "total";
     const formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "N/A";
     const savedQuestions = savedData?.questions || {};
-    const radioName = "test_type_" + uid;
-
-    const formatOptions = TEST_FORMATS.map(f => '<option value="' + escapeHtml(f) + '"' + (f === formatVal ? ' selected' : '') + '>' + escapeHtml(f) + '</option>').join('');
+    const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
 
     let tableHtml = `
       <div class="ess-test-top-bar">
         <div class="ess-top-bar-left">
-          <select class="ess-format-select" title="Формат тестування">` + formatOptions + `</select>
+          <select class="ess-format-select" title="Формат тестування">${formatOptions}</select>
           <div class="ess-type-toggle toggle-type">
-            <input type="radio" id="scr_` + uid + `" name="` + radioName + `" value="screening" ` + (typeVal === 'screening' ? 'checked' : '') + ` />
-            <label for="scr_` + uid + `">📋 Скринінговий</label>
-            <input type="radio" id="diag_` + uid + `" name="` + radioName + `" value="diagnostic" ` + (typeVal === 'diagnostic' ? 'checked' : '') + ` />
-            <label for="diag_` + uid + `">🔍 Діагностичний</label>
+            <input type="radio" id="scr_${uid}" name="tt_${uid}" value="screening" ${typeVal === 'screening' ? 'checked' : ''} />
+            <label for="scr_${uid}">📋 Скринінговий</label>
+            <input type="radio" id="diag_${uid}" name="tt_${uid}" value="diagnostic" ${typeVal === 'diagnostic' ? 'checked' : ''} />
+            <label for="diag_${uid}">🔍 Діагностичний</label>
           </div>
-          <button class="ess-btn ess-questions-btn" title="Редагувати питання R1–R4">📝 Питання</button>
-          <button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам'ять</button>
+          <button class="ess-btn ess-questions-btn" title="Редагувати питання">📝 Питання</button>
+          <button class="ess-btn ess-clear-btn" title="Очистити цифри">Очистити пам'ять</button>
         </div>
-        <button class="ess-delete-btn" title="Видалити цей тест">×</button>
+        <button class="ess-delete-btn" title="Видалити тест">×</button>
       </div>
       <div class="ess-test-title-area">
-        <span class="ess-test-num-label">Тест №` + currentNumber + `:</span>
-        <input type="text" placeholder="Назва тесту (напр., 3 AFMGQT...)" value="` + titleVal + `" />
+        <span class="ess-test-num-label">Тест №${currentNumber}:</span>
+        <input type="text" placeholder="Назва тесту..." value="${titleVal}" />
       </div>
       
       <div class="ess-table-responsive">
@@ -880,100 +786,90 @@
         <thead>
           <tr>
             <th style="width: 14%;">ESS</th>
-            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="1" title="` + escapeHtml(savedQuestions.R1 || '') + `">R1 (R4)</th>
-            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="2" title="` + escapeHtml(savedQuestions.R2 || '') + `">R2 (R5)</th>
-            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="3" title="` + escapeHtml(savedQuestions.R3 || '') + `">R3 (R7)</th>
-            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="4" title="` + escapeHtml(savedQuestions.R4 || '') + `">R4 (R8)</th>
-            <th style="width: 10%;">Динаміка</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="1" title="${escapeHtml(savedQuestions.R1 || '')}">R1 (R4)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="2" title="${escapeHtml(savedQuestions.R2 || '')}">R2 (R5)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="3" title="${escapeHtml(savedQuestions.R3 || '')}">R3 (R7)</th>
+            <th colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="4" title="${escapeHtml(savedQuestions.R4 || '')}">R4 (R8)</th>
+            <th style="width: 10%;">Бали</th>
           </tr>
         </thead>
         <tbody>
     `;
 
     for (let c = 1; c <= 5; c++) {
-      let headerText = "Chart #" + c;
-      if (c === 4 || c === 5) {
-        const isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
-        headerText = '<label class="chart-toggle-label" title="Увімкнути/Вимкнути цей чарт з розрахунку"><input type="checkbox" class="chart-toggle" data-chart="' + c + '" ' + isChecked + '> Chart #' + c + '</label>';
-      }
-      tableHtml += '<tr data-chart-group="' + c + '"><td colspan="10" class="chart-header">' + headerText + '</td></tr>';
+      let isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
+      let headerText = (c === 4 || c === 5) ? `<label class="chart-toggle-label"><input type="checkbox" class="chart-toggle" data-chart="${c}" ${isChecked}> Chart #${c}</label>` : `Chart #${c}`;
+      tableHtml += `<tr data-chart-group="${c}"><td colspan="10" class="chart-header">${headerText}</td></tr>`;
+      
       for (let r = 0; r < rows.length; r++) {
-        tableHtml += '<tr data-chart-group="' + c + '"><td class="row-label" data-row-label="' + rows[r].id + '">' + rows[r].label + '</td>';
+        tableHtml += `<tr data-chart-group="${c}"><td class="row-label">${rows[r].label}</td>`;
         for (let col = 1; col <= 4; col++) {
-          const cellKey = c + '_' + col + '_' + rows[r].id;
-          const cellVal = savedData?.values?.[cellKey] !== undefined ? escapeHtml(savedData.values[cellKey]) : "";
+          const cellVal = savedData?.values?.[`${c}_${col}_${rows[r].id}`] !== undefined ? escapeHtml(savedData.values[`${c}_${col}_${rows[r].id}`]) : "";
           if (rows[r].id === 'pneumo-v') {
-            tableHtml += '<td><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="pneumo-v" value="' + cellVal + '"></td>';
-            tableHtml += '<td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="' + c + '" data-col="' + col + '">0</span></td>';
+            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>
+                          <td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
           } else if (rows[r].id === 'pneumo-n') {
-            tableHtml += '<td><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="pneumo-n" value="' + cellVal + '"></td>';
+            tableHtml += `<td><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
           } else if (rows[r].id === 'eda') {
-            tableHtml += '<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="' + c + '" data-col="' + col + '" data-row="eda" value="' + cellVal + '"></td>';
+            tableHtml += `<td colspan="2"><input type="number" min="-2" max="2" step="2" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
           } else {
-            tableHtml += '<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="' + c + '" data-col="' + col + '" data-row="' + rows[r].id + '" value="' + cellVal + '"></td>';
+            tableHtml += `<td colspan="2"><input type="number" min="-1" max="1" step="1" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
           }
         }
-        if (r === 0) tableHtml += '<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="' + c + '">0</span></td>';
+        if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
         tableHtml += '</tr>';
       }
     }
 
     tableHtml += `
       <tr>
-        <td rowspan="2" class="total-label" style="text-align:center; padding: 2px;">
-          Subtotals<br>
-          <label class="contam-toggle-wrapper" style="display: ` + (typeVal === 'screening' ? 'inline-flex' : 'none') + `; align-items: center; justify-content: center; gap: 2px; font-size: 10px; font-weight: normal; cursor: pointer; color: #666; margin-top: 4px;" title="Увімкнути/Вимкнути правило контамінації (блокування NSR при наявності SR)">
-            <input type="checkbox" class="contam-toggle" checked style="margin:0; width:12px; height:12px; cursor:pointer;">
-            🔒 Контам.
+        <td rowspan="2" class="total-label">Subtotals<br>
+          <label class="contam-toggle-wrapper" style="display: ${typeVal === 'screening' ? 'inline-flex' : 'none'}; align-items:center; justify-content:flex-end; gap:2px; font-size:9px; margin-top:4px; cursor:pointer; color:#666;">
+            <input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 🔒 Контам.
           </label>
         </td>`;
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + col + '">-</td>';
-    tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); font-size:12px; color:#666; line-height: 1.2;">Динаміка<br>чартів</td></tr><tr>';
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + col + '">-</span></td>';
+    for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="${col}">-</td>`;
+    tableHtml += `<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); color:#666;">Сума<br>чарту</td></tr><tr>`;
+    for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="${col}">-</span></td>`;
     tableHtml += `</tr>
       <tr>
-        <td class="total-label" style="text-align:center;">Grand Total</td>
-        <td colspan="6" class="calc-cell" style="font-size: 16px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
+        <td class="total-label">Grand Total</td>
+        <td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
         <td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td>
       </tr>
-    </tbody></table>
-    </div> <!-- Закриття .ess-table-responsive -->
+    </tbody></table></div>
     
     <div class="ess-scale-container">
-      <div class="ess-scale-title">Графічний баланс реактивності (Grand Total)</div>
+      <div class="ess-scale-title">Графічний баланс реактивності</div>
       <div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div>
       <div class="ess-scale-labels"></div>
     </div>
+    
     <div class="ess-dynamics-container">
-      <div class="ess-dynamics-title">Динаміка стану респондента по чартах</div>
-      <svg class="ess-dynamics-svg" viewBox="0 0 400 80" preserveAspectRatio="xMidYMid meet">
-        <line x1="20" y1="40" x2="380" y2="40" stroke="#ddd" stroke-width="1" stroke-dasharray="4,2"/>
-        <text x="200" y="15" text-anchor="middle" font-size="9" fill="#888">+ Порівняння (заспокоєння)</text>
-        <text x="200" y="75" text-anchor="middle" font-size="9" fill="#888">- Релевантні (напруга)</text>
-      </svg>
-      <div class="ess-dynamics-legend">
-        <span style="color:#d32f2f; font-size:10px;">● Негативна (релевантні)</span>
-        <span style="color:#888; font-size:10px;">● Нейтральна</span>
-        <span style="color:#388e3c; font-size:10px;">● Позитивна (порівняння)</span>
+      <div class="ess-dynamics-header">
+        <div class="ess-dynamics-title">Динаміка стану</div>
+        <div class="dyn-mode-toggle">
+          <input type="radio" id="dyn_t_${uid}" name="dyn_mode_${uid}" value="total" ${dynModeVal === 'total' ? 'checked' : ''}><label for="dyn_t_${uid}">Сума</label>
+          <input type="radio" id="dyn_s_${uid}" name="dyn_mode_${uid}" value="spots" ${dynModeVal === 'spots' ? 'checked' : ''}><label for="dyn_s_${uid}">R1-R4</label>
+        </div>
       </div>
+      <div class="ess-dynamics-chart">
+        <svg class="ess-dynamics-svg" viewBox="0 0 400 80" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="dyn-legend"></div>
       <div class="ess-dynamics-text"></div>
     </div>
+
     <div class="ess-modal-overlay">
       <div class="ess-modal">
-        <div class="ess-modal-header">
-          <h3>📝 Питання тесту №` + currentNumber + `</h3>
-          <button class="ess-modal-close">&times;</button>
-        </div>
+        <div class="ess-modal-header"><h3>📝 Питання тесту №${currentNumber}</h3><button class="ess-modal-close">&times;</button></div>
         <div class="ess-modal-body">
-          <label>R1 (Relevant 1 / R4): <input type="text" class="ess-question-input" data-q="R1" value="` + escapeHtml(savedQuestions.R1 || '') + `" placeholder="Введіть текст питання R1..."></label>
-          <label>R2 (Relevant 2 / R5): <input type="text" class="ess-question-input" data-q="R2" value="` + escapeHtml(savedQuestions.R2 || '') + `" placeholder="Введіть текст питання R2..."></label>
-          <label>R3 (Relevant 3 / R7): <input type="text" class="ess-question-input" data-q="R3" value="` + escapeHtml(savedQuestions.R3 || '') + `" placeholder="Введіть текст питання R3..."></label>
-          <label>R4 (Relevant 4 / R8): <input type="text" class="ess-question-input" data-q="R4" value="` + escapeHtml(savedQuestions.R4 || '') + `" placeholder="Введіть текст питання R4..."></label>
+          <label>R1 (R4): <input type="text" class="ess-question-input" data-q="R1" value="${escapeHtml(savedQuestions.R1 || '')}"></label>
+          <label>R2 (R5): <input type="text" class="ess-question-input" data-q="R2" value="${escapeHtml(savedQuestions.R2 || '')}"></label>
+          <label>R3 (R7): <input type="text" class="ess-question-input" data-q="R3" value="${escapeHtml(savedQuestions.R3 || '')}"></label>
+          <label>R4 (R8): <input type="text" class="ess-question-input" data-q="R4" value="${escapeHtml(savedQuestions.R4 || '')}"></label>
         </div>
-        <div class="ess-modal-footer">
-          <button class="ess-btn ess-modal-save">💾 Зберегти</button>
-          <button class="ess-btn ess-modal-cancel">Скасувати</button>
-        </div>
+        <div class="ess-modal-footer"><button class="ess-btn ess-modal-save">💾 Зберегти</button><button class="ess-btn ess-modal-cancel">Скасувати</button></div>
       </div>
     </div>
     `;
@@ -985,41 +881,30 @@
     inputsArray.forEach(i => { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
 
     const modalOverlay = wrapper.querySelector(".ess-modal-overlay");
-    const questionBtn = wrapper.querySelector(".ess-questions-btn");
-    const modalClose = wrapper.querySelector(".ess-modal-close");
-    const modalSave = wrapper.querySelector(".ess-modal-save");
-    const modalCancel = wrapper.querySelector(".ess-modal-cancel");
-    const questionInputs = Array.from(wrapper.querySelectorAll(".ess-question-input"));
-    const thQuestions = Array.from(wrapper.querySelectorAll(".ess-th-question"));
-
-    const openModal = () => { modalOverlay.classList.add("active"); };
-    const closeModal = () => { modalOverlay.classList.remove("active"); };
-
-    const saveQuestions = () => {
-      questionInputs.forEach(inp => {
+    wrapper.querySelector(".ess-questions-btn").addEventListener('click', () => modalOverlay.classList.add("active"));
+    const closeModal = () => modalOverlay.classList.remove("active");
+    wrapper.querySelector(".ess-modal-close").addEventListener('click', closeModal);
+    wrapper.querySelector(".ess-modal-cancel").addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+    
+    wrapper.querySelector(".ess-modal-save").addEventListener('click', () => {
+      wrapper.querySelectorAll(".ess-question-input").forEach(inp => {
         const qKey = inp.getAttribute('data-q');
-        const colNum = qKey.replace('R','');
-        const th = thQuestions.find(t => t.getAttribute('data-th-col') === colNum);
+        const th = wrapper.querySelector(`.ess-th-question[data-th-col="${qKey.replace('R','')}"]`);
         if (th) th.title = inp.value ? qKey + ": " + inp.value : '';
       });
-      closeModal();
-      markUnsaved();
-    };
-
-    questionBtn.addEventListener('click', openModal);
-    modalClose.addEventListener('click', closeModal);
-    modalCancel.addEventListener('click', closeModal);
-    modalSave.addEventListener('click', saveQuestions);
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+      closeModal(); markUnsaved();
+    });
 
     wrapper._cachedElements = {
       titleInput: wrapper.querySelector(".ess-test-title-area input[type='text']"),
       formatSelect: wrapper.querySelector(".ess-format-select"),
       typeRadios: Array.from(wrapper.querySelectorAll(".toggle-type input[type='radio']")),
       chartToggles: Array.from(wrapper.querySelectorAll(".chart-toggle")),
+      dynToggles: Array.from(wrapper.querySelectorAll(".dyn-mode-toggle input[type='radio']")),
       inputs: inputsArray,
       inputsMap: inputsMap,
-      questionInputs: questionInputs,
+      questionInputs: Array.from(wrapper.querySelectorAll(".ess-question-input")),
       pneumoSums: Array.from(wrapper.querySelectorAll('[data-calc="pneumo-sum"]')),
       chartTotals: Array.from(wrapper.querySelectorAll('[data-calc="chart-total"]')),
       subtotals: Array.from(wrapper.querySelectorAll('[data-calc="subtotal"]')),
@@ -1036,43 +921,37 @@
     };
 
     let calcTimeout;
-    const debouncedCalc = () => {
-      clearTimeout(calcTimeout);
-      calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50);
-    };
+    const debouncedCalc = () => { clearTimeout(calcTimeout); calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50); };
 
     wrapper.querySelectorAll('.chart-toggle').forEach(el => el.addEventListener('change', debouncedCalc));
-    wrapper.querySelector(".contam-toggle")?.addEventListener("change", () => { calculateTest(wrapper); markUnsaved(); });
+    wrapper.querySelectorAll('.dyn-mode-toggle input').forEach(el => el.addEventListener('change', debouncedCalc));
+    wrapper.querySelector(".contam-toggle")?.addEventListener("change", debouncedCalc);
     wrapper.querySelector(".ess-test-title-area input[type='text']")?.addEventListener('input', markUnsaved);
-    wrapper.querySelectorAll("input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
+    wrapper.querySelectorAll(".toggle-type input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
     wrapper.querySelector(".ess-format-select")?.addEventListener('change', markUnsaved);
 
     wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
-      if (confirm("Ви впевнені, що хочете видалити цей тест?")) {
+      if (confirm("Видалити цей тест?")) {
         wrapper.remove();
-        Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => {
-          w.querySelector(".ess-test-num-label").textContent = "Тест №" + (idx + 1) + ":";
-        });
+        Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => { w.querySelector(".ess-test-num-label").textContent = "Тест №" + (idx + 1) + ":"; });
         markUnsaved();
       }
     });
 
     wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
-      if (confirm("Очистити всі введені цифри в цій таблиці та ПІБ респондента?")) {
+      if (confirm("Очистити цифри в таблиці та ПІБ?")) {
         wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
-        respondentInput.value = ""; // Очищує поле ПІБ
-        debouncedCalc();
+        respondentInput.value = ""; debouncedCalc();
       }
     });
 
     wrapper.addEventListener('input', (e) => {
-      const el = e.target;
-      if (el.tagName === 'INPUT' && el.type === 'number') {
-        const val = el.value.trim();
+      if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+        const val = e.target.value.trim();
         if (val !== "" && val !== "-") {
           const num = Number(val);
-          if (el.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) el.value = "";
-          else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
+          if (e.target.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) e.target.value = "";
+          else if (e.target.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) e.target.value = "";
         }
         debouncedCalc();
       }
@@ -1080,18 +959,12 @@
 
     wrapper.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
-        const currentInput = e.target;
         if (e.key === '-' || e.key === 'Subtract' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
-          e.preventDefault();
-          currentInput.value = (currentInput.getAttribute('data-row') === 'eda') ? "-2" : "-1";
-          debouncedCalc();
+          e.preventDefault(); e.target.value = (e.target.getAttribute('data-row') === 'eda') ? "-2" : "-1"; debouncedCalc();
         } else if (e.key === 'Enter') {
           e.preventDefault();
           const activeInputs = wrapper._cachedElements.inputs.filter(i => !i.disabled);
-          let nextInput = null;
-          for (let i = activeInputs.indexOf(currentInput) + 1; i < activeInputs.length; i++) {
-            if (activeInputs[i].getAttribute('data-col') === currentInput.getAttribute('data-col')) { nextInput = activeInputs[i]; break; }
-          }
+          const nextInput = activeInputs.slice(activeInputs.indexOf(e.target) + 1).find(i => i.getAttribute('data-col') === e.target.getAttribute('data-col'));
           if (nextInput) { nextInput.focus(); nextInput.select(); }
         }
       }
@@ -1107,28 +980,14 @@
     let loadedData = { respondentName: "", tests: [] };
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        loadedData = parseStateData(parsed);
-      }
-    } catch (e) {
-      console.error("Помилка читання localStorage:", e);
-      showError("Помилка завантаження даних з localStorage. Почато з порожньої таблиці.");
-    }
+      if (raw) loadedData = parseStateData(JSON.parse(raw));
+    } catch (e) { showError("Помилка завантаження даних."); }
     
-    // Встановлення ПІБ
     respondentInput.value = loadedData.respondentName || "";
-
-    // Створення тестів
-    if (loadedData.tests && loadedData.tests.length > 0) {
-      loadedData.tests.forEach(data => createTestTable(data));
-    } else {
-      createTestTable();
-    }
+    if (loadedData.tests && loadedData.tests.length > 0) loadedData.tests.forEach(data => createTestTable(data));
+    else createTestTable();
     
-    // Початкова фіксація стану для історії
-    isRestoringHistory = false;
-    recordState();
+    isRestoringHistory = false; recordState();
   };
 
   init();
