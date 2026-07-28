@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v2.2</title>
+  <title>ESS-M Calculator v4.2</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -53,7 +53,7 @@
     /* Скрол для таблиці на мобільних */
     .ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
     .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
-    .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; }
+    .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; transition: background-color 0.2s; }
     .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 13px; color: #222; padding: 4px 2px; }
     .ess-th-question { cursor: help; }
     .chart-header { text-align: left; font-weight: 600; font-size: 12px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 20px; }
@@ -191,7 +191,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v2.2</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.2</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -750,8 +750,14 @@
         const pneumo = calcPneumoESS(pv, pn);
         const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
         if (spanPneumo) {
-          if (pneumo.art) { spanPneumo.textContent = "0 ⚠"; spanPneumo.className = "bg-artifact"; }
-          else { spanPneumo.textContent = pneumo.val; spanPneumo.className = ""; }
+          if (pneumo.art) { 
+            spanPneumo.textContent = "0 ⚠"; 
+            spanPneumo.parentElement.classList.add("bg-artifact"); 
+          }
+          else { 
+            spanPneumo.textContent = pneumo.val; 
+            spanPneumo.parentElement.classList.remove("bg-artifact"); 
+          }
         }
         const colSum = pneumo.val + getVal(cStr, colStr, 'eda') + getVal(cStr, colStr, 'cardio') + getVal(cStr, colStr, 'ppg');
         if (activeCharts[c]) subtotals[col] += colSum;
@@ -1052,8 +1058,9 @@
     });
 
     wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
-      if (confirm("Очистити всі введені цифри в цій таблиці?")) {
+      if (confirm("Очистити всі введені цифри в цій таблиці та ПІБ респондента?")) {
         wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
+        respondentInput.value = ""; // Очищує поле ПІБ
         debouncedCalc();
       }
     });
