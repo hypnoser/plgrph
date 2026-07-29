@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.7.0</title>
+  <title>ESS-M Calculator v4.7.1</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -202,7 +202,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.7.0</title>
+<title>ESS-M Calculator — Довідка v4.7.1</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -223,7 +223,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.7.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.7.1</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -258,7 +258,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.7.0 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.7.1 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -470,13 +470,18 @@
     if (!svg) return;
     svg.innerHTML = '';
     
-    const width = 400, height = 90;
-    const paddingX = 25, paddingY = 15;
+    const width = svg.clientWidth > 100 ? svg.clientWidth : 800;
+    const height = 90;
     
-    const profileStartX = 330; 
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    
+    const paddingX = 25, paddingY = 15;
+    const profileWidth = 80; 
+    const profileStartX = width - profileWidth; 
     const chartWidth = profileStartX - paddingX * 2;
     const chartHeight = height - paddingY * 2;
     const centerY = height / 2;
+    const profCenterX = profileStartX + (profileWidth / 2);
     
     let maxAbs = 6;
     chartDataArray.forEach(d => {
@@ -507,11 +512,11 @@
     svg.appendChild(zeroLine);
     
     const labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    labelPos.setAttribute("x", profileStartX/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "8"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння";
+    labelPos.setAttribute("x", paddingX + chartWidth/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "9.5"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння";
     svg.appendChild(labelPos);
     
     const labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    labelNeg.setAttribute("x", profileStartX/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "8"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні";
+    labelNeg.setAttribute("x", paddingX + chartWidth/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "9.5"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні";
     svg.appendChild(labelNeg);
 
     if (chartDataArray.length === 0) {
@@ -548,7 +553,7 @@
             svg.appendChild(tri);
           } else {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", isTotal ? "3" : "2.5");
+            circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", isTotal ? "3.5" : "3");
             circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1");
             svg.appendChild(circle);
           }
@@ -572,13 +577,12 @@
       chartDataArray.forEach((d, i) => {
         const x = getX(i, chartDataArray.length);
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "7.5"); label.setAttribute("fill", "#999"); label.setAttribute("font-weight", "bold");
+        label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "9"); label.setAttribute("fill", "#999"); label.setAttribute("font-weight", "bold");
         label.textContent = "C" + d.chart;
         if(d.total !== 0 || d.hasArtifact) svg.appendChild(label);
       });
     }
 
-    const profCenterX = 365;
     const divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     divLine.setAttribute("x1", profileStartX); divLine.setAttribute("y1", 10);
     divLine.setAttribute("x2", profileStartX); divLine.setAttribute("y2", height - 10);
@@ -592,7 +596,7 @@
     svg.appendChild(profZero);
 
     const profLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    profLabel.setAttribute("x", profCenterX); profLabel.setAttribute("y", 12); profLabel.setAttribute("text-anchor", "middle"); profLabel.setAttribute("font-size", "8"); profLabel.setAttribute("fill", "#666"); profLabel.setAttribute("font-weight", "bold");
+    profLabel.setAttribute("x", profCenterX); profLabel.setAttribute("y", 12); profLabel.setAttribute("text-anchor", "middle"); profLabel.setAttribute("font-size", "9.5"); profLabel.setAttribute("fill", "#666"); profLabel.setAttribute("font-weight", "bold");
     profLabel.textContent = "Профіль";
     svg.appendChild(profLabel);
 
@@ -612,7 +616,7 @@
       const txtX = avg < 0 ? profCenterX + 3 : profCenterX - 3;
       const txtAnchor = avg < 0 ? "start" : "end";
       const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      lbl.setAttribute("x", txtX); lbl.setAttribute("y", yPos + 5); lbl.setAttribute("text-anchor", txtAnchor); lbl.setAttribute("font-size", "7.5"); lbl.setAttribute("fill", color);
+      lbl.setAttribute("x", txtX); lbl.setAttribute("y", yPos + 6); lbl.setAttribute("text-anchor", txtAnchor); lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", color);
       lbl.textContent = `R${col}`;
       svg.appendChild(lbl);
     };
@@ -752,7 +756,6 @@
       for (let col = 1; col <= 4; col++) {
         const colStr = col.toString();
         
-        // Зчитуємо сирі значення, щоб перевірити чи немає локального артефакту
         const pvRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-v']?.value || "";
         const pnRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-n']?.value || "";
         
@@ -962,7 +965,7 @@
         </div>
       </div>
       <div class="ess-dynamics-chart">
-        <svg class="ess-dynamics-svg" viewBox="0 0 400 90" preserveAspectRatio="none"></svg>
+        <svg class="ess-dynamics-svg" width="100%" height="100%"></svg>
       </div>
       <div class="ess-dynamics-text"></div>
     </div>
@@ -1108,6 +1111,16 @@
     
     isRestoringHistory = false; recordState();
   };
+
+  let globalResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(globalResizeTimer);
+    globalResizeTimer = setTimeout(() => {
+      document.querySelectorAll('.ess-test-wrapper').forEach(wrapper => {
+         if(wrapper._cachedElements) calculateTest(wrapper);
+      });
+    }, 150);
+  });
 
   init();
 </script>
