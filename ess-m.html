@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.7.1</title>
+  <title>ESS-M Calculator v4.8.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -54,9 +54,11 @@
     .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; transition: background-color 0.2s; }
     .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 12px; color: #222; padding: 4px 2px; }
     .ess-th-question { cursor: help; }
-    .chart-header { text-align: left; font-weight: 600; font-size: 11px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 18px; }
+    .chart-header { text-align: left; font-weight: 600; font-size: 11px; background-color: rgba(128,128,128,0.06); padding-left: 8px; color: #3a7cfd; height: 18px; transition: opacity 0.2s; }
     .chart-toggle-label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
     .chart-toggle-label input { cursor: pointer; margin: 0; width: 12px; height: 12px; }
+    
+    .chart-disabled .chart-header { opacity: 0.5; }
     .chart-disabled { background-color: rgba(128,128,128,0.06) !important; }
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
@@ -73,7 +75,7 @@
     .status-badge { display: inline-block; padding: 2px 4px; border-radius: 3px; font-weight: 800; font-size: 11px; letter-spacing: 0.2px; }
     .prob-text { font-size: 9px; font-weight: 600; margin-top: 2px; display: block; }
     
-    .bg-sr { background-color: #ff0000 !important; color: #ffffff !important; }
+    .bg-sr { background-color: #d32f2f !important; color: #ffffff !important; }
     .bg-nsr { background-color: #2e7d32 !important; color: #ffffff !important; }
     .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
@@ -202,7 +204,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.7.1</title>
+<title>ESS-M Calculator — Довідка v4.8.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -223,7 +225,7 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.7.1</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.8.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
     <h3 style="margin-top:0; color:#1565c0;">🎯 Корисність для поліграфологів</h3>
@@ -238,7 +240,7 @@
   <p>Графік "Динаміка стану" забезпечує глибокий візуальний та математичний аналіз:</p>
   <ul>
     <li><strong>Незалежні перемикачі (Комбінування):</strong> Ви можете вмикати будь-які питання (R1-R4) та Суму одночасно для порівняння. Самі кнопки виконують роль легенди.</li>
-    <li><strong>Кольори Colorblind Safe:</strong> Використано спеціальну наукову палітру (Okabe-Ito), що гарантує відмінну контрастність ліній навіть для людей з порушенням колірного сприйняття (без жовтого та білого).</li>
+    <li><strong>Кольори Colorblind Safe:</strong> Використано спеціальну наукову палітру (Okabe-Ito), що гарантує відмінну контрастність ліній навіть для людей з порушенням колірного сприйняття.</li>
     <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає зону фізіологічної невизначеності.</li>
     <li><strong>Міні-Профіль (Гістограма):</strong> Праворуч на графіку відображається міні-гістограма, яка показує середній бал кожного питання за весь тест. Це дозволяє миттєво побачити "переможця" (найсильнішу реакцію).</li>
     <li><strong>Маркування артефактів:</strong> Артефакти маркуються оранжевим кольором у таблиці та трикутником (⚠️) на лінії Загальної суми графіка.</li>
@@ -247,10 +249,10 @@
   <h2>📖 Інструкція з користування</h2>
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та натисніть <code>+ Додати обрахунок</code>.</li>
-    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
+    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення. Також тепер блокується ввід нестандартних "плюсових" значень (напр. +1).</li>
     <li><strong>Локальні артефакти:</strong> Якщо в окремому каналі відбувся збій (артефакт), ви можете виключити його з розрахунку. Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0.</li>
     <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в меню скидає всю сесію.</li>
-    <li><strong>Експорт:</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json).</li>
+    <li><strong>Експорт:</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Назва файлу автоматично генерується на основі введеного П.І.Б.</li>
   </ol>
 
   <div class="warning-box">
@@ -258,7 +260,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.7.1 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.8.0 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -332,9 +334,17 @@
     const state = collectState();
     const stateStr = JSON.stringify(state);
     if (historyIndex >= 0 && JSON.stringify(stateHistory[historyIndex]) === stateStr) return;
+    
     stateHistory = stateHistory.slice(0, historyIndex + 1);
     stateHistory.push(state);
-    historyIndex++;
+    
+    // Обмеження історії до 50 станів для уникнення витоку пам'яті
+    if (stateHistory.length > 50) {
+      stateHistory.shift();
+    } else {
+      historyIndex++;
+    }
+    
     updateUndoRedoButtons();
   };
 
@@ -420,9 +430,13 @@
   };
 
   const saveToFile = () => {
+    const resp = respondentInput.value.trim();
+    const safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
+    const filename = "ess-" + safeResp + new Date().toISOString().slice(0,10) + ".json";
+    
     const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "ess-polygraph-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
     URL.revokeObjectURL(url);
     isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
   };
@@ -444,6 +458,18 @@
   };
 
   document.getElementById("file-import").addEventListener("change", (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); e.target.value = ""; });
+
+  // --- Підтримка Drag & Drop (Перетягування файлів) ---
+  window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
+  window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
+  window.addEventListener('drop', (e) => {
+    e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.name.toLowerCase().endsWith('.json')) loadFromFile(file);
+      else showError("Будь ласка, перетягніть файл саме у форматі .json");
+    }
+  });
 
   const markUnsaved = () => {
     if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
@@ -472,7 +498,6 @@
     
     const width = svg.clientWidth > 100 ? svg.clientWidth : 800;
     const height = 90;
-    
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     
     const paddingX = 25, paddingY = 15;
@@ -756,15 +781,16 @@
       for (let col = 1; col <= 4; col++) {
         const colStr = col.toString();
         
-        const pvRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-v']?.value || "";
-        const pnRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-n']?.value || "";
+        // Виправлено: використано оператор ?? для уникнення втрати нулів
+        const pvRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-v']?.value ?? "";
+        const pnRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-n']?.value ?? "";
         
         const pv = getVal(cStr, colStr, 'pneumo-v');
         const pn = getVal(cStr, colStr, 'pneumo-n');
         
         const pneumo = calcPneumoESS(pv, pn);
         
-        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pnRaw === "∅" || pnRaw === "А") {
+        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pvRaw === "A" || pnRaw === "∅" || pnRaw === "А" || pnRaw === "A") {
             chartHasArt = true;
         }
         
@@ -778,10 +804,13 @@
         const cardio = getVal(cStr, colStr, 'cardio');
         const ppg = getVal(cStr, colStr, 'ppg');
         
-        const edaRaw = ce.inputsMap[cStr + '_' + colStr + '_eda']?.value || "";
-        const carRaw = ce.inputsMap[cStr + '_' + colStr + '_cardio']?.value || "";
-        const ppgRaw = ce.inputsMap[cStr + '_' + colStr + '_ppg']?.value || "";
-        if (edaRaw === "∅" || edaRaw === "А" || carRaw === "∅" || carRaw === "А" || ppgRaw === "∅" || ppgRaw === "А") {
+        const edaRaw = ce.inputsMap[cStr + '_' + colStr + '_eda']?.value ?? "";
+        const carRaw = ce.inputsMap[cStr + '_' + colStr + '_cardio']?.value ?? "";
+        const ppgRaw = ce.inputsMap[cStr + '_' + colStr + '_ppg']?.value ?? "";
+        
+        if (edaRaw === "∅" || edaRaw === "А" || edaRaw === "A" || 
+            carRaw === "∅" || carRaw === "А" || carRaw === "A" || 
+            ppgRaw === "∅" || ppgRaw === "А" || ppgRaw === "A") {
             chartHasArt = true;
         }
 
@@ -913,15 +942,18 @@
         tableHtml += `<tr data-chart-group="${c}"><td class="row-label">${rows[r].label}</td>`;
         for (let col = 1; col <= 4; col++) {
           const cellVal = savedData?.values?.[`${c}_${col}_${rows[r].id}`] !== undefined ? escapeHtml(savedData.values[`${c}_${col}_${rows[r].id}`]) : "";
+          const isEda = rows[r].id === 'eda';
+          const titleText = isEda ? "Допустимо: -2, 0, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
+          const inputHtml = `<input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="${titleText}">`;
+          
           if (rows[r].id === 'pneumo-v') {
-            tableHtml += `<td><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="pneumo-v" value="${cellVal}"></td>
-                          <td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
+            tableHtml += `<td>${inputHtml}</td><td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
           } else if (rows[r].id === 'pneumo-n') {
-            tableHtml += `<td><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="pneumo-n" value="${cellVal}"></td>`;
+            tableHtml += `<td>${inputHtml}</td>`;
           } else if (rows[r].id === 'eda') {
-            tableHtml += `<td colspan="2"><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="eda" value="${cellVal}"></td>`;
+            tableHtml += `<td colspan="2">${inputHtml}</td>`;
           } else {
-            tableHtml += `<td colspan="2"><input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}"></td>`;
+            tableHtml += `<td colspan="2">${inputHtml}</td>`;
           }
         }
         if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
@@ -1043,7 +1075,12 @@
     wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
       if (confirm("Видалити цей тест?")) {
         wrapper.remove();
-        Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => { w.querySelector(".ess-test-num-label").textContent = "Тест №" + (idx + 1) + ":"; });
+        Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).forEach((w, idx) => { 
+            w.querySelector(".ess-test-num-label").textContent = "Тест №" + (idx + 1) + ":"; 
+            const h3 = w.querySelector(".ess-modal-header h3");
+            if (h3) h3.textContent = "📝 Питання тесту №" + (idx + 1);
+        });
+        addBtnBottom.focus();
         markUnsaved();
       }
     });
@@ -1058,8 +1095,13 @@
     wrapper.addEventListener('input', (e) => {
       if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
         const el = e.target;
-        let val = el.value.toLowerCase();
+        let val = el.value.trim().toLowerCase();
         
+        if (val.startsWith('+')) {
+            val = val.slice(1);
+            el.value = val;
+        }
+
         if (val === 'a' || val === 'а' || val === 'f' || val === 'ф') {
             el.value = 'А';
         } else if (val === '00') {
@@ -1072,7 +1114,10 @@
               } else {
                 if (el.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) el.value = "";
                 else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
+                else el.value = val;
               }
+            } else {
+                el.value = val;
             }
         }
         debouncedCalc();
