@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.9.0</title>
+  <title>ESS-M Calculator v4.10.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -210,7 +210,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.8.0</title>
+<title>ESS-M Calculator — Довідка v4.10.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -231,33 +231,32 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.8.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.10.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
-    <h3 style="margin-top:0; color:#1565c0;">🎯 Нове у версії 4.8.0 (Безпека та Аналітика)</h3>
+    <h3 style="margin-top:0; color:#1565c0;">🎯 Нове у версії 4.10.0 (Достатність даних та NO)</h3>
+    <p>Впроваджено жорсткі поліграфологічні правила контролю за артефактами (Missing Data):</p>
     <ul>
-      <li><strong>Автоматичний статус «No Opinion» (NO):</strong> Якщо понад 25% даних містять артефакти, а результат тесту потрапляє в зону невизначеності (INC), калькулятор автоматично присвоює тесту сірий статус <b>NO</b>. Графік також видасть попередження про критичний рівень спотворень.</li>
-      <li><strong>Дата та персоналізація:</strong> Додано зручне поле дати. Під час експорту створюється резервна копія з назвою <code>ess-Прізвище-Рік-Місяць-День.json</code>.</li>
-      <li><strong>Підвищена стабільність:</strong> Запроваджено захист від витоку пам'яті (оптимізована історія дій), а також вдосконалено зчитування даних для уникнення втрати нулів (Nullish coalescing).</li>
+      <li><strong>Блокування споту (Spot = NO):</strong> Якщо $\\ge 25\\%$ каналів конкретного питання містять артефакти, сума балів ігнорується, і питання отримує жорсткий статус <b>NO (No Opinion)</b>.</li>
+      <li><strong>Блокування тесту:</strong> Якщо одне з питань отримало статус NO, тест <b>не може</b> бути визнано NSR. Якщо інші питання не завалили тест (немає SR), Grand Total блокується статусом NO.</li>
+      <li><strong>Глобальне NO:</strong> Якщо по всьому тесту в цілому $\\ge 25\\%$ артефактів — тест повністю відбраковується (Grand Total = NO).</li>
     </ul>
   </div>
 
   <h2>📈 Професійний аналіз динаміки</h2>
-  <p>Графік "Динаміка стану" забезпечує глибокий візуальний та математичний аналіз:</p>
   <ul>
-    <li><strong>Незалежні перемикачі (Комбінування):</strong> Ви можете вмикати будь-які питання (R1-R4) та Суму одночасно для порівняння. Самі кнопки виконують роль легенди.</li>
-    <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає зону фізіологічної невизначеності.</li>
-    <li><strong>Міні-Профіль (Гістограма):</strong> Праворуч на графіку відображається міні-гістограма, яка показує середній бал кожного питання за весь тест. Це дозволяє миттєво побачити найсильнішу реакцію.</li>
-    <li><strong>Маркування артефактів:</strong> Артефакти маркуються оранжевим кольором у таблиці та трикутником (⚠️) на лінії Загальної суми графіка.</li>
+    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння.</li>
+    <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає фізіологічну невизначеність.</li>
+    <li><strong>Міні-Профіль:</strong> Гістограма показує середній бал кожного питання за весь тест (виявлення домінанти).</li>
   </ul>
 
   <h2>📖 Інструкція з користування</h2>
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та виберіть дату. Натисніть <code>+ Додати обрахунок</code>.</li>
-    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення. Також тепер блокується ввід нестандартних "плюсових" значень (напр. +1).</li>
-    <li><strong>Локальні артефакти:</strong> Якщо в окремому каналі відбувся збій, введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0.</li>
+    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
+    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0 (як втрачений канал).</li>
     <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в головному меню скидає всю сесію.</li>
-    <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити збережений раніше файл, просто <b>перетягніть його мишкою (Drag&Drop)</b> на сторінку калькулятора, або скористайтеся кнопкою <code>📂</code>.</li>
+    <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити збережений раніше файл, просто <b>перетягніть його мишкою (Drag&Drop)</b> на сторінку.</li>
   </ol>
 
   <div class="warning-box">
@@ -265,7 +264,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.8.0 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.10.0 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -512,7 +511,7 @@
   window.addEventListener('beforeunload', (e) => { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
   container.addEventListener('focusout', (e) => { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
 
-  const updateDynamicsChart = (wrapper, chartDataArray, ce, highArtifacts, artPercent) => {
+  const updateDynamicsChart = (wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) => {
     const svg = ce.dynamicsSvg;
     const textDiv = ce.dynamicsText;
     
@@ -705,7 +704,9 @@
     }
 
     if (highArtifacts) {
-      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ${(artPercent*100).toFixed(0)}% даних пошкоджено. Рекомендовано No Opinion!</span>`);
+      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ${Math.round(testArtPercent*100)}% даних пошкоджено. Тест визнано No Opinion!</span>`);
+    } else if (hasAnyNO) {
+      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> Окреме питання визнано No Opinion. NSR заблоковано!</span>`);
     } else if (hasAnyArtifact) {
       interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Артефакти:</b> Присутні локальні артефакти, тренд може бути частково спотворений.</span>`);
     }
@@ -872,8 +873,9 @@
 
     let testChannelsTotal = 0;
     let testChannelsArt = 0;
-
     let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
+    let hasAnyNO = false;
+
     for (let col = 1; col <= 4; col++) {
       if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
       
@@ -886,14 +888,11 @@
       let info = getSpotInfo(val, currentTestType);
       let spotArtPercent = spotChannelsTotal[col] > 0 ? spotChannelsArt[col] / spotChannelsTotal[col] : 0;
       
-      if (spotArtPercent > 0.25) {
-          if (info.status === "INC") {
-              info.status = "NO";
-              info.prob = ">25% артефактів";
-              info.cls = "bg-no";
-          } else {
-              info.prob += " (⚠️ артефакти)";
-          }
+      if (spotArtPercent >= 0.25) {
+          info.status = "NO";
+          info.prob = "≥25% артефактів";
+          info.cls = "bg-no";
+          hasAnyNO = true;
       }
 
       spotInfos[col] = info;
@@ -924,25 +923,20 @@
     
     let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     
-    if (currentTestType === "screening" && !hasAnySR) {
-        let hasAnyNO = Object.values(spotInfos).some(info => info.status === "NO");
-        if (hasAnyNO && grandInfo.status !== "NO") {
-             grandInfo.status = "NO";
-             grandInfo.prob = "Spot Rule (Є NO)";
-             grandInfo.cls = "bg-no";
-        }
-    }
-
     let testArtPercent = testChannelsTotal > 0 ? testChannelsArt / testChannelsTotal : 0;
-    const highArtifacts = testArtPercent > 0.25;
+    const highArtifacts = testArtPercent >= 0.25;
 
     if (highArtifacts) {
-        if (grandInfo.status === "INC") {
+        grandInfo.status = "NO";
+        grandInfo.prob = "≥25% артефактів (Тест)";
+        grandInfo.cls = "bg-no";
+    } else if (hasAnyNO) {
+        if (grandInfo.status === "SR") {
+            grandInfo.prob += " (⚠️ є NO)";
+        } else {
             grandInfo.status = "NO";
-            grandInfo.prob = ">25% артефактів";
+            grandInfo.prob = "Блоковано (Спот = NO)";
             grandInfo.cls = "bg-no";
-        } else if (grandInfo.status !== "NO") {
-            grandInfo.prob += " (⚠️ артефакти)";
         }
     }
 
@@ -962,7 +956,7 @@
       ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
 
-    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent);
+    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent, hasAnyNO);
   };
 
   const createTestTable = (savedData = null) => {
