@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.8.0</title>
+  <title>ESS-M Calculator v4.9.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -254,7 +254,7 @@
   <h2>📖 Інструкція з користування</h2>
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та виберіть дату. Натисніть <code>+ Додати обрахунок</code>.</li>
-    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
+    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення. Також тепер блокується ввід нестандартних "плюсових" значень (напр. +1).</li>
     <li><strong>Локальні артефакти:</strong> Якщо в окремому каналі відбувся збій, введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0.</li>
     <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в головному меню скидає всю сесію.</li>
     <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити збережений раніше файл, просто <b>перетягніть його мишкою (Drag&Drop)</b> на сторінку калькулятора, або скористайтеся кнопкою <code>📂</code>.</li>
@@ -347,7 +347,6 @@
     stateHistory = stateHistory.slice(0, historyIndex + 1);
     stateHistory.push(state);
     
-    // Обмеження історії до 50 станів (захист від витоку пам'яті)
     if (stateHistory.length > 50) {
       stateHistory.shift();
     } else {
@@ -421,7 +420,6 @@
   toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
   toolbar.appendChild(saveStatus);
 
-  // ПІБ та Дата
   const respondentArea = document.createElement("div"); 
   respondentArea.className = "ess-respondent-area";
   
@@ -491,7 +489,6 @@
 
   document.getElementById("file-import").addEventListener("change", (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); e.target.value = ""; });
 
-  // --- Drag & Drop ---
   window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
   window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
   window.addEventListener('drop', (e) => {
@@ -774,6 +771,9 @@
     const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
     const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
 
+    let spotChannelsTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    let spotChannelsArt = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
     for (let c = 1; c <= 5; c++) {
       const cStr = c.toString();
       const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
@@ -826,16 +826,17 @@
         const pn = getVal(cStr, colStr, 'pneumo-n');
         const pneumo = calcPneumoESS(pv, pn);
         
-        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pvRaw === "A" || 
-            pnRaw === "∅" || pnRaw === "А" || pnRaw === "A" ||
-            edaRaw === "∅" || edaRaw === "А" || edaRaw === "A" || 
-            carRaw === "∅" || carRaw === "А" || carRaw === "A" || 
-            ppgRaw === "∅" || ppgRaw === "А" || ppgRaw === "A") {
-            chartHasArt = true;
-            isLocalArt = true;
+        let artsInSpot = 0;
+        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pvRaw === "A" || pnRaw === "∅" || pnRaw === "А" || pnRaw === "A") {
+            chartHasArt = true; isLocalArt = true; artsInSpot++;
         }
+        if (edaRaw === "∅" || edaRaw === "А" || edaRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        if (carRaw === "∅" || carRaw === "А" || carRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        if (ppgRaw === "∅" || ppgRaw === "А" || ppgRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
         
         if (activeCharts[c] && hasAnyData) {
+            spotChannelsTotal[col] += 4;
+            spotChannelsArt[col] += artsInSpot;
             totalActiveSpots++;
             if (isLocalArt) artifactActiveSpots++;
         }
@@ -869,15 +870,32 @@
       }
     }
 
-    const artPercent = totalActiveSpots > 0 ? (artifactActiveSpots / totalActiveSpots) : 0;
-    const highArtifacts = artPercent > 0.25;
+    let testChannelsTotal = 0;
+    let testChannelsArt = 0;
 
     let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
     for (let col = 1; col <= 4; col++) {
       if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
+      
+      testChannelsTotal += spotChannelsTotal[col];
+      testChannelsArt += spotChannelsArt[col];
+
       const val = subtotals[col]; activeSpotVals.push(val);
       if (val < minSpotVal) minSpotVal = val;
+      
       let info = getSpotInfo(val, currentTestType);
+      let spotArtPercent = spotChannelsTotal[col] > 0 ? spotChannelsArt[col] / spotChannelsTotal[col] : 0;
+      
+      if (spotArtPercent > 0.25) {
+          if (info.status === "INC") {
+              info.status = "NO";
+              info.prob = ">25% артефактів";
+              info.cls = "bg-no";
+          } else {
+              info.prob += " (⚠️ артефакти)";
+          }
+      }
+
       spotInfos[col] = info;
       if (info.status === "SR") hasAnySR = true;
     }
@@ -904,13 +922,28 @@
 
     if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : "0";
     
-    const grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
+    let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     
-    // Перевірка на No Opinion (NO) при надлишку артефактів
-    if (grandInfo.status === "INC" && highArtifacts) {
-        grandInfo.status = "NO";
-        grandInfo.prob = ">25% артефактів";
-        grandInfo.cls = "bg-no";
+    if (currentTestType === "screening" && !hasAnySR) {
+        let hasAnyNO = Object.values(spotInfos).some(info => info.status === "NO");
+        if (hasAnyNO && grandInfo.status !== "NO") {
+             grandInfo.status = "NO";
+             grandInfo.prob = "Spot Rule (Є NO)";
+             grandInfo.cls = "bg-no";
+        }
+    }
+
+    let testArtPercent = testChannelsTotal > 0 ? testChannelsArt / testChannelsTotal : 0;
+    const highArtifacts = testArtPercent > 0.25;
+
+    if (highArtifacts) {
+        if (grandInfo.status === "INC") {
+            grandInfo.status = "NO";
+            grandInfo.prob = ">25% артефактів";
+            grandInfo.cls = "bg-no";
+        } else if (grandInfo.status !== "NO") {
+            grandInfo.prob += " (⚠️ артефакти)";
+        }
     }
 
     if (ce.grandStatus) {
@@ -929,7 +962,7 @@
       ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
 
-    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, artPercent);
+    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent);
   };
 
   const createTestTable = (savedData = null) => {
@@ -1145,7 +1178,6 @@
         const el = e.target;
         let val = el.value.trim().toLowerCase();
         
-        // Відкидаємо плюси
         if (val.startsWith('+')) {
             val = val.slice(1);
             el.value = val;
