@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.10.0</title>
+  <title>ESS-M Calculator v4.11.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -86,7 +86,7 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Артефакти */
+    /* Справжні Артефакти */
     .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .bg-local-artifact { background-color: #f57c00 !important; }
@@ -210,7 +210,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.10.0</title>
+<title>ESS-M Calculator — Довідка v4.11.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -231,21 +231,22 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.10.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.11.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
   
   <div class="methodology">
-    <h3 style="margin-top:0; color:#1565c0;">🎯 Нове у версії 4.10.0 (Достатність даних та NO)</h3>
+    <h3 style="margin-top:0; color:#1565c0;">🎯 Нове у версії 4.11.0 (Розумна аналітика артефактів)</h3>
     <p>Впроваджено жорсткі поліграфологічні правила контролю за артефактами (Missing Data):</p>
     <ul>
-      <li><strong>Блокування споту (Spot = NO):</strong> Якщо $\\ge 25\\%$ каналів конкретного питання містять артефакти, сума балів ігнорується, і питання отримує жорсткий статус <b>NO (No Opinion)</b>.</li>
-      <li><strong>Блокування тесту:</strong> Якщо одне з питань отримало статус NO, тест <b>не може</b> бути визнано NSR. Якщо інші питання не завалили тест (немає SR), Grand Total блокується статусом NO.</li>
+      <li><strong>Суперечливе дихання:</strong> Якщо ви вводите +1 та -1, система компенсує їх до <code>0 ⚠</code>, але це <b>НЕ вважається артефактом</b>. Це валідні дані, які просто показують нульову реактивність.</li>
+      <li><strong>Справжні артефакти:</strong> Тільки введення <code>00</code> або <code>а</code> маркується оранжевим кольором і є втратою даних.</li>
+      <li><strong>Блокування споту (Spot = NO):</strong> Якщо $\\ge 25\\%$ каналів конкретного питання містять артефакти, питання отримує жорсткий статус <b>NO (No Opinion)</b>.</li>
       <li><strong>Глобальне NO:</strong> Якщо по всьому тесту в цілому $\\ge 25\\%$ артефактів — тест повністю відбраковується (Grand Total = NO).</li>
     </ul>
   </div>
 
   <h2>📈 Професійний аналіз динаміки</h2>
   <ul>
-    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння.</li>
+    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння. Графік будується <b>лише за заповненими чартами</b>, ігноруючи порожні колонки.</li>
     <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає фізіологічну невизначеність.</li>
     <li><strong>Міні-Профіль:</strong> Гістограма показує середній бал кожного питання за весь тест (виявлення домінанти).</li>
   </ul>
@@ -254,7 +255,7 @@
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та виберіть дату. Натисніть <code>+ Додати обрахунок</code>.</li>
     <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
-    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0 (як втрачений канал).</li>
+    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0 (втрачений канал).</li>
     <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в головному меню скидає всю сесію.</li>
     <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити збережений раніше файл, просто <b>перетягніть його мишкою (Drag&Drop)</b> на сторінку.</li>
   </ol>
@@ -264,7 +265,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.10.0 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.11.0 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -383,7 +384,6 @@
     setTimeout(() => { isRestoringHistory = false; }, 100);
   };
 
-  // Тулбар
   const toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
@@ -715,12 +715,12 @@
   };
 
   const calcPneumoESS = (v, n) => {
-    if (v === 0 && n === 0) return { val: 0, art: false };
-    if (v === n) return { val: v, art: false };
-    if (v === 0) return { val: n, art: false };
-    if (n === 0) return { val: v, art: false };
-    if (v + n === 0) return { val: 0, art: true };
-    return { val: 0, art: false };
+    if (v === 0 && n === 0) return { val: 0, conflict: false };
+    if (v === n) return { val: v, conflict: false };
+    if (v === 0) return { val: n, conflict: false };
+    if (n === 0) return { val: v, conflict: false };
+    if (v + n === 0) return { val: 0, conflict: true };
+    return { val: 0, conflict: false };
   };
 
   const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
@@ -791,13 +791,10 @@
       const td = input.parentElement;
       if (val === "∅" || val === "А" || val === "A") {
         td.classList.add("bg-local-artifact");
-        if (activeCharts[chart]) colHasData[col] = true;
         return 0;
       } else {
         td.classList.remove("bg-local-artifact");
       }
-
-      if (val !== "" && val !== "-" && activeCharts[chart]) colHasData[col] = true;
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
 
@@ -809,6 +806,7 @@
       let currentChartSum = 0;
       let chartHasArt = false;
       let cSpots = {};
+      let chartHasData = false;
       const cStr = c.toString();
       
       for (let col = 1; col <= 4; col++) {
@@ -820,32 +818,41 @@
         const carRaw = ce.inputsMap[cStr + '_' + colStr + '_cardio']?.value ?? "";
         const ppgRaw = ce.inputsMap[cStr + '_' + colStr + '_ppg']?.value ?? "";
         
-        const hasAnyData = pvRaw !== "" || pnRaw !== "" || edaRaw !== "" || carRaw !== "" || ppgRaw !== "";
-        let isLocalArt = false;
-
+        const isFilled = (val) => val.trim() !== "" && val.trim() !== "-";
+        const colHasCurrentData = isFilled(pvRaw) || isFilled(pnRaw) || isFilled(edaRaw) || isFilled(carRaw) || isFilled(ppgRaw);
+        
         const pv = getVal(cStr, colStr, 'pneumo-v');
         const pn = getVal(cStr, colStr, 'pneumo-n');
         const pneumo = calcPneumoESS(pv, pn);
         
         let artsInSpot = 0;
-        if (pneumo.art || pvRaw === "∅" || pvRaw === "А" || pvRaw === "A" || pnRaw === "∅" || pnRaw === "А" || pnRaw === "A") {
-            chartHasArt = true; isLocalArt = true; artsInSpot++;
-        }
-        if (edaRaw === "∅" || edaRaw === "А" || edaRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        if (carRaw === "∅" || carRaw === "А" || carRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        if (ppgRaw === "∅" || ppgRaw === "А" || ppgRaw === "A") { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        let isLocalArt = false;
+
+        const isArt = (val) => val === "∅" || val === "А" || val === "A";
         
-        if (activeCharts[c] && hasAnyData) {
+        if (isArt(pvRaw) || isArt(pnRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        if (isArt(edaRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        if (isArt(carRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        if (isArt(ppgRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
+        
+        if (activeCharts[c] && colHasCurrentData) {
             spotChannelsTotal[col] += 4;
             spotChannelsArt[col] += artsInSpot;
             totalActiveSpots++;
             if (isLocalArt) artifactActiveSpots++;
+            colHasData[col] = true;
+            chartHasData = true;
         }
         
         const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
         if (spanPneumo) {
-          if (pneumo.art) { spanPneumo.textContent = "0 ⚠"; spanPneumo.parentElement.classList.add("bg-artifact"); }
-          else { spanPneumo.textContent = pneumo.val; spanPneumo.parentElement.classList.remove("bg-artifact"); }
+          if (pneumo.conflict) { 
+              spanPneumo.textContent = "0 ⚠"; 
+              spanPneumo.parentElement.classList.remove("bg-artifact"); 
+          } else { 
+              spanPneumo.textContent = pneumo.val; 
+              spanPneumo.parentElement.classList.remove("bg-artifact"); 
+          }
         }
         
         const eda = getVal(cStr, colStr, 'eda');
@@ -855,7 +862,7 @@
         const colSum = pneumo.val + eda + cardio + ppg;
         if (activeCharts[c]) {
           subtotals[col] += colSum;
-          if(colHasData[col]) cSpots[col] = colSum;
+          if(colHasCurrentData) cSpots[col] = colSum;
         }
         currentChartSum += colSum;
       }
@@ -866,7 +873,7 @@
         spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
       }
 
-      if (activeCharts[c] && Object.keys(cSpots).length > 0) {
+      if (activeCharts[c] && chartHasData) {
         dynamicsValues.push({ chart: c, total: currentChartSum, hasArtifact: chartHasArt, spots: cSpots });
       }
     }
@@ -923,6 +930,14 @@
     
     let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     
+    if (currentTestType === "screening" && !hasAnySR) {
+        if (hasAnyNO && grandInfo.status !== "NO") {
+             grandInfo.status = "NO";
+             grandInfo.prob = "Spot Rule (Є NO)";
+             grandInfo.cls = "bg-no";
+        }
+    }
+
     let testArtPercent = testChannelsTotal > 0 ? testChannelsArt / testChannelsTotal : 0;
     const highArtifacts = testArtPercent >= 0.25;
 
