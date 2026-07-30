@@ -58,7 +58,7 @@
     .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 13px; font-weight: 700; flex-wrap: wrap; }
     .ess-test-num-label { font-size: 12px; color: #666; margin-right: 6px; }
     .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 13px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
-    .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
+    .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
     
     .ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
     .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
@@ -74,7 +74,6 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
-    /* Відключені (заблоковані форматом) колонки */
     .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
     th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
     td.col-disabled input.score-input { display: none !important; }
@@ -97,7 +96,6 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Артефакти */
     .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
@@ -159,7 +157,22 @@
     .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
     
-    @media (max-width: 650px) {
+    .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
+    .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
+    .footer-left { text-align: left; }
+    .footer-center { text-align: center; color: #888; }
+    .footer-right { text-align: right; }
+    .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }
+    .help-footer a.plgrph-link:hover { color: #3a7cfd; }
+    .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer; }
+    .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(1px); }
+    
+    @media (max-width: 700px) {
+      .content-wrap { padding: 16px; }
+      .help-container { padding: 16px; }
+      .help-footer { flex-direction: column; text-align: center; }
+      .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
       .ess-toolbar { justify-content: center; gap: 3px; padding: 6px 4px; }
       .ess-toolbar-btn { width: 30px; height: 30px; font-size: 16px; }
       .ess-toolbar-sep { margin: 0 2px; }
@@ -183,9 +196,7 @@
       .bg-sr, .bg-nsr, .bg-no, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-no .prob-text, .bg-artifact, .bg-local-artifact { color: white !important; }
       .ess-table td.bg-local-artifact input.score-input { color: white !important; }
       .bg-inc { color: black !important; }
-      
       .col-disabled { display: none !important; }
-      
       .dyn-mode-toggle label { border: 1px solid #ccc !important; }
       .dyn-mode-toggle input:checked + label[for*="_tot_"] { background: #424242 !important; color: white !important; }
       .dyn-mode-toggle input:checked + label[for*="_r1_"] { background: #0072B2 !important; color: white !important; }
@@ -197,6 +208,8 @@
   <base target="_blank">
 </head>
 <body>
+  <div id="app"></div>
+  <input type="file" id="file-import" accept=".json" style="display:none">
 <script id="main-script">
   let appRoot = document.getElementById("app");
   if (!appRoot) {
@@ -211,14 +224,32 @@
   
   let isUnsaved = false;
 
-  const TEST_FORMATS = ["Оберіть формат...", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
+  const TEST_FORMATS = [
+    "ОБЕРІТЬ ФОРМАТ...",
+    "DLST",
+    "DLDT",
+    "LEPET",
+    "AFMGQT (2RQ)",
+    "AFMGQT (3RQ)",
+    "AFMGQT (4RQ)",
+    "BOST",
+    "FEDERAL (BI-ZONE)",
+    "FEDERAL ZCT",
+    "UTAH ZCT",
+    "UTAH MGQT"
+  ];
+  
   const formatConfig = {
-      "Оберіть формат...": { cols: 0, forceDiag: false },
+      "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
       "DLST": { cols: 2, forceDiag: false },
+      "DLDT": { cols: 2, forceDiag: true },
+      "LEPET": { cols: 3, forceDiag: false },
       "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
       "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
       "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
       "BOST": { cols: 2, forceDiag: true },
+      "FEDERAL (BI-ZONE)": { cols: 2, forceDiag: true },
+      "FEDERAL ZCT": { cols: 3, forceDiag: true },
       "UTAH ZCT": { cols: 3, forceDiag: true },
       "UTAH MGQT": { cols: 4, forceDiag: true }
   };
@@ -243,13 +274,10 @@
   const getCleanHtml = () => {
     const styleEl = document.querySelector('style');
     const styles = styleEl ? styleEl.textContent : "";
-    
     const scriptEl = document.getElementById('main-script') || document.querySelector('script');
     const scriptText = scriptEl ? scriptEl.textContent : "";
-    
     const iconEl = document.querySelector('link[rel="icon"]');
     const icon = iconEl ? iconEl.href : "";
-    
     const lt = String.fromCharCode(60);
     const gt = String.fromCharCode(62);
     const slash = String.fromCharCode(47);
@@ -273,109 +301,108 @@
       lt + slash + 'body' + gt,
       lt + slash + 'html' + gt
     ];
-    
-    return lines.join('\n');
+    return lines.join('\\n');
   };
 
   const openHelpPage = () => {
-    const cleanHtml = getCleanHtml();
+    const cleanHtml = getCleanHtml().replace(/\\\\n/g, '\\n');
     const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
     const htmlDataUrl = URL.createObjectURL(blobHtml);
 
     const helpLines = [
-      `<!DOCTYPE html>`,
-      `<html lang="uk">`,
-      `<head>`,
-      `<meta charset="UTF-8">`,
-      `<meta name="viewport" content="width=device-width, initial-scale=1.0">`,
-      `<title>Довідка: ESS-M Calculator v4.19.0</title>`,
-      `<style>`,
-      `  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }`,
-      `  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }`,
-      `  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }`,
-      `  h1 { color: #3a7cfd; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; font-size: 24px; }`,
-      `  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }`,
-      `  h3 { color: #555; font-size: 16px; margin-top: 20px; }`,
-      `  p, li { font-size: 14px; color: #444; }`,
-      `  ul, ol { padding-left: 24px; }`,
-      `  li { margin-bottom: 8px; }`,
-      `  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }`,
-      `  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }`,
-      `  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }`,
-      `  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }`,
-      `  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }`,
-      `  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }`,
-      `  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }`,
-      `  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }`,
-      `  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }`,
-      `  .footer-left { text-align: left; }`,
-      `  .footer-center { text-align: center; color: #888; }`,
-      `  .footer-right { text-align: right; }`,
-      `  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }`,
-      `  .help-footer a.plgrph-link:hover { color: #3a7cfd; }`,
-      `  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }`,
-      `  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }`,
-      `  .dl-btn:active { transform: translateY(1px); }`,
-      `  @media (max-width: 700px) {`,
-      `    .content-wrap { padding: 16px; }`,
-      `    .help-container { padding: 16px; }`,
-      `    .help-footer { flex-direction: column; text-align: center; }`,
-      `    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }`,
-      `  }`,
-      `</style>`,
-      `</head>`,
-      `<body>`,
-      `  <div class="content-wrap">`,
-      `    <div class="help-container">`,
-      `      <h1>Довідка: ESS-M Calculator</h1>`,
-      `      <p>Цей калькулятор розроблений для автоматизації підрахунку балів поліграфологічних тестів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він гарантує математичну точність та захищає від методологічних помилок.</p>`,
-      `      <div class="highlight-box">`,
-      `        <h3>✨ Основні можливості (v4.19.0)</h3>`,
-      `        <ul>`,
-      `          <li><strong>Розумні формати (Захист від помилок):</strong> Калькулятор блокує таблицю до моменту вибору формату (DLST, ZCT, MGQT). Після вибору він автоматично відкриває лише дозволену кількість колонок (від 2 до 4).</li>`,
-      `          <li><strong>Авто-перемикач режимів:</strong> Формати BOST та UTAH завжди автоматично блокуються у статусі "Діагностичний".</li>`,
-      `          <li><strong>Диференційна вага артефактів:</strong> Втрата каналу ЕДА (вага 2) б'є по надійності тесту сильніше, ніж втрата Пневмо чи Кардіо (вага 1). Якщо втрачено ≥ 25% загальної "ваги" даних — питання або тест отримують статус <b>NO (No Opinion)</b>.</li>`,
-      `          <li><strong>Розумне дихання:</strong> Система розрізняє фізіологічний конфлікт (коли ви ввели +1 та -1) та реальну втрату даних (артефакт).</li>`,
-      `        </ul>`,
-      `      </div>`,
-      `      <h2>📖 Покрокова інструкція</h2>`,
-      `      <ol>`,
-      `        <li><strong>Створення тесту:</strong> Введіть П.І.Б. та дату (вони формуватимуть назву файлу). Натисніть кнопку <code>+ Додати обрахунок</code>.</li>`,
-      `        <li><strong>Вибір формату (ОБОВ'ЯЗКОВО):</strong> Зверніть увагу на пульсуючу рамку вгорі таблиці — оберіть там формат тесту. Тільки після цього клітинки розблокуються для введення цифр.</li>`,
-      `        <li><strong>Введення балів:</strong> Дозволені бали: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від'ємних значень натисніть <kbd>-</kbd> (мінус). Для переходу до наступної клітинки тисніть <kbd>Enter</kbd>.</li>`,
-      `        <li><strong>Введення артефактів:</strong> Якщо ділянку неможливо оцінити (Missing Data), двічі натисніть <kbd>0</kbd> (з'явиться <code>∅</code>) або літеру <kbd>А</kbd> (з'явиться <code>А</code>). Клітинка стане оранжевою, бал обнулиться, а система зафіксує втрату даних. Обидві дії рівноцінні.</li>`,
-      `        <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>.</li>`,
-      `      </ol>`,
-      `      <div class="warning-box">`,
-      `        <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>`,
-      `        <p>Калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні дані <strong>не передаються в Інтернет</strong>.</p>`,
-      `        <p>Дані тимчасово зберігаються у локальному кеші. <b>Якщо ви очистите історію браузера — таблиці зникнуть!</b></p>`,
-      `        <p>Для надійного збереження використовуйте верхнє меню:</p>`,
-      `        <ul>`,
-      `          <li><code>📥</code> — завантажити файл <b>.json</b> на комп'ютер (ваш бекап).</li>`,
-      `          <li><code>🖨️</code> — зберегти звіт у форматі <b>PDF</b> або роздрукувати.</li>`,
-      `          <li>Для відкриття збереженого тесту натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку.</li>`,
-      `        </ul>`,
-      `      </div>`,
-      `      <div class="offline-box">`,
-      `        <strong>⚡ Робота без Інтернету (Офлайн)</strong>`,
-      `        <p>Ви можете користуватися цією програмою абсолютно автономно, де б ви не знаходилися. Просто <b>завантажте чистий HTML-файл програми</b> на свій комп'ютер (кнопка розташована внизу цієї сторінки). Відкривайте цей файл у будь-якому браузері навіть без доступу до мережі.</p>`,
-      `      </div>`,
-      `    </div>`,
-      `  </div>`,
-      `  <div class="help-footer">`,
-      `    <div class="footer-left">`,
-      `      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>`,
-      `    </div>`,
-      `    <div class="footer-center">`,
-      `      ESS-M Calculator v4.19.0 &copy; 2026`,
-      `    </div>`,
-      `    <div class="footer-right">`,
-      `      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.19.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>`,
-      `    </div>`,
-      `  </div>`,
-      `</body>`,
-      `</html>`
+      '<!DOCTYPE html>',
+      '<html lang="uk">',
+      '<head>',
+      '<meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '<title>Довідка: ESS-M Calculator v4.19.0</title>',
+      '<style>',
+      '  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }',
+      '  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }',
+      '  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }',
+      '  h1 { color: #3a7cfd; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; font-size: 24px; }',
+      '  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }',
+      '  h3 { color: #555; font-size: 16px; margin-top: 20px; }',
+      '  p, li { font-size: 14px; color: #444; }',
+      '  ul, ol { padding-left: 24px; }',
+      '  li { margin-bottom: 8px; }',
+      '  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }',
+      '  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }',
+      '  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }',
+      '  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }',
+      '  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }',
+      '  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }',
+      '  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }',
+      '  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }',
+      '  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }',
+      '  .footer-left { text-align: left; }',
+      '  .footer-center { text-align: center; color: #888; }',
+      '  .footer-right { text-align: right; }',
+      '  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }',
+      '  .help-footer a.plgrph-link:hover { color: #3a7cfd; }',
+      '  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }',
+      '  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }',
+      '  .dl-btn:active { transform: translateY(1px); }',
+      '  @media (max-width: 700px) {',
+      '    .content-wrap { padding: 16px; }',
+      '    .help-container { padding: 16px; }',
+      '    .help-footer { flex-direction: column; text-align: center; }',
+      '    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }',
+      '  }',
+      '</style>',
+      '</head>',
+      '<body>',
+      '  <div class="content-wrap">',
+      '    <div class="help-container">',
+      '      <h1>Довідка: ESS-M Calculator</h1>',
+      '      <p>Цей калькулятор розроблений для автоматизації підрахунку балів поліграфологічних тестів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він гарантує математичну точність та захищає від методологічних помилок.</p>',
+      '      <div class="highlight-box">',
+      '        <h3>✨ Основні можливості (v4.19.0)</h3>',
+      '        <ul>',
+      '          <li><strong>Розумні формати (Захист від помилок):</strong> Калькулятор блокує таблицю до моменту вибору формату. Після вибору він автоматично відкриває лише дозволену кількість колонок (від 2 до 4).</li>',
+      '          <li><strong>Авто-перемикач режимів:</strong> Формати BOST, FEDERAL та UTAH завжди автоматично блокуються у статусі "Діагностичний".</li>',
+      '          <li><strong>Диференційна вага артефактів:</strong> Втрата каналу ЕДА (вага 2) б\'є по надійності тесту сильніше, ніж втрата Пневмо чи Кардіо (вага 1). Якщо втрачено ≥ 25% загальної "ваги" даних — питання або тест отримують статус <b>NO (No Opinion)</b>.</li>',
+      '          <li><strong>Розумне дихання:</strong> Система розрізняє фізіологічний конфлікт (коли ви ввели +1 та -1) та реальну втрату даних (артефакт).</li>',
+      '        </ul>',
+      '      </div>',
+      '      <h2>📖 Покрокова інструкція</h2>',
+      '      <ol>',
+      '        <li><strong>Створення тесту:</strong> Введіть П.І.Б. та дату (вони формуватимуть назву файлу). Натисніть кнопку <code>+ Додати обрахунок</code>.</li>',
+      '        <li><strong>Вибір формату (ОБОВ\'ЯЗКОВО):</strong> Зверніть увагу на пульсуючу рамку вгорі таблиці — оберіть там формат тесту. Тільки після цього клітинки розблокуються для введення цифр.</li>',
+      '        <li><strong>Введення балів:</strong> Дозволені бали: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від\'ємних значень натисніть <kbd>-</kbd> (мінус). Для переходу до наступної клітинки тисніть <kbd>Enter</kbd>.</li>',
+      '        <li><strong>Введення артефактів:</strong> Якщо ділянку неможливо оцінити (Missing Data), двічі натисніть <kbd>0</kbd> (з\'явиться <code>∅</code>) або літеру <kbd>А</kbd> (з\'явиться <code>А</code>). Клітинка стане оранжевою, бал обнулиться, а система зафіксує втрату даних. Обидві дії рівноцінні.</li>',
+      '        <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>.</li>',
+      '      </ol>',
+      '      <div class="warning-box">',
+      '        <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>',
+      '        <p>Калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні дані <strong>не передаються в Інтернет</strong>.</p>',
+      '        <p>Дані тимчасово зберігаються у локальному кеші. <b>Якщо ви очистите історію браузера — таблиці зникнуть!</b></p>',
+      '        <p>Для надійного збереження використовуйте верхнє меню:</p>',
+      '        <ul>',
+      '          <li><code>📥</code> — завантажити файл <b>.json</b> на комп\'ютер (ваш бекап).</li>',
+      '          <li><code>🖨️</code> — зберегти звіт у форматі <b>PDF</b> або роздрукувати.</li>',
+      '          <li>Для відкриття збереженого тесту натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку.</li>',
+      '        </ul>',
+      '      </div>',
+      '      <div class="offline-box">',
+      '        <strong>⚡ Робота без Інтернету (Офлайн)</strong>',
+      '        <p>Ви можете користуватися цією програмою абсолютно автономно, де б ви не знаходилися. Просто <b>завантажте чистий HTML-файл програми</b> на свій комп\'ютер (кнопка розташована внизу цієї сторінки). Відкривайте цей файл у будь-якому браузері навіть без доступу до мережі.</p>',
+      '      </div>',
+      '    </div>',
+      '  </div>',
+      '  <div class="help-footer">',
+      '    <div class="footer-left">',
+      '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
+      '    </div>',
+      '    <div class="footer-center">',
+      '      ESS-M Calculator v4.19.0 &copy; 2026',
+      '    </div>',
+      '    <div class="footer-right">',
+      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.19.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
+      '    </div>',
+      '  </div>',
+      '</body>',
+      '</html>'
     ];
 
     const blob = new Blob([helpLines.join('\n')], { type: "text/html;charset=utf-8" });
@@ -425,7 +452,7 @@
       
       return {
         title: titleInput ? titleInput.value : "",
-        format: formatSelect ? formatSelect.value : "Оберіть формат...",
+        format: formatSelect ? formatSelect.value : "ОБЕРІТЬ ФОРМАТ...",
         questions: questions,
         type: typeRadio ? typeRadio.value : "screening",
         dynState: dynState,
@@ -497,7 +524,6 @@
   const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
   const btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.onclick = () => document.getElementById("file-import").click();
   
-  // Додано інпут для файлів з кнопкою в тулбарі (сховано, викликається кліком)
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.id = "file-import-toolbar";
@@ -890,9 +916,9 @@
 
   const applyFormat = (wrapper, formatStr) => {
     const ce = wrapper._cachedElements;
-    const config = formatConfig[formatStr] || formatConfig["Оберіть формат..."];
+    const config = formatConfig[formatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
     
-    if (formatStr === "Оберіть формат..." || formatStr === "N/A") {
+    if (formatStr === "ОБЕРІТЬ ФОРМАТ..." || formatStr === "N/A" || formatStr === "Оберіть формат...") {
         ce.formatSelect.classList.add("format-attention");
     } else {
         ce.formatSelect.classList.remove("format-attention");
@@ -980,8 +1006,8 @@
     if (!ce) return;
     
     let currentFormatStr = ce.formatSelect.value;
-    if (currentFormatStr === "N/A") currentFormatStr = "Оберіть формат...";
-    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["Оберіть формат..."]).cols;
+    if (currentFormatStr === "N/A" || currentFormatStr === "Оберіть формат...") currentFormatStr = "ОБЕРІТЬ ФОРМАТ...";
+    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."]).cols;
     
     let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
     let colHasData = { 1: false, 2: false, 3: false, 4: false };
@@ -1228,8 +1254,8 @@
     const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
     const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
     
-    let formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "Оберіть формат...";
-    if (formatVal === "N/A") formatVal = "Оберіть формат...";
+    let formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "ОБЕРІТЬ ФОРМАТ...";
+    if (formatVal === "N/A" || formatVal === "Оберіть формат...") formatVal = "ОБЕРІТЬ ФОРМАТ...";
 
     const savedQuestions = savedData?.questions || {};
     const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
@@ -1408,9 +1434,9 @@
 
     wrapper._cachedElements.formatSelect.addEventListener('change', (e) => {
         const newFormat = e.target.value;
-        const prevFormat = e.target.getAttribute('data-prev-val') || "Оберіть формат...";
-        const newConfig = formatConfig[newFormat] || formatConfig["Оберіть формат..."];
-        const prevConfig = formatConfig[prevFormat] || formatConfig["Оберіть формат..."];
+        const prevFormat = e.target.getAttribute('data-prev-val') || "ОБЕРІТЬ ФОРМАТ...";
+        const newConfig = formatConfig[newFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+        const prevConfig = formatConfig[prevFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
         
         if (newConfig.cols < prevConfig.cols) {
             let hasData = false;
