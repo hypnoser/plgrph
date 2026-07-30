@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.17.1</title>
+  <title>ESS-M Calculator v4.17.2</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -240,39 +240,32 @@
     const script = document.getElementById('main-script').innerHTML;
     const icon = document.querySelector('link[rel="icon"]').href;
     
-    // Використовуємо масив для безпечного збору HTML без випадкових символів та розривів
-    const lines = [
-      '<!DOCTYPE html>',
-      '<html lang="uk">',
-      '<head>',
-      '  <meta charset="UTF-8">',
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '  <title>ESS-M Calculator v4.17.1</title>',
-      '  <link rel="icon" href="' + icon + '">',
-      '  <style>' + styles + '</style>',
-      '  <base target="_blank">',
-      '</head>',
-      '<body>',
-      '  <div id="app"></div>',
-      '  <input type="file" id="file-import" accept=".json" style="display:none">',
-      '<script id="main-script">' + script + '<\\/script>',
-      '</body>',
-      '</html>'
-    ];
-    return lines.join('\\n').replace('<\\/script>', '</scr' + 'ipt>').replace(/\\\\n/g, '\\n');
+    let html = '<!DOCTYPE html>\\n<html lang="uk">\\n<head>\\n';
+    html += '  <meta charset="UTF-8">\\n';
+    html += '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n';
+    html += '  <title>ESS-M Calculator v4.17.2</title>\\n';
+    html += '  <link rel="icon" href="' + icon + '">\\n';
+    html += '  <style>' + styles + '</style>\\n';
+    html += '  <base target="_blank">\\n</head>\\n<body>\\n';
+    html += '  <div id="app"></div>\\n';
+    html += '  <input type="file" id="file-import" accept=".json" style="display:none">\\n';
+    html += '<script id="main-script">' + script + '<\\/script>\\n';
+    html += '</body>\\n</html>';
+    
+    return html.replace(/\\\\n/g, '\\n').replace('<\\/script>', '</scr' + 'ipt>');
   };
 
   const openHelpPage = () => {
     const cleanHtml = getCleanHtml();
     const htmlDataUrl = "data:text/html;charset=utf-8," + encodeURIComponent(cleanHtml);
 
-    const helpContent = [
+    const helpContentArr = [
       '<!DOCTYPE html>',
       '<html lang="uk">',
       '<head>',
       '<meta charset="UTF-8">',
       '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '<title>Довідка: ESS-M Calculator v4.17.1</title>',
+      '<title>Довідка: ESS-M Calculator v4.17.2</title>',
       '<style>',
       '  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }',
       '  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }',
@@ -317,7 +310,7 @@
       '        <h3>✨ Основні можливості</h3>',
       '        <ul>',
       '          <li><strong>Розумні формати:</strong> Вибір формату тесту (DLST, ZCT, MGQT) автоматично розблоковує правильну кількість колонок та перемикає режими.</li>',
-      '          <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter\\'s Rules).</li>',
+      '          <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter\'s Rules).</li>',
       '          <li><strong>Розумна обробка артефактів:</strong> Автоматичне блокування результатів (статус <b>NO</b>), якщо втрачено понад 25% даних. Враховується диференційна вага каналів (ЕДА = 2 бали, Пневмо/Кардіо/ФПГ = 1 бал).</li>',
       '          <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання.</li>',
       '        </ul>',
@@ -325,9 +318,9 @@
       '      <h2>📖 Покрокова інструкція</h2>',
       '      <ol>',
       '        <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента та вкажіть дату. Натисніть кнопку <code>+ Додати обрахунок</code>.</li>',
-      '        <li><strong>Вибір формату (ОБОВ\\'ЯЗКОВО):</strong> За замовчуванням усі поля таблиці заблоковані. Зверніть увагу на пульсуючу рамку в лівому верхньому куті таблиці — оберіть там формат тесту. Система автоматично розблокує потрібну кількість питань.</li>',
-      '        <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від\\'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>',
-      '        <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>',
+      '        <li><strong>Вибір формату (ОБОВ\'ЯЗКОВО):</strong> За замовчуванням усі поля таблиці заблоковані. Зверніть увагу на пульсуючу рамку в лівому верхньому куті таблиці — оберіть там формат тесту. Система автоматично розблокує потрібну кількість питань.</li>',
+      '        <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від\'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>',
+      '        <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з\'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>',
       '        <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>',
       '      </ol>',
       '      <div class="warning-box">',
@@ -336,14 +329,14 @@
       '        <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите кеш — усі таблиці зникнуть!</b></p>',
       '        <p>Для надійного збереження результатів використовуйте верхнє меню:</p>',
       '        <ul>',
-      '          <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп\\'ютер (це ваш бекап).</li>',
+      '          <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп\'ютер (це ваш бекап).</li>',
       '          <li>Натисніть <code>🖨️</code>, щоб зберегти звіт у форматі <b>PDF</b> або одразу роздрукувати на папері.</li>',
       '          <li>Щоб відкрити збережений раніше тест, натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку калькулятора.</li>',
       '        </ul>',
       '      </div>',
       '      <div class="offline-box">',
       '        <strong>⚡ Робота без Інтернету (Офлайн)</strong>',
-      '        <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп\\'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>',
+      '        <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп\'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>',
       '      </div>',
       '    </div>',
       '  </div>',
@@ -352,17 +345,17 @@
       '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
       '    </div>',
       '    <div class="footer-center">',
-      '      ESS-M Calculator v4.17.1 &copy; 2026',
+      '      ESS-M Calculator v4.17.2 &copy; 2026',
       '    </div>',
       '    <div class="footer-right">',
-      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.17.1.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
+      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.17.2.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
       '    </div>',
       '  </div>',
       '</body>',
       '</html>'
-    ].join('\n');
+    ];
 
-    const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
+    const blob = new Blob([helpContentArr.join('\\n').replace(/\\\\n/g, '\\n')], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -989,6 +982,13 @@
       const input = ce.inputsMap[chart + '_' + col + '_' + row];
       if (!input || input.disabled || parseInt(col) > allowedCols) return 0;
       const val = input.value.trim();
+      const td = input.parentElement;
+      if (isArt(val)) {
+        td.classList.add("bg-local-artifact");
+        return 0;
+      } else {
+        td.classList.remove("bg-local-artifact");
+      }
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
 
