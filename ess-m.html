@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.14.1</title>
+  <title>ESS-M Calculator v4.15.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; }
+    body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; display: flex; flex-direction: column; min-height: 100vh; }
     
-    .ess-module-container { max-width: 880px; margin: 0 auto; }
+    .ess-module-container { max-width: 880px; margin: 0 auto; flex: 1; width: 100%; padding-bottom: 20px; }
     
     .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
     .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
@@ -37,11 +37,13 @@
     .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; background-color: #fff; width: 100%; }
     .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; }
+    .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; outline: none; }
     .ess-type-toggle { display: flex; background: rgba(128,128,128,0.12); border-radius: 4px; padding: 2px; border: 1px solid #ccc; }
-    .ess-type-toggle label { padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; }
+    .ess-type-toggle label { padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; transition: opacity 0.2s; }
     .ess-type-toggle input { display: none; }
     .ess-type-toggle input:checked + label { background: #3a7cfd; color: #fff; }
+    .ess-type-toggle input:disabled + label { opacity: 0.3; cursor: not-allowed; }
+    
     .ess-btn { padding: 3px 8px; font-size: 11px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; line-height: 1.2; height: 24px; display: flex; align-items: center; }
     .ess-clear-btn { color: #ff0000; background: transparent; border: 1px solid #ff0000; }
     .ess-clear-btn:hover { background: rgba(255, 0, 0, 0.1); }
@@ -68,9 +70,14 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
+    /* Відключені (заблоковані форматом) колонки */
+    .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
+    th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
+    td.col-disabled input.score-input { display: none !important; }
+    
     .ess-table input.score-input { width: 100%; height: 20px; border: none; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: inherit; padding: 0; outline: none; font-family: inherit; margin: 0; transition: background-color 0.2s; }
     .ess-table input.score-input:focus { background-color: rgba(128,128,128,0.15); border-radius: 2px; }
-    .ess-table input.score-input:disabled { cursor: not-allowed; background-color: rgba(128,128,128,0.05); }
+    .ess-table input.score-input:disabled { cursor: not-allowed; } /* Fallback, але ми використовуємо col-disabled */
     
     .ess-table .calc-cell { font-weight: 700; font-size: 12px; background-color: rgba(128,128,128,0.06); }
     .ess-table .chart-total-cell { font-weight: 700; font-size: 13px; background-color: rgba(128,128,128,0.1); }
@@ -140,12 +147,25 @@
     .ess-modal-body label { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #444; }
     .ess-modal-body input[type="text"] { width: 100%; padding: 6px 8px; margin-top: 4px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
     .ess-modal-body input[type="text"]:focus { outline: none; border-color: #3a7cfd; box-shadow: 0 0 0 2px rgba(58,124,253,0.15); }
+    .ess-modal-body input[type="text"]:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
     .ess-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 10px; border-top: 1px solid #eee; }
     .ess-modal-save { background: #2e7d32; color: #fff; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-save:hover { opacity: 0.9; }
     .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
     
+    /* Footer styles */
+    .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
+    .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
+    .footer-left { text-align: left; }
+    .footer-center { text-align: center; color: #888; }
+    .footer-right { text-align: right; }
+    .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }
+    .help-footer a.plgrph-link:hover { color: #3a7cfd; }
+    .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(1px); }
+
     @media (max-width: 650px) {
       .ess-toolbar { justify-content: center; gap: 3px; padding: 6px 4px; }
       .ess-toolbar-btn { width: 30px; height: 30px; font-size: 16px; }
@@ -154,11 +174,13 @@
       .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
       .ess-delete-btn { align-self: flex-end; margin-top: -26px; }
       .dyn-mode-toggle { justify-content: center; width: 100%; }
+      .help-footer { flex-direction: column; text-align: center; }
+      .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
     }
     
     @media print {
       body { background: #fff; padding: 0; }
-      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay, .help-footer { display: none !important; }
       .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
       .ess-name-wrapper input[type="text"], .ess-date-input { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
@@ -170,6 +192,8 @@
       .bg-sr, .bg-nsr, .bg-no, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-no .prob-text, .bg-artifact, .bg-local-artifact { color: white !important; }
       .ess-table td.bg-local-artifact input.score-input { color: white !important; }
       .bg-inc { color: black !important; }
+      
+      .col-disabled { display: none !important; } /* Ховаємо пусті колонки при друку */
       
       .dyn-mode-toggle label { border: 1px solid #ccc !important; }
       .dyn-mode-toggle input:checked + label[for*="_tot_"] { background: #424242 !important; color: white !important; }
@@ -191,6 +215,18 @@
   appRoot.appendChild(container);
   let isUnsaved = false;
 
+  const TEST_FORMATS = ["N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
+  const formatConfig = {
+      "N/A": { cols: 0, forceDiag: false },
+      "DLST": { cols: 2, forceDiag: false },
+      "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
+      "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
+      "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
+      "BOST": { cols: 2, forceDiag: true },
+      "UTAH ZCT": { cols: 3, forceDiag: true },
+      "UTAH MGQT": { cols: 4, forceDiag: true }
+  };
+
   const escapeHtml = (str) => {
     if (str === null || str === undefined) return "";
     return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -209,22 +245,7 @@
     const script = document.getElementById('main-script').innerHTML;
     const icon = document.querySelector('link[rel="icon"]').href;
     
-    return `<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.14.1</title>
-  <link rel="icon" href="${icon}">
-  <style>${styles}</style>
-  <base target="_blank">
-</head>
-<body>
-  <div id="app"></div>
-  <input type="file" id="file-import" accept=".json" style="display:none">
-<script id="main-script">${script}<\\/script>
-</body>
-</html>`.replace('<\\/script>', '</sc'+'ript>');
+    return `<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.15.0</title>\n  <link rel="icon" href="${icon}">\n  <style>${styles}</style>\n  <base target="_blank">\n</head>\n<body>\n  <div id="app"></div>\n  <input type="file" id="file-import" accept=".json" style="display:none">\n<script id="main-script">${script}<\\/script>\n</body>\n</html>`.replace('<\\/script>', '</sc'+'ript>');
   };
 
   const openHelpPage = () => {
@@ -236,7 +257,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Довідка: ESS-M Calculator v4.14.1</title>
+<title>Довідка: ESS-M Calculator v4.15.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
   .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }
@@ -284,27 +305,26 @@
       <div class="highlight-box">
         <h3>✨ Основні можливості</h3>
         <ul>
-          <li><strong>Автоматичний розрахунок:</strong> Швидке обчислення балів (Subtotals, Grand Total) з виведенням статистичної ймовірності (Pr %).</li>
+          <li><strong>Розумні формати:</strong> Вибір формату тесту (DLST, ZCT, MGQT) автоматично розблоковує правильну кількість колонок та перемикає режими.</li>
           <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter's Rules).</li>
           <li><strong>Розумна обробка артефактів:</strong> Автоматичне блокування результатів (статус <b>NO</b>), якщо втрачено понад 25% даних. Враховується диференційна вага каналів (ЕДА = 2 бали, Пневмо/Кардіо/ФПГ = 1 бал).</li>
-          <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання та міні-профілем домінанти.</li>
+          <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання.</li>
         </ul>
       </div>
 
       <h2>📖 Покрокова інструкція</h2>
       <ol>
-        <li><strong>Створення тесту:</strong> На головній сторінці введіть П.І.Б. респондента та вкажіть дату (вони будуть використані у назві файлу при збереженні). Натисніть кнопку <code>+ Додати обрахунок</code>.</li>
-        <li><strong>Налаштування:</strong> У верхній панелі тесту оберіть формат (напр., 3RQ, ZCT) та тип розрахунку (Скринінговий чи Діагностичний). За потреби натисніть <code>📝 Питання</code>, щоб вписати текст перевірочних питань.</li>
+        <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента та вкажіть дату. Натисніть кнопку <code>+ Додати обрахунок</code>.</li>
+        <li><strong>Вибір формату:</strong> За замовчуванням усі поля заблоковані. Оберіть формат тесту у лівому верхньому куті таблиці. Система автоматично розблокує потрібну кількість питань.</li>
         <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>
         <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>
         <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>
-        <li><strong>Результат:</strong> Оцініть статуси під таблицею (SR, NSR, INC, NO) та перегляньте аналітику під графіком динаміки.</li>
       </ol>
 
       <div class="warning-box">
         <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>
-        <p>Цей калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні введені вами дані (П.І.Б., бали) <strong>не передаються в Інтернет</strong>.</p>
-        <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите історію або кеш браузера — усі таблиці зникнуть!</b></p>
+        <p>Цей калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні введені вами дані <strong>не передаються в Інтернет</strong>.</p>
+        <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите кеш — усі таблиці зникнуть!</b></p>
         <p>Для надійного збереження результатів використовуйте верхнє меню:</p>
         <ul>
           <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп'ютер (це ваш бекап).</li>
@@ -317,7 +337,6 @@
         <strong>⚡ Робота без Інтернету (Офлайн)</strong>
         <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>
       </div>
-
     </div>
   </div>
   
@@ -326,10 +345,10 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.14.1 &copy; 2026
+      ESS-M Calculator v4.15.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.14.1.html" class="dl-btn">⬇ Завантажити чистий файл .html</a>
+      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.15.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
@@ -341,9 +360,6 @@
 
   let autoSaveTimeout;
   let warningTimeout;
-  const STORAGE_KEY = "ess_polygraph_data";
-  const TEST_FORMATS = ["N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
-
   const colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
 
   let stateHistory = [];
@@ -439,7 +455,7 @@
     stateToRestore.tests.forEach(d => createTestTable(d));
     
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToRestore));
+      localStorage.setItem("ess_polygraph_data", JSON.stringify(stateToRestore));
       isUnsaved = false;
       saveStatus.classList.remove("unsaved");
       saveStatus.textContent = "🟢 Дані збережено";
@@ -514,7 +530,7 @@
     if (!isUnsaved) return;
     saveStatus.textContent = "⏳ Запис...";
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+      localStorage.setItem("ess_polygraph_data", JSON.stringify(collectState()));
       isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
     } catch (error) {
       saveStatus.textContent = "❌ Помилка збереження!"; saveStatus.classList.add("unsaved"); showError("Помилка запису в localStorage: " + error.message);
@@ -831,9 +847,89 @@
     return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
   };
 
+  const applyFormat = (wrapper, formatStr) => {
+    const ce = wrapper._cachedElements;
+    const config = formatConfig[formatStr] || formatConfig["N/A"];
+    
+    const scrRadio = ce.typeRadios.find(r => r.value === 'screening');
+    const diagRadio = ce.typeRadios.find(r => r.value === 'diagnostic');
+    const scrLabel = wrapper.querySelector(`label[for="${scrRadio.id}"]`);
+    
+    if (config.forceDiag) {
+        scrRadio.disabled = true;
+        if (scrLabel) scrLabel.style.display = 'none';
+        if (scrRadio.checked) diagRadio.checked = true;
+    } else {
+        scrRadio.disabled = false;
+        if (scrLabel) scrLabel.style.display = 'inline-block';
+    }
+
+    for (let col = 1; col <= 4; col++) {
+        const isColDisabled = col > config.cols;
+        const colStr = col.toString();
+        
+        const th = wrapper.querySelector(`.ess-th-question[data-th-col="${colStr}"]`);
+        if (th) isColDisabled ? th.classList.add("col-disabled") : th.classList.remove("col-disabled");
+        
+        const colInputs = ce.inputs.filter(i => i.getAttribute('data-col') === colStr);
+        colInputs.forEach(inp => {
+            inp.disabled = isColDisabled;
+            const td = inp.parentElement;
+            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+            if (isColDisabled) {
+                inp.value = ""; 
+                td.classList.remove("bg-local-artifact", "bg-artifact");
+            }
+        });
+        
+        const qInp = ce.questionInputs.find(i => i.getAttribute('data-q') === 'R' + colStr);
+        if (qInp) {
+            qInp.disabled = isColDisabled;
+            if (isColDisabled) qInp.value = '';
+            qInp.parentElement.style.opacity = isColDisabled ? '0.4' : '1';
+        }
+        
+        const pneumoSums = ce.pneumoSums.filter(s => s.getAttribute('data-col') === colStr);
+        pneumoSums.forEach(span => {
+            const td = span.parentElement;
+            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+            if (isColDisabled) { span.textContent = ""; td.classList.remove("bg-artifact", "bg-local-artifact"); }
+        });
+        
+        const subtotalSpans = ce.subtotals.filter(s => s.getAttribute('data-col') === colStr);
+        subtotalSpans.forEach(span => {
+            const td = span.parentElement;
+            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+            if (isColDisabled) span.textContent = "";
+        });
+        
+        const statusCells = ce.statuses.filter(s => s.getAttribute('data-col') === colStr);
+        statusCells.forEach(td => {
+            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+            if (isColDisabled) { td.innerHTML = ""; td.className = "status-cell bg-na col-disabled"; }
+        });
+        
+        const dynToggle = wrapper.querySelector(`input[id^="dyn_r${colStr}_"]`);
+        if (dynToggle) {
+            const dynLabel = wrapper.querySelector(`label[for="${dynToggle.id}"]`);
+            if (isColDisabled) {
+                dynToggle.disabled = true; dynToggle.checked = false;
+                if (dynLabel) dynLabel.style.opacity = '0.3';
+            } else {
+                dynToggle.disabled = false;
+                if (dynLabel) dynLabel.style.opacity = '1';
+            }
+        }
+    }
+  };
+
   const calculateTest = (wrapper) => {
     const ce = wrapper._cachedElements;
     if (!ce) return;
+    
+    const currentFormatStr = ce.formatSelect.value;
+    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["N/A"]).cols;
+    
     let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
     let colHasData = { 1: false, 2: false, 3: false, 4: false };
     const currentTestType = ce.typeRadios.find(r => r.checked)?.value || "screening";
@@ -850,17 +946,29 @@
       const cStr = c.toString();
       const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
       const chartInputs = ce.inputs.filter(i => i.getAttribute('data-chart') === cStr);
-      if (!activeCharts[c]) { rows.forEach(r => r.classList.add("chart-disabled")); chartInputs.forEach(i => i.setAttribute("disabled", "true")); } 
-      else { rows.forEach(r => r.classList.remove("chart-disabled")); chartInputs.forEach(i => i.removeAttribute("disabled")); }
+      if (!activeCharts[c]) { 
+          rows.forEach(r => r.classList.add("chart-disabled")); 
+          chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.setAttribute("disabled", "true"); }); 
+      } else { 
+          rows.forEach(r => r.classList.remove("chart-disabled")); 
+          chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.removeAttribute("disabled"); }); 
+      }
     }
     
-    const usePPG = Array.from(wrapper.querySelectorAll("input.score-input[data-row='ppg']")).some(i => i.value.trim() !== "");
+    const usePPG = Array.from(wrapper.querySelectorAll("input.score-input[data-row='ppg']")).some(i => !i.disabled && i.value.trim() !== "");
     const expWeight = usePPG ? 5 : 4;
 
     const getVal = (chart, col, row) => {
       const input = ce.inputsMap[chart + '_' + col + '_' + row];
-      if (!input || input.disabled) return 0;
+      if (!input || input.disabled || parseInt(col) > allowedCols) return 0;
       const val = input.value.trim();
+      const td = input.parentElement;
+      if (isArt(val)) {
+        td.classList.add("bg-local-artifact");
+        return 0;
+      } else {
+        td.classList.remove("bg-local-artifact");
+      }
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
 
@@ -874,6 +982,7 @@
       const cStr = c.toString();
       
       for (let col = 1; col <= 4; col++) {
+        if (col > allowedCols) continue;
         const colStr = col.toString();
         
         const pvRaw = ce.inputsMap[cStr + '_' + colStr + '_pneumo-v']?.value ?? "";
@@ -960,6 +1069,7 @@
     let hasAnyNO = false;
 
     for (let col = 1; col <= 4; col++) {
+      if (col > allowedCols) continue;
       if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
       
       testWeightTotal += spotWeightTotal[col];
@@ -984,12 +1094,14 @@
 
     if (currentTestType === "screening" && hasAnySR && isContamActive) {
       for (let col = 1; col <= 4; col++) {
+        if (col > allowedCols) continue;
         if (colHasData[col] && spotInfos[col].status === "NSR") spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
       }
     }
 
     let grandTotal = 0;
     for (let col = 1; col <= 4; col++) {
+      if (col > allowedCols) continue;
       const colStr = col.toString();
       const spanSub = ce.subtotals.find(s => s.getAttribute('data-col') === colStr);
       if (spanSub) spanSub.textContent = colHasData[col] ? subtotals[col] : "-";
@@ -1002,7 +1114,7 @@
       if (colHasData[col]) grandTotal += subtotals[col];
     }
 
-    if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : "0";
+    if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : (allowedCols > 0 ? "0" : "—");
     
     let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     
@@ -1017,7 +1129,7 @@
     let testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
     const highArtifacts = testArtPercent >= 0.25;
 
-    if (highArtifacts) {
+    if (highArtifacts && allowedCols > 0) {
         grandInfo.status = "NO";
         grandInfo.prob = "≥25% втрат (Тест)";
         grandInfo.cls = "bg-no";
@@ -1031,9 +1143,13 @@
         }
     }
 
+    if (allowedCols === 0) {
+        grandInfo = { status: "N/A", prob: "Оберіть формат тесту", cls: "bg-na" };
+    }
+
     if (ce.grandStatus) {
       ce.grandStatus.className = "status-cell " + grandInfo.cls;
-      ce.grandStatus.innerHTML = grandInfo.status === "N/A" ? '<span style="color:#888;">Немає даних</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:10px;">' + grandInfo.prob + '</span>';
+      ce.grandStatus.innerHTML = (grandInfo.status === "N/A" || grandInfo.status === "-") ? '<span style="color:#888;">' + grandInfo.prob + '</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:10px;">' + grandInfo.prob + '</span>';
     }
 
     if (ce.scaleLabels) {
@@ -1227,16 +1343,46 @@
       dynamicsSvg: wrapper.querySelector(".ess-dynamics-svg"),
       dynamicsText: wrapper.querySelector(".ess-dynamics-text")
     };
+    
+    wrapper._cachedElements.formatSelect.setAttribute('data-prev-val', formatVal);
+    applyFormat(wrapper, formatVal);
 
     let calcTimeout;
     const debouncedCalc = () => { clearTimeout(calcTimeout); calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50); };
+
+    wrapper._cachedElements.formatSelect.addEventListener('change', (e) => {
+        const newFormat = e.target.value;
+        const prevFormat = e.target.getAttribute('data-prev-val') || "N/A";
+        const newConfig = formatConfig[newFormat] || formatConfig["N/A"];
+        const prevConfig = formatConfig[prevFormat] || formatConfig["N/A"];
+        
+        if (newConfig.cols < prevConfig.cols) {
+            let hasData = false;
+            for (let col = newConfig.cols + 1; col <= prevConfig.cols; col++) {
+                const colInputs = wrapper._cachedElements.inputs.filter(i => i.getAttribute('data-col') === col.toString());
+                if (colInputs.some(i => i.value.trim() !== '')) {
+                    hasData = true;
+                    break;
+                }
+            }
+            if (hasData) {
+                showError(`Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R${newConfig.cols + 1}) або використайте "Очистити пам'ять".`);
+                e.target.value = prevFormat;
+                return;
+            }
+        }
+        
+        e.target.setAttribute('data-prev-val', newFormat);
+        applyFormat(wrapper, newFormat);
+        debouncedCalc();
+        markUnsaved();
+    });
 
     wrapper.querySelectorAll('.chart-toggle').forEach(el => el.addEventListener('change', debouncedCalc));
     wrapper.querySelectorAll('.dyn-mode-toggle input').forEach(el => el.addEventListener('change', debouncedCalc));
     wrapper.querySelector(".contam-toggle")?.addEventListener("change", debouncedCalc);
     wrapper.querySelector(".ess-test-title-area input[type='text']")?.addEventListener('input', markUnsaved);
     wrapper.querySelectorAll(".toggle-type input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
-    wrapper.querySelector(".ess-format-select")?.addEventListener('change', markUnsaved);
 
     wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
       if (confirm("Видалити цей тест?")) {
@@ -1312,7 +1458,7 @@
   const init = () => {
     let loadedData = { respondentName: "", examDate: "", tests: [] };
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem("ess_polygraph_data");
       if (raw) loadedData = parseStateData(JSON.parse(raw));
     } catch (e) { showError("Помилка завантаження даних."); }
     
