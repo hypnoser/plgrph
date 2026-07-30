@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.11.0</title>
+  <title>ESS-M Calculator v4.12.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -86,10 +86,9 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Справжні Артефакти */
-    .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
-    .chart-disabled .bg-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
-    .bg-local-artifact { background-color: #f57c00 !important; }
+    /* Артефакти */
+    .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
+    .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
     
     .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
@@ -210,7 +209,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.11.0</title>
+<title>ESS-M Calculator — Довідка v4.12.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
   h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
@@ -231,22 +230,28 @@
 </head>
 <body>
   <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.11.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M (Empirical Scoring System - Multinomial).</p>
+  <p><strong>ESS-M Calculator v4.12.0</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M.</p>
   
   <div class="methodology">
-    <h3 style="margin-top:0; color:#1565c0;">🎯 Нове у версії 4.11.0 (Розумна аналітика артефактів)</h3>
-    <p>Впроваджено жорсткі поліграфологічні правила контролю за артефактами (Missing Data):</p>
+    <h3 style="margin-top:0; color:#1565c0;">🎯 Диференційна вага артефактів (Нове)</h3>
+    <p>Калькулятор використовує найсучасніші принципи контролю достатності даних (Data Adequacy). Артефакти рахуються не за кількістю, а за їх <b>діагностичною вагою</b>:</p>
     <ul>
-      <li><strong>Суперечливе дихання:</strong> Якщо ви вводите +1 та -1, система компенсує їх до <code>0 ⚠</code>, але це <b>НЕ вважається артефактом</b>. Це валідні дані, які просто показують нульову реактивність.</li>
-      <li><strong>Справжні артефакти:</strong> Тільки введення <code>00</code> або <code>а</code> маркується оранжевим кольором і є втратою даних.</li>
-      <li><strong>Блокування споту (Spot = NO):</strong> Якщо $\\ge 25\\%$ каналів конкретного питання містять артефакти, питання отримує жорсткий статус <b>NO (No Opinion)</b>.</li>
-      <li><strong>Глобальне NO:</strong> Якщо по всьому тесту в цілому $\\ge 25\\%$ артефактів — тест повністю відбраковується (Grand Total = NO).</li>
+      <li><b>ЕДА</b> має вагу <b>2</b>. Втрата ЕДА критична.</li>
+      <li><b>Пневмо, Кардіо, ФПГ</b> мають вагу <b>1</b>.</li>
+      <li>Якщо втрачено <b>≥ 25%</b> від загальної "ваги" питання — воно отримує статус <b>NO (No Opinion)</b> і блокується. Якщо втрачено ≥ 25% даних по всьому тесту — бракується весь тест.</li>
+    </ul>
+    
+    <h3 style="color:#1565c0;">🌬️ Розумна обробка дихання</h3>
+    <ul>
+      <li>Якщо в одному каналі дихання артефакт (<code>∅</code>), а в іншому <code>1</code> — виводиться <code>1 ⚠</code>. Це <b>частковий артефакт</b>, який НЕ призводить до втрати даних (канал врятовано).</li>
+      <li>Якщо обидва канали артефакти — виводиться <code>∅</code> (втрата 1 балу даних).</li>
+      <li>Якщо введено <code>+1</code> та <code>-1</code> — це фізіологічний конфлікт (сума <code>0 ⚠</code>), він НЕ вважається артефактом.</li>
     </ul>
   </div>
 
   <h2>📈 Професійний аналіз динаміки</h2>
   <ul>
-    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння. Графік будується <b>лише за заповненими чартами</b>, ігноруючи порожні колонки.</li>
+    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння.</li>
     <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає фізіологічну невизначеність.</li>
     <li><strong>Міні-Профіль:</strong> Гістограма показує середній бал кожного питання за весь тест (виявлення домінанти).</li>
   </ul>
@@ -255,9 +260,8 @@
   <ol>
     <li><strong>Створення:</strong> Введіть П.І.Б. та виберіть дату. Натисніть <code>+ Додати обрахунок</code>.</li>
     <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
-    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як 0 (втрачений канал).</li>
-    <li><strong>Очищення:</strong> Кнопка "Очистити пам'ять" видаляє цифри в поточній таблиці. Кнопка "🗑️" в головному меню скидає всю сесію.</li>
-    <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити збережений раніше файл, просто <b>перетягніть його мишкою (Drag&Drop)</b> на сторінку.</li>
+    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як втрачений.</li>
+    <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити файл, <b>перетягніть його мишкою</b> на сторінку.</li>
   </ol>
 
   <div class="warning-box">
@@ -265,7 +269,7 @@
     Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
   </div>
   
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.11.0 © 2026</p>
+  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.12.0 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -384,6 +388,7 @@
     setTimeout(() => { isRestoringHistory = false; }, 100);
   };
 
+  // Тулбар
   const toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
@@ -488,6 +493,7 @@
 
   document.getElementById("file-import").addEventListener("change", (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); e.target.value = ""; });
 
+  // --- Drag & Drop ---
   window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
   window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
   window.addEventListener('drop', (e) => {
@@ -704,23 +710,42 @@
     }
 
     if (highArtifacts) {
-      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ${Math.round(testArtPercent*100)}% даних пошкоджено. Тест визнано No Opinion!</span>`);
+      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ${Math.round(testArtPercent*100)}% даних втрачено. Тест визнано No Opinion!</span>`);
     } else if (hasAnyNO) {
       interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> Окреме питання визнано No Opinion. NSR заблоковано!</span>`);
     } else if (hasAnyArtifact) {
-      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Артефакти:</b> Присутні локальні артефакти, тренд може бути частково спотворений.</span>`);
+      interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Артефакти:</b> Присутні втрати даних, тренд може бути частково спотворений.</span>`);
     }
 
     textDiv.innerHTML = "<ul>" + interpLines.map(line => `<li>${line}</li>`).join('') + "</ul>";
   };
 
-  const calcPneumoESS = (v, n) => {
-    if (v === 0 && n === 0) return { val: 0, conflict: false };
-    if (v === n) return { val: v, conflict: false };
-    if (v === 0) return { val: n, conflict: false };
-    if (n === 0) return { val: v, conflict: false };
-    if (v + n === 0) return { val: 0, conflict: true };
-    return { val: 0, conflict: false };
+  const isArt = (val) => val === "∅" || val === "А" || val === "A";
+
+  const getPneumoStatus = (pvRaw, pnRaw) => {
+    const pvA = isArt(pvRaw);
+    const pnA = isArt(pnRaw);
+    const pvN = (pvRaw === "" || pvRaw === "-") ? 0 : parseInt(pvRaw) || 0;
+    const pnN = (pnRaw === "" || pnRaw === "-") ? 0 : parseInt(pnRaw) || 0;
+    
+    let val = 0, fullArt = false, partialArt = false, conflict = false;
+    
+    if (pvA && pnA) {
+        fullArt = true;
+    } else if (pvA) {
+        if (Math.abs(pnN) === 1) { val = pnN; partialArt = true; }
+        else { fullArt = true; }
+    } else if (pnA) {
+        if (Math.abs(pvN) === 1) { val = pvN; partialArt = true; }
+        else { fullArt = true; }
+    } else {
+        if (pvN === 0 && pnN === 0) { val = 0; }
+        else if (pvN === pnN) { val = pvN; }
+        else if (pvN === 0) { val = pnN; }
+        else if (pnN === 0) { val = pvN; }
+        else if (pvN + pnN === 0) { val = 0; conflict = true; }
+    }
+    return { val, fullArt, partialArt, conflict };
   };
 
   const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
@@ -772,8 +797,8 @@
     const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
     const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
 
-    let spotChannelsTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    let spotChannelsArt = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    let spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    let spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
 
     for (let c = 1; c <= 5; c++) {
       const cStr = c.toString();
@@ -782,25 +807,16 @@
       if (!activeCharts[c]) { rows.forEach(r => r.classList.add("chart-disabled")); chartInputs.forEach(i => i.setAttribute("disabled", "true")); } 
       else { rows.forEach(r => r.classList.remove("chart-disabled")); chartInputs.forEach(i => i.removeAttribute("disabled")); }
     }
+    
+    const usePPG = Array.from(wrapper.querySelectorAll("input.score-input[data-row='ppg']")).some(i => i.value.trim() !== "");
+    const expWeight = usePPG ? 5 : 4;
 
-    const getVal = (chart, col, row) => {
-      const input = ce.inputsMap[chart + '_' + col + '_' + row];
-      if (!input || input.disabled) return 0;
-      const val = input.value.trim();
-      
-      const td = input.parentElement;
-      if (val === "∅" || val === "А" || val === "A") {
-        td.classList.add("bg-local-artifact");
-        return 0;
-      } else {
-        td.classList.remove("bg-local-artifact");
-      }
-      return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
+    const getVal = (valRaw) => {
+      if (isArt(valRaw)) return 0;
+      return (valRaw === "" || valRaw === "-") ? 0 : parseFloat(valRaw) || 0;
     };
 
     const dynamicsValues = [];
-    let totalActiveSpots = 0;
-    let artifactActiveSpots = 0;
 
     for (let c = 1; c <= 5; c++) {
       let currentChartSum = 0;
@@ -821,43 +837,51 @@
         const isFilled = (val) => val.trim() !== "" && val.trim() !== "-";
         const colHasCurrentData = isFilled(pvRaw) || isFilled(pnRaw) || isFilled(edaRaw) || isFilled(carRaw) || isFilled(ppgRaw);
         
-        const pv = getVal(cStr, colStr, 'pneumo-v');
-        const pn = getVal(cStr, colStr, 'pneumo-n');
-        const pneumo = calcPneumoESS(pv, pn);
+        const pneumo = getPneumoStatus(pvRaw, pnRaw);
         
-        let artsInSpot = 0;
-        let isLocalArt = false;
+        const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
+        if (spanPneumo) {
+          spanPneumo.parentElement.className = "calc-cell"; // reset
+          if (pneumo.fullArt) {
+              spanPneumo.textContent = "∅";
+              spanPneumo.parentElement.classList.add("bg-artifact");
+          } else if (pneumo.partialArt) {
+              spanPneumo.textContent = pneumo.val + " ⚠";
+              spanPneumo.parentElement.classList.add("bg-local-artifact");
+          } else if (pneumo.conflict) {
+              spanPneumo.textContent = "0 ⚠";
+          } else {
+              spanPneumo.textContent = pneumo.val;
+          }
+        }
+        
+        const setCellArt = (rowName, rawVal) => {
+            const inp = ce.inputsMap[cStr + '_' + colStr + '_' + rowName];
+            if (inp) {
+                if (isArt(rawVal)) inp.parentElement.classList.add("bg-local-artifact");
+                else inp.parentElement.classList.remove("bg-local-artifact");
+            }
+        };
+        setCellArt('eda', edaRaw);
+        setCellArt('cardio', carRaw);
+        setCellArt('ppg', ppgRaw);
 
-        const isArt = (val) => val === "∅" || val === "А" || val === "A";
-        
-        if (isArt(pvRaw) || isArt(pnRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        if (isArt(edaRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        if (isArt(carRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        if (isArt(ppgRaw)) { chartHasArt = true; isLocalArt = true; artsInSpot++; }
-        
         if (activeCharts[c] && colHasCurrentData) {
-            spotChannelsTotal[col] += 4;
-            spotChannelsArt[col] += artsInSpot;
-            totalActiveSpots++;
-            if (isLocalArt) artifactActiveSpots++;
+            spotWeightTotal[col] += expWeight;
+            if (pneumo.fullArt) spotWeightLost[col] += 1;
+            if (isArt(edaRaw)) spotWeightLost[col] += 2;
+            if (isArt(carRaw)) spotWeightLost[col] += 1;
+            if (usePPG && isArt(ppgRaw)) spotWeightLost[col] += 1;
+            
+            if (pneumo.fullArt || isArt(edaRaw) || isArt(carRaw) || (usePPG && isArt(ppgRaw))) chartHasArt = true;
+            
             colHasData[col] = true;
             chartHasData = true;
         }
         
-        const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
-        if (spanPneumo) {
-          if (pneumo.conflict) { 
-              spanPneumo.textContent = "0 ⚠"; 
-              spanPneumo.parentElement.classList.remove("bg-artifact"); 
-          } else { 
-              spanPneumo.textContent = pneumo.val; 
-              spanPneumo.parentElement.classList.remove("bg-artifact"); 
-          }
-        }
-        
-        const eda = getVal(cStr, colStr, 'eda');
-        const cardio = getVal(cStr, colStr, 'cardio');
-        const ppg = getVal(cStr, colStr, 'ppg');
+        const eda = getVal(edaRaw);
+        const cardio = getVal(carRaw);
+        const ppg = getVal(ppgRaw);
 
         const colSum = pneumo.val + eda + cardio + ppg;
         if (activeCharts[c]) {
@@ -878,26 +902,26 @@
       }
     }
 
-    let testChannelsTotal = 0;
-    let testChannelsArt = 0;
+    let testWeightTotal = 0;
+    let testWeightLost = 0;
     let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
     let hasAnyNO = false;
 
     for (let col = 1; col <= 4; col++) {
       if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
       
-      testChannelsTotal += spotChannelsTotal[col];
-      testChannelsArt += spotChannelsArt[col];
+      testWeightTotal += spotWeightTotal[col];
+      testWeightLost += spotWeightLost[col];
 
       const val = subtotals[col]; activeSpotVals.push(val);
       if (val < minSpotVal) minSpotVal = val;
       
       let info = getSpotInfo(val, currentTestType);
-      let spotArtPercent = spotChannelsTotal[col] > 0 ? spotChannelsArt[col] / spotChannelsTotal[col] : 0;
+      let spotArtPercent = spotWeightTotal[col] > 0 ? spotWeightLost[col] / spotWeightTotal[col] : 0;
       
       if (spotArtPercent >= 0.25) {
           info.status = "NO";
-          info.prob = "≥25% артефактів";
+          info.prob = "≥25% втрачено";
           info.cls = "bg-no";
           hasAnyNO = true;
       }
@@ -938,12 +962,12 @@
         }
     }
 
-    let testArtPercent = testChannelsTotal > 0 ? testChannelsArt / testChannelsTotal : 0;
+    let testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
     const highArtifacts = testArtPercent >= 0.25;
 
     if (highArtifacts) {
         grandInfo.status = "NO";
-        grandInfo.prob = "≥25% артефактів (Тест)";
+        grandInfo.prob = "≥25% втрат (Тест)";
         grandInfo.cls = "bg-no";
     } else if (hasAnyNO) {
         if (grandInfo.status === "SR") {
