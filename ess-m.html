@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.17.0</title>
+  <title>ESS-M Calculator v4.17.1</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -74,6 +74,7 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
+    /* Відключені (заблоковані форматом) колонки */
     .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
     th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
     td.col-disabled input.score-input { display: none !important; }
@@ -96,6 +97,7 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
+    /* Артефакти */
     .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
@@ -238,113 +240,128 @@
     const script = document.getElementById('main-script').innerHTML;
     const icon = document.querySelector('link[rel="icon"]').href;
     
-    return '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.17.0</title>\n  <link rel="icon" href="' + icon + '">\n  <style>' + styles + '</style>\n  <base target="_blank">\n</head>\n<body>\n  <div id="app"></div>\n  <input type="file" id="file-import" accept=".json" style="display:none">\n<script id="main-script">' + script + '</scr' + 'ipt>\n</body>\n</html>';
+    // Використовуємо масив для безпечного збору HTML без випадкових символів та розривів
+    const lines = [
+      '<!DOCTYPE html>',
+      '<html lang="uk">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '  <title>ESS-M Calculator v4.17.1</title>',
+      '  <link rel="icon" href="' + icon + '">',
+      '  <style>' + styles + '</style>',
+      '  <base target="_blank">',
+      '</head>',
+      '<body>',
+      '  <div id="app"></div>',
+      '  <input type="file" id="file-import" accept=".json" style="display:none">',
+      '<script id="main-script">' + script + '<\\/script>',
+      '</body>',
+      '</html>'
+    ];
+    return lines.join('\\n').replace('<\\/script>', '</scr' + 'ipt>').replace(/\\\\n/g, '\\n');
   };
 
   const openHelpPage = () => {
     const cleanHtml = getCleanHtml();
     const htmlDataUrl = "data:text/html;charset=utf-8," + encodeURIComponent(cleanHtml);
 
-    const helpContent = `<!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Довідка: ESS-M Calculator v4.17.0</title>
-<style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
-  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }
-  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-  h1 { color: #3a7cfd; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
-  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }
-  h3 { color: #555; font-size: 16px; margin-top: 20px; }
-  p, li { font-size: 14px; color: #444; }
-  ul, ol { padding-left: 24px; }
-  li { margin-bottom: 8px; }
-  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }
-  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }
-  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }
-  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }
-  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }
-  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
-  
-  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
-  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
-  .footer-left { text-align: left; }
-  .footer-center { text-align: center; color: #888; }
-  .footer-right { text-align: right; }
-  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }
-  .help-footer a.plgrph-link:hover { color: #3a7cfd; }
-  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
-  .dl-btn:active { transform: translateY(1px); }
-  
-  @media (max-width: 700px) {
-    .content-wrap { padding: 16px; }
-    .help-container { padding: 16px; }
-    .help-footer { flex-direction: column; text-align: center; }
-    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
-  }
-</style>
-</head>
-<body>
-  <div class="content-wrap">
-    <div class="help-container">
-      <h1>Довідка: ESS-M Calculator</h1>
-      <p>Цей калькулятор створений спеціально для поліграфологів, які використовують американську емпіричну систему оцінювання <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він допомагає автоматизувати математичний підрахунок балів, уникнути помилок та швидко формувати професійні звіти.</p>
-      
-      <div class="highlight-box">
-        <h3>✨ Основні можливості</h3>
-        <ul>
-          <li><strong>Розумні формати:</strong> Вибір формату тесту (DLST, ZCT, MGQT) автоматично розблоковує правильну кількість колонок та перемикає режими.</li>
-          <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter's Rules).</li>
-          <li><strong>Розумна обробка артефактів:</strong> Автоматичне блокування результатів (статус <b>NO</b>), якщо втрачено понад 25% даних. Враховується диференційна вага каналів (ЕДА = 2 бали, Пневмо/Кардіо/ФПГ = 1 бал).</li>
-          <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання.</li>
-        </ul>
-      </div>
+    const helpContent = [
+      '<!DOCTYPE html>',
+      '<html lang="uk">',
+      '<head>',
+      '<meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '<title>Довідка: ESS-M Calculator v4.17.1</title>',
+      '<style>',
+      '  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }',
+      '  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }',
+      '  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }',
+      '  h1 { color: #3a7cfd; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; font-size: 24px; }',
+      '  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }',
+      '  h3 { color: #555; font-size: 16px; margin-top: 20px; }',
+      '  p, li { font-size: 14px; color: #444; }',
+      '  ul, ol { padding-left: 24px; }',
+      '  li { margin-bottom: 8px; }',
+      '  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }',
+      '  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }',
+      '  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }',
+      '  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }',
+      '  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }',
+      '  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }',
+      '  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }',
+      '  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }',
+      '  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }',
+      '  .footer-left { text-align: left; }',
+      '  .footer-center { text-align: center; color: #888; }',
+      '  .footer-right { text-align: right; }',
+      '  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }',
+      '  .help-footer a.plgrph-link:hover { color: #3a7cfd; }',
+      '  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }',
+      '  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }',
+      '  .dl-btn:active { transform: translateY(1px); }',
+      '  @media (max-width: 700px) {',
+      '    .content-wrap { padding: 16px; }',
+      '    .help-container { padding: 16px; }',
+      '    .help-footer { flex-direction: column; text-align: center; }',
+      '    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }',
+      '  }',
+      '</style>',
+      '</head>',
+      '<body>',
+      '  <div class="content-wrap">',
+      '    <div class="help-container">',
+      '      <h1>Довідка: ESS-M Calculator</h1>',
+      '      <p>Цей калькулятор створений спеціально для поліграфологів, які використовують американську емпіричну систему оцінювання <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він допомагає автоматизувати математичний підрахунок балів, уникнути помилок та швидко формувати професійні звіти.</p>',
+      '      <div class="highlight-box">',
+      '        <h3>✨ Основні можливості</h3>',
+      '        <ul>',
+      '          <li><strong>Розумні формати:</strong> Вибір формату тесту (DLST, ZCT, MGQT) автоматично розблоковує правильну кількість колонок та перемикає режими.</li>',
+      '          <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter\\'s Rules).</li>',
+      '          <li><strong>Розумна обробка артефактів:</strong> Автоматичне блокування результатів (статус <b>NO</b>), якщо втрачено понад 25% даних. Враховується диференційна вага каналів (ЕДА = 2 бали, Пневмо/Кардіо/ФПГ = 1 бал).</li>',
+      '          <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання.</li>',
+      '        </ul>',
+      '      </div>',
+      '      <h2>📖 Покрокова інструкція</h2>',
+      '      <ol>',
+      '        <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента та вкажіть дату. Натисніть кнопку <code>+ Додати обрахунок</code>.</li>',
+      '        <li><strong>Вибір формату (ОБОВ\\'ЯЗКОВО):</strong> За замовчуванням усі поля таблиці заблоковані. Зверніть увагу на пульсуючу рамку в лівому верхньому куті таблиці — оберіть там формат тесту. Система автоматично розблокує потрібну кількість питань.</li>',
+      '        <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від\\'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>',
+      '        <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>',
+      '        <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>',
+      '      </ol>',
+      '      <div class="warning-box">',
+      '        <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>',
+      '        <p>Цей калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні введені вами дані <strong>не передаються в Інтернет</strong>.</p>',
+      '        <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите кеш — усі таблиці зникнуть!</b></p>',
+      '        <p>Для надійного збереження результатів використовуйте верхнє меню:</p>',
+      '        <ul>',
+      '          <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп\\'ютер (це ваш бекап).</li>',
+      '          <li>Натисніть <code>🖨️</code>, щоб зберегти звіт у форматі <b>PDF</b> або одразу роздрукувати на папері.</li>',
+      '          <li>Щоб відкрити збережений раніше тест, натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку калькулятора.</li>',
+      '        </ul>',
+      '      </div>',
+      '      <div class="offline-box">',
+      '        <strong>⚡ Робота без Інтернету (Офлайн)</strong>',
+      '        <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп\\'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>',
+      '      </div>',
+      '    </div>',
+      '  </div>',
+      '  <div class="help-footer">',
+      '    <div class="footer-left">',
+      '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
+      '    </div>',
+      '    <div class="footer-center">',
+      '      ESS-M Calculator v4.17.1 &copy; 2026',
+      '    </div>',
+      '    <div class="footer-right">',
+      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.17.1.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
+      '    </div>',
+      '  </div>',
+      '</body>',
+      '</html>'
+    ].join('\n');
 
-      <h2>📖 Покрокова інструкція</h2>
-      <ol>
-        <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента та вкажіть дату. Натисніть кнопку <code>+ Додати обрахунок</code>.</li>
-        <li><strong>Вибір формату (ОБОВ'ЯЗКОВО):</strong> За замовчуванням усі поля таблиці заблоковані. Зверніть увагу на пульсуючу рамку в лівому верхньому куті таблиці — оберіть там формат тесту. Система автоматично розблокує потрібну кількість питань.</li>
-        <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>
-        <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>
-        <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>
-      </ol>
-
-      <div class="warning-box">
-        <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>
-        <p>Цей калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні введені вами дані <strong>не передаються в Інтернет</strong>.</p>
-        <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите кеш — усі таблиці зникнуть!</b></p>
-        <p>Для надійного збереження результатів використовуйте верхнє меню:</p>
-        <ul>
-          <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп'ютер (це ваш бекап).</li>
-          <li>Натисніть <code>🖨️</code>, щоб зберегти звіт у форматі <b>PDF</b> або одразу роздрукувати на папері.</li>
-          <li>Щоб відкрити збережений раніше тест, натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку калькулятора.</li>
-        </ul>
-      </div>
-
-      <div class="offline-box">
-        <strong>⚡ Робота без Інтернету (Офлайн)</strong>
-        <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="help-footer">
-    <div class="footer-left">
-      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
-    </div>
-    <div class="footer-center">
-      ESS-M Calculator v4.17.0 &copy; 2026
-    </div>
-    <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.17.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
-    </div>
-  </div>
-</body>
-</html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     window.open(url, "_blank", "noopener,noreferrer");
@@ -542,7 +559,10 @@
     isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
   };
 
-  const loadFromFile = (file) => {
+  const handleFileLoad = (file) => {
+    if (isUnsaved) {
+      if (!confirm("У вас є незбережені дані! Відкриття нового файлу зітре поточні таблиці. Продовжити?")) return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -559,7 +579,10 @@
     reader.readAsText(file);
   };
 
-  document.getElementById("file-import").addEventListener("change", (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); e.target.value = ""; });
+  document.getElementById("file-import").addEventListener("change", (e) => { 
+    if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
+    e.target.value = ""; 
+  });
 
   window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
   window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
@@ -567,7 +590,7 @@
     e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
-      if (file.name.toLowerCase().endsWith('.json')) loadFromFile(file);
+      if (file.name.toLowerCase().endsWith('.json')) handleFileLoad(file);
       else showError("Будь ласка, перетягніть файл саме у форматі .json");
     }
   });
@@ -966,13 +989,6 @@
       const input = ce.inputsMap[chart + '_' + col + '_' + row];
       if (!input || input.disabled || parseInt(col) > allowedCols) return 0;
       const val = input.value.trim();
-      const td = input.parentElement;
-      if (isArt(val)) {
-        td.classList.add("bg-local-artifact");
-        return 0;
-      } else {
-        td.classList.remove("bg-local-artifact");
-      }
       return (val === "" || val === "-") ? 0 : parseFloat(val) || 0;
     };
 
