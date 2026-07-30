@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.15.1</title>
+  <title>ESS-M Calculator v4.16.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -54,7 +54,7 @@
     .ess-test-title-area { display: flex; align-items: baseline; width: 100%; margin-bottom: 6px; font-size: 13px; font-weight: 700; flex-wrap: wrap; }
     .ess-test-num-label { font-size: 12px; color: #666; margin-right: 6px; }
     .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 13px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
-    .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
+    .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
     
     .ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
     .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
@@ -154,23 +154,39 @@
     .ess-modal-cancel { background: #e0e0e0; color: #333; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .ess-modal-cancel:hover { background: #d5d5d5; }
     
-    /* Footer styles */
-    .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
-    .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
-    .footer-left { text-align: left; }
-    .footer-center { text-align: center; color: #888; }
-    .footer-right { text-align: right; }
-    .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }
-    .help-footer a.plgrph-link:hover { color: #3a7cfd; }
-    .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-    .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
-    .dl-btn:active { transform: translateY(1px); }
+    @media (max-width: 650px) {
+      .ess-toolbar { justify-content: center; gap: 3px; padding: 6px 4px; }
+      .ess-toolbar-btn { width: 30px; height: 30px; font-size: 16px; }
+      .ess-toolbar-sep { margin: 0 2px; }
+      .ess-save-status { margin: 4px auto 0 auto; width: 100%; }
+      .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
+      .ess-delete-btn { align-self: flex-end; margin-top: -26px; }
+      .dyn-mode-toggle { justify-content: center; width: 100%; }
+    }
     
-    @media (max-width: 700px) {
-      .content-wrap { padding: 16px; }
-      .help-container { padding: 16px; }
-      .help-footer { flex-direction: column; text-align: center; }
-      .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
+      .ess-name-wrapper input[type="text"], .ess-date-input { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
+      .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
+      .ess-table-responsive { overflow: visible !important; }
+      .ess-table { min-width: 100% !important; width: 100% !important; }
+      .chart-disabled { display: none !important; }
+      .ess-table input.score-input, .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
+      .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-no, .bg-artifact, .bg-local-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .bg-sr, .bg-nsr, .bg-no, .bg-sr .prob-text, .bg-nsr .prob-text, .bg-no .prob-text, .bg-artifact, .bg-local-artifact { color: white !important; }
+      .ess-table td.bg-local-artifact input.score-input { color: white !important; }
+      .bg-inc { color: black !important; }
+      
+      .col-disabled { display: none !important; }
+      
+      .dyn-mode-toggle label { border: 1px solid #ccc !important; }
+      .dyn-mode-toggle input:checked + label[for*="_tot_"] { background: #424242 !important; color: white !important; }
+      .dyn-mode-toggle input:checked + label[for*="_r1_"] { background: #0072B2 !important; color: white !important; }
+      .dyn-mode-toggle input:checked + label[for*="_r2_"] { background: #D55E00 !important; color: white !important; }
+      .dyn-mode-toggle input:checked + label[for*="_r3_"] { background: #009E73 !important; color: white !important; }
+      .dyn-mode-toggle input:checked + label[for*="_r4_"] { background: #CC79A7 !important; color: white !important; }
     }
   </style>
   <base target="_blank">
@@ -215,7 +231,7 @@
     const script = document.getElementById('main-script').innerHTML;
     const icon = document.querySelector('link[rel="icon"]').href;
     
-    return `<!DOCTYPE html>\\n<html lang="uk">\\n<head>\\n  <meta charset="UTF-8">\\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\\n  <title>ESS-M Calculator v4.15.1</title>\\n  <link rel="icon" href="` + icon + `">\\n  <style>` + styles + `</style>\\n  <base target="_blank">\\n</head>\\n<body>\\n  <div id="app"></div>\\n  <input type="file" id="file-import" accept=".json" style="display:none">\\n<script id="main-script">` + script + `<\\/script>\\n</body>\\n</html>`.replace('<\\/script>', '</sc'+'ript>');
+    return '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.16.0</title>\n  <link rel="icon" href="' + icon + '">\n  <style>' + styles + '</style>\n  <base target="_blank">\n</head>\n<body>\n  <div id="app"></div>\n  <input type="file" id="file-import" accept=".json" style="display:none">\n<script id="main-script">' + script + '</scr' + 'ipt>\n</body>\n</html>';
   };
 
   const openHelpPage = () => {
@@ -227,7 +243,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Довідка: ESS-M Calculator v4.15.1</title>
+<title>Довідка: ESS-M Calculator v4.16.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
   .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }
@@ -246,7 +262,6 @@
   code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }
   kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
   
-  /* Footer styles */
   .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
   .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
   .footer-left { text-align: left; }
@@ -307,7 +322,6 @@
         <strong>⚡ Робота без Інтернету (Офлайн)</strong>
         <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто <b>завантажте чистий ісходний файл програми на свій комп'ютер</b> (скористайтеся синьою кнопкою у темному підвалі цієї сторінки) та відкривайте його у будь-якому браузері навіть без підключення до мережі.</p>
       </div>
-
     </div>
   </div>
   
@@ -316,10 +330,10 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.15.1 &copy; 2026
+      ESS-M Calculator v4.16.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.15.1.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.16.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
@@ -835,6 +849,10 @@
         if (scrLabel) scrLabel.style.display = 'inline-block';
     }
 
+    const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
+    const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
+    const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
+
     for (let col = 1; col <= 4; col++) {
         const isColDisabled = col > config.cols;
         const colStr = col.toString();
@@ -844,7 +862,8 @@
         
         const colInputs = ce.inputs.filter(i => i.getAttribute('data-col') === colStr);
         colInputs.forEach(inp => {
-            inp.disabled = isColDisabled;
+            const cNum = inp.getAttribute('data-chart');
+            inp.disabled = isColDisabled || !activeCharts[cNum];
             const td = inp.parentElement;
             isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
             if (isColDisabled) {
