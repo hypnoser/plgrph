@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.13.1</title>
+  <title>ESS-M Calculator v4.14.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -86,12 +86,10 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Артефакти (Оранжевий фон) */
+    /* Артефакти */
     .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
-    /* Текст всередині артефакту має бути білим, навіть коли поле активне */
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
-    .ess-table td.bg-local-artifact input.score-input:focus { background-color: rgba(255,255,255,0.2) !important; }
     
     .ess-scale-container { margin-top: 4px; padding: 4px 8px; background: rgba(128,128,128,0.05); border-radius: 4px; border: 1px solid #ccc; }
     .ess-scale-title { font-size: 9px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; color: #666; }
@@ -211,67 +209,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESS-M Calculator — Довідка v4.13.1</title>
+<title>Довідка: ESS-M Calculator v4.14.0</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 24px; color: #222; background: #fafafa; }
-  h1 { color: #3a7cfd; border-bottom: 2px solid #3a7cfd; padding-bottom: 8px; margin-top: 0; }
-  h2 { color: #2e7d32; margin-top: 32px; font-size: 20px; }
-  h3 { color: #555; }
-  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px 20px; margin: 24px 0; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-  .warning-box strong { color: #ff0000; font-size: 16px; display: block; margin-bottom: 8px; }
-  .feature-list { background: #e8f5e9; border-radius: 6px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .feature-list ul { margin: 0; padding-left: 20px; }
-  .feature-list li { margin-bottom: 10px; }
-  code { background: #f0f0f0; padding: 3px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: #ff0000; }
-  .methodology { background: #e3f2fd; border-radius: 6px; padding: 20px 24px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .methodology ul { margin-bottom: 0; }
-  ol { padding-left: 20px; }
-  ol li { margin-bottom: 12px; }
-  @media (max-width: 600px) { body { padding: 16px; } }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px; color: #222; background: #f5f5f5; }
+  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  h1 { color: #3a7cfd; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; font-size: 24px; }
+  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }
+  h3 { color: #555; font-size: 16px; margin-top: 20px; }
+  p, li { font-size: 14px; color: #444; }
+  ul, ol { padding-left: 24px; }
+  li { margin-bottom: 8px; }
+  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }
+  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }
+  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }
+  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }
+  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+  @media (max-width: 600px) { body { padding: 10px; } .help-container { padding: 16px; } }
 </style>
 </head>
 <body>
-  <h1>ESS-M Calculator — Довідкова інформація</h1>
-  <p><strong>ESS-M Calculator v4.13.1</strong> — це спеціалізований веб-додаток для автоматизованого підрахунку результатів поліграфологічних тестів за емпіричною системою оцінювання ESS-M.</p>
-  
-  <div class="methodology">
-    <h3 style="margin-top:0; color:#1565c0;">🎯 Диференційна вага артефактів</h3>
-    <p>Калькулятор використовує найсучасніші принципи контролю достатності даних (Data Adequacy). Артефакти рахуються не за кількістю, а за їх <b>діагностичною вагою</b>:</p>
-    <ul>
-      <li><b>ЕДА</b> має вагу <b>2</b>. Втрата ЕДА критична.</li>
-      <li><b>Пневмо, Кардіо, ФПГ</b> мають вагу <b>1</b>.</li>
-      <li>Якщо втрачено <b>≥ 25%</b> від загальної "ваги" питання — воно отримує статус <b>NO (No Opinion)</b> і блокується. Якщо втрачено ≥ 25% даних по всьому тесту — бракується весь тест.</li>
-    </ul>
+  <div class="help-container">
+    <h1>Довідка: ESS-M Calculator</h1>
+    <p>Цей калькулятор створений спеціально для поліграфологів, які використовують американську емпіричну систему оцінювання <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він допомагає автоматизувати математичний підрахунок балів, уникнути помилок та швидко формувати професійні звіти.</p>
     
-    <h3 style="color:#1565c0;">🌬️ Розумна обробка дихання</h3>
-    <ul>
-      <li>Якщо в одному каналі дихання артефакт (<code>∅</code>), а в іншому <code>1</code> — виводиться <code>1 ⚠</code>. Це <b>частковий артефакт</b>, який НЕ призводить до втрати даних (канал врятовано).</li>
-      <li>Якщо обидва канали артефакти — виводиться <code>∅</code> (втрата 1 балу даних).</li>
-      <li>Якщо введено <code>+1</code> та <code>-1</code> — це фізіологічний конфлікт (сума <code>0 ⚠</code>), він НЕ вважається артефактом і не відбраковує дані.</li>
-    </ul>
+    <div class="highlight-box">
+      <h3>✨ Основні можливості</h3>
+      <ul>
+        <li><strong>Автоматичний розрахунок:</strong> Швидке обчислення балів (Subtotals, Grand Total) з виведенням статистичної ймовірності (Pr %).</li>
+        <li><strong>Два режими:</strong> Підтримка Скринінгового режиму (з правилом Spot Rule) та Діагностичного режиму (з правилом Senter's Rules).</li>
+        <li><strong>Розумна обробка артефактів:</strong> Автоматичне блокування результатів (статус <b>NO</b>), якщо втрачено понад 25% даних. Враховується диференційна вага каналів (ЕДА = 2 бали, Пневмо/Кардіо/ФПГ = 1 бал).</li>
+        <li><strong>Графік динаміки:</strong> Візуалізація трендів (сенсибілізація/габітуація) з можливістю окремо переглядати кожне питання та міні-профілем домінанти.</li>
+      </ul>
+    </div>
+
+    <h2>📖 Покрокова інструкція</h2>
+    <ol>
+      <li><strong>Створення тесту:</strong> На головній сторінці введіть П.І.Б. респондента та вкажіть дату (вони будуть використані у назві файлу при збереженні). Натисніть кнопку <code>+ Додати обрахунок</code>.</li>
+      <li><strong>Налаштування:</strong> У верхній панелі тесту оберіть формат (напр., 3RQ, ZCT) та тип розрахунку (Скринінговий чи Діагностичний). За потреби натисніть <code>📝 Питання</code>, щоб вписати текст перевірочних питань.</li>
+      <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>
+      <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних.</li>
+      <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>
+      <li><strong>Результат:</strong> Оцініть статуси під таблицею (SR, NSR, INC, NO) та перегляньте аналітику під графіком динаміки.</li>
+    </ol>
+
+    <div class="warning-box">
+      <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>
+      <p>Цей калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні введені вами дані (П.І.Б., бали) <strong>не передаються в Інтернет</strong>.</p>
+      <p>Дані тимчасово зберігаються у локальному кеші браузера. <b>Якщо ви очистите історію або кеш браузера — усі таблиці зникнуть!</b></p>
+      <p>Для надійного збереження результатів використовуйте верхнє меню:</p>
+      <ul>
+        <li>Натисніть <code>📥</code>, щоб завантажити файл <b>.json</b> на ваш комп'ютер (це ваш бекап).</li>
+        <li>Натисніть <code>🖨️</code>, щоб зберегти звіт у форматі <b>PDF</b> або одразу роздрукувати на папері.</li>
+        <li>Щоб відкрити збережений раніше тест, натисніть <code>📂</code> або <b>просто перетягніть файл .json мишкою</b> на сторінку калькулятора.</li>
+      </ul>
+    </div>
+
+    <div class="offline-box">
+      <strong>⚡ Робота без Інтернету (Офлайн)</strong>
+      <p>Оскільки програма не потребує сервера, ви можете користуватися нею абсолютно автономно. Просто збережіть файл <code>.html</code> на свій робочий стіл (або флешку). Відкривши цей файл у будь-якому браузері, ви отримаєте 100% робочий калькулятор навіть без підключення до мережі.</p>
+    </div>
+
+    <p style="text-align:center; color:#999; margin-top:30px; font-size:12px;">ESS-M Calculator v4.14.0 © 2026</p>
   </div>
-
-  <h2>📈 Професійний аналіз динаміки</h2>
-  <ul>
-    <li><strong>Незалежні перемикачі (Комбінування):</strong> Вмикайте будь-які питання (R1-R4) та Суму одночасно для порівняння.</li>
-    <li><strong>Сіра зона (Шум):</strong> Світло-сіра смуга (-3 до +3) позначає фізіологічну невизначеність.</li>
-    <li><strong>Міні-Профіль:</strong> Гістограма показує середній бал кожного питання за весь тест (виявлення домінанти).</li>
-  </ul>
-
-  <h2>📖 Інструкція з користування</h2>
-  <ol>
-    <li><strong>Створення:</strong> Введіть П.І.Б. та виберіть дату. Натисніть <code>+ Додати обрахунок</code>.</li>
-    <li><strong>Введення балів:</strong> Вносьте оцінки (-1, 0, 1 або -2, 0, 2 для ЕДА). Клавіша <code>-</code> (мінус) швидко вводить від'ємне значення.</li>
-    <li><strong>Локальні артефакти:</strong> Введіть <code>00</code> (з'явиться <code>∅</code>) або натисніть літеру <code>а</code> (з'явиться <code>А</code>). Клітинка змінить фон на оранжевий, а бал зарахується як втрачений (як <code>0</code>). Обидва символи ідентичні для системи.</li>
-    <li><strong>Експорт (Drag & Drop):</strong> <code>🖨️</code> для PDF, <code>📥</code> для бекапу (.json). Щоб відкрити файл, <b>перетягніть його мишкою</b> на сторінку.</li>
-  </ol>
-
-  <div class="warning-box">
-    <strong>⚠️ Важливе зауваження щодо збереження даних</strong>
-    Дані <strong>не передаються в Інтернет і не зберігаються на серверах</strong>. Вони знаходяться лише тимчасово у кеші вашого браузера. Для надійного збереження <strong>обов'язково експортуйте їх у формат <code>.json</code> або зберігайте як PDF-документ</strong>.
-  </div>
-  
-  <p style="text-align:center; color:#999; margin-top:40px; font-size:12px;">ESS-M Calculator v4.13.1 © 2026</p>
 </body>
 </html>`;
     const blob = new Blob([helpContent], { type: "text/html;charset=utf-8" });
@@ -833,13 +834,13 @@
         const isFilled = (val) => val.trim() !== "" && val.trim() !== "-";
         const colHasCurrentData = isFilled(pvRaw) || isFilled(pnRaw) || isFilled(edaRaw) || isFilled(carRaw) || isFilled(ppgRaw);
         
-        const pv = getVal(cStr, colStr, 'pneumo-v'); // Also paints backgrounds for PV
-        const pn = getVal(cStr, colStr, 'pneumo-n'); // Also paints backgrounds for PN
+        const pv = getVal(cStr, colStr, 'pneumo-v');
+        const pn = getVal(cStr, colStr, 'pneumo-n');
         const pneumo = calcPneumoESS(pvRaw, pnRaw, pv, pn);
         
         const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
         if (spanPneumo) {
-          spanPneumo.parentElement.className = "calc-cell"; // reset
+          spanPneumo.parentElement.className = "calc-cell"; 
           if (pneumo.fullArt) {
               spanPneumo.textContent = "∅";
               spanPneumo.parentElement.classList.add("bg-artifact");
