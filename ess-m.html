@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.16.0</title>
+  <title>ESS-M Calculator v4.17.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -37,7 +37,11 @@
     .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; background-color: #fff; width: 100%; }
     .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; }
     .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; outline: none; }
+    
+    .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; outline: none; transition: all 0.3s ease; }
+    .format-attention { border-color: #3a7cfd !important; color: #3a7cfd !important; box-shadow: 0 0 0 3px rgba(58,124,253,0.15) !important; animation: pulse-border 2s infinite; }
+    @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(58,124,253,0.4); } 70% { box-shadow: 0 0 0 6px rgba(58,124,253,0); } 100% { box-shadow: 0 0 0 0 rgba(58,124,253,0); } }
+
     .ess-type-toggle { display: flex; background: rgba(128,128,128,0.12); border-radius: 4px; padding: 2px; border: 1px solid #ccc; }
     .ess-type-toggle label { padding: 2px 6px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px; user-select: none; line-height: 1.2; transition: opacity 0.2s; }
     .ess-type-toggle input { display: none; }
@@ -70,7 +74,6 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
-    /* Відключені (заблоковані форматом) колонки */
     .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
     th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
     td.col-disabled input.score-input { display: none !important; }
@@ -93,7 +96,6 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Артефакти */
     .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
@@ -135,7 +137,8 @@
     .ess-add-btn { color: #fff; background-color: #3a7cfd; display: block; width: 100%; margin-top: 15px; padding: 8px 0; font-size: 13px; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
     .ess-add-btn:hover { background-color: #2a68e0; }
     
-    .ess-error-message { color: #ff0000; font-weight: bold; margin: 4px 0 10px 0; padding: 6px 10px; background: rgba(255, 0, 0, 0.1); border-radius: 4px; border-left: 3px solid #ff0000; font-size: 12px; }
+    .ess-error-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; color: #fff; background: #d32f2f; font-weight: bold; padding: 12px 20px; border-radius: 6px; font-size: 13px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; pointer-events: none; text-align: center; max-width: 90%; line-height: 1.4; animation: slideUp 0.3s ease-out; }
+    @keyframes slideUp { from { bottom: -50px; opacity: 0; } to { bottom: 30px; opacity: 1; } }
     
     .ess-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .ess-modal-overlay.active { display: flex; }
@@ -166,7 +169,7 @@
     
     @media print {
       body { background: #fff; padding: 0; }
-      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-message, .ess-modal-overlay { display: none !important; }
+      .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-toast, .ess-modal-overlay { display: none !important; }
       .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
       .ess-name-wrapper input[type="text"], .ess-date-input { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
       .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
@@ -201,9 +204,9 @@
   appRoot.appendChild(container);
   let isUnsaved = false;
 
-  const TEST_FORMATS = ["N/A", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
+  const TEST_FORMATS = ["Оберіть формат...", "DLST", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "UTAH ZCT", "UTAH MGQT"];
   const formatConfig = {
-      "N/A": { cols: 0, forceDiag: false },
+      "Оберіть формат...": { cols: 0, forceDiag: false },
       "DLST": { cols: 2, forceDiag: false },
       "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
       "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
@@ -220,10 +223,14 @@
 
   const showError = (msg) => {
     const errDiv = document.createElement("div");
-    errDiv.className = "ess-error-message";
-    errDiv.textContent = msg;
-    container.insertBefore(errDiv, container.firstChild);
-    setTimeout(() => errDiv.remove(), 10000);
+    errDiv.className = "ess-error-toast";
+    errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
+    document.body.appendChild(errDiv);
+    setTimeout(() => {
+        errDiv.style.opacity = "0";
+        errDiv.style.transform = "translate(-50%, 20px)";
+        setTimeout(() => errDiv.remove(), 300);
+    }, 5000);
   };
 
   const getCleanHtml = () => {
@@ -231,7 +238,7 @@
     const script = document.getElementById('main-script').innerHTML;
     const icon = document.querySelector('link[rel="icon"]').href;
     
-    return '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.16.0</title>\n  <link rel="icon" href="' + icon + '">\n  <style>' + styles + '</style>\n  <base target="_blank">\n</head>\n<body>\n  <div id="app"></div>\n  <input type="file" id="file-import" accept=".json" style="display:none">\n<script id="main-script">' + script + '</scr' + 'ipt>\n</body>\n</html>';
+    return '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.17.0</title>\n  <link rel="icon" href="' + icon + '">\n  <style>' + styles + '</style>\n  <base target="_blank">\n</head>\n<body>\n  <div id="app"></div>\n  <input type="file" id="file-import" accept=".json" style="display:none">\n<script id="main-script">' + script + '</scr' + 'ipt>\n</body>\n</html>';
   };
 
   const openHelpPage = () => {
@@ -243,7 +250,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Довідка: ESS-M Calculator v4.16.0</title>
+<title>Довідка: ESS-M Calculator v4.17.0</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
   .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }
@@ -300,7 +307,7 @@
       <h2>📖 Покрокова інструкція</h2>
       <ol>
         <li><strong>Створення тесту:</strong> Введіть П.І.Б. респондента та вкажіть дату. Натисніть кнопку <code>+ Додати обрахунок</code>.</li>
-        <li><strong>Вибір формату:</strong> За замовчуванням усі поля заблоковані. Оберіть формат тесту у лівому верхньому куті таблиці. Система автоматично розблокує потрібну кількість питань.</li>
+        <li><strong>Вибір формату (ОБОВ'ЯЗКОВО):</strong> За замовчуванням усі поля таблиці заблоковані. Зверніть увагу на пульсуючу рамку в лівому верхньому куті таблиці — оберіть там формат тесту. Система автоматично розблокує потрібну кількість питань.</li>
         <li><strong>Введення балів:</strong> Вводьте бали у клітинки. Дозволено: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від'ємних значень просто натисніть клавішу <kbd>-</kbd> (мінус). Для переходу до наступної клітинки натискайте <kbd>Enter</kbd>.</li>
         <li><strong>Введення артефактів:</strong> Якщо канал не підлягає оцінці (Missing Data), двічі натисніть <kbd>0</kbd> (введеться <code>00</code>) або натисніть літеру <kbd>А</kbd>. Клітинка забарвиться у помаранчевий колір і з'явиться символ <code>∅</code> або <code>А</code>. Бал буде обнулено, а система врахує це як втрату даних. Обидві дії ідентичні для системи.</li>
         <li><strong>Керування чартами:</strong> Якщо ви провели лише 3 чарти з 5, просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code>. Вони будуть виключені з розрахунку.</li>
@@ -330,10 +337,10 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.16.0 &copy; 2026
+      ESS-M Calculator v4.17.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.16.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.17.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
@@ -385,7 +392,7 @@
       
       return {
         title: titleInput ? titleInput.value : "",
-        format: formatSelect ? formatSelect.value : "N/A",
+        format: formatSelect ? formatSelect.value : "Оберіть формат...",
         questions: questions,
         type: typeRadio ? typeRadio.value : "screening",
         dynState: dynState,
@@ -834,7 +841,13 @@
 
   const applyFormat = (wrapper, formatStr) => {
     const ce = wrapper._cachedElements;
-    const config = formatConfig[formatStr] || formatConfig["N/A"];
+    const config = formatConfig[formatStr] || formatConfig["Оберіть формат..."];
+    
+    if (formatStr === "Оберіть формат..." || formatStr === "N/A") {
+        ce.formatSelect.classList.add("format-attention");
+    } else {
+        ce.formatSelect.classList.remove("format-attention");
+    }
     
     const scrRadio = ce.typeRadios.find(r => r.value === 'screening');
     const diagRadio = ce.typeRadios.find(r => r.value === 'diagnostic');
@@ -917,8 +930,9 @@
     const ce = wrapper._cachedElements;
     if (!ce) return;
     
-    const currentFormatStr = ce.formatSelect.value;
-    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["N/A"]).cols;
+    let currentFormatStr = ce.formatSelect.value;
+    if (currentFormatStr === "N/A") currentFormatStr = "Оберіть формат...";
+    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["Оберіть формат..."]).cols;
     
     let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
     let colHasData = { 1: false, 2: false, 3: false, 4: false };
@@ -1164,7 +1178,10 @@
     const rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
     const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
     const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
-    const formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "N/A";
+    
+    let formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "Оберіть формат...";
+    if (formatVal === "N/A") formatVal = "Оберіть формат...";
+
     const savedQuestions = savedData?.questions || {};
     const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
 
@@ -1342,9 +1359,9 @@
 
     wrapper._cachedElements.formatSelect.addEventListener('change', (e) => {
         const newFormat = e.target.value;
-        const prevFormat = e.target.getAttribute('data-prev-val') || "N/A";
-        const newConfig = formatConfig[newFormat] || formatConfig["N/A"];
-        const prevConfig = formatConfig[prevFormat] || formatConfig["N/A"];
+        const prevFormat = e.target.getAttribute('data-prev-val') || "Оберіть формат...";
+        const newConfig = formatConfig[newFormat] || formatConfig["Оберіть формат..."];
+        const prevConfig = formatConfig[prevFormat] || formatConfig["Оберіть формат..."];
         
         if (newConfig.cols < prevConfig.cols) {
             let hasData = false;
