@@ -301,101 +301,124 @@
     const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
     const htmlDataUrl = URL.createObjectURL(blobHtml);
 
-    const helpLines = [
-      '<!DOCTYPE html>',
-      '<html lang="uk">',
-      '<head>',
-      '<meta charset="UTF-8">',
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '<title>Довідка: ESS-M Calculator v4.27.0</title>',
-      '<style>',
-      '  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }',
-      '  .content-wrap { flex: 1; max-width: 850px; margin: 0 auto; padding: 30px 24px; width: 100%; }',
-      '  .help-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }',
-      '  h2 { color: #2e7d32; margin-top: 28px; font-size: 18px; border-left: 4px solid #2e7d32; padding-left: 10px; }',
-      '  h3 { color: #555; font-size: 16px; margin-top: 20px; }',
-      '  p, li { font-size: 14px; color: #444; }',
-      '  ul, ol { padding-left: 24px; }',
-      '  li { margin-bottom: 8px; }',
-      '  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 16px; margin: 16px 0; border: 1px solid #c8e6c9; }',
-      '  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 16px; margin: 24px 0; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }',
-      '  .warning-box strong { color: #ff0000; font-size: 15px; display: block; margin-bottom: 6px; }',
-      '  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 16px; margin: 24px 0; border-radius: 4px; }',
-      '  .offline-box strong { color: #1565c0; font-size: 15px; display: block; margin-bottom: 6px; }',
-      '  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }',
-      '  kbd { background: #eee; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-size: 12px; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }',
-      '  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 16px; margin-top: auto; }',
-      '  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }',
-      '  .footer-left { text-align: left; }',
-      '  .footer-center { text-align: center; color: #888; }',
-      '  .footer-right { text-align: right; }',
-      '  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 15px; letter-spacing: 0.5px; transition: color 0.2s; }',
-      '  .help-footer a.plgrph-link:hover { color: #3a7cfd; }',
-      '  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 10px 20px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 13px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }',
-      '  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }',
-      '  .dl-btn:active { transform: translateY(1px); }',
-      '  @media (max-width: 700px) {',
-      '    .content-wrap { padding: 16px; }',
-      '    .help-container { padding: 16px; }',
-      '    .help-footer { flex-direction: column; text-align: center; }',
-      '    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }',
-      '  }',
-      '</style>',
-      '</head>',
-      '<body>',
-      '  <div class="content-wrap">',
-      '    <div class="help-container">',
-      '      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px; border-bottom:2px solid #eee; padding-bottom:15px;">',
-      '        <img src="184235.png" alt="PLGRPH" style="height:45px; mix-blend-mode:multiply;">',
-      '        <h1 style="border:none; padding:0; margin:0; font-size:24px; color:#222; border-left:2px solid #ccc; padding-left:16px;">Довідка: ESS-M Calculator</h1>',
-      '      </div>',
-      '      <p>Цей калькулятор розроблений для автоматизації підрахунку балів поліграфологічних тестів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він гарантує математичну точність та захищає від методологічних помилок.</p>',
-      '      <div class="highlight-box">',
-      '        <h3>✨ Головні можливості</h3>',
-      '        <ul>',
-      '          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише коректні значення. Будь-які недопустимі цифри при імпорті відхиляються.</li>',
-      '          <li><strong>Диференційна вага артефактів (Per-spot):</strong> Втрата каналу ЕДА (вага 2) впливає на надійність сильніше, ніж втрата Пневмо чи Кардіо (вага 1). Вага ФПГ обчислюється індивідуально для кожної колонки (Spot).</li>',
-      '          <li><strong>Розумне дихання:</strong> Пуста клітинка в активному питанні трактується як втрата даних (Missing Data), а не як 0. Система розрізняє фізіологічний конфлікт (+1 та -1) і реальний артефакт.</li>',
-      '        </ul>',
-      '      </div>',
-      '      <h2>💡 Просунутий функціонал</h2>',
-      '      <ul>',
-      '        <li><strong>🛡️ Захист від контамінації (Контам.):</strong> У скринінговому режимі працює правило Spot Rule. Галочка "🔒 Контам." автоматично блокує статус всього тесту (NSR змінюється на INC), якщо хоча б одне питання має статус SR.</li>',
-      '        <li><strong>📊 Пріоритет правил Сентера:</strong> У діагностичних форматах калькулятор спочатку перевіряє Senter\'s Rules (будь-який spot ≤ -7 дає SR), навіть якщо загальний бал (Grand Total) не подолав поріг.</li>',
-      '      </ul>',
-      '      <h2>📖 Як працювати з таблицею</h2>',
-      '      <ol>',
-      '        <li><strong>Вибір формату:</strong> Оберіть формат тесту (DLST, ZCT тощо). Тільки після цього клітинки розблокуються.</li>',
-      '        <li><strong>Введення балів:</strong> Дозволені бали: <code>1</code>, <code>0</code>, <code>-1</code> (для ЕДА також <code>2</code>, <code>-2</code>). <br><em>Лайфхак:</em> Для швидкого вводу від\'ємних значень натисніть <kbd>-</kbd> (мінус). Для переходу до наступної клітинки тисніть <kbd>Enter</kbd>.</li>',
-      '        <li><strong>Введення артефактів:</strong> Якщо ділянку неможливо оцінити, двічі натисніть <kbd>0</kbd> (з\'явиться <code>∅</code>) або літеру <kbd>А</kbd>. Бал обнулиться, а система зафіксує втрату даних і перерахує надійність питання.</li>',
-      '      </ol>',
-      '      <div class="warning-box">',
-      '        <strong>⚠️ Важливо: Зберігання даних та Приватність</strong>',
-      '        <p>Калькулятор працює <b>виключно у вашому браузері</b>. Він не має серверу, і жодні дані <strong>не передаються в Інтернет</strong>. Дані тимчасово зберігаються у локальному кеші.</p>',
-      '      </div>',
-      '      <div class="offline-box">',
-      '        <strong>⚡ Робота без Інтернету (Офлайн)</strong>',
-      '        <p>Ви можете користуватися цією програмою автономно. Просто <b>завантажте чистий HTML-файл програми</b> (кнопка внизу сторінки) та покладіть його в одну папку з логотипом "184235.png". Відкривайте файл у будь-якому браузері без доступу до мережі.</p>',
-      '      </div>',
-      '    </div>',
-      '  </div>',
-      '  <div class="help-footer">',
-      '    <div class="footer-left">',
-      '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
-      '    </div>',
-      '    <div class="footer-center">',
-      '      ESS-M Calculator v4.27.0 &copy; 2026',
-      '    </div>',
-      '    <div class="footer-right">',
-      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.27.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
-      '    </div>',
-      '  </div>',
-      '</body>',
-      '</html>'
-    ];
+    const helpContent = `<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Довідка та Посібник: ESS-M Calculator</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #222; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
+  .content-wrap { flex: 1; max-width: 900px; margin: 0 auto; padding: 30px 24px; width: 100%; }
+  .help-container { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+  h2 { color: #2e7d32; margin-top: 35px; font-size: 20px; border-left: 4px solid #2e7d32; padding-left: 12px; }
+  h3 { color: #3a7cfd; font-size: 17px; margin-top: 25px; }
+  p, li { font-size: 15px; color: #444; }
+  ul, ol { padding-left: 24px; margin-bottom: 20px; }
+  li { margin-bottom: 10px; }
+  .highlight-box { background: #e8f5e9; border-radius: 6px; padding: 20px; margin: 20px 0; border: 1px solid #c8e6c9; }
+  .warning-box { background: #fff3e0; border-left: 5px solid #ff0000; padding: 20px; margin: 25px 0; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .warning-box strong { color: #ff0000; font-size: 18px; display: block; margin-bottom: 10px; text-transform: uppercase; }
+  .offline-box { background: #e3f2fd; border-left: 5px solid #3a7cfd; padding: 20px; margin: 25px 0; border-radius: 4px; }
+  .offline-box strong { color: #1565c0; font-size: 16px; display: block; margin-bottom: 8px; }
+  code { background: #f0f0f0; padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #d32f2f; font-weight: bold; }
+  kbd { background: #eee; border: 1px solid #ccc; border-radius: 4px; padding: 2px 6px; font-size: 13px; box-shadow: 0 2px 0 rgba(0,0,0,0.2); font-family: monospace; }
+  
+  .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
+  .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
+  .footer-left { text-align: left; }
+  .footer-center { text-align: center; color: #888; }
+  .footer-right { text-align: right; }
+  .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 16px; letter-spacing: 0.5px; transition: color 0.2s; }
+  .help-footer a.plgrph-link:hover { color: #3a7cfd; }
+  .dl-btn { display: inline-block; background: #3a7cfd; color: #fff !important; padding: 12px 24px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 14px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+  .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
+  .dl-btn:active { transform: translateY(1px); }
+  
+  @media (max-width: 700px) {
+    .content-wrap { padding: 10px; }
+    .help-container { padding: 20px; }
+    .help-footer { flex-direction: column; text-align: center; }
+    .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="content-wrap">
+    <div class="help-container">
+      
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:25px; border-bottom:2px solid #eee; padding-bottom:20px;">
+        <img src="184235.png" alt="PLGRPH" style="height:55px; mix-blend-mode:multiply;">
+        <h1 style="border:none; padding:0; margin:0; font-size:26px; color:#222; border-left:2px solid #ccc; padding-left:16px; line-height: 1.2;">Розширений посібник:<br>ESS-M Calculator</h1>
+      </div>
+      
+      <p>Цей калькулятор — професійний інструмент поліграфолога, створений для математично точного підрахунку балів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він гарантує відповідність стандартам APA, захищає від методологічних помилок та значно прискорює написання звітів.</p>
+
+      <div class="warning-box">
+        <strong>⚠️ КРИТИЧНО ВАЖЛИВО: КОНФІДЕНЦІЙНІСТЬ ТА ЗБЕРЕЖЕННЯ ДАНИХ</strong>
+        <p>Наш сервіс створено з урахуванням найвищих стандартів безпеки (Zero-Knowledge Architecture):</p>
+        <ul>
+          <li><strong>Жодних серверів:</strong> Програма працює <b>виключно у вашому браузері</b>. Дані ваших респондентів, їхні імена та бали <b>НІКОЛИ</b> не передаються в Інтернет.</li>
+          <li><strong>Небезпека кешу:</strong> Тимчасове автозбереження відбувається у локальну пам'ять браузера (localStorage). <b>Якщо ви очистите історію браузера або відкриєте програму в режимі "Інкогніто", всі ваші таблиці безповоротно зникнуть!</b></li>
+        </ul>
+        <p><strong>Рішення (Експорт у .json):</strong> Єдиний надійний спосіб зберегти ваші тести — використовувати кнопку <code>📥 Завантажити (.json)</code> у верхньому меню. Це створить захищений файл-бекап на вашому комп'ютері. Щоб повернутися до роботи, просто <b>перетягніть цей файл мишкою</b> на сторінку програми або натисніть <code>📂 Відкрити</code>.</p>
+      </div>
+
+      <div class="highlight-box">
+        <h2>🛠️ Головні можливості та Механіки</h2>
+        <ul>
+          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру (наприклад, <code>3</code> або текст) буде автоматично заблокована і перетворена на артефакт (втрату даних).</li>
+          <li><strong>Диференційна вага артефактів (Per-spot):</strong> Увага до якості каналів! Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик ЕДА), калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>
+          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту" (коли ви не ввели нічого, або ввели символ артефакту). Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором.</li>
+        </ul>
+      </div>
+
+      <h2>🚀 Просунутий функціонал та Приховані фічі</h2>
+      <ul>
+        <li><strong>🛡️ Захист від контамінації (Spot Rule):</strong> Працює автоматично у скринінговому режимі. Галочка <b>"🔒 Контам."</b> над статусами гарантує, що якщо хоча б одне релевантне питання отримало статус SR (Significant Response), весь тест не може бути позитивним, і статус <i>NSR</i> блокується, змінюючись на <i>INC</i>.</li>
+        <li><strong>📊 Аналізатор динаміки та Ізоляція трендів:</strong> Графік внизу таблиці показує фізіологічний тренд респондента (вектор). Ви можете вимкнути загальну "Σ Суму", клікнувши на кнопки <b>R1, R2, R3, R4</b>. Це дозволяє ізолювати реакції і побачити графік виключно по одному питанню — ідеальний інструмент для пошуку "Домінанти".</li>
+        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань (наприклад: <i>"Це ви вкрали гроші з сейфу?"</i>). Після збереження цей текст буде з'являтися як підказка щоразу, коли ви наводите курсор миші на заголовок колонки (R1, R2...).</li>
+        <li><strong>🎹 Гарячі клавіші (Лайфхаки швидкості):</strong> 
+          <ul>
+            <li>Щоб ввести від'ємний бал, не обов'язково друкувати "-1". Просто натисніть клавішу <kbd>-</kbd> (мінус) на клавіатурі, і програма автоматично підставить <b>-1</b> (або <b>-2</b>, якщо це колонка ЕДА).</li>
+            <li>Використовуйте <kbd>Enter</kbd> для миттєвого стрибка на клітинку нижче в тій самій колонці.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>📖 Покрокова інструкція по роботі</h2>
+      <ol>
+        <li><strong>Базове налаштування:</strong> Введіть П.І.Б. респондента та дату. Це дуже важливо, адже саме з цих даних калькулятор згенерує зрозумілу назву файлу при збереженні (напр., <i>ess-Ivanov-Ivan-2026-07-31.json</i>). Натисніть <code>+ Додати обрахунок</code>.</li>
+        <li><strong>Вибір формату (Критичний крок):</strong> Таблиця заблокована за замовчуванням. Знайдіть пульсуючу синю рамку в лівому верхньому куті та оберіть формат вашого тесту (наприклад, <i>UTAH ZCT</i> або <i>AFMGQT</i>). Калькулятор сам розблокує необхідну кількість колонок (від 2 до 4). <b>Увага:</b> Формати типу Federal, BOST чи Utah автоматично фіксуються в режимі "Діагностичний".</li>
+        <li><strong>Введення артефактів (Missing Data):</strong> Якщо ділянка поліграми зіпсована (рух, глибокий вдих), і ви не можете її оцінити — двічі натисніть <kbd>0</kbd> (програма перетворить це на символ <code>∅</code>), АБО введіть літеру <kbd>А</kbd>. Клітинка забарвиться в оранжевий колір, бал обнулиться, а система врахує це як втрату даних при розрахунку надійності.</li>
+        <li><strong>Керування чартами:</strong> У таблиці передбачено 5 чартів. Якщо ви провели стандартний тест із 3 чартів — просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code> праворуч. Вони стануть напівпрозорими і виключаться з загального розрахунку.</li>
+        <li><strong>Генерація звіту:</strong> Коли всі дані введені, натисніть <code>🖨️</code> у верхньому меню. Програма приховає всі кнопки та зайві елементи керування, залишивши лише ідеально чистий, форматований бланк, готовий до збереження у форматі PDF або прямого друку на папір.</li>
+      </ol>
+
+      <div class="offline-box">
+        <strong>⚡ Абсолютна автономність (Офлайн версія)</strong>
+        <p>Ми розуміємо, що тестування часто проходять у місцях без Інтернету, або на службових комп'ютерах з обмеженим доступом. Ви можете зробити цей калькулятор незалежним додатком.</p>
+        <p>Натисніть на синю кнопку внизу цієї сторінки. На ваш ПК завантажиться єдиний чистий файл <code>.html</code>. Покладіть його в папку разом із файлом нашого логотипу (<code>184235.png</code>) і відкривайте у будь-якому браузері (Chrome, Edge, Safari) навіть без підключення до мережі. Весь функціонал працюватиме локально!</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="help-footer">
+    <div class="footer-left">
+      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
+    </div>
+    <div class="footer-center">
+      ESS-M Calculator v4.27.0 &copy; 2026
+    </div>
+    <div class="footer-right">
+      <a href="\${htmlDataUrl}" download="ESS-M_Calculator_v4.27.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+    </div>
+  </div>
+</body>
+</html>\`;
 
     helpWin.document.open();
-    helpWin.document.write(helpLines.join('\n'));
+    helpWin.document.write(helpContent);
     helpWin.document.close();
   };
 
@@ -1362,10 +1385,10 @@
         '</div></div><div class="ess-dynamics-chart"><svg class="ess-dynamics-svg" width="100%" height="100%"></svg></div><div class="ess-dynamics-text"></div></div>' +
     '<div class="ess-modal-overlay"><div class="ess-modal"><div class="ess-modal-header"><h3>📝 Питання тесту №X</h3><button class="ess-modal-close">&times;</button></div>' +
         '<div class="ess-modal-body">' +
-          '<label>R1 (R4): <input type="text" class="ess-question-input" data-q="R1" value="' + escapeHtml(savedQuestions.R1 || '') + '"></label>' +
-          '<label>R2 (R5): <input type="text" class="ess-question-input" data-q="R2" value="' + escapeHtml(savedQuestions.R2 || '') + '"></label>' +
-          '<label>R3 (R7): <input type="text" class="ess-question-input" data-q="R3" value="' + escapeHtml(savedQuestions.R3 || '') + '"></label>' +
-          '<label>R4 (R8): <input type="text" class="ess-question-input" data-q="R4" value="' + escapeHtml(savedQuestions.R4 || '') + '"></label>' +
+          '<label>R1 (R4): <input type="text" class="ess-question-input" data-q="R1" value="' + escapeHtml(savedQuestions.R1 || '') + '" autocomplete="off"></label>' +
+          '<label>R2 (R5): <input type="text" class="ess-question-input" data-q="R2" value="' + escapeHtml(savedQuestions.R2 || '') + '" autocomplete="off"></label>' +
+          '<label>R3 (R7): <input type="text" class="ess-question-input" data-q="R3" value="' + escapeHtml(savedQuestions.R3 || '') + '" autocomplete="off"></label>' +
+          '<label>R4 (R8): <input type="text" class="ess-question-input" data-q="R4" value="' + escapeHtml(savedQuestions.R4 || '') + '" autocomplete="off"></label>' +
         '</div><div class="ess-modal-footer"><button class="ess-btn ess-modal-save">💾 Зберегти</button><button class="ess-btn ess-modal-cancel">Скасувати</button></div></div></div>';
 
     wrapper.innerHTML = tableHtml;
