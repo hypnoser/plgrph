@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.27.0</title>
+  <title>ESS-M Calculator v4.28.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -204,104 +204,101 @@
     <h1 class="app-title">ESS-M Calculator</h1>
   </div>
   <div id="app"></div>
-<script id="main-script">
-  const appRoot = document.getElementById("app");
-  const container = document.createElement("div");
-  container.className = "ess-module-container";
-  appRoot.appendChild(container);
-  
-  let isUnsaved = false;
-
-  const TEST_FORMATS = [
-    "ОБЕРІТЬ ФОРМАТ...",
-    "DLST",
-    "DLDT",
-    "LEPET",
-    "AFMGQT (2RQ)",
-    "AFMGQT (3RQ)",
-    "AFMGQT (4RQ)",
-    "BOST",
-    "FEDERAL (BI-ZONE)",
-    "FEDERAL ZCT",
-    "UTAH ZCT",
-    "UTAH MGQT"
-  ];
-  
-  const formatConfig = {
-      "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
-      "DLST": { cols: 2, forceDiag: false },
-      "DLDT": { cols: 2, forceDiag: true },
-      "LEPET": { cols: 3, forceDiag: false },
-      "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
-      "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
-      "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
-      "BOST": { cols: 2, forceDiag: true },
-      "FEDERAL (BI-ZONE)": { cols: 2, forceDiag: true },
-      "FEDERAL ZCT": { cols: 3, forceDiag: true },
-      "UTAH ZCT": { cols: 3, forceDiag: true },
-      "UTAH MGQT": { cols: 4, forceDiag: true }
-  };
-
-  const escapeHtml = (str) => {
-    if (str === null || str === undefined) return "";
-    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  };
-
-  const showError = (msg) => {
-    const errDiv = document.createElement("div");
-    errDiv.className = "ess-error-toast";
-    errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
-    document.body.appendChild(errDiv);
-    setTimeout(() => {
-        errDiv.style.opacity = "0";
-        errDiv.style.transform = "translate(-50%, 20px)";
-        setTimeout(() => errDiv.remove(), 300);
-    }, 5000);
-  };
-
-  const getCleanHtml = () => {
-    const styleEl = document.querySelector('style');
-    const styles = styleEl ? styleEl.textContent : "";
-    const scriptEl = document.getElementById('main-script');
-    const scriptText = scriptEl ? scriptEl.textContent : "";
-    const iconEl = document.querySelector('link[rel="icon"]');
-    const icon = iconEl ? iconEl.href : "";
+  <script id="main-script">
+    const appRoot = document.getElementById("app");
+    const container = document.createElement("div");
+    container.className = "ess-module-container";
+    appRoot.appendChild(container);
     
-    const htmlArr = [
-      '<!DOCTYPE html>',
-      '<html lang="uk">',
-      '<head>',
-      '  <meta charset="UTF-8">',
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '  <title>ESS-M Calculator v4.27.0</title>',
-      '  <link rel="icon" href="' + icon + '">',
-      '  <style>' + styles + '</style>',
-      '</head>',
-      '<body>',
-      '  <div class="app-header">',
-      '    <img src="184235.png" alt="PLGRPH" class="app-logo">',
-      '    <h1 class="app-title">ESS-M Calculator</h1>',
-      '  </div>',
-      '  <div id="app"></div>',
-      '  <scr' + 'ipt id="main-script">' + scriptText + '</scr' + 'ipt>',
-      '</body>',
-      '</html>'
+    let isUnsaved = false;
+
+    const TEST_FORMATS = [
+      "ОБЕРІТЬ ФОРМАТ...",
+      "DLST",
+      "DLDT",
+      "LEPET",
+      "AFMGQT (2RQ)",
+      "AFMGQT (3RQ)",
+      "AFMGQT (4RQ)",
+      "BOST",
+      "FEDERAL (BI-ZONE)",
+      "FEDERAL ZCT",
+      "UTAH ZCT",
+      "UTAH MGQT"
     ];
-    return htmlArr.join('\n');
-  };
+    
+    const formatConfig = {
+        "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
+        "DLST": { cols: 2, forceDiag: false },
+        "DLDT": { cols: 2, forceDiag: true },
+        "LEPET": { cols: 3, forceDiag: false },
+        "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
+        "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
+        "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
+        "BOST": { cols: 2, forceDiag: true },
+        "FEDERAL (BI-ZONE)": { cols: 2, forceDiag: true },
+        "FEDERAL ZCT": { cols: 3, forceDiag: true },
+        "UTAH ZCT": { cols: 3, forceDiag: true },
+        "UTAH MGQT": { cols: 4, forceDiag: true }
+    };
 
-  const openHelpPage = () => {
-    const helpWin = window.open("", "_blank");
-    if (!helpWin) {
-        showError("Браузер заблокував відкриття довідки. Будь ласка, дозвольте спливаючі вікна.");
-        return;
-    }
+    const escapeHtml = (str) => {
+      if (str === null || str === undefined) return "";
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    };
 
-    const cleanHtml = getCleanHtml();
-    const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
-    const htmlDataUrl = URL.createObjectURL(blobHtml);
+    const showError = (msg) => {
+      const errDiv = document.createElement("div");
+      errDiv.className = "ess-error-toast";
+      errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
+      document.body.appendChild(errDiv);
+      setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transform = "translate(-50%, 20px)";
+          setTimeout(() => errDiv.remove(), 300);
+      }, 5000);
+    };
 
-    const helpContent = `<!DOCTYPE html>
+    const getCleanHtml = () => {
+      const styleEl = document.querySelector('style');
+      const styles = styleEl ? styleEl.innerHTML : "";
+      const scriptEl = document.getElementById('main-script');
+      const scriptText = scriptEl ? scriptEl.innerHTML : "";
+      
+      const htmlTop = `<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESS-M Calculator v4.28.0</title>
+  <style>${styles}</style>
+</head>
+<body>
+  <div class="app-header">
+    <img src="184235.png" alt="PLGRPH" class="app-logo">
+    <h1 class="app-title">ESS-M Calculator</h1>
+  </div>
+  <div id="app"></div>
+  <scr`;
+      
+      const htmlBottom = `ipt id="main-script">${scriptText}</scr` + `ipt>
+</body>
+</html>`;
+      return htmlTop + htmlBottom;
+    };
+
+    const openHelpPage = () => {
+      const helpWin = window.open("", "_blank");
+      if (!helpWin) {
+          showError("Браузер заблокував відкриття довідки. Будь ласка, дозвольте спливаючі вікна.");
+          return;
+      }
+
+      const cleanHtml = getCleanHtml();
+      const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
+      const htmlDataUrl = URL.createObjectURL(blobHtml);
+
+      const helpContent = `<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -408,1177 +405,1208 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.27.0 &copy; 2026
+      ESS-M Calculator v4.28.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="\${htmlDataUrl}" download="ESS-M_Calculator_v4.27.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.28.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
-</html>\`;
+</html>`;
 
-    helpWin.document.open();
-    helpWin.document.write(helpContent);
-    helpWin.document.close();
-  };
-
-  let autoSaveTimeout;
-  let warningTimeout;
-  const colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
-
-  let stateHistory = [];
-  let historyIndex = -1;
-  let isRestoringHistory = false;
-  let recordTimeout;
-
-  const parseStateData = (data) => {
-    if (Array.isArray(data)) return { respondentName: "", examDate: "", tests: data };
-    else if (data && data.tests) return data;
-    return { respondentName: "", examDate: "", tests: [] };
-  };
-
-  const collectState = () => {
-    const tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(wrapper => {
-      const ce = wrapper._cachedElements;
-      const titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
-      const typeRadio = wrapper.querySelector(".toggle-type input[type='radio']:checked");
-      const formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
-      const chartToggle4 = wrapper.querySelector(".chart-toggle[data-chart='4']");
-      const chartToggle5 = wrapper.querySelector(".chart-toggle[data-chart='5']");
-      
-      const dynState = {
-        tot: wrapper.querySelector('input[id^="dyn_tot_"]')?.checked ?? true,
-        r1: wrapper.querySelector('input[id^="dyn_r1_"]')?.checked ?? false,
-        r2: wrapper.querySelector('input[id^="dyn_r2_"]')?.checked ?? false,
-        r3: wrapper.querySelector('input[id^="dyn_r3_"]')?.checked ?? false,
-        r4: wrapper.querySelector('input[id^="dyn_r4_"]')?.checked ?? false
-      };
-
-      const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
-      const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
-      
-      const values = {};
-      inputs.forEach(inp => { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
-      const questions = {};
-      qInputs.forEach(inp => { questions[inp.getAttribute('data-q')] = inp.value; });
-      
-      return {
-        title: titleInput ? titleInput.value : "",
-        format: formatSelect ? formatSelect.value : "ОБЕРІТЬ ФОРМАТ...",
-        questions: questions,
-        type: typeRadio ? typeRadio.value : "screening",
-        dynState: dynState,
-        chartToggles: {
-          4: chartToggle4 ? chartToggle4.checked : true,
-          5: chartToggle5 ? chartToggle5.checked : true
-        },
-        values
-      };
-    });
-
-    return { 
-      respondentName: respondentInput.value, 
-      examDate: dateInput.value, 
-      tests: tests 
-    };
-  };
-
-  const recordState = () => {
-    if (isRestoringHistory) return;
-    const state = collectState();
-    const stateStr = JSON.stringify(state);
-    if (historyIndex >= 0 && JSON.stringify(stateHistory[historyIndex]) === stateStr) return;
-    
-    stateHistory = stateHistory.slice(0, historyIndex + 1);
-    stateHistory.push(state);
-    
-    if (stateHistory.length > 50) {
-      stateHistory.shift();
-    } else {
-      historyIndex++;
-    }
-    
-    updateUndoRedoButtons();
-  };
-
-  const debouncedRecordState = () => {
-    if (isRestoringHistory) return;
-    clearTimeout(recordTimeout);
-    recordTimeout = setTimeout(recordState, 300);
-  };
-
-  const restoreState = (index) => {
-    if (index < 0 || index >= stateHistory.length) return;
-    isRestoringHistory = true;
-    clearTimeout(recordTimeout);
-    historyIndex = index;
-    const stateToRestore = stateHistory[index];
-    
-    respondentInput.value = stateToRestore.respondentName || "";
-    dateInput.value = stateToRestore.examDate || "";
-    testsContainer.innerHTML = "";
-    stateToRestore.tests.forEach(d => createTestTable(d));
-    
-    try {
-      localStorage.setItem("ess_polygraph_data", JSON.stringify(stateToRestore));
-      isUnsaved = false;
-      saveStatus.classList.remove("unsaved");
-      saveStatus.textContent = "🟢 Дані збережено";
-    } catch(e) {}
-    
-    updateUndoRedoButtons();
-    setTimeout(() => { isRestoringHistory = false; }, 100);
-  };
-
-  const updateTestNumbers = () => {
-    testsContainer.querySelectorAll(".ess-test-wrapper").forEach((w, idx) => {
-        const num = idx + 1;
-        const label = w.querySelector(".ess-test-num-label");
-        if (label) label.textContent = "Тест №" + num + ":";
-        const h3 = w.querySelector(".ess-modal-header h3");
-        if (h3) h3.textContent = "📝 Питання тесту №" + num;
-    });
-  };
-
-  const toolbar = document.createElement("div");
-  toolbar.className = "ess-toolbar";
-
-  const btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.setAttribute("aria-label", "Зберегти"); btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
-  const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
-  const btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
-  
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = ".json";
-  fileInput.style.display = "none";
-  toolbar.appendChild(fileInput);
-  btnOpen.onclick = () => fileInput.click();
-
-  const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити"); btnSaveJson.onclick = () => saveToFile();
-  const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
-  const btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = () => restoreState(historyIndex - 1);
-  const btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = () => restoreState(historyIndex + 1);
-  const updateUndoRedoButtons = () => {
-    btnUndo.disabled = historyIndex <= 0;
-    btnRedo.disabled = historyIndex >= stateHistory.length - 1;
-  };
-  const sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
-  const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = () => setTimeout(() => window.print(), 150);
-  const btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
-  btnClearAll.onclick = () => {
-    if (confirm("Ви впевнені, що хочете повністю очистити всі таблиці та П.І.Б. респондента? (Буде створено нову чисту сесію)")) {
-      respondentInput.value = ""; 
-      dateInput.value = "";
-      testsContainer.innerHTML = ""; 
-      createTestTable(); 
-      markUnsaved();
-    }
-  };
-  const sep4 = document.createElement("div"); sep4.className = "ess-toolbar-sep";
-  const btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.setAttribute("aria-label", "Довідка"); btnHelp.onclick = () => openHelpPage();
-  const saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
-
-  toolbar.appendChild(btnSave); toolbar.appendChild(sep1); toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson);
-  toolbar.appendChild(sep2); toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep3);
-  toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
-  toolbar.appendChild(saveStatus);
-
-  const respondentArea = document.createElement("div"); 
-  respondentArea.className = "ess-respondent-area";
-  
-  const nameWrapper = document.createElement("div");
-  nameWrapper.className = "ess-name-wrapper";
-  const respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
-  const respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
-  respondentInput.autocomplete = "off"; respondentInput.spellcheck = false;
-  respondentInput.addEventListener("input", () => markUnsaved());
-  nameWrapper.appendChild(respondentLabel); nameWrapper.appendChild(respondentInput);
-  
-  const dateWrapper = document.createElement("div");
-  dateWrapper.className = "ess-date-wrapper";
-  const dateLabel = document.createElement("span"); dateLabel.className = "ess-respondent-label"; dateLabel.textContent = "📅 Дата:";
-  const dateInput = document.createElement("input"); dateInput.type = "date"; dateInput.className = "ess-date-input";
-  dateInput.addEventListener("change", () => markUnsaved());
-  dateWrapper.appendChild(dateLabel); dateWrapper.appendChild(dateInput);
-
-  respondentArea.appendChild(nameWrapper);
-  respondentArea.appendChild(dateWrapper);
-
-  const testsContainer = document.createElement("div");
-  const addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
-
-  container.appendChild(toolbar); 
-  container.appendChild(respondentArea); 
-  container.appendChild(testsContainer); 
-  container.appendChild(addBtnBottom);
-
-  const performSave = () => {
-    if (!isUnsaved) return;
-    saveStatus.textContent = "⏳ Запис...";
-    try {
-      localStorage.setItem("ess_polygraph_data", JSON.stringify(collectState()));
-      isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
-    } catch (error) {
-      saveStatus.textContent = "❌ Помилка збереження!"; saveStatus.classList.add("unsaved"); showError("Помилка запису в localStorage: " + error.message);
-    }
-  };
-
-  const saveToFile = () => {
-    const resp = respondentInput.value.trim();
-    const safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
-    const dateStr = dateInput.value || new Date().toISOString().slice(0,10);
-    const filename = "ess-" + safeResp + dateStr + ".json";
-    
-    const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-    isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
-  };
-
-  const handleFileLoad = (file) => {
-    if (isUnsaved) {
-      if (!confirm("У вас є незбережені дані! Відкриття нового файлу зітре поточні таблиці. Продовжити?")) return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const stateToRestore = parseStateData(JSON.parse(e.target.result));
-        respondentInput.value = stateToRestore.respondentName || "";
-        dateInput.value = stateToRestore.examDate || "";
-        testsContainer.innerHTML = "";
-        stateToRestore.tests.forEach(d => createTestTable(d));
-        performSave();
-        saveStatus.textContent = "🟢 Дані завантажено";
-        stateHistory = []; historyIndex = -1; recordState();
-      } catch (err) { showError("Помилка завантаження файлу: " + err.message); }
-    };
-    reader.readAsText(file);
-  };
-
-  fileInput.addEventListener("change", (e) => { 
-    if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
-    e.target.value = ""; 
-  });
-
-  window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
-  window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
-  window.addEventListener('drop', (e) => {
-    e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.name.toLowerCase().endsWith('.json')) handleFileLoad(file);
-      else showError("Будь ласка, перетягніть файл саме у форматі .json");
-    }
-  });
-
-  const markUnsaved = () => {
-    if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
-    saveStatus.textContent = "🟠 ⚠️ Є незбережені зміни!";
-    if (warningTimeout) clearTimeout(warningTimeout); if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-    warningTimeout = setTimeout(() => { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
-    autoSaveTimeout = setTimeout(() => performSave(), 60000);
-    debouncedRecordState();
-  };
-
-  window.addEventListener('beforeunload', (e) => { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
-  container.addEventListener('focusout', (e) => { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
-
-  const isArt = (val) => {
-    if (val === null || val === undefined) return false;
-    const v = String(val).trim().toLowerCase();
-    return v === "∅" || v === "а" || v === "a";
-  };
-
-  const updateDynamicsChart = (wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) => {
-    const svg = ce.dynamicsSvg;
-    const textDiv = ce.dynamicsText;
-    
-    const showTot = wrapper.querySelector('input[id^="dyn_tot_"]')?.checked ?? true;
-    const showR1 = wrapper.querySelector('input[id^="dyn_r1_"]')?.checked ?? false;
-    const showR2 = wrapper.querySelector('input[id^="dyn_r2_"]')?.checked ?? false;
-    const showR3 = wrapper.querySelector('input[id^="dyn_r3_"]')?.checked ?? false;
-    const showR4 = wrapper.querySelector('input[id^="dyn_r4_"]')?.checked ?? false;
-    
-    if (!svg) return;
-    svg.innerHTML = '';
-    
-    const width = svg.clientWidth > 100 ? svg.clientWidth : 800;
-    const height = 90;
-    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-    
-    const paddingX = 25, paddingY = 15;
-    const profileWidth = 80; 
-    const profileStartX = width - profileWidth; 
-    const chartWidth = profileStartX - paddingX * 2;
-    const chartHeight = height - paddingY * 2;
-    const centerY = height / 2;
-    const profCenterX = profileStartX + (profileWidth / 2);
-    
-    let maxAbs = 6;
-    chartDataArray.forEach(d => {
-      if (showTot && Math.abs(d.total) > maxAbs) maxAbs = Math.abs(d.total);
-      if (showR1 && d.spots[1] !== undefined && Math.abs(d.spots[1]) > maxAbs) maxAbs = Math.abs(d.spots[1]);
-      if (showR2 && d.spots[2] !== undefined && Math.abs(d.spots[2]) > maxAbs) maxAbs = Math.abs(d.spots[2]);
-      if (showR3 && d.spots[3] !== undefined && Math.abs(d.spots[3]) > maxAbs) maxAbs = Math.abs(d.spots[3]);
-      if (showR4 && d.spots[4] !== undefined && Math.abs(d.spots[4]) > maxAbs) maxAbs = Math.abs(d.spots[4]);
-    });
-    maxAbs = Math.ceil(maxAbs / 2) * 2;
-    
-    const getY = (val) => centerY - (val / maxAbs) * (chartHeight / 2);
-    const getX = (idx, len) => paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2);
-
-    const incZoneTop = getY(3);
-    const incZoneBottom = getY(-3);
-    const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    incRect.setAttribute("x", paddingX); incRect.setAttribute("y", incZoneTop);
-    incRect.setAttribute("width", chartWidth); incRect.setAttribute("height", incZoneBottom - incZoneTop);
-    incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
-    svg.appendChild(incRect);
-
-    const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
-    zeroLine.setAttribute("x2", profileStartX); zeroLine.setAttribute("y2", centerY);
-    zeroLine.setAttribute("stroke", "#ccc"); zeroLine.setAttribute("stroke-width", "1");
-    zeroLine.setAttribute("stroke-dasharray", "2,2");
-    svg.appendChild(zeroLine);
-    
-    const labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    labelPos.setAttribute("x", paddingX + chartWidth/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "9.5"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння";
-    svg.appendChild(labelPos);
-    
-    const labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    labelNeg.setAttribute("x", paddingX + chartWidth/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "9.5"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні";
-    svg.appendChild(labelNeg);
-
-    if (chartDataArray.length === 0) {
-      textDiv.innerHTML = "<ul><li>Немає даних для аналізу</li></ul>";
-      return;
-    }
-
-    let spotAverages = {1:0, 2:0, 3:0, 4:0};
-    let counts = {1:0, 2:0, 3:0, 4:0};
-
-    chartDataArray.forEach((d) => {
-      for(let col=1; col<=4; col++) {
-        if(d.spots[col] !== undefined) { spotAverages[col] += d.spots[col]; counts[col]++; }
-      }
-    });
-    for(let col=1; col<=4; col++) { if(counts[col] > 0) spotAverages[col] = spotAverages[col] / counts[col]; }
-
-    const drawLine = (key, dataSelector, color, isTotal) => {
-      let pathD = ""; let pointCount = 0;
-      chartDataArray.forEach((d, i) => {
-        const val = dataSelector(d);
-        if (val !== undefined) {
-          const x = getX(i, chartDataArray.length); const y = getY(val);
-          if (pointCount === 0) pathD += "M " + x + " " + y; else pathD += " L " + x + " " + y;
-          
-          if (isTotal && d.hasArtifact) {
-            const tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-            tri.setAttribute("points", (x) + ',' + (y-6) + ' ' + (x-5) + ',' + (y+4) + ' ' + (x+5) + ',' + (y+4));
-            tri.setAttribute("fill", "#f57c00"); tri.setAttribute("stroke", "#fff"); tri.setAttribute("stroke-width", "1");
-            svg.appendChild(tri);
-          } else {
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", isTotal ? "3.5" : "3");
-            circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1");
-            svg.appendChild(circle);
-          }
-          pointCount++;
-        }
-      });
-      if (pointCount > 1) {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", color); path.setAttribute("stroke-width", isTotal ? "2" : "1.5");
-        if(!isTotal) path.setAttribute("stroke-dasharray", "4,2");
-        svg.insertBefore(path, svg.firstChild); 
-      }
+      helpWin.document.open();
+      helpWin.document.write(helpContent);
+      helpWin.document.close();
     };
 
-    if (showR1) drawLine("R1", d => d.spots[1], colors[1], false);
-    if (showR2) drawLine("R2", d => d.spots[2], colors[2], false);
-    if (showR3) drawLine("R3", d => d.spots[3], colors[3], false);
-    if (showR4) drawLine("R4", d => d.spots[4], colors[4], false);
-    if (showTot) {
-      drawLine("Tot", d => d.total, colors.tot, true);
-      chartDataArray.forEach((d, i) => {
-        const x = getX(i, chartDataArray.length);
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "9"); label.setAttribute("fill", "#999"); label.setAttribute("font-weight", "bold");
-        label.textContent = "C" + d.chart;
-        if(d.total !== 0 || d.hasArtifact) svg.appendChild(label);
-      });
-    }
+    let autoSaveTimeout;
+    let warningTimeout;
+    const colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
 
-    const divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    divLine.setAttribute("x1", profileStartX); divLine.setAttribute("y1", 10);
-    divLine.setAttribute("x2", profileStartX); divLine.setAttribute("y2", height - 10);
-    divLine.setAttribute("stroke", "#ddd"); divLine.setAttribute("stroke-width", "1");
-    svg.appendChild(divLine);
+    let stateHistory = [];
+    let historyIndex = -1;
+    let isRestoringHistory = false;
+    let recordTimeout;
 
-    const profZero = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    profZero.setAttribute("x1", profCenterX); profZero.setAttribute("y1", 20);
-    profZero.setAttribute("x2", profCenterX); profZero.setAttribute("y2", height - 20);
-    profZero.setAttribute("stroke", "#ccc"); profZero.setAttribute("stroke-width", "1"); profZero.setAttribute("stroke-dasharray", "1,1");
-    svg.appendChild(profZero);
-
-    const profLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    profLabel.setAttribute("x", profCenterX); profLabel.setAttribute("y", 12); profLabel.setAttribute("text-anchor", "middle"); profLabel.setAttribute("font-size", "9.5"); profLabel.setAttribute("fill", "#666"); profLabel.setAttribute("font-weight", "bold");
-    profLabel.textContent = "Профіль";
-    svg.appendChild(profLabel);
-
-    const drawProfileBar = (col, yPos, color) => {
-      if (counts[col] === 0) return;
-      const avg = spotAverages[col];
-      const maxBarW = 25;
-      const barW = Math.abs(avg / maxAbs) * maxBarW;
-      const barX = avg < 0 ? profCenterX - barW : profCenterX;
-      
-      const bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      bar.setAttribute("x", barX); bar.setAttribute("y", yPos);
-      bar.setAttribute("width", barW); bar.setAttribute("height", "6");
-      bar.setAttribute("fill", color); bar.setAttribute("rx", "1");
-      svg.appendChild(bar);
-      
-      const txtX = avg < 0 ? profCenterX + 3 : profCenterX - 3;
-      const txtAnchor = avg < 0 ? "start" : "end";
-      const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      lbl.setAttribute("x", txtX); lbl.setAttribute("y", yPos + 6); lbl.setAttribute("text-anchor", txtAnchor); lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", color);
-      lbl.textContent = 'R' + col;
-      svg.appendChild(lbl);
+    const parseStateData = (data) => {
+      if (Array.isArray(data)) return { respondentName: "", examDate: "", tests: data };
+      else if (data && data.tests) return data;
+      return { respondentName: "", examDate: "", tests: [] };
     };
 
-    drawProfileBar(1, 24, colors[1]);
-    drawProfileBar(2, 34, colors[2]);
-    drawProfileBar(3, 44, colors[3]);
-    drawProfileBar(4, 54, colors[4]);
-
-    let interpLines = [];
-    const totals = chartDataArray.map(d => d.total);
-    const first = totals[0], last = totals[totals.length - 1];
-    const trend = last - first;
-    
-    let vectorText = "Нейтральний стан / Фізіологічний шум";
-    if (totals.every(v => v === 0)) vectorText = "Нейтральний стан (шум)";
-    else if (totals.every(v => v <= 0) && trend < 0) vectorText = "Сенсибілізація (накопичення напруги)";
-    else if (totals.every(v => v < 0)) vectorText = "Стабільна реактивність";
-    else if (totals.every(v => v > 0)) vectorText = "Орієнтація на порівняння (заспокоєння)";
-    else if (first < 0 && last >= 0 && trend > 0) vectorText = "Габітуація (спад напруги/адаптація)";
-    else if (first >= 0 && last < 0 && trend < 0) vectorText = "Наростання реактивності до кінця тесту";
-    else vectorText = "Змішана динаміка (нестабільність)";
-    
-    interpLines.push('<b>Вектор:</b> ' + vectorText);
-
-    let dominantSpot = null; let minAvg = -1.0; 
-    for(let c=1; c<=4; c++) {
-      if(counts[c] > 0 && spotAverages[c] <= minAvg) { minAvg = spotAverages[c]; dominantSpot = c; }
-    }
-    
-    if (dominantSpot) {
-      interpLines.push('<b>Домінанта:</b> Виражений фокус на <b>R' + dominantSpot + '</b> (сер. бал ' + minAvg.toFixed(1) + ')');
-    } else {
-      interpLines.push('<b>Домінанта:</b> Чітко вираженого фокусу не виявлено');
-    }
-
-    if (highArtifacts) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ' + Math.round(testArtPercent*100) + '% даних втрачено. Тест визнано No Opinion!</span>');
-    } else if (hasAnyNO) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> Окреме питання визнано No Opinion. NSR заблоковано!</span>');
-    } else if (chartDataArray.some(d => d.hasArtifact)) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ Артефакти:</b> Присутні локальні артефакти, тренд може бути частково спотворений.</span>');
-    }
-
-    textDiv.innerHTML = "<ul>" + interpLines.map(line => '<li>' + line + '</li>').join('') + "</ul>";
-  };
-
-  const calcPneumoESS = (vRaw, nRaw, vN, nN) => {
-    let vA = isArt(vRaw);
-    let nA = isArt(nRaw);
-    if (vA && nA) return { val: 0, fullArt: true, partialArt: false, conflict: false };
-    if (vA) return { val: nN, fullArt: false, partialArt: true, conflict: false };
-    if (nA) return { val: vN, fullArt: false, partialArt: true, conflict: false };
-    if (vN === 0 && nN === 0) return { val: 0, fullArt: false, partialArt: false, conflict: false };
-    if (vN === nN) return { val: vN, fullArt: false, partialArt: false, conflict: false };
-    if (vN === 0) return { val: nN, fullArt: false, partialArt: false, conflict: false };
-    if (nN === 0) return { val: vN, fullArt: false, partialArt: false, conflict: false };
-    if (vN + nN === 0) return { val: 0, fullArt: false, partialArt: false, conflict: true };
-    return { val: 0, fullArt: false, partialArt: false, conflict: false };
-  };
-
-  const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
-  const getGrandProbValue = (val) => { const v = Math.abs(val); if (v >= 20) return "Pr > 99%"; if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%"; return "p > 0.05"; };
-
-  const getScreeningProbValue = (val) => {
-    if (val <= -12) return "Pr > 99%"; if (val === -11) return "Pr ~ 99%"; if (val === -10) return "Pr ~ 98%"; if (val === -9) return "Pr ~ 97%";
-    if (val === -8) return "Pr ~ 95%"; if (val === -7) return "Pr ~ 92%"; if (val === -6) return "Pr ~ 89%"; if (val === -5) return "Pr ~ 85%";
-    if (val === -4) return "Pr ~ 79%"; if (val === -3) return "Pr ~ 73%"; 
-    return ""; 
-  };
-
-  const senterProbsMap = new Map([[-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]]);
-  const getSenterProbValue = (val) => { const numVal = Number(val); if (numVal <= -14) return "Pr > 99.9%"; if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%"; return "p > 0.05"; };
-
-  const getSpotInfo = (val, testType) => {
-    if (testType === "screening") {
-      if (val <= -3) return { status: "SR", prob: getScreeningProbValue(val), cls: "bg-sr" };
-      if (val >= 1) return { status: "NSR", prob: "", cls: "bg-nsr" };
-      return { status: "INC", prob: "p > 0.05", cls: "bg-inc" };
-    } else {
-      if (val <= -7) return { status: "SR", prob: getSenterProbValue(val), cls: "bg-sr" };
-      return { status: "-", prob: "", cls: "bg-na" };
-    }
-  };
-
-  const getGrandProb = (grandTotal, activeSpotVals, testType, minSpot, hasAnySR) => {
-    if (activeSpotVals.length === 0) return { status: "N/A", prob: "Немає даних", cls: "bg-na" };
-    if (testType === "screening") {
-      if (hasAnySR) return { status: "SR", prob: "Spot Rule (Є SR)", cls: "bg-sr" };
-      if (activeSpotVals.every(v => v >= 1)) return { status: "NSR", prob: "All Spots NSR", cls: "bg-nsr" };
-      return { status: "INC", prob: "Spot Rule (INC)", cls: "bg-inc" };
-    }
-    
-    if (minSpot <= -7) return { status: "SR", prob: "Сентер (" + getSenterProbValue(minSpot).replace('Pr ~ ', '') + ")", cls: "bg-sr" };
-    if (grandTotal <= -3) return { status: "SR", prob: getGrandProbValue(grandTotal), cls: "bg-sr" };
-    if (grandTotal >= 3) return { status: "NSR", prob: getGrandProbValue(grandTotal), cls: "bg-nsr" };
-    return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
-  };
-
-  const applyFormat = (wrapper, formatStr) => {
-    const ce = wrapper._cachedElements;
-    const config = formatConfig[formatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
-    
-    if (formatStr === "ОБЕРІТЬ ФОРМАТ..." || formatStr === "N/A" || formatStr === "Оберіть формат...") {
-        ce.formatSelect.classList.add("format-attention");
-    } else {
-        ce.formatSelect.classList.remove("format-attention");
-    }
-    
-    const scrRadio = ce.typeRadios.find(r => r.value === 'screening');
-    const diagRadio = ce.typeRadios.find(r => r.value === 'diagnostic');
-    const scrLabel = wrapper.querySelector('label[for="' + scrRadio.id + '"]');
-    
-    if (config.forceDiag) {
-        scrRadio.disabled = true;
-        if (scrLabel) scrLabel.style.display = 'none';
-        if (scrRadio.checked) diagRadio.checked = true;
-    } else {
-        scrRadio.disabled = false;
-        if (scrLabel) scrLabel.style.display = 'inline-block';
-    }
-
-    const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
-    const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
-    const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
-
-    for (let col = 1; col <= 4; col++) {
-        const isColDisabled = col > config.cols;
-        const colStr = col.toString();
+    const collectState = () => {
+      const tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(wrapper => {
+        const ce = wrapper._cachedElements;
+        const titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
+        const typeRadio = wrapper.querySelector(".toggle-type input[type='radio']:checked");
+        const formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
+        const chartToggle4 = wrapper.querySelector(".chart-toggle[data-chart='4']");
+        const chartToggle5 = wrapper.querySelector(".chart-toggle[data-chart='5']");
         
-        const th = wrapper.querySelector('.ess-th-question[data-th-col="' + colStr + '"]');
-        if (th) isColDisabled ? th.classList.add("col-disabled") : th.classList.remove("col-disabled");
-        
-        const colInputs = ce.inputs.filter(i => i.getAttribute('data-col') === colStr);
-        colInputs.forEach(inp => {
-            const cNum = inp.getAttribute('data-chart');
-            inp.disabled = isColDisabled || !activeCharts[cNum];
-            const td = inp.parentElement;
-            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
-            if (isColDisabled) {
-                inp.value = ""; 
-                td.classList.remove("bg-local-artifact", "bg-artifact");
-            }
-        });
-        
-        const qInp = ce.questionInputs.find(i => i.getAttribute('data-q') === 'R' + colStr);
-        if (qInp) {
-            qInp.disabled = isColDisabled;
-            if (isColDisabled) qInp.value = '';
-            qInp.parentElement.style.opacity = isColDisabled ? '0.4' : '1';
-        }
-        
-        const pneumoSums = ce.pneumoSums.filter(s => s.getAttribute('data-col') === colStr);
-        pneumoSums.forEach(span => {
-            const td = span.parentElement;
-            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
-            if (isColDisabled) { span.textContent = ""; td.classList.remove("bg-artifact", "bg-local-artifact"); }
-        });
-        
-        const subtotalSpans = ce.subtotals.filter(s => s.getAttribute('data-col') === colStr);
-        subtotalSpans.forEach(span => {
-            const td = span.parentElement;
-            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
-            if (isColDisabled) span.textContent = "";
-        });
-        
-        const statusCells = ce.statuses.filter(s => s.getAttribute('data-col') === colStr);
-        statusCells.forEach(td => {
-            isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
-            if (isColDisabled) { td.innerHTML = ""; td.className = "status-cell bg-na col-disabled"; }
-        });
-        
-        const dynToggle = wrapper.querySelector('input[id^="dyn_r' + colStr + '_"]');
-        if (dynToggle) {
-            const dynLabel = wrapper.querySelector('label[for="' + dynToggle.id + '"]');
-            if (isColDisabled) {
-                dynToggle.disabled = true; dynToggle.checked = false;
-                if (dynLabel) dynLabel.style.opacity = '0.3';
-            } else {
-                dynToggle.disabled = false;
-                if (dynLabel) dynLabel.style.opacity = '1';
-            }
-        }
-    }
-  };
-
-  const calculateTest = (wrapper) => {
-    const ce = wrapper._cachedElements;
-    if (!ce) return;
-    
-    let currentFormatStr = ce.formatSelect.value;
-    if (currentFormatStr === "N/A" || currentFormatStr === "Оберіть формат...") currentFormatStr = "ОБЕРІТЬ ФОРМАТ...";
-    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."]).cols;
-    
-    let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    let colHasData = { 1: false, 2: false, 3: false, 4: false };
-    const currentTestType = ce.typeRadios.find(r => r.checked)?.value || "screening";
-    if (ce.contamWrapper) ce.contamWrapper.style.display = (currentTestType === "screening") ? "inline-flex" : "none";
-    const isContamActive = ce.contamToggle?.checked ?? true;
-    const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
-    const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
-    const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
-
-    let spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    let spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
-
-    for (let c = 1; c <= 5; c++) {
-      const cStr = c.toString();
-      const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
-      const chartInputs = ce.inputs.filter(i => i.getAttribute('data-chart') === cStr);
-      if (!activeCharts[c]) { 
-          rows.forEach(r => r.classList.add("chart-disabled")); 
-          chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.setAttribute("disabled", "true"); }); 
-      } else { 
-          rows.forEach(r => r.classList.remove("chart-disabled")); 
-          chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.removeAttribute("disabled"); }); 
-      }
-    }
-    
-    let usePPGCol = {1:false, 2:false, 3:false, 4:false};
-    for (let col = 1; col <= allowedCols; col++) {
-      for (let c = 1; c <= 5; c++) {
-        if (!activeCharts[c]) continue;
-        const pInput = ce.inputsMap[c + '_' + col + '_ppg'];
-        if (pInput && !pInput.disabled && pInput.value.trim() !== "" && pInput.value.trim() !== "-") {
-          usePPGCol[col] = true; break;
-        }
-      }
-    }
-
-    const getValStrict = (chart, col, row) => {
-      const input = ce.inputsMap[chart + '_' + col + '_' + row];
-      if (!input || input.disabled || parseInt(col) > allowedCols) return { val: 0, art: false, empty: true, raw: "" };
-      const val = input.value.trim();
-      if (isArt(val)) return { val: 0, art: true, empty: false, raw: val };
-      if (val === "" || val === "-") return { val: 0, art: false, empty: true, raw: val };
-      
-      const num = parseFloat(val);
-      if (isNaN(num)) return { val: 0, art: true, empty: false, raw: val };
-      
-      if (row === 'eda' && Math.abs(num) > 2) return { val: 0, art: true, empty: false, raw: val };
-      if (row !== 'eda' && Math.abs(num) > 1) return { val: 0, art: true, empty: false, raw: val };
-      
-      return { val: num, art: false, empty: false, raw: val };
-    };
-
-    const dynamicsValues = [];
-
-    for (let c = 1; c <= 5; c++) {
-      let currentChartSum = 0;
-      let chartHasArt = false;
-      let cSpots = {};
-      let chartHasData = false;
-      const cStr = c.toString();
-      
-      for (let col = 1; col <= 4; col++) {
-        if (col > allowedCols) continue;
-        const colStr = col.toString();
-        
-        const pvInfo = getValStrict(cStr, colStr, 'pneumo-v');
-        const pnInfo = getValStrict(cStr, colStr, 'pneumo-n');
-        const edaInfo = getValStrict(cStr, colStr, 'eda');
-        const carInfo = getValStrict(cStr, colStr, 'cardio');
-        const ppgInfo = getValStrict(cStr, colStr, 'ppg');
-        
-        const colHasCurrentData = !pvInfo.empty || !pnInfo.empty || !edaInfo.empty || !carInfo.empty || !ppgInfo.empty;
-        
-        let pneumo = calcPneumoESS(pvInfo.raw, pnInfo.raw, pvInfo.val, pnInfo.val);
-        
-        if (colHasCurrentData) {
-            if (pvInfo.empty && pnInfo.empty) { pneumo.fullArt = true; pneumo.val = 0; }
-            if (edaInfo.empty) edaInfo.art = true;
-            if (carInfo.empty) carInfo.art = true;
-            if (usePPGCol[col] && ppgInfo.empty) ppgInfo.art = true;
-        }
-        
-        const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
-        if (spanPneumo) {
-          spanPneumo.parentElement.className = "calc-cell"; 
-          if (pneumo.fullArt) {
-              spanPneumo.textContent = "∅";
-              spanPneumo.parentElement.classList.add("bg-artifact");
-          } else if (pneumo.partialArt) {
-              spanPneumo.textContent = pneumo.val + " ⚠";
-              spanPneumo.parentElement.classList.add("bg-local-artifact");
-          } else if (pneumo.conflict) {
-              spanPneumo.textContent = "0 ⚠";
-          } else {
-              spanPneumo.textContent = pneumo.val;
-          }
-        }
-        
-        const setVisualArt = (rowName, isArtif) => {
-            const inp = ce.inputsMap[cStr + '_' + colStr + '_' + rowName];
-            if (inp) {
-                if (isArtif) inp.parentElement.classList.add("bg-local-artifact");
-                else inp.parentElement.classList.remove("bg-local-artifact");
-            }
+        const dynState = {
+          tot: wrapper.querySelector('input[id^="dyn_tot_"]')?.checked ?? true,
+          r1: wrapper.querySelector('input[id^="dyn_r1_"]')?.checked ?? false,
+          r2: wrapper.querySelector('input[id^="dyn_r2_"]')?.checked ?? false,
+          r3: wrapper.querySelector('input[id^="dyn_r3_"]')?.checked ?? false,
+          r4: wrapper.querySelector('input[id^="dyn_r4_"]')?.checked ?? false
         };
+
+        const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
+        const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
         
-        setVisualArt('pneumo-v', pvInfo.art || (colHasCurrentData && pvInfo.empty && pnInfo.empty));
-        setVisualArt('pneumo-n', pnInfo.art || (colHasCurrentData && pvInfo.empty && pnInfo.empty));
-        setVisualArt('eda', edaInfo.art);
-        setVisualArt('cardio', carInfo.art);
-        setVisualArt('ppg', ppgInfo.art);
-
-        if (activeCharts[c] && colHasCurrentData) {
-            const expWeight = usePPGCol[col] ? 5 : 4;
-            spotWeightTotal[col] += expWeight;
-            
-            if (pneumo.fullArt) spotWeightLost[col] += 1;
-            if (edaInfo.art) spotWeightLost[col] += 2;
-            if (carInfo.art) spotWeightLost[col] += 1;
-            if (usePPGCol[col] && ppgInfo.art) spotWeightLost[col] += 1;
-            
-            if (pneumo.fullArt || edaInfo.art || carInfo.art || (usePPGCol[col] && ppgInfo.art)) chartHasArt = true;
-            
-            colHasData[col] = true;
-            chartHasData = true;
-        }
+        const values = {};
+        inputs.forEach(inp => { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
+        const questions = {};
+        qInputs.forEach(inp => { questions[inp.getAttribute('data-q')] = inp.value; });
         
-        const colSum = pneumo.val + edaInfo.val + carInfo.val + ppgInfo.val;
-        if (activeCharts[c]) {
-          subtotals[col] += colSum;
-          if(colHasCurrentData) cSpots[col] = colSum;
+        return {
+          title: titleInput ? titleInput.value : "",
+          format: formatSelect ? formatSelect.value : "ОБЕРІТЬ ФОРМАТ...",
+          questions: questions,
+          type: typeRadio ? typeRadio.value : "screening",
+          dynState: dynState,
+          chartToggles: {
+            4: chartToggle4 ? chartToggle4.checked : true,
+            5: chartToggle5 ? chartToggle5.checked : true
+          },
+          values
+        };
+      });
+
+      return { 
+        respondentName: respondentInput.value, 
+        examDate: dateInput.value, 
+        tests: tests 
+      };
+    };
+
+    const recordState = () => {
+      if (isRestoringHistory) return;
+      const state = collectState();
+      const stateStr = JSON.stringify(state);
+      if (historyIndex >= 0 && JSON.stringify(stateHistory[historyIndex]) === stateStr) return;
+      
+      stateHistory = stateHistory.slice(0, historyIndex + 1);
+      stateHistory.push(state);
+      
+      if (stateHistory.length > 50) {
+        stateHistory.shift();
+      } else {
+        historyIndex++;
+      }
+      
+      updateUndoRedoButtons();
+    };
+
+    const debouncedRecordState = () => {
+      if (isRestoringHistory) return;
+      clearTimeout(recordTimeout);
+      recordTimeout = setTimeout(recordState, 300);
+    };
+
+    const restoreState = (index) => {
+      if (index < 0 || index >= stateHistory.length) return;
+      isRestoringHistory = true;
+      clearTimeout(recordTimeout);
+      historyIndex = index;
+      const stateToRestore = stateHistory[index];
+      
+      respondentInput.value = stateToRestore.respondentName || "";
+      dateInput.value = stateToRestore.examDate || "";
+      testsContainer.innerHTML = "";
+      stateToRestore.tests.forEach(d => createTestTable(d));
+      
+      try {
+        localStorage.setItem("ess_polygraph_data", JSON.stringify(stateToRestore));
+        isUnsaved = false;
+        saveStatus.classList.remove("unsaved");
+        saveStatus.textContent = "🟢 Дані збережено";
+      } catch(e) {}
+      
+      updateUndoRedoButtons();
+      setTimeout(() => { isRestoringHistory = false; }, 100);
+    };
+
+    const updateTestNumbers = () => {
+      testsContainer.querySelectorAll(".ess-test-wrapper").forEach((w, idx) => {
+          const num = idx + 1;
+          const label = w.querySelector(".ess-test-num-label");
+          if (label) label.textContent = "Тест №" + num + ":";
+          const h3 = w.querySelector(".ess-modal-header h3");
+          if (h3) h3.textContent = "📝 Питання тесту №" + num;
+      });
+    };
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "ess-toolbar";
+
+    const btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.setAttribute("aria-label", "Зберегти"); btnSave.onclick = () => { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
+    const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
+    const btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
+    
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json";
+    fileInput.style.display = "none";
+    toolbar.appendChild(fileInput);
+    btnOpen.onclick = () => fileInput.click();
+
+    const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити"); btnSaveJson.onclick = () => saveToFile();
+    const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
+    const btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = () => restoreState(historyIndex - 1);
+    const btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = () => restoreState(historyIndex + 1);
+    const updateUndoRedoButtons = () => {
+      btnUndo.disabled = historyIndex <= 0;
+      btnRedo.disabled = historyIndex >= stateHistory.length - 1;
+    };
+    const sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
+    const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = () => setTimeout(() => window.print(), 150);
+    const btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
+    btnClearAll.onclick = () => {
+      if (confirm("Ви впевнені, що хочете повністю очистити всі таблиці та П.І.Б. респондента? (Буде створено нову чисту сесію)")) {
+        respondentInput.value = ""; 
+        dateInput.value = "";
+        testsContainer.innerHTML = ""; 
+        createTestTable(); 
+        markUnsaved();
+      }
+    };
+    const sep4 = document.createElement("div"); sep4.className = "ess-toolbar-sep";
+    const btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.setAttribute("aria-label", "Довідка"); btnHelp.onclick = () => openHelpPage();
+    const saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
+
+    toolbar.appendChild(btnSave); toolbar.appendChild(sep1); toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson);
+    toolbar.appendChild(sep2); toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep3);
+    toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
+    toolbar.appendChild(saveStatus);
+
+    const respondentArea = document.createElement("div"); 
+    respondentArea.className = "ess-respondent-area";
+    
+    const nameWrapper = document.createElement("div");
+    nameWrapper.className = "ess-name-wrapper";
+    const respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
+    const respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
+    respondentInput.autocomplete = "off"; respondentInput.spellcheck = false;
+    respondentInput.addEventListener("input", () => markUnsaved());
+    nameWrapper.appendChild(respondentLabel); nameWrapper.appendChild(respondentInput);
+    
+    const dateWrapper = document.createElement("div");
+    dateWrapper.className = "ess-date-wrapper";
+    const dateLabel = document.createElement("span"); dateLabel.className = "ess-respondent-label"; dateLabel.textContent = "📅 Дата:";
+    const dateInput = document.createElement("input"); dateInput.type = "date"; dateInput.className = "ess-date-input";
+    dateInput.addEventListener("change", () => markUnsaved());
+    dateWrapper.appendChild(dateLabel); dateWrapper.appendChild(dateInput);
+
+    respondentArea.appendChild(nameWrapper);
+    respondentArea.appendChild(dateWrapper);
+
+    const testsContainer = document.createElement("div");
+    const addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
+
+    container.appendChild(toolbar); 
+    container.appendChild(respondentArea); 
+    container.appendChild(testsContainer); 
+    container.appendChild(addBtnBottom);
+
+    const performSave = () => {
+      if (!isUnsaved) return;
+      saveStatus.textContent = "⏳ Запис...";
+      try {
+        localStorage.setItem("ess_polygraph_data", JSON.stringify(collectState()));
+        isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
+      } catch (error) {
+        saveStatus.textContent = "❌ Помилка збереження!"; saveStatus.classList.add("unsaved"); showError("Помилка запису в localStorage: " + error.message);
+      }
+    };
+
+    const saveToFile = () => {
+      const resp = respondentInput.value.trim();
+      const safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
+      const dateStr = dateInput.value || new Date().toISOString().slice(0,10);
+      const filename = "ess-" + safeResp + dateStr + ".json";
+      
+      const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+      isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
+    };
+
+    const handleFileLoad = (file) => {
+      if (isUnsaved) {
+        if (!confirm("У вас є незбережені дані! Відкриття нового файлу зітре поточні таблиці. Продовжити?")) return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const stateToRestore = parseStateData(JSON.parse(e.target.result));
+          respondentInput.value = stateToRestore.respondentName || "";
+          dateInput.value = stateToRestore.examDate || "";
+          testsContainer.innerHTML = "";
+          stateToRestore.tests.forEach(d => createTestTable(d));
+          performSave();
+          saveStatus.textContent = "🟢 Дані завантажено";
+          stateHistory = []; historyIndex = -1; recordState();
+        } catch (err) { showError("Помилка завантаження файлу: " + err.message); }
+      };
+      reader.readAsText(file);
+    };
+
+    fileInput.addEventListener("change", (e) => { 
+      if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
+      e.target.value = ""; 
+    });
+
+    window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
+    window.addEventListener('dragleave', (e) => { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.name.toLowerCase().endsWith('.json')) handleFileLoad(file);
+        else showError("Будь ласка, перетягніть файл саме у форматі .json");
+      }
+    });
+
+    const markUnsaved = () => {
+      if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
+      saveStatus.textContent = "🟠 ⚠️ Є незбережені зміни!";
+      if (warningTimeout) clearTimeout(warningTimeout); if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+      warningTimeout = setTimeout(() => { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
+      autoSaveTimeout = setTimeout(() => performSave(), 60000);
+      debouncedRecordState();
+    };
+
+    window.addEventListener('beforeunload', (e) => { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
+    container.addEventListener('focusout', (e) => { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
+
+    const isArt = (val) => {
+      if (val === null || val === undefined) return false;
+      const v = String(val).trim().toLowerCase();
+      return v === "∅" || v === "а" || v === "a";
+    };
+
+    const updateDynamicsChart = (wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) => {
+      const svg = ce.dynamicsSvg;
+      const textDiv = ce.dynamicsText;
+      
+      const showTot = wrapper.querySelector('input[id^="dyn_tot_"]')?.checked ?? true;
+      const showR1 = wrapper.querySelector('input[id^="dyn_r1_"]')?.checked ?? false;
+      const showR2 = wrapper.querySelector('input[id^="dyn_r2_"]')?.checked ?? false;
+      const showR3 = wrapper.querySelector('input[id^="dyn_r3_"]')?.checked ?? false;
+      const showR4 = wrapper.querySelector('input[id^="dyn_r4_"]')?.checked ?? false;
+      
+      if (!svg) return;
+      svg.innerHTML = '';
+      
+      const width = svg.clientWidth > 100 ? svg.clientWidth : 800;
+      const height = 90;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      
+      const paddingX = 25, paddingY = 15;
+      const profileWidth = 80; 
+      const profileStartX = width - profileWidth; 
+      const chartWidth = profileStartX - paddingX * 2;
+      const chartHeight = height - paddingY * 2;
+      const centerY = height / 2;
+      const profCenterX = profileStartX + (profileWidth / 2);
+      
+      let maxAbs = 6;
+      chartDataArray.forEach(d => {
+        if (showTot && Math.abs(d.total) > maxAbs) maxAbs = Math.abs(d.total);
+        if (showR1 && d.spots[1] !== undefined && Math.abs(d.spots[1]) > maxAbs) maxAbs = Math.abs(d.spots[1]);
+        if (showR2 && d.spots[2] !== undefined && Math.abs(d.spots[2]) > maxAbs) maxAbs = Math.abs(d.spots[2]);
+        if (showR3 && d.spots[3] !== undefined && Math.abs(d.spots[3]) > maxAbs) maxAbs = Math.abs(d.spots[3]);
+        if (showR4 && d.spots[4] !== undefined && Math.abs(d.spots[4]) > maxAbs) maxAbs = Math.abs(d.spots[4]);
+      });
+      maxAbs = Math.ceil(maxAbs / 2) * 2;
+      
+      const getY = (val) => centerY - (val / maxAbs) * (chartHeight / 2);
+      const getX = (idx, len) => paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2);
+
+      const incZoneTop = getY(3);
+      const incZoneBottom = getY(-3);
+      const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      incRect.setAttribute("x", paddingX); incRect.setAttribute("y", incZoneTop);
+      incRect.setAttribute("width", chartWidth); incRect.setAttribute("height", incZoneBottom - incZoneTop);
+      incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
+      svg.appendChild(incRect);
+
+      const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
+      zeroLine.setAttribute("x2", profileStartX); zeroLine.setAttribute("y2", centerY);
+      zeroLine.setAttribute("stroke", "#ccc"); zeroLine.setAttribute("stroke-width", "1");
+      zeroLine.setAttribute("stroke-dasharray", "2,2");
+      svg.appendChild(zeroLine);
+      
+      const labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      labelPos.setAttribute("x", paddingX + chartWidth/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "9.5"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння";
+      svg.appendChild(labelPos);
+      
+      const labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      labelNeg.setAttribute("x", paddingX + chartWidth/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "9.5"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні";
+      svg.appendChild(labelNeg);
+
+      if (chartDataArray.length === 0) {
+        textDiv.innerHTML = "<ul><li>Немає даних для аналізу</li></ul>";
+        return;
+      }
+
+      let spotAverages = {1:0, 2:0, 3:0, 4:0};
+      let counts = {1:0, 2:0, 3:0, 4:0};
+
+      chartDataArray.forEach((d) => {
+        for(let col=1; col<=4; col++) {
+          if(d.spots[col] !== undefined) { spotAverages[col] += d.spots[col]; counts[col]++; }
         }
-        currentChartSum += colSum;
+      });
+      for(let col=1; col<=4; col++) { if(counts[col] > 0) spotAverages[col] = spotAverages[col] / counts[col]; }
+
+      const drawLine = (key, dataSelector, color, isTotal) => {
+        let pathD = ""; let pointCount = 0;
+        chartDataArray.forEach((d, i) => {
+          const val = dataSelector(d);
+          if (val !== undefined) {
+            const x = getX(i, chartDataArray.length); const y = getY(val);
+            if (pointCount === 0) pathD += `M ${x} ${y}`; else pathD += ` L ${x} ${y}`;
+            
+            if (isTotal && d.hasArtifact) {
+              const tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+              tri.setAttribute("points", `${x},${y-6} ${x-5},${y+4} ${x+5},${y+4}`);
+              tri.setAttribute("fill", "#f57c00"); tri.setAttribute("stroke", "#fff"); tri.setAttribute("stroke-width", "1");
+              svg.appendChild(tri);
+            } else {
+              const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+              circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", isTotal ? "3.5" : "3");
+              circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1");
+              svg.appendChild(circle);
+            }
+            pointCount++;
+          }
+        });
+        if (pointCount > 1) {
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", color); path.setAttribute("stroke-width", isTotal ? "2" : "1.5");
+          if(!isTotal) path.setAttribute("stroke-dasharray", "4,2");
+          svg.insertBefore(path, svg.firstChild); 
+        }
+      };
+
+      if (showR1) drawLine("R1", d => d.spots[1], colors[1], false);
+      if (showR2) drawLine("R2", d => d.spots[2], colors[2], false);
+      if (showR3) drawLine("R3", d => d.spots[3], colors[3], false);
+      if (showR4) drawLine("R4", d => d.spots[4], colors[4], false);
+      if (showTot) {
+        drawLine("Tot", d => d.total, colors.tot, true);
+        chartDataArray.forEach((d, i) => {
+          const x = getX(i, chartDataArray.length);
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "9"); label.setAttribute("fill", "#999"); label.setAttribute("font-weight", "bold");
+          label.textContent = "C" + d.chart;
+          if(d.total !== 0 || d.hasArtifact) svg.appendChild(label);
+        });
+      }
+
+      const divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      divLine.setAttribute("x1", profileStartX); divLine.setAttribute("y1", 10);
+      divLine.setAttribute("x2", profileStartX); divLine.setAttribute("y2", height - 10);
+      divLine.setAttribute("stroke", "#ddd"); divLine.setAttribute("stroke-width", "1");
+      svg.appendChild(divLine);
+
+      const profZero = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      profZero.setAttribute("x1", profCenterX); profZero.setAttribute("y1", 20);
+      profZero.setAttribute("x2", profCenterX); profZero.setAttribute("y2", height - 20);
+      profZero.setAttribute("stroke", "#ccc"); profZero.setAttribute("stroke-width", "1"); profZero.setAttribute("stroke-dasharray", "1,1");
+      svg.appendChild(profZero);
+
+      const profLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      profLabel.setAttribute("x", profCenterX); profLabel.setAttribute("y", 12); profLabel.setAttribute("text-anchor", "middle"); profLabel.setAttribute("font-size", "9.5"); profLabel.setAttribute("fill", "#666"); profLabel.setAttribute("font-weight", "bold");
+      profLabel.textContent = "Профіль";
+      svg.appendChild(profLabel);
+
+      const drawProfileBar = (col, yPos, color) => {
+        if (counts[col] === 0) return;
+        const avg = spotAverages[col];
+        const maxBarW = 25;
+        const barW = Math.abs(avg / maxAbs) * maxBarW;
+        const barX = avg < 0 ? profCenterX - barW : profCenterX;
+        
+        const bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        bar.setAttribute("x", barX); bar.setAttribute("y", yPos);
+        bar.setAttribute("width", barW); bar.setAttribute("height", "6");
+        bar.setAttribute("fill", color); bar.setAttribute("rx", "1");
+        svg.appendChild(bar);
+        
+        const txtX = avg < 0 ? profCenterX + 3 : profCenterX - 3;
+        const txtAnchor = avg < 0 ? "start" : "end";
+        const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        lbl.setAttribute("x", txtX); lbl.setAttribute("y", yPos + 6); lbl.setAttribute("text-anchor", txtAnchor); lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", color);
+        lbl.textContent = `R${col}`;
+        svg.appendChild(lbl);
+      };
+
+      drawProfileBar(1, 24, colors[1]);
+      drawProfileBar(2, 34, colors[2]);
+      drawProfileBar(3, 44, colors[3]);
+      drawProfileBar(4, 54, colors[4]);
+
+      let interpLines = [];
+      const totals = chartDataArray.map(d => d.total);
+      const first = totals[0], last = totals[totals.length - 1];
+      const trend = last - first;
+      
+      let vectorText = "Нейтральний стан / Фізіологічний шум";
+      if (totals.every(v => v === 0)) vectorText = "Нейтральний стан (шум)";
+      else if (totals.every(v => v <= 0) && trend < 0) vectorText = "Сенсибілізація (накопичення напруги)";
+      else if (totals.every(v => v < 0)) vectorText = "Стабільна реактивність";
+      else if (totals.every(v => v > 0)) vectorText = "Орієнтація на порівняння (заспокоєння)";
+      else if (first < 0 && last >= 0 && trend > 0) vectorText = "Габітуація (спад напруги/адаптація)";
+      else if (first >= 0 && last < 0 && trend < 0) vectorText = "Наростання реактивності до кінця тесту";
+      else vectorText = "Змішана динаміка (нестабільність)";
+      
+      interpLines.push(`<b>Вектор:</b> ${vectorText}`);
+
+      let dominantSpot = null; let minAvg = -1.0; 
+      for(let c=1; c<=4; c++) {
+        if(counts[c] > 0 && spotAverages[c] <= minAvg) { minAvg = spotAverages[c]; dominantSpot = c; }
       }
       
-      const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === cStr);
-      if (spanChartTotal) {
-        spanChartTotal.textContent = activeCharts[c] ? currentChartSum : "—";
-        spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
+      if (dominantSpot) {
+        interpLines.push(`<b>Домінанта:</b> Виражений фокус на <b>R${dominantSpot}</b> (сер. бал ${minAvg.toFixed(1)})`);
+      } else {
+        interpLines.push(`<b>Домінанта:</b> Чітко вираженого фокусу не виявлено`);
       }
 
-      if (activeCharts[c] && chartHasData) {
-        dynamicsValues.push({ chart: c, total: currentChartSum, hasArtifact: chartHasArt, spots: cSpots });
-      }
-    }
-
-    let testWeightTotal = 0;
-    let testWeightLost = 0;
-    let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
-    let hasAnyNO = false;
-
-    for (let col = 1; col <= 4; col++) {
-      if (col > allowedCols) continue;
-      if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
-      
-      testWeightTotal += spotWeightTotal[col];
-      testWeightLost += spotWeightLost[col];
-
-      const val = subtotals[col]; activeSpotVals.push(val);
-      if (val < minSpotVal) minSpotVal = val;
-      
-      let info = getSpotInfo(val, currentTestType);
-      let spotArtPercent = spotWeightTotal[col] > 0 ? spotWeightLost[col] / spotWeightTotal[col] : 0;
-      
-      if (spotArtPercent >= 0.25) {
-          info.status = "NO";
-          info.prob = "≥25% втрачено";
-          info.cls = "bg-no";
-          hasAnyNO = true;
+      if (highArtifacts) {
+        interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> ${Math.round(testArtPercent*100)}% даних втрачено. Тест визнано No Opinion!</span>`);
+      } else if (hasAnyNO) {
+        interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Критичні артефакти:</b> Окреме питання визнано No Opinion. NSR заблоковано!</span>`);
+      } else if (chartDataArray.some(d => d.hasArtifact)) {
+        interpLines.push(`<span style="color:#ff0000;"><b>⚠️ Артефакти:</b> Присутні локальні артефакти, тренд може бути частково спотворений.</span>`);
       }
 
-      spotInfos[col] = info;
-      if (info.status === "SR") hasAnySR = true;
-    }
+      textDiv.innerHTML = "<ul>" + interpLines.map(line => `<li>${line}</li>`).join('') + "</ul>";
+    };
 
-    if (currentTestType === "screening" && hasAnySR && isContamActive) {
+    const calcPneumoESS = (vRaw, nRaw, vN, nN) => {
+      let vA = isArt(vRaw);
+      let nA = isArt(nRaw);
+      if (vA && nA) return { val: 0, fullArt: true, partialArt: false, conflict: false };
+      if (vA) return { val: nN, fullArt: false, partialArt: true, conflict: false };
+      if (nA) return { val: vN, fullArt: false, partialArt: true, conflict: false };
+      if (vN === 0 && nN === 0) return { val: 0, fullArt: false, partialArt: false, conflict: false };
+      if (vN === nN) return { val: vN, fullArt: false, partialArt: false, conflict: false };
+      if (vN === 0) return { val: nN, fullArt: false, partialArt: false, conflict: false };
+      if (nN === 0) return { val: vN, fullArt: false, partialArt: false, conflict: false };
+      if (vN + nN === 0) return { val: 0, fullArt: false, partialArt: false, conflict: true };
+      return { val: 0, fullArt: false, partialArt: false, conflict: false };
+    };
+
+    const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
+    const getGrandProbValue = (val) => { const v = Math.abs(val); if (v >= 20) return "Pr > 99%"; if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%"; return "p > 0.05"; };
+
+    const getScreeningProbValue = (val) => {
+      if (val <= -12) return "Pr > 99%"; if (val === -11) return "Pr ~ 99%"; if (val === -10) return "Pr ~ 98%"; if (val === -9) return "Pr ~ 97%";
+      if (val === -8) return "Pr ~ 95%"; if (val === -7) return "Pr ~ 92%"; if (val === -6) return "Pr ~ 89%"; if (val === -5) return "Pr ~ 85%";
+      if (val === -4) return "Pr ~ 79%"; if (val === -3) return "Pr ~ 73%"; 
+      return ""; 
+    };
+
+    const senterProbsMap = new Map([[-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]]);
+    const getSenterProbValue = (val) => { const numVal = Number(val); if (numVal <= -14) return "Pr > 99.9%"; if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%"; return "p > 0.05"; };
+
+    const getSpotInfo = (val, testType) => {
+      if (testType === "screening") {
+        if (val <= -3) return { status: "SR", prob: getScreeningProbValue(val), cls: "bg-sr" };
+        if (val >= 1) return { status: "NSR", prob: "", cls: "bg-nsr" };
+        return { status: "INC", prob: "p > 0.05", cls: "bg-inc" };
+      } else {
+        if (val <= -7) return { status: "SR", prob: getSenterProbValue(val), cls: "bg-sr" };
+        return { status: "-", prob: "", cls: "bg-na" };
+      }
+    };
+
+    const getGrandProb = (grandTotal, activeSpotVals, testType, minSpot, hasAnySR) => {
+      if (activeSpotVals.length === 0) return { status: "N/A", prob: "Немає даних", cls: "bg-na" };
+      if (testType === "screening") {
+        if (hasAnySR) return { status: "SR", prob: "Spot Rule (Є SR)", cls: "bg-sr" };
+        if (activeSpotVals.every(v => v >= 1)) return { status: "NSR", prob: "All Spots NSR", cls: "bg-nsr" };
+        return { status: "INC", prob: "Spot Rule (INC)", cls: "bg-inc" };
+      }
+      
+      if (minSpot <= -7) return { status: "SR", prob: "Сентер (" + getSenterProbValue(minSpot).replace('Pr ~ ', '') + ")", cls: "bg-sr" };
+      if (grandTotal <= -3) return { status: "SR", prob: getGrandProbValue(grandTotal), cls: "bg-sr" };
+      if (grandTotal >= 3) return { status: "NSR", prob: getGrandProbValue(grandTotal), cls: "bg-nsr" };
+      return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
+    };
+
+    const applyFormat = (wrapper, formatStr) => {
+      const ce = wrapper._cachedElements;
+      const config = formatConfig[formatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+      
+      if (formatStr === "ОБЕРІТЬ ФОРМАТ..." || formatStr === "N/A" || formatStr === "Оберіть формат...") {
+          ce.formatSelect.classList.add("format-attention");
+      } else {
+          ce.formatSelect.classList.remove("format-attention");
+      }
+      
+      const scrRadio = ce.typeRadios.find(r => r.value === 'screening');
+      const diagRadio = ce.typeRadios.find(r => r.value === 'diagnostic');
+      const scrLabel = wrapper.querySelector(`label[for="${scrRadio.id}"]`);
+      
+      if (config.forceDiag) {
+          scrRadio.disabled = true;
+          if (scrLabel) scrLabel.style.display = 'none';
+          if (scrRadio.checked) diagRadio.checked = true;
+      } else {
+          scrRadio.disabled = false;
+          if (scrLabel) scrLabel.style.display = 'inline-block';
+      }
+
+      const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
+      const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
+      const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
+
       for (let col = 1; col <= 4; col++) {
-        if (col > allowedCols) continue;
-        if (colHasData[col] && spotInfos[col].status === "NSR") spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
-      }
-    }
-
-    let grandTotal = 0;
-    for (let col = 1; col <= 4; col++) {
-      if (col > allowedCols) continue;
-      const colStr = col.toString();
-      const spanSub = ce.subtotals.find(s => s.getAttribute('data-col') === colStr);
-      if (spanSub) spanSub.textContent = colHasData[col] ? subtotals[col] : "-";
-      const info = spotInfos[col];
-      const cellStatus = ce.statuses.find(s => s.getAttribute('data-col') === colStr);
-      if (cellStatus) {
-        cellStatus.className = "status-cell " + info.cls;
-        cellStatus.innerHTML = (info.status === "N/A" || info.status === "-") ? '<span style="color:#888;">' + info.status + '</span>' : '<span class="status-badge">' + info.status + '</span><span class="prob-text">' + info.prob + '</span>';
-      }
-      if (colHasData[col]) grandTotal += subtotals[col];
-    }
-
-    if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : (allowedCols > 0 ? "0" : "—");
-    
-    let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
-    
-    if (currentTestType === "screening" && !hasAnySR) {
-        if (hasAnyNO && grandInfo.status !== "NO") {
-             grandInfo.status = "NO";
-             grandInfo.prob = "Spot Rule (Є NO)";
-             grandInfo.cls = "bg-no";
-        }
-    }
-
-    let testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
-    const highArtifacts = testArtPercent >= 0.25;
-
-    if (highArtifacts && allowedCols > 0) {
-        grandInfo.status = "NO";
-        grandInfo.prob = "≥25% втрат (Тест)";
-        grandInfo.cls = "bg-no";
-    } else if (hasAnyNO) {
-        if (grandInfo.status === "SR") {
-            grandInfo.prob += " (⚠️ є NO)";
-        } else {
-            grandInfo.status = "NO";
-            grandInfo.prob = "Блоковано (Спот = NO)";
-            grandInfo.cls = "bg-no";
-        }
-    }
-
-    if (allowedCols === 0) {
-        grandInfo = { status: "N/A", prob: "Оберіть формат тесту", cls: "bg-na" };
-    }
-
-    if (ce.grandStatus) {
-      ce.grandStatus.className = "status-cell " + grandInfo.cls;
-      ce.grandStatus.innerHTML = (grandInfo.status === "N/A" || grandInfo.status === "-") ? '<span style="color:#888;">' + grandInfo.prob + '</span>' : '<span class="status-badge" style="font-size:14px;">' + grandInfo.status + '</span><span class="prob-text" style="font-size:10px;">' + grandInfo.prob + '</span>';
-    }
-
-    if (ce.scaleLabels) {
-      if (currentTestType === "diagnostic") ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (+3 і більше) ▶</span>';
-      else ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
-    }
-    if (ce.scaleMarker) {
-      const minVal = -12, maxVal = 12;
-      const clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
-      const percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
-      ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
-    }
-
-    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent, hasAnyNO);
-  };
-
-  const createTestTable = (savedData = null) => {
-    const uid = Math.random().toString(36).substr(2, 9);
-    const wrapper = document.createElement("div"); wrapper.className = "ess-test-wrapper";
-
-    const rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
-    const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
-    const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
-    
-    let formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "ОБЕРІТЬ ФОРМАТ...";
-    if (formatVal === "N/A" || formatVal === "Оберіть формат...") formatVal = "ОБЕРІТЬ ФОРМАТ...";
-
-    const savedQuestions = savedData?.questions || {};
-    const formatOptions = TEST_FORMATS.map(f => '<option value="' + escapeHtml(f) + '" ' + (f === formatVal ? 'selected' : '') + '>' + escapeHtml(f) + '</option>').join('');
-
-    const ds = savedData?.dynState || { tot: true, r1: false, r2: false, r3: false, r4: false };
-
-    let tableHtml = '<div class="ess-test-top-bar">' +
-        '<div class="ess-top-bar-left">' +
-          '<select class="ess-format-select" title="Формат тестування">' + formatOptions + '</select>' +
-          '<div class="ess-type-toggle toggle-type">' +
-            '<input type="radio" id="scr_' + uid + '" name="tt_' + uid + '" value="screening" ' + (typeVal === 'screening' ? 'checked' : '') + ' />' +
-            '<label for="scr_' + uid + '">📋 Скринінговий</label>' +
-            '<input type="radio" id="diag_' + uid + '" name="tt_' + uid + '" value="diagnostic" ' + (typeVal === 'diagnostic' ? 'checked' : '') + ' />' +
-            '<label for="diag_' + uid + '">🔍 Діагностичний</label>' +
-          '</div>' +
-          '<button class="ess-btn ess-questions-btn" title="Редагувати питання">📝 Питання</button>' +
-          '<button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам\'ять</button>' +
-        '</div>' +
-        '<button class="ess-delete-btn" title="Видалити тест">×</button>' +
-      '</div>' +
-      '<div class="ess-test-title-area">' +
-        '<span class="ess-test-num-label">Тест №X:</span>' +
-        '<input type="text" placeholder="Назва тесту..." value="' + titleVal + '" />' +
-      '</div>' +
-      '<div class="ess-table-responsive">' +
-      '<table class="ess-table">' +
-        '<thead>' +
-          '<tr>' +
-            '<th scope="col" style="width: 14%;">ESS</th>' +
-            '<th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="1" title="' + escapeHtml(savedQuestions.R1 || '') + '">R1 (R4)</th>' +
-            '<th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="2" title="' + escapeHtml(savedQuestions.R2 || '') + '">R2 (R5)</th>' +
-            '<th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="3" title="' + escapeHtml(savedQuestions.R3 || '') + '">R3 (R7)</th>' +
-            '<th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="4" title="' + escapeHtml(savedQuestions.R4 || '') + '">R4 (R8)</th>' +
-            '<th scope="col" style="width: 10%;">Бали</th>' +
-          '</tr>' +
-        '</thead>' +
-        '<tbody>';
-
-    for (let c = 1; c <= 5; c++) {
-      let isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
-      let headerText = (c === 4 || c === 5) ? '<label class="chart-toggle-label"><input type="checkbox" class="chart-toggle" data-chart="' + c + '" ' + isChecked + '> Chart #' + c + '</label>' : 'Chart #' + c;
-      tableHtml += '<tr data-chart-group="' + c + '"><td colspan="10" class="chart-header">' + headerText + '</td></tr>';
-      
-      for (let r = 0; r < rows.length; r++) {
-        tableHtml += '<tr data-chart-group="' + c + '"><th scope="row" class="row-label">' + rows[r].label + '</th>';
-        for (let col = 1; col <= 4; col++) {
-          const cellVal = savedData?.values?.[c + '_' + col + '_' + rows[r].id] !== undefined ? escapeHtml(savedData.values[c + '_' + col + '_' + rows[r].id]) : "";
-          const isEda = rows[r].id === 'eda';
-          const titleText = isEda ? "Допустимо: -2, -1, 0, 1, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
-          const inputHtml = '<input type="text" class="score-input" data-chart="' + c + '" data-col="' + col + '" data-row="' + rows[r].id + '" value="' + cellVal + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="' + titleText + '">';
+          const isColDisabled = col > config.cols;
+          const colStr = col.toString();
           
-          if (rows[r].id === 'pneumo-v') {
-            tableHtml += '<td>' + inputHtml + '</td><td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="' + c + '" data-col="' + col + '">0</span></td>';
-          } else if (rows[r].id === 'pneumo-n') {
-            tableHtml += '<td>' + inputHtml + '</td>';
-          } else if (rows[r].id === 'eda') {
-            tableHtml += '<td colspan="2">' + inputHtml + '</td>';
-          } else {
-            tableHtml += '<td colspan="2">' + inputHtml + '</td>';
+          const th = wrapper.querySelector(`.ess-th-question[data-th-col="${colStr}"]`);
+          if (th) isColDisabled ? th.classList.add("col-disabled") : th.classList.remove("col-disabled");
+          
+          const colInputs = ce.inputs.filter(i => i.getAttribute('data-col') === colStr);
+          colInputs.forEach(inp => {
+              const cNum = inp.getAttribute('data-chart');
+              inp.disabled = isColDisabled || !activeCharts[cNum];
+              const td = inp.parentElement;
+              isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+              if (isColDisabled) {
+                  inp.value = ""; 
+                  td.classList.remove("bg-local-artifact", "bg-artifact");
+              }
+          });
+          
+          const qInp = ce.questionInputs.find(i => i.getAttribute('data-q') === 'R' + colStr);
+          if (qInp) {
+              qInp.disabled = isColDisabled;
+              if (isColDisabled) qInp.value = '';
+              qInp.parentElement.style.opacity = isColDisabled ? '0.4' : '1';
+          }
+          
+          const pneumoSums = ce.pneumoSums.filter(s => s.getAttribute('data-col') === colStr);
+          pneumoSums.forEach(span => {
+              const td = span.parentElement;
+              isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+              if (isColDisabled) { span.textContent = ""; td.classList.remove("bg-artifact", "bg-local-artifact"); }
+          });
+          
+          const subtotalSpans = ce.subtotals.filter(s => s.getAttribute('data-col') === colStr);
+          subtotalSpans.forEach(span => {
+              const td = span.parentElement;
+              isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+              if (isColDisabled) span.textContent = "";
+          });
+          
+          const statusCells = ce.statuses.filter(s => s.getAttribute('data-col') === colStr);
+          statusCells.forEach(td => {
+              isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
+              if (isColDisabled) { td.innerHTML = ""; td.className = "status-cell bg-na col-disabled"; }
+          });
+          
+          const dynToggle = wrapper.querySelector(`input[id^="dyn_r${colStr}_"]`);
+          if (dynToggle) {
+              const dynLabel = wrapper.querySelector(`label[for="${dynToggle.id}"]`);
+              if (isColDisabled) {
+                  dynToggle.disabled = true; dynToggle.checked = false;
+                  if (dynLabel) dynLabel.style.opacity = '0.3';
+              } else {
+                  dynToggle.disabled = false;
+                  if (dynLabel) dynLabel.style.opacity = '1';
+              }
+          }
+      }
+    };
+
+    const calculateTest = (wrapper) => {
+      const ce = wrapper._cachedElements;
+      if (!ce) return;
+      
+      let currentFormatStr = ce.formatSelect.value;
+      if (currentFormatStr === "N/A" || currentFormatStr === "Оберіть формат...") currentFormatStr = "ОБЕРІТЬ ФОРМАТ...";
+      const allowedCols = (formatConfig[currentFormatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."]).cols;
+      
+      let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
+      let colHasData = { 1: false, 2: false, 3: false, 4: false };
+      const currentTestType = ce.typeRadios.find(r => r.checked)?.value || "screening";
+      if (ce.contamWrapper) ce.contamWrapper.style.display = (currentTestType === "screening") ? "inline-flex" : "none";
+      const isContamActive = ce.contamToggle?.checked ?? true;
+      const chartToggle4 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '4');
+      const chartToggle5 = ce.chartToggles.find(t => t.getAttribute('data-chart') === '5');
+      const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
+
+      let spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
+      let spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+      for (let c = 1; c <= 5; c++) {
+        const cStr = c.toString();
+        const rows = ce.rows.filter(r => r.getAttribute('data-chart-group') === cStr);
+        const chartInputs = ce.inputs.filter(i => i.getAttribute('data-chart') === cStr);
+        if (!activeCharts[c]) { 
+            rows.forEach(r => r.classList.add("chart-disabled")); 
+            chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.setAttribute("disabled", "true"); }); 
+        } else { 
+            rows.forEach(r => r.classList.remove("chart-disabled")); 
+            chartInputs.forEach(i => { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.removeAttribute("disabled"); }); 
+        }
+      }
+      
+      let usePPGCol = {1:false, 2:false, 3:false, 4:false};
+      for (let col = 1; col <= allowedCols; col++) {
+        for (let c = 1; c <= 5; c++) {
+          if (!activeCharts[c]) continue;
+          const pInput = ce.inputsMap[`${c}_${col}_ppg`];
+          if (pInput && !pInput.disabled && pInput.value.trim() !== "" && pInput.value.trim() !== "-") {
+            usePPGCol[col] = true; break;
           }
         }
-        if (r === 0) tableHtml += '<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="' + c + '">0</span></td>';
-        tableHtml += '</tr>';
       }
-    }
 
-    tableHtml += '<tr><td rowspan="2" class="total-label">Subtotals<br>' +
-          '<label class="contam-toggle-wrapper" style="display: ' + (typeVal === 'screening' ? 'inline-flex' : 'none') + '; align-items:center; justify-content:flex-end; gap:2px; font-size:9px; margin-top:4px; cursor:pointer; color:#666;">' +
-            '<input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 🔒 Контам.' +
-          '</label></td>';
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + col + '">-</td>';
-    tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); color:#666;">Сума<br>чарту</td></tr><tr>';
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + col + '">-</span></td>';
-    tableHtml += '</tr><tr><td class="total-label">Grand Total</td>' +
-        '<td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>' +
-        '<td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td></tr></tbody></table></div>' +
-    '<div class="ess-scale-container"><div class="ess-scale-title">Графічний баланс реактивності</div><div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div><div class="ess-scale-labels"></div></div>' +
-    '<div class="ess-dynamics-container"><div class="ess-dynamics-header"><div class="ess-dynamics-title">Динаміка стану (Аналіз)</div>' +
-        '<div class="dyn-mode-toggle">' +
-          '<input type="checkbox" id="dyn_tot_' + uid + '" value="tot" ' + (ds.tot ? 'checked' : '') + '><label for="dyn_tot_' + uid + '">Σ Сума</label>' +
-          '<input type="checkbox" id="dyn_r1_' + uid + '" value="r1" ' + (ds.r1 ? 'checked' : '') + '><label for="dyn_r1_' + uid + '">R1</label>' +
-          '<input type="checkbox" id="dyn_r2_' + uid + '" value="r2" ' + (ds.r2 ? 'checked' : '') + '><label for="dyn_r2_' + uid + '">R2</label>' +
-          '<input type="checkbox" id="dyn_r3_' + uid + '" value="r3" ' + (ds.r3 ? 'checked' : '') + '><label for="dyn_r3_' + uid + '">R3</label>' +
-          '<input type="checkbox" id="dyn_r4_' + uid + '" value="r4" ' + (ds.r4 ? 'checked' : '') + '><label for="dyn_r4_' + uid + '">R4</label>' +
-        '</div></div><div class="ess-dynamics-chart"><svg class="ess-dynamics-svg" width="100%" height="100%"></svg></div><div class="ess-dynamics-text"></div></div>' +
-    '<div class="ess-modal-overlay"><div class="ess-modal"><div class="ess-modal-header"><h3>📝 Питання тесту №X</h3><button class="ess-modal-close">&times;</button></div>' +
-        '<div class="ess-modal-body">' +
-          '<label>R1 (R4): <input type="text" class="ess-question-input" data-q="R1" value="' + escapeHtml(savedQuestions.R1 || '') + '" autocomplete="off"></label>' +
-          '<label>R2 (R5): <input type="text" class="ess-question-input" data-q="R2" value="' + escapeHtml(savedQuestions.R2 || '') + '" autocomplete="off"></label>' +
-          '<label>R3 (R7): <input type="text" class="ess-question-input" data-q="R3" value="' + escapeHtml(savedQuestions.R3 || '') + '" autocomplete="off"></label>' +
-          '<label>R4 (R8): <input type="text" class="ess-question-input" data-q="R4" value="' + escapeHtml(savedQuestions.R4 || '') + '" autocomplete="off"></label>' +
-        '</div><div class="ess-modal-footer"><button class="ess-btn ess-modal-save">💾 Зберегти</button><button class="ess-btn ess-modal-cancel">Скасувати</button></div></div></div>';
-
-    wrapper.innerHTML = tableHtml;
-
-    const inputsArray = Array.from(wrapper.querySelectorAll("input.score-input"));
-    const inputsMap = {};
-    inputsArray.forEach(i => { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
-
-    const modalOverlay = wrapper.querySelector(".ess-modal-overlay");
-    wrapper.querySelector(".ess-questions-btn").addEventListener('click', () => modalOverlay.classList.add("active"));
-    const closeModal = () => modalOverlay.classList.remove("active");
-    wrapper.querySelector(".ess-modal-close").addEventListener('click', closeModal);
-    wrapper.querySelector(".ess-modal-cancel").addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-    
-    wrapper.querySelector(".ess-modal-save").addEventListener('click', () => {
-      wrapper.querySelectorAll(".ess-question-input").forEach(inp => {
-        const qKey = inp.getAttribute('data-q');
-        const th = wrapper.querySelector('.ess-th-question[data-th-col="' + qKey.replace('R','') + '"]');
-        if (th) th.title = escapeHtml(inp.value ? qKey + ": " + inp.value : '');
-      });
-      closeModal(); markUnsaved();
-    });
-
-    wrapper._cachedElements = {
-      titleInput: wrapper.querySelector(".ess-test-title-area input[type='text']"),
-      formatSelect: wrapper.querySelector(".ess-format-select"),
-      typeRadios: Array.from(wrapper.querySelectorAll(".toggle-type input[type='radio']")),
-      chartToggles: Array.from(wrapper.querySelectorAll(".chart-toggle")),
-      dynToggles: Array.from(wrapper.querySelectorAll(".dyn-mode-toggle input[type='checkbox']")),
-      inputs: inputsArray,
-      inputsMap: inputsMap,
-      questionInputs: Array.from(wrapper.querySelectorAll(".ess-question-input")),
-      pneumoSums: Array.from(wrapper.querySelectorAll('[data-calc="pneumo-sum"]')),
-      chartTotals: Array.from(wrapper.querySelectorAll('[data-calc="chart-total"]')),
-      subtotals: Array.from(wrapper.querySelectorAll('[data-calc="subtotal"]')),
-      statuses: Array.from(wrapper.querySelectorAll('[data-calc-cell="status"]')),
-      grandTotal: wrapper.querySelector('[data-calc="grand-total"]'),
-      grandStatus: wrapper.querySelector('[data-calc-cell="grand-status"]'),
-      scaleLabels: wrapper.querySelector(".ess-scale-labels"),
-      scaleMarker: wrapper.querySelector(".ess-scale-marker"),
-      contamToggle: wrapper.querySelector(".contam-toggle"),
-      contamWrapper: wrapper.querySelector(".contam-toggle-wrapper"),
-      rows: Array.from(wrapper.querySelectorAll("tr[data-chart-group]")),
-      dynamicsSvg: wrapper.querySelector(".ess-dynamics-svg"),
-      dynamicsText: wrapper.querySelector(".ess-dynamics-text")
-    };
-    
-    wrapper._cachedElements.formatSelect.setAttribute('data-prev-val', formatVal);
-    applyFormat(wrapper, formatVal);
-
-    let calcTimeout;
-    const debouncedCalc = () => { clearTimeout(calcTimeout); calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50); };
-
-    wrapper._cachedElements.formatSelect.addEventListener('change', (e) => {
-        const newFormat = e.target.value;
-        const prevFormat = e.target.getAttribute('data-prev-val') || "ОБЕРІТЬ ФОРМАТ...";
-        const newConfig = formatConfig[newFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
-        const prevConfig = formatConfig[prevFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+      const getValStrict = (chart, col, row) => {
+        const input = ce.inputsMap[`${chart}_${col}_${row}`];
+        if (!input || input.disabled || parseInt(col) > allowedCols) return { val: 0, art: false, empty: true, raw: "" };
+        const val = input.value.trim();
+        if (isArt(val)) return { val: 0, art: true, empty: false, raw: val };
+        if (val === "" || val === "-") return { val: 0, art: false, empty: true, raw: val };
         
-        if (newConfig.cols < prevConfig.cols) {
-            let hasData = false;
-            for (let col = newConfig.cols + 1; col <= prevConfig.cols; col++) {
-                for (let c = 1; c <= 5; c++) {
-                    ['pneumo-v', 'pneumo-n', 'eda', 'cardio', 'ppg'].forEach(r => {
-                        const inp = wrapper._cachedElements.inputsMap[c + '_' + col + '_' + r];
-                        if (inp && inp.value.trim() !== '') hasData = true;
-                    });
-                }
-                if (hasData) break;
-            }
-            if (hasData) {
-                showError('Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R' + (newConfig.cols + 1) + ') або використайте "Очистити пам\'ять".');
-                e.target.value = prevFormat;
-                return;
-            }
-        }
+        const num = parseFloat(val);
+        if (isNaN(num)) return { val: 0, art: true, empty: false, raw: val };
         
-        if (prevConfig.forceDiag && !newConfig.forceDiag) {
-            const scrRadio = wrapper._cachedElements.typeRadios.find(r => r.value === 'screening');
-            if (scrRadio) scrRadio.checked = true;
-        }
+        if (row === 'eda' && Math.abs(num) > 2) return { val: 0, art: true, empty: false, raw: val };
+        if (row !== 'eda' && Math.abs(num) > 1) return { val: 0, art: true, empty: false, raw: val };
         
-        e.target.setAttribute('data-prev-val', newFormat);
-        applyFormat(wrapper, newFormat);
-        debouncedCalc();
-        markUnsaved();
-    });
+        return { val: num, art: false, empty: false, raw: val };
+      };
 
-    wrapper.querySelectorAll('.chart-toggle').forEach(el => el.addEventListener('change', debouncedCalc));
-    wrapper.querySelectorAll('.dyn-mode-toggle input').forEach(el => el.addEventListener('change', debouncedCalc));
-    wrapper.querySelector(".contam-toggle")?.addEventListener("change", debouncedCalc);
-    wrapper.querySelector(".ess-test-title-area input[type='text']")?.addEventListener('input', markUnsaved);
-    wrapper.querySelectorAll(".toggle-type input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
+      const dynamicsValues = [];
 
-    wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
-      if (confirm("Видалити цей тест?")) {
-        wrapper.remove();
-        updateTestNumbers();
-        addBtnBottom.focus();
-        markUnsaved();
-      }
-    });
-
-    wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
-      if (confirm("Очистити всі введені цифри в цій таблиці?")) {
-        wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
-        debouncedCalc();
-      }
-    });
-
-    wrapper.addEventListener('input', (e) => {
-      if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
-        const el = e.target;
-        let val = el.value.trim().toLowerCase();
+      for (let c = 1; c <= 5; c++) {
+        let currentChartSum = 0;
+        let chartHasArt = false;
+        let cSpots = {};
+        let chartHasData = false;
+        const cStr = c.toString();
         
-        if (val.startsWith('+')) {
-            val = val.slice(1);
-            el.value = val;
-        }
-
-        if (val === 'a' || val === 'а' || val === 'f' || val === 'ф') {
-            el.value = 'А';
-        } else if (val === '00') {
-            el.value = '∅';
-        } else if (val !== '∅' && val !== 'а' && val !== 'a' && val !== 'А') {
-            if (val !== "" && val !== "-") {
-              const num = Number(val);
-              if (isNaN(num)) {
-                el.value = "";
-              } else {
-                if (el.getAttribute('data-row') === 'eda' && ![-2, -1, 0, 1, 2].includes(num)) el.value = "";
-                else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
-                else el.value = val;
-              }
+        for (let col = 1; col <= 4; col++) {
+          if (col > allowedCols) continue;
+          const colStr = col.toString();
+          
+          const pvInfo = getValStrict(cStr, colStr, 'pneumo-v');
+          const pnInfo = getValStrict(cStr, colStr, 'pneumo-n');
+          const edaInfo = getValStrict(cStr, colStr, 'eda');
+          const carInfo = getValStrict(cStr, colStr, 'cardio');
+          const ppgInfo = getValStrict(cStr, colStr, 'ppg');
+          
+          const colHasCurrentData = !pvInfo.empty || !pnInfo.empty || !edaInfo.empty || !carInfo.empty || !ppgInfo.empty;
+          
+          let pneumo = calcPneumoESS(pvInfo.raw, pnInfo.raw, pvInfo.val, pnInfo.val);
+          
+          if (colHasCurrentData) {
+              if (pvInfo.empty && pnInfo.empty) { pneumo.fullArt = true; pneumo.val = 0; }
+              if (edaInfo.empty) edaInfo.art = true;
+              if (carInfo.empty) carInfo.art = true;
+              if (usePPGCol[col] && ppgInfo.empty) ppgInfo.art = true;
+          }
+          
+          const spanPneumo = ce.pneumoSums.find(s => s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr);
+          if (spanPneumo) {
+            spanPneumo.parentElement.className = "calc-cell"; 
+            if (pneumo.fullArt) {
+                spanPneumo.textContent = "∅";
+                spanPneumo.parentElement.classList.add("bg-artifact");
+            } else if (pneumo.partialArt) {
+                spanPneumo.textContent = pneumo.val + " ⚠";
+                spanPneumo.parentElement.classList.add("bg-local-artifact");
+            } else if (pneumo.conflict) {
+                spanPneumo.textContent = "0 ⚠";
             } else {
-                el.value = val;
+                spanPneumo.textContent = pneumo.val;
             }
+          }
+          
+          const setVisualArt = (rowName, isArtif) => {
+              const inp = ce.inputsMap[`${cStr}_${colStr}_${rowName}`];
+              if (inp) {
+                  if (isArtif) inp.parentElement.classList.add("bg-local-artifact");
+                  else inp.parentElement.classList.remove("bg-local-artifact");
+              }
+          };
+          
+          setVisualArt('pneumo-v', pvInfo.art || (colHasCurrentData && pvInfo.empty && pnInfo.empty));
+          setVisualArt('pneumo-n', pnInfo.art || (colHasCurrentData && pvInfo.empty && pnInfo.empty));
+          setVisualArt('eda', edaInfo.art);
+          setVisualArt('cardio', carInfo.art);
+          setVisualArt('ppg', ppgInfo.art);
+
+          if (activeCharts[c] && colHasCurrentData) {
+              const expWeight = usePPGCol[col] ? 5 : 4;
+              spotWeightTotal[col] += expWeight;
+              
+              if (pneumo.fullArt) spotWeightLost[col] += 1;
+              if (edaInfo.art) spotWeightLost[col] += 2;
+              if (carInfo.art) spotWeightLost[col] += 1;
+              if (usePPGCol[col] && ppgInfo.art) spotWeightLost[col] += 1;
+              
+              if (pneumo.fullArt || edaInfo.art || carInfo.art || (usePPGCol[col] && ppgInfo.art)) chartHasArt = true;
+              
+              colHasData[col] = true;
+              chartHasData = true;
+          }
+          
+          const colSum = pneumo.val + edaInfo.val + carInfo.val + ppgInfo.val;
+          if (activeCharts[c]) {
+            subtotals[col] += colSum;
+            if(colHasCurrentData) cSpots[col] = colSum;
+          }
+          currentChartSum += colSum;
         }
-        debouncedCalc();
-      }
-    });
+        
+        const spanChartTotal = ce.chartTotals.find(s => s.getAttribute('data-chart') === cStr);
+        if (spanChartTotal) {
+          spanChartTotal.textContent = activeCharts[c] ? currentChartSum : "—";
+          spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
+        }
 
-    wrapper.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
-        if (e.key === '-' || e.key === 'Subtract' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
-          e.preventDefault(); e.target.value = (e.target.getAttribute('data-row') === 'eda') ? "-2" : "-1"; debouncedCalc();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          const activeInputs = wrapper._cachedElements.inputs.filter(i => !i.disabled);
-          const nextInput = activeInputs.slice(activeInputs.indexOf(e.target) + 1).find(i => i.getAttribute('data-col') === e.target.getAttribute('data-col'));
-          if (nextInput) { nextInput.focus(); nextInput.select(); }
+        if (activeCharts[c] && chartHasData) {
+          dynamicsValues.push({ chart: c, total: currentChartSum, hasArtifact: chartHasArt, spots: cSpots });
         }
       }
-    });
 
-    testsContainer.appendChild(wrapper);
-    updateTestNumbers();
-    calculateTest(wrapper);
-  };
+      let testWeightTotal = 0;
+      let testWeightLost = 0;
+      let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
+      let hasAnyNO = false;
 
-  addBtnBottom.addEventListener("click", () => { createTestTable(); markUnsaved(); });
+      for (let col = 1; col <= 4; col++) {
+        if (col > allowedCols) continue;
+        if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
+        
+        testWeightTotal += spotWeightTotal[col];
+        testWeightLost += spotWeightLost[col];
 
-  const init = () => {
-    let loadedData = { respondentName: "", examDate: "", tests: [] };
-    try {
-      const raw = localStorage.getItem("ess_polygraph_data");
-      if (raw) loadedData = parseStateData(JSON.parse(raw));
-    } catch (e) { showError("Помилка завантаження даних."); }
-    
-    respondentInput.value = loadedData.respondentName || "";
-    dateInput.value = loadedData.examDate || "";
-    
-    if (loadedData.tests && loadedData.tests.length > 0) loadedData.tests.forEach(data => createTestTable(data));
-    else createTestTable();
-    
-    isRestoringHistory = false; recordState();
-  };
+        const val = subtotals[col]; activeSpotVals.push(val);
+        if (val < minSpotVal) minSpotVal = val;
+        
+        let info = getSpotInfo(val, currentTestType);
+        let spotArtPercent = spotWeightTotal[col] > 0 ? spotWeightLost[col] / spotWeightTotal[col] : 0;
+        
+        if (spotArtPercent >= 0.25) {
+            info.status = "NO";
+            info.prob = "≥25% втрачено";
+            info.cls = "bg-no";
+            hasAnyNO = true;
+        }
 
-  let globalResizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(globalResizeTimer);
-    globalResizeTimer = setTimeout(() => {
-      document.querySelectorAll('.ess-test-wrapper').forEach(wrapper => {
-         if(wrapper._cachedElements) calculateTest(wrapper);
+        spotInfos[col] = info;
+        if (info.status === "SR") hasAnySR = true;
+      }
+
+      if (currentTestType === "screening" && hasAnySR && isContamActive) {
+        for (let col = 1; col <= 4; col++) {
+          if (col > allowedCols) continue;
+          if (colHasData[col] && spotInfos[col].status === "NSR") spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
+        }
+      }
+
+      let grandTotal = 0;
+      for (let col = 1; col <= 4; col++) {
+        if (col > allowedCols) continue;
+        const colStr = col.toString();
+        const spanSub = ce.subtotals.find(s => s.getAttribute('data-col') === colStr);
+        if (spanSub) spanSub.textContent = colHasData[col] ? subtotals[col] : "-";
+        const info = spotInfos[col];
+        const cellStatus = ce.statuses.find(s => s.getAttribute('data-col') === colStr);
+        if (cellStatus) {
+          cellStatus.className = "status-cell " + info.cls;
+          cellStatus.innerHTML = (info.status === "N/A" || info.status === "-") ? `<span style="color:#888;">${info.status}</span>` : `<span class="status-badge">${info.status}</span><span class="prob-text">${info.prob}</span>`;
+        }
+        if (colHasData[col]) grandTotal += subtotals[col];
+      }
+
+      if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : (allowedCols > 0 ? "0" : "—");
+      
+      let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
+      
+      if (currentTestType === "screening" && !hasAnySR) {
+          if (hasAnyNO && grandInfo.status !== "NO") {
+               grandInfo.status = "NO";
+               grandInfo.prob = "Spot Rule (Є NO)";
+               grandInfo.cls = "bg-no";
+          }
+      }
+
+      let testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
+      const highArtifacts = testArtPercent >= 0.25;
+
+      if (highArtifacts && allowedCols > 0) {
+          grandInfo.status = "NO";
+          grandInfo.prob = "≥25% втрат (Тест)";
+          grandInfo.cls = "bg-no";
+      } else if (hasAnyNO) {
+          if (grandInfo.status === "SR") {
+              grandInfo.prob += " (⚠️ є NO)";
+          } else {
+              grandInfo.status = "NO";
+              grandInfo.prob = "Блоковано (Спот = NO)";
+              grandInfo.cls = "bg-no";
+          }
+      }
+
+      if (allowedCols === 0) {
+          grandInfo = { status: "N/A", prob: "Оберіть формат тесту", cls: "bg-na" };
+      }
+
+      if (ce.grandStatus) {
+        ce.grandStatus.className = "status-cell " + grandInfo.cls;
+        ce.grandStatus.innerHTML = (grandInfo.status === "N/A" || grandInfo.status === "-") ? `<span style="color:#888;">${grandInfo.prob}</span>` : `<span class="status-badge" style="font-size:14px;">${grandInfo.status}</span><span class="prob-text" style="font-size:10px;">${grandInfo.prob}</span>`;
+      }
+
+      if (ce.scaleLabels) {
+        if (currentTestType === "diagnostic") ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (-3 і менше)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (+3 і більше) ▶</span>';
+        else ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
+      }
+      if (ce.scaleMarker) {
+        const minVal = -12, maxVal = 12;
+        const clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
+        const percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
+        ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
+      }
+
+      updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent, hasAnyNO);
+    };
+
+    const createTestTable = (savedData = null) => {
+      const uid = Math.random().toString(36).substr(2, 9);
+      const wrapper = document.createElement("div"); wrapper.className = "ess-test-wrapper";
+
+      const rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
+      const titleVal = savedData?.title !== undefined ? escapeHtml(savedData.title) : "";
+      const typeVal = savedData?.type !== undefined ? escapeHtml(savedData.type) : "screening";
+      
+      let formatVal = savedData?.format !== undefined ? escapeHtml(savedData.format) : "ОБЕРІТЬ ФОРМАТ...";
+      if (formatVal === "N/A" || formatVal === "Оберіть формат...") formatVal = "ОБЕРІТЬ ФОРМАТ...";
+
+      const savedQuestions = savedData?.questions || {};
+      const formatOptions = TEST_FORMATS.map(f => `<option value="${escapeHtml(f)}" ${f === formatVal ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
+
+      const ds = savedData?.dynState || { tot: true, r1: false, r2: false, r3: false, r4: false };
+
+      let tableHtml = `
+        <div class="ess-test-top-bar">
+          <div class="ess-top-bar-left">
+            <select class="ess-format-select" title="Формат тестування">${formatOptions}</select>
+            <div class="ess-type-toggle toggle-type">
+              <input type="radio" id="scr_${uid}" name="tt_${uid}" value="screening" ${typeVal === 'screening' ? 'checked' : ''} />
+              <label for="scr_${uid}">📋 Скринінговий</label>
+              <input type="radio" id="diag_${uid}" name="tt_${uid}" value="diagnostic" ${typeVal === 'diagnostic' ? 'checked' : ''} />
+              <label for="diag_${uid}">🔍 Діагностичний</label>
+            </div>
+            <button class="ess-btn ess-questions-btn" title="Редагувати питання">📝 Питання</button>
+            <button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам'ять</button>
+          </div>
+          <button class="ess-delete-btn" title="Видалити тест">×</button>
+        </div>
+        <div class="ess-test-title-area">
+          <span class="ess-test-num-label">Тест №X:</span>
+          <input type="text" placeholder="Назва тесту..." value="${titleVal}" />
+        </div>
+        
+        <div class="ess-table-responsive">
+        <table class="ess-table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 14%;">ESS</th>
+              <th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="1" title="${escapeHtml(savedQuestions.R1 || '')}">R1 (R4)</th>
+              <th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="2" title="${escapeHtml(savedQuestions.R2 || '')}">R2 (R5)</th>
+              <th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="3" title="${escapeHtml(savedQuestions.R3 || '')}">R3 (R7)</th>
+              <th scope="col" colspan="2" style="width: 19%;" class="ess-th-question" data-th-col="4" title="${escapeHtml(savedQuestions.R4 || '')}">R4 (R8)</th>
+              <th scope="col" style="width: 10%;">Бали</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      for (let c = 1; c <= 5; c++) {
+        let isChecked = (savedData?.chartToggles?.[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
+        let headerText = (c === 4 || c === 5) ? `<label class="chart-toggle-label"><input type="checkbox" class="chart-toggle" data-chart="${c}" ${isChecked}> Chart #${c}</label>` : `Chart #${c}`;
+        tableHtml += `<tr data-chart-group="${c}"><td colspan="10" class="chart-header">${headerText}</td></tr>`;
+        
+        for (let r = 0; r < rows.length; r++) {
+          tableHtml += `<tr data-chart-group="${c}"><th scope="row" class="row-label">${rows[r].label}</th>`;
+          for (let col = 1; col <= 4; col++) {
+            const cellVal = savedData?.values?.[`${c}_${col}_${rows[r].id}`] !== undefined ? escapeHtml(savedData.values[`${c}_${col}_${rows[r].id}`]) : "";
+            const isEda = rows[r].id === 'eda';
+            const titleText = isEda ? "Допустимо: -2, -1, 0, 1, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
+            const inputHtml = `<input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="${titleText}">`;
+            
+            if (rows[r].id === 'pneumo-v') {
+              tableHtml += `<td>${inputHtml}</td><td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="${c}" data-col="${col}">0</span></td>`;
+            } else if (rows[r].id === 'pneumo-n') {
+              tableHtml += `<td>${inputHtml}</td>`;
+            } else if (rows[r].id === 'eda') {
+              tableHtml += `<td colspan="2">${inputHtml}</td>`;
+            } else {
+              tableHtml += `<td colspan="2">${inputHtml}</td>`;
+            }
+          }
+          if (r === 0) tableHtml += `<td rowspan="5" class="chart-total-cell"><span data-calc="chart-total" data-chart="${c}">0</span></td>`;
+          tableHtml += '</tr>';
+        }
+      }
+
+      tableHtml += `
+        <tr>
+          <td rowspan="2" class="total-label">Subtotals<br>
+            <label class="contam-toggle-wrapper" style="display: ${typeVal === 'screening' ? 'inline-flex' : 'none'}; align-items:center; justify-content:flex-end; gap:2px; font-size:9px; margin-top:4px; cursor:pointer; color:#666;">
+              <input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 🔒 Контам.
+            </label>
+          </td>`;
+      for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="${col}">-</td>`;
+      tableHtml += `<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); color:#666;">Сума<br>чарту</td></tr><tr>`;
+      for (let col = 1; col <= 4; col++) tableHtml += `<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="${col}">-</span></td>`;
+      tableHtml += `</tr>
+        <tr>
+          <td class="total-label">Grand Total</td>
+          <td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>
+          <td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td>
+        </tr>
+      </tbody></table></div>
+      
+      <div class="ess-scale-container">
+        <div class="ess-scale-title">Графічний баланс реактивності</div>
+        <div class="ess-scale-track"><div class="ess-scale-marker">▼</div></div>
+        <div class="ess-scale-labels"></div>
+      </div>
+      
+      <div class="ess-dynamics-container">
+        <div class="ess-dynamics-header">
+          <div class="ess-dynamics-title">Динаміка стану (Аналіз)</div>
+          <div class="dyn-mode-toggle">
+            <input type="checkbox" id="dyn_tot_${uid}" value="tot" ${ds.tot ? 'checked' : ''}><label for="dyn_tot_${uid}">Σ Сума</label>
+            <input type="checkbox" id="dyn_r1_${uid}" value="r1" ${ds.r1 ? 'checked' : ''}><label for="dyn_r1_${uid}">R1</label>
+            <input type="checkbox" id="dyn_r2_${uid}" value="r2" ${ds.r2 ? 'checked' : ''}><label for="dyn_r2_${uid}">R2</label>
+            <input type="checkbox" id="dyn_r3_${uid}" value="r3" ${ds.r3 ? 'checked' : ''}><label for="dyn_r3_${uid}">R3</label>
+            <input type="checkbox" id="dyn_r4_${uid}" value="r4" ${ds.r4 ? 'checked' : ''}><label for="dyn_r4_${uid}">R4</label>
+          </div>
+        </div>
+        <div class="ess-dynamics-chart">
+          <svg class="ess-dynamics-svg" width="100%" height="100%"></svg>
+        </div>
+        <div class="ess-dynamics-text"></div>
+      </div>
+
+      <div class="ess-modal-overlay">
+        <div class="ess-modal">
+          <div class="ess-modal-header"><h3>📝 Питання тесту №X</h3><button class="ess-modal-close">&times;</button></div>
+          <div class="ess-modal-body">
+            <label>R1 (R4): <input type="text" class="ess-question-input" data-q="R1" value="${escapeHtml(savedQuestions.R1 || '')}" autocomplete="off"></label>
+            <label>R2 (R5): <input type="text" class="ess-question-input" data-q="R2" value="${escapeHtml(savedQuestions.R2 || '')}" autocomplete="off"></label>
+            <label>R3 (R7): <input type="text" class="ess-question-input" data-q="R3" value="${escapeHtml(savedQuestions.R3 || '')}" autocomplete="off"></label>
+            <label>R4 (R8): <input type="text" class="ess-question-input" data-q="R4" value="${escapeHtml(savedQuestions.R4 || '')}" autocomplete="off"></label>
+          </div>
+          <div class="ess-modal-footer"><button class="ess-btn ess-modal-save">💾 Зберегти</button><button class="ess-btn ess-modal-cancel">Скасувати</button></div>
+        </div>
+      </div>
+      `;
+
+      wrapper.innerHTML = tableHtml;
+
+      const inputsArray = Array.from(wrapper.querySelectorAll("input.score-input"));
+      const inputsMap = {};
+      inputsArray.forEach(i => { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
+
+      const modalOverlay = wrapper.querySelector(".ess-modal-overlay");
+      wrapper.querySelector(".ess-questions-btn").addEventListener('click', () => modalOverlay.classList.add("active"));
+      const closeModal = () => modalOverlay.classList.remove("active");
+      wrapper.querySelector(".ess-modal-close").addEventListener('click', closeModal);
+      wrapper.querySelector(".ess-modal-cancel").addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+      
+      wrapper.querySelector(".ess-modal-save").addEventListener('click', () => {
+        wrapper.querySelectorAll(".ess-question-input").forEach(inp => {
+          const qKey = inp.getAttribute('data-q');
+          const th = wrapper.querySelector(`.ess-th-question[data-th-col="${qKey.replace('R','')}"]`);
+          if (th) th.title = escapeHtml(inp.value ? qKey + ": " + inp.value : '');
+        });
+        closeModal(); markUnsaved();
       });
-    }, 150);
-  });
 
-  init();
-</script>
+      wrapper._cachedElements = {
+        titleInput: wrapper.querySelector(".ess-test-title-area input[type='text']"),
+        formatSelect: wrapper.querySelector(".ess-format-select"),
+        typeRadios: Array.from(wrapper.querySelectorAll(".toggle-type input[type='radio']")),
+        chartToggles: Array.from(wrapper.querySelectorAll(".chart-toggle")),
+        dynToggles: Array.from(wrapper.querySelectorAll(".dyn-mode-toggle input[type='checkbox']")),
+        inputs: inputsArray,
+        inputsMap: inputsMap,
+        questionInputs: Array.from(wrapper.querySelectorAll(".ess-question-input")),
+        pneumoSums: Array.from(wrapper.querySelectorAll('[data-calc="pneumo-sum"]')),
+        chartTotals: Array.from(wrapper.querySelectorAll('[data-calc="chart-total"]')),
+        subtotals: Array.from(wrapper.querySelectorAll('[data-calc="subtotal"]')),
+        statuses: Array.from(wrapper.querySelectorAll('[data-calc-cell="status"]')),
+        grandTotal: wrapper.querySelector('[data-calc="grand-total"]'),
+        grandStatus: wrapper.querySelector('[data-calc-cell="grand-status"]'),
+        scaleLabels: wrapper.querySelector(".ess-scale-labels"),
+        scaleMarker: wrapper.querySelector(".ess-scale-marker"),
+        contamToggle: wrapper.querySelector(".contam-toggle"),
+        contamWrapper: wrapper.querySelector(".contam-toggle-wrapper"),
+        rows: Array.from(wrapper.querySelectorAll("tr[data-chart-group]")),
+        dynamicsSvg: wrapper.querySelector(".ess-dynamics-svg"),
+        dynamicsText: wrapper.querySelector(".ess-dynamics-text")
+      };
+      
+      wrapper._cachedElements.formatSelect.setAttribute('data-prev-val', formatVal);
+      applyFormat(wrapper, formatVal);
+
+      let calcTimeout;
+      const debouncedCalc = () => { clearTimeout(calcTimeout); calcTimeout = setTimeout(() => { calculateTest(wrapper); markUnsaved(); }, 50); };
+
+      wrapper._cachedElements.formatSelect.addEventListener('change', (e) => {
+          const newFormat = e.target.value;
+          const prevFormat = e.target.getAttribute('data-prev-val') || "ОБЕРІТЬ ФОРМАТ...";
+          const newConfig = formatConfig[newFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+          const prevConfig = formatConfig[prevFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+          
+          if (newConfig.cols < prevConfig.cols) {
+              let hasData = false;
+              for (let col = newConfig.cols + 1; col <= prevConfig.cols; col++) {
+                  for (let c = 1; c <= 5; c++) {
+                      ['pneumo-v', 'pneumo-n', 'eda', 'cardio', 'ppg'].forEach(r => {
+                          const inp = wrapper._cachedElements.inputsMap[`${c}_${col}_${r}`];
+                          if (inp && inp.value.trim() !== '') hasData = true;
+                      });
+                  }
+                  if (hasData) break;
+              }
+              if (hasData) {
+                  showError(`Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R${newConfig.cols + 1}) або використайте "Очистити пам'ять".`);
+                  e.target.value = prevFormat;
+                  return;
+              }
+          }
+          
+          if (prevConfig.forceDiag && !newConfig.forceDiag) {
+              const scrRadio = wrapper._cachedElements.typeRadios.find(r => r.value === 'screening');
+              if (scrRadio) scrRadio.checked = true;
+          }
+          
+          e.target.setAttribute('data-prev-val', newFormat);
+          applyFormat(wrapper, newFormat);
+          debouncedCalc();
+          markUnsaved();
+      });
+
+      wrapper.querySelectorAll('.chart-toggle').forEach(el => el.addEventListener('change', debouncedCalc));
+      wrapper.querySelectorAll('.dyn-mode-toggle input').forEach(el => el.addEventListener('change', debouncedCalc));
+      wrapper.querySelector(".contam-toggle")?.addEventListener("change", debouncedCalc);
+      wrapper.querySelector(".ess-test-title-area input[type='text']")?.addEventListener('input', markUnsaved);
+      wrapper.querySelectorAll(".toggle-type input[type='radio']").forEach(el => el.addEventListener('change', debouncedCalc));
+
+      wrapper.querySelector(".ess-delete-btn").addEventListener("click", () => {
+        if (confirm("Видалити цей тест?")) {
+          wrapper.remove();
+          updateTestNumbers();
+          addBtnBottom.focus();
+          markUnsaved();
+        }
+      });
+
+      wrapper.querySelector(".ess-clear-btn").addEventListener("click", () => {
+        if (confirm("Очистити всі введені цифри в цій таблиці?")) {
+          wrapper._cachedElements.inputs.forEach(i => { if (!i.disabled) i.value = ""; });
+          debouncedCalc();
+        }
+      });
+
+      wrapper.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
+          const el = e.target;
+          let val = el.value.trim().toLowerCase();
+          
+          if (val.startsWith('+')) {
+              val = val.slice(1);
+              el.value = val;
+          }
+
+          if (val === 'a' || val === 'а' || val === 'f' || val === 'ф') {
+              el.value = 'А';
+          } else if (val === '00') {
+              el.value = '∅';
+          } else if (val !== '∅' && val !== 'а' && val !== 'a' && val !== 'А') {
+              if (val !== "" && val !== "-") {
+                const num = Number(val);
+                if (isNaN(num)) {
+                  el.value = "";
+                } else {
+                  if (el.getAttribute('data-row') === 'eda' && ![-2, -1, 0, 1, 2].includes(num)) el.value = "";
+                  else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
+                  else el.value = val;
+                }
+              } else {
+                  el.value = val;
+              }
+          }
+          debouncedCalc();
+        }
+      });
+
+      wrapper.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
+          if (e.key === '-' || e.key === 'Subtract' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
+            e.preventDefault(); e.target.value = (e.target.getAttribute('data-row') === 'eda') ? "-2" : "-1"; debouncedCalc();
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const activeInputs = wrapper._cachedElements.inputs.filter(i => !i.disabled);
+            const nextInput = activeInputs.slice(activeInputs.indexOf(e.target) + 1).find(i => i.getAttribute('data-col') === e.target.getAttribute('data-col'));
+            if (nextInput) { nextInput.focus(); nextInput.select(); }
+          }
+        }
+      });
+
+      testsContainer.appendChild(wrapper);
+      updateTestNumbers();
+      calculateTest(wrapper);
+    };
+
+    addBtnBottom.addEventListener("click", () => { createTestTable(); markUnsaved(); });
+
+    const init = () => {
+      let loadedData = { respondentName: "", examDate: "", tests: [] };
+      try {
+        const raw = localStorage.getItem("ess_polygraph_data");
+        if (raw) loadedData = parseStateData(JSON.parse(raw));
+      } catch (e) { showError("Помилка завантаження даних."); }
+      
+      respondentInput.value = loadedData.respondentName || "";
+      dateInput.value = loadedData.examDate || "";
+      
+      if (loadedData.tests && loadedData.tests.length > 0) loadedData.tests.forEach(data => createTestTable(data));
+      else createTestTable();
+      
+      isRestoringHistory = false; recordState();
+    };
+
+    let globalResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(globalResizeTimer);
+      globalResizeTimer = setTimeout(() => {
+        document.querySelectorAll('.ess-test-wrapper').forEach(wrapper => {
+           if(wrapper._cachedElements) calculateTest(wrapper);
+        });
+      }, 150);
+    });
+
+    init();
+  </script>
 </body>
 </html>
