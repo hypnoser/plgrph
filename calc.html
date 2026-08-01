@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.33.0</title>
+  <title>ESS-M Calculator v4.34.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -100,7 +100,6 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    /* Артефакти з приглушеним кольором (виправлено за запитом) */
     .bg-artifact, .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; }
     .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
@@ -207,14 +206,14 @@
   </div>
   <div id="app"></div>
 <script id="main-script">
-  const appRoot = document.getElementById("app");
-  const container = document.createElement("div");
+  var appRoot = document.getElementById("app");
+  var container = document.createElement("div");
   container.className = "ess-module-container";
   appRoot.appendChild(container);
   
-  let isUnsaved = false;
+  var isUnsaved = false;
 
-  const TEST_FORMATS = [
+  var TEST_FORMATS = [
     "ОБЕРІТЬ ФОРМАТ...",
     "DLST",
     "DLDT",
@@ -229,7 +228,7 @@
     "UTAH MGQT"
   ];
   
-  const formatConfig = {
+  var formatConfig = {
       "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
       "DLST": { cols: 2, forceDiag: false },
       "DLDT": { cols: 2, forceDiag: true },
@@ -244,15 +243,15 @@
       "UTAH MGQT": { cols: 4, forceDiag: true }
   };
 
-  const escapeHtml = function(str) {
+  var escapeHtml = function(str) {
     if (str === null || str === undefined) return "";
     return String(str).replace(/[&<>"']/g, function(m) {
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
     });
   };
 
-  const showError = function(msg) {
-    const errDiv = document.createElement("div");
+  var showError = function(msg) {
+    var errDiv = document.createElement("div");
     errDiv.className = "ess-error-toast";
     errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
     document.body.appendChild(errDiv);
@@ -263,30 +262,30 @@
     }, 5000);
   };
 
-  const getCleanHtml = function() {
-    const styleEl = document.querySelector('style');
-    const styles = styleEl ? styleEl.textContent : "";
-    const scriptEl = document.getElementById('main-script');
-    const scriptText = scriptEl ? scriptEl.textContent : "";
+  var getCleanHtml = function() {
+    var styleEl = document.querySelector('style');
+    var styles = styleEl ? styleEl.textContent : "";
+    var scriptEl = document.getElementById('main-script');
+    var scriptText = scriptEl ? scriptEl.textContent : "";
     
-    const htmlTop = '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.33.0</title>\n  <style>' + styles + '</style>\n</head>\n<body>\n  <div class="app-header">\n    <img src="184235.png" alt="PLGRPH" class="app-logo">\n    <h1 class="app-title">ESS-M Calculator</h1>\n  </div>\n  <div id="app"></div>\n  <scr';
+    var htmlTop = '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.34.0</title>\n  <style>' + styles + '</style>\n</head>\n<body>\n  <div class="app-header">\n    <img src="184235.png" alt="PLGRPH" class="app-logo">\n    <h1 class="app-title">ESS-M Calculator</h1>\n  </div>\n  <div id="app"></div>\n  <scr';
     
-    const htmlBottom = 'ipt id="main-script">' + scriptText + '</scr' + 'ipt>\n</body>\n</html>';
+    var htmlBottom = 'ipt id="main-script">' + scriptText + '</scr' + 'ipt>\n</body>\n</html>';
     return htmlTop + htmlBottom;
   };
 
-  const openHelpPage = function() {
-    const helpWin = window.open("", "_blank");
+  var openHelpPage = function() {
+    var helpWin = window.open("", "_blank");
     if (!helpWin) {
         showError("Браузер заблокував відкриття довідки. Будь ласка, дозвольте спливаючі вікна.");
         return;
     }
 
-    const cleanHtml = getCleanHtml();
-    const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
-    const htmlDataUrl = URL.createObjectURL(blobHtml);
+    var cleanHtml = getCleanHtml();
+    var blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
+    var htmlDataUrl = URL.createObjectURL(blobHtml);
 
-    const helpLines = [
+    var helpLines = [
       '<!DOCTYPE html>',
       '<html lang="uk">',
       '<head>',
@@ -334,7 +333,7 @@
       '        <img src="184235.png" alt="PLGRPH" style="height:55px; mix-blend-mode:multiply;">',
       '        <h1 style="border:none; padding:0; margin:0; font-size:26px; color:#222; border-left:2px solid #ccc; padding-left:16px; line-height: 1.2;">Розширений посібник:<br>ESS-M Calculator</h1>',
       '      </div>',
-      '      <p>Цей калькулятор — професійний інструмент поліграфолога, створений для математично точного підрахунку балів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>. Він гарантує відповідність стандартам APA, захищає від методологічних помилок та значно прискорює написання звітів.</p>',
+      '      <p>Цей калькулятор — професійний інструмент поліграфолога, створений для математично точного підрахунку балів за системою <strong>ESS-M (Empirical Scoring System - Multinomial)</strong>.</p>',
       '      <div class="warning-box">',
       '        <strong>⚠️ КРИТИЧНО ВАЖЛИВО: КОНФІДЕНЦІЙНІСТЬ ТА ЗБЕРЕЖЕННЯ ДАНИХ</strong>',
       '        <p>Наш сервіс створено з урахуванням найвищих стандартів безпеки (Zero-Knowledge Architecture):</p>',
@@ -349,23 +348,10 @@
       '        <ul>',
       '          <li><strong>Експорт у Markdown (📝):</strong> Генерація ідеально структурованого текстового звіту (YAML, таблиці, теги), готового до вставки у ваші щоденні нотатки чи бази знань (Zettelkasten). Звіт охоплює <b>усі тести</b>, створені на сторінці.</li>',
       '          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру буде автоматично заблокована і перетворена на артефакт.</li>',
-      '          <li><strong>Суворий розрахунок ЕДА:</strong> Згідно з правилами ESS, канал ЕДА не може бути оцінений в 1 бал. Калькулятор жорстко приймає виключно <code>-2</code>, <code>0</code> або <code>2</code> бали (на відміну від пневмо і кардіо, де використовуються 1, 0, -1).</li>',
-      '          <li><strong>Диференційна вага артефактів (Per-spot):</strong> Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації, калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>',
+      '          <li><strong>Суворий розрахунок ЕДА:</strong> Згідно з правилами ESS, канал ЕДА не може бути оцінений в 1 бал. Калькулятор жорстко приймає виключно <code>-2</code>, <code>0</code> або <code>2</code> бали.</li>',
       '          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором. Фізіологічний конфлікт маркується золотим трикутником <code>⚠</code>.</li>',
       '        </ul>',
       '      </div>',
-      '      <h2>🚀 Просунутий функціонал та Приховані фічі</h2>',
-      '      <ul>',
-      '        <li><strong>🛡️ Захист від контамінації (Spot Rule):</strong> Працює автоматично у скринінговому режимі. Галочка <b>"🔒 Контам."</b> над статусами гарантує, що якщо хоча б одне релевантне питання отримало статус SR, весь тест не може бути позитивним, і статус <i>NSR</i> блокується, змінюючись на <i>INC</i>.</li>',
-      '        <li><strong>📊 Аналізатор динаміки:</strong> Графік внизу таблиці показує фізіологічний тренд респондента. Ви можете вимкнути загальну "Σ Суму", клікнувши на кнопки <b>R1, R2, R3, R4</b>. Це дозволяє ізолювати реакції і побачити графік виключно по одному питанню — ідеальний інструмент для пошуку "Домінанти".</li>',
-      '        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань. Після збереження цей текст буде з\'являтися як підказка при наведенні курсору миші на заголовок колонки.</li>',
-      '        <li><strong>🎹 Гарячі клавіші:</strong>',
-      '          <ul>',
-      '            <li>Щоб ввести від\'ємний бал, просто натисніть клавішу <kbd>-</kbd> (мінус) на клавіатурі, і програма автоматично підставить <b>-1</b> (або <b>-2</b>, якщо це колонка ЕДА).</li>',
-      '            <li>Використовуйте <kbd>Enter</kbd> для миттєвого стрибка на клітинку нижче.</li>',
-      '          </ul>',
-      '        </li>',
-      '      </ul>',
       '      <div class="offline-box">',
       '        <strong>⚡ Абсолютна автономність (Офлайн версія)</strong>',
       '        <p>Натисніть на синю кнопку внизу цієї сторінки. На ваш ПК завантажиться єдиний чистий файл <code>.html</code>. Покладіть його в папку разом із файлом нашого логотипу (<code>184235.png</code>) і відкривайте у будь-якому браузері навіть без підключення до мережі. Весь функціонал працюватиме локально!</p>',
@@ -377,10 +363,10 @@
       '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
       '    </div>',
       '    <div class="footer-center">',
-      '      ESS-M Calculator v4.33.0 &copy; 2026',
+      '      ESS-M Calculator v4.34.0 &copy; 2026',
       '    </div>',
       '    <div class="footer-right">',
-      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.33.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
+      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.34.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
       '    </div>',
       '  </div>',
       '</body>',
@@ -392,36 +378,36 @@
     helpWin.document.close();
   };
 
-  let autoSaveTimeout;
-  let warningTimeout;
-  const colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
+  var autoSaveTimeout;
+  var warningTimeout;
+  var colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
 
-  let stateHistory = [];
-  let historyIndex = -1;
-  let isRestoringHistory = false;
-  let recordTimeout;
+  var stateHistory = [];
+  var historyIndex = -1;
+  var isRestoringHistory = false;
+  var recordTimeout;
 
-  const parseStateData = function(data) {
+  var parseStateData = function(data) {
     if (Array.isArray(data)) return { respondentName: "", examDate: "", tests: data };
     else if (data && data.tests) return data;
     return { respondentName: "", examDate: "", tests: [] };
   };
 
-  const collectState = function() {
-    const tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(function(wrapper) {
-      const ce = wrapper._cachedElements;
-      const titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
+  var collectState = function() {
+    var tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(function(wrapper) {
+      var ce = wrapper._cachedElements;
+      var titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
       
-      const checkedRadio = ce ? ce.typeRadios.find(function(r) { return r.checked; }) : wrapper.querySelector(".toggle-type input[type='radio']:checked");
-      const formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
+      var checkedRadio = ce ? ce.typeRadios.find(function(r) { return r.checked; }) : wrapper.querySelector(".toggle-type input[type='radio']:checked");
+      var formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
       
-      const elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
-      const elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
-      const elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
-      const elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
-      const elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
+      var elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
+      var elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
+      var elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
+      var elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
+      var elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
       
-      const dynState = {
+      var dynState = {
         tot: elTot ? elTot.checked : true,
         r1: elR1 ? elR1.checked : false,
         r2: elR2 ? elR2.checked : false,
@@ -429,16 +415,16 @@
         r4: elR4 ? elR4.checked : false
       };
 
-      const inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
-      const qInputs = ce ? ce.questionInputs : wrapper.querySelectorAll(".ess-question-input");
+      var inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
+      var qInputs = ce ? ce.questionInputs : Array.from(wrapper.querySelectorAll(".ess-question-input"));
       
-      const values = {};
+      var values = {};
       inputs.forEach(function(inp) { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
-      const questions = {};
+      var questions = {};
       qInputs.forEach(function(inp) { questions[inp.getAttribute('data-q')] = inp.value; });
       
-      const chartToggle4 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; }) : wrapper.querySelector(".chart-toggle[data-chart='4']");
-      const chartToggle5 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; }) : wrapper.querySelector(".chart-toggle[data-chart='5']");
+      var chartToggle4 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; }) : wrapper.querySelector(".chart-toggle[data-chart='4']");
+      var chartToggle5 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; }) : wrapper.querySelector(".chart-toggle[data-chart='5']");
 
       return {
         title: titleInput ? titleInput.value : "",
@@ -461,10 +447,10 @@
     };
   };
 
-  const recordState = function() {
+  var recordState = function() {
     if (isRestoringHistory) return;
-    const state = collectState();
-    const stateStr = JSON.stringify(state);
+    var state = collectState();
+    var stateStr = JSON.stringify(state);
     if (historyIndex >= 0 && JSON.stringify(stateHistory[historyIndex]) === stateStr) return;
     
     stateHistory = stateHistory.slice(0, historyIndex + 1);
@@ -479,18 +465,18 @@
     updateUndoRedoButtons();
   };
 
-  const debouncedRecordState = function() {
+  var debouncedRecordState = function() {
     if (isRestoringHistory) return;
     clearTimeout(recordTimeout);
     recordTimeout = setTimeout(recordState, 300);
   };
 
-  const restoreState = function(index) {
+  var restoreState = function(index) {
     if (index < 0 || index >= stateHistory.length) return;
     isRestoringHistory = true;
     clearTimeout(recordTimeout);
     historyIndex = index;
-    const stateToRestore = stateHistory[index];
+    var stateToRestore = stateHistory[index];
     
     respondentInput.value = stateToRestore.respondentName || "";
     dateInput.value = stateToRestore.examDate || "";
@@ -513,29 +499,35 @@
     setTimeout(function() { isRestoringHistory = false; }, 100);
   };
 
-  const updateTestNumbers = function() {
+  var updateTestNumbers = function() {
     testsContainer.querySelectorAll(".ess-test-wrapper").forEach(function(w, idx) {
-        const num = idx + 1;
-        const label = w.querySelector(".ess-test-num-label");
+        var num = idx + 1;
+        var label = w.querySelector(".ess-test-num-label");
         if (label) label.textContent = "Тест №" + num + ":";
-        const h3 = w.querySelector(".ess-modal-header h3");
+        var h3 = w.querySelector(".ess-modal-header h3");
         if (h3) h3.textContent = "📝 Питання тесту №" + num;
     });
   };
 
-  const colorizeStatus = function(statusText) {
+  var colorizeStatus = function(statusText) {
       if(statusText.indexOf("NSR") !== -1) return '<span style="color:#2e7d32; font-weight:bold;">' + statusText + '</span>';
-      if(statusText.indexOf("SR") !== -1) return '<span style="color:#ff0000; font-weight:bold;">' + statusText + '</span>';
-      if(statusText.indexOf("INC") !== -1) return '<span style="color:#f57c00; font-weight:bold;">' + statusText + '</span>';
-      if(statusText.indexOf("NO") !== -1) return '<span style="color:#757575; font-weight:bold;">' + statusText + '</span>';
+      if(statusText.indexOf("SR") !== -1 && statusText.indexOf("NSR") === -1) return '<span style="color:#ff0000; font-weight:bold;">' + statusText + '</span>';
+      if(statusText.indexOf("INC") !== -1) return '<span style="color:#000000; font-weight:bold;">' + statusText + '</span>';
+      if(statusText.indexOf("NO") !== -1) return '<span style="color:#000000; font-weight:bold;">' + statusText + '</span>';
       return statusText;
   };
 
-  const saveToMarkdown = function() {
-      const respName = respondentInput.value.trim() || 'Невідомо';
-      const dateVal = dateInput.value || new Date().toISOString().slice(0,10);
+  var padR = function(str, len) {
+      str = String(str);
+      while(str.length < len) str += ' ';
+      return str;
+  };
+
+  var saveToMarkdown = function() {
+      var respName = respondentInput.value.trim() || 'Невідомо';
+      var dateVal = dateInput.value || new Date().toISOString().slice(0,10);
       
-      let md = '---\n';
+      var md = '---\n';
       md += 'tags:\n  - polygraph_report\n  - ess_m\n';
       md += 'date: ' + dateVal + '\n';
       md += 'respondent: ' + respName + '\n';
@@ -546,20 +538,21 @@
       md += '<!-- Додайте ваші нотатки щодо поведінки, стану респондента та особливостей передтестової бесіди тут... -->\n\n';
       md += '---\n\n';
 
-      const testWrappers = testsContainer.querySelectorAll('.ess-test-wrapper');
+      var testWrappers = testsContainer.querySelectorAll('.ess-test-wrapper');
       if(testWrappers.length === 0) {
           md += '*Немає даних для відображення.*\n';
       }
 
       testWrappers.forEach(function(wrapper, index) {
-          const ce = wrapper._cachedElements;
+          var ce = wrapper._cachedElements;
           if(!ce) return;
           
-          const title = ce.titleInput.value || ('Тест ' + (index + 1));
-          const format = ce.formatSelect.value;
-          const checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
-          const type = (checkedRadio && checkedRadio.value === 'screening') ? 'Скринінговий' : 'Діагностичний';
-          const allowedCols = (formatConfig[format] && formatConfig[format].cols) ? formatConfig[format].cols : 0;
+          var title = ce.titleInput.value || ('Тест ' + (index + 1));
+          var format = ce.formatSelect.value;
+          var checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
+          var type = (checkedRadio && checkedRadio.value === 'screening') ? 'Скринінговий' : 'Діагностичний';
+          var isScreening = (type === 'Скринінговий');
+          var allowedCols = (formatConfig[format] && formatConfig[format].cols) ? formatConfig[format].cols : 0;
           
           md += '### Тест №' + (index + 1) + ': ' + title + '\n';
           md += '**Формат:** ' + format + ' | **Тип:** ' + type + '\n\n';
@@ -569,123 +562,153 @@
               return;
           }
 
-          md += '**Семантика (Релевантні питання):**\n';
-          for(let col = 1; col <= allowedCols; col++) {
-              const qInput = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + col); });
-              const qText = qInput ? qInput.value : '';
-              md += '- **R' + col + ':** ' + (qText || '...') + '\n';
-          }
-          md += '\n';
-
-          const activeCharts = [];
-          for(let c=1; c<=5; c++) {
-              const toggle = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') == c; });
+          var activeCharts = [];
+          for(var c=1; c<=5; c++) {
+              var toggle = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') == c; });
               if(!toggle || toggle.checked) activeCharts.push(c);
           }
 
           md += '**Матриця балів:**\n';
-          let th = '| Питання |';
-          let sep = '| :--- |';
-          activeCharts.forEach(function(c) { th += ' C' + c + ' |'; sep += ' :---: |'; });
-          th += ' Subtotal | Статус |\n';
+          var th = '| ' + padR('Питання', 8) + ' |';
+          var sep = '| :------- |';
+          activeCharts.forEach(function(c) { 
+              th += ' ' + padR('C' + c, 4) + ' |'; 
+              sep += ' :---: |'; 
+          });
+          th += ' ' + padR('Subtotal', 8) + ' | ' + padR('Статус', 25) + ' |\n';
           sep += ' :---: | :--- |\n';
           md += th + sep;
 
-          const dynVals = wrapper._cachedDynamics || [];
-          const getSpotSum = function(c, col) {
-              const chartData = dynVals.find(function(d) { return d.chart == c; });
+          var dynVals = wrapper._cachedDynamics || [];
+          var getSpotSum = function(c, col) {
+              var chartData = dynVals.find(function(d) { return d.chart == c; });
               if(chartData && chartData.spots[col] !== undefined) {
                   return chartData.spots[col];
               }
               return "-";
           };
 
-          for(let col = 1; col <= allowedCols; col++) {
-              let rowStr = '| **R' + col + '** |';
+          for(var col = 1; col <= allowedCols; col++) {
+              var rowStr = '| **' + padR('R' + col, 6) + '** |';
               activeCharts.forEach(function(c) {
-                  rowStr += ' ' + getSpotSum(c, col) + ' |';
+                  rowStr += ' ' + padR(getSpotSum(c, col), 4) + ' |';
               });
-              const subSpan = ce.subtotals.find(function(s) { return s.getAttribute('data-col') == col; });
-              const subVal = subSpan ? subSpan.textContent : "-";
-              rowStr += ' **' + subVal + '** |';
+              var subSpan = ce.subtotals.find(function(s) { return s.getAttribute('data-col') == col; });
+              var subVal = subSpan ? subSpan.textContent : "-";
+              rowStr += ' **' + padR(subVal, 6) + '** |';
 
-              const statusCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == col; });
-              let statusText = "-";
+              var statusCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == col; });
+              var statusText = "-";
               if(statusCell) {
-                  const badge = statusCell.querySelector('.status-badge');
+                  var badge = statusCell.querySelector('.status-badge');
                   if(badge) statusText = badge.textContent;
               }
-              rowStr += ' ' + colorizeStatus(statusText) + ' |\n';
+              rowStr += ' ' + padR(colorizeStatus(statusText), 25) + ' |\n';
               md += rowStr;
           }
 
-          const gTotal = ce.grandTotal ? ce.grandTotal.textContent : "0";
-          let gRow = '| **Grand Total** |';
-          activeCharts.forEach(function() { gRow += ' |'; });
-          gRow += ' **' + gTotal + '** | |\n';
+          var gTotal = ce.grandTotal ? ce.grandTotal.textContent : "0";
+          var gRow = '| **' + padR('Grand Total', 6) + '** |';
+          activeCharts.forEach(function() { gRow += ' ' + padR('', 4) + ' |'; });
+          gRow += ' **' + padR(gTotal, 6) + '** | ' + padR('', 25) + ' |\n';
           md += gRow;
 
           md += '\n**Контроль якості (QC & Аналіз):**\n';
-          const listItems = ce.dynamicsText.querySelectorAll('li');
+          var listItems = ce.dynamicsText.querySelectorAll('li');
           listItems.forEach(function(li) {
-              let htmlContent = li.innerHTML;
+              var htmlContent = li.innerHTML;
               htmlContent = htmlContent.replace(/<b>/g, '**').replace(/<\/b>/g, '**');
               htmlContent = htmlContent.replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');
               md += '- ' + htmlContent.trim() + '\n';
           });
 
           md += '\n**Висновок (Тест №' + (index + 1) + '):**\n';
-          let gStatusBadge = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
-          let gProb = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
           
-          if (gStatusBadge && gProb) {
-              md += '> Результат: ' + colorizeStatus(gStatusBadge.textContent) + ' (' + gProb.textContent + ')\n\n';
-          } else if(ce.grandStatus) {
-              md += '> Результат: ' + ce.grandStatus.textContent + '\n\n';
+          if (isScreening) {
+              md += "Цей скринінговий тест оцінює кожне питання незалежно.\n\n";
+              md += "**Результати за питаннями:**\n";
+              for(var cCol = 1; cCol <= allowedCols; cCol++) {
+                  var qInput = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol); });
+                  var qText = qInput ? qInput.value.trim() : '';
+                  var dispText = qText ? qText : 'Питання R' + cCol;
+                  
+                  var stCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == cCol; });
+                  var stBadge = "";
+                  var pText = "";
+                  if(stCell) {
+                      var bNode = stCell.querySelector('.status-badge');
+                      var pNode = stCell.querySelector('.prob-text');
+                      if(bNode) stBadge = bNode.textContent;
+                      if(pNode) pText = pNode.textContent;
+                  }
+                  if (stBadge && stBadge !== '-' && stBadge !== 'N/A') {
+                      md += '- **R' + cCol + '** ("' + dispText + '"): ' + colorizeStatus(stBadge) + ' ' + (pText ? '(' + pText + ')' : '') + '\n';
+                  }
+              }
+              md += '\n**Загальний підсумок тесту:**\n';
+              var gStBadge = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
+              var gPr = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
+              if (gStBadge) {
+                  md += '> ' + colorizeStatus(gStBadge.textContent) + ' ' + (gPr ? '(' + gPr.textContent + ')' : '') + '\n\n';
+              }
+          } else {
+              md += "Цей діагностичний тест оцінює єдину тематику за сумою всіх релевантних питань.\n\n";
+              md += "**Перевірялась тематика:**\n";
+              for(var cCol2 = 1; cCol2 <= allowedCols; cCol2++) {
+                  var qInp2 = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol2); });
+                  var qTxt2 = qInp2 ? qInp2.value.trim() : '';
+                  if (qTxt2) md += '- R' + cCol2 + ': ' + qTxt2 + '\n';
+              }
+              md += '\n**Загальний підсумок тесту:**\n';
+              var gStB = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
+              var gP = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
+              if (gStB) {
+                  md += '> ' + colorizeStatus(gStB.textContent) + ' ' + (gP ? '(' + gP.textContent + ')' : '') + '\n\n';
+              }
           }
 
           md += '---\n\n';
       });
 
-      const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); 
-      const safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
+      var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a"); 
+      var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
       a.href = url; 
       a.download = 'ess-' + safeResp + dateVal + '.md'; 
       a.click();
       URL.revokeObjectURL(url);
   };
 
-  const toolbar = document.createElement("div");
+  var toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
-  const btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.setAttribute("aria-label", "Зберегти"); btnSave.onclick = function() { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
-  const sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
-  const btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
+  var btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.setAttribute("aria-label", "Зберегти"); btnSave.onclick = function() { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
+  var sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
+  var btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
   
-  const fileInput = document.createElement("input");
+  var fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = ".json";
   fileInput.style.display = "none";
   toolbar.appendChild(fileInput);
   btnOpen.onclick = function() { fileInput.click(); };
 
-  const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити JSON"); btnSaveJson.onclick = function() { saveToFile(); };
-  const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
-  const btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = function() { restoreState(historyIndex - 1); };
-  const btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = function() { restoreState(historyIndex + 1); };
+  var btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити JSON"); btnSaveJson.onclick = function() { saveToFile(); };
+  var sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
+  var btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = function() { restoreState(historyIndex - 1); };
+  var btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = function() { restoreState(historyIndex + 1); };
   
-  const updateUndoRedoButtons = function() {
+  var updateUndoRedoButtons = function() {
     btnUndo.disabled = historyIndex <= 0;
     btnRedo.disabled = historyIndex >= stateHistory.length - 1;
   };
   
-  const sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
-  const btnMarkdown = document.createElement("button"); btnMarkdown.className = "ess-toolbar-btn"; btnMarkdown.innerHTML = "📝"; btnMarkdown.title = "Експорт у Markdown (.md)"; btnMarkdown.setAttribute("aria-label", "Експорт Markdown"); btnMarkdown.onclick = function() { saveToMarkdown(); };
+  var sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
+  var btnMarkdown = document.createElement("button"); btnMarkdown.className = "ess-toolbar-btn"; btnMarkdown.innerHTML = "📝"; btnMarkdown.title = "Експорт у Markdown (.md)"; btnMarkdown.setAttribute("aria-label", "Експорт Markdown"); btnMarkdown.onclick = function() { saveToMarkdown(); };
   
-  const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = function() { setTimeout(function() { window.print(); }, 150); };
-  const btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
+  var btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = function() { setTimeout(function() { window.print(); }, 150); };
+  var btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
   btnClearAll.onclick = function() {
     if (confirm("Ви впевнені, що хочете повністю очистити всі таблиці та П.І.Б. респондента? (Буде створено нову чисту сесію)")) {
       respondentInput.value = ""; 
@@ -695,45 +718,45 @@
       markUnsaved();
     }
   };
-  const sep4 = document.createElement("div"); sep4.className = "ess-toolbar-sep";
-  const btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.setAttribute("aria-label", "Довідка"); btnHelp.onclick = function() { openHelpPage(); };
-  const saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
+  var sep4 = document.createElement("div"); sep4.className = "ess-toolbar-sep";
+  var btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.setAttribute("aria-label", "Довідка"); btnHelp.onclick = function() { openHelpPage(); };
+  var saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
 
   toolbar.appendChild(btnSave); toolbar.appendChild(sep1); toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson);
   toolbar.appendChild(sep2); toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep3);
   toolbar.appendChild(btnMarkdown); toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
   toolbar.appendChild(saveStatus);
 
-  const respondentArea = document.createElement("div"); 
+  var respondentArea = document.createElement("div"); 
   respondentArea.className = "ess-respondent-area";
   
-  const nameWrapper = document.createElement("div");
+  var nameWrapper = document.createElement("div");
   nameWrapper.className = "ess-name-wrapper";
-  const respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
-  const respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
+  var respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
+  var respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
   respondentInput.autocomplete = "off"; respondentInput.spellcheck = false;
   respondentInput.addEventListener("input", function() { markUnsaved(); });
   nameWrapper.appendChild(respondentLabel); nameWrapper.appendChild(respondentInput);
   
-  const dateWrapper = document.createElement("div");
+  var dateWrapper = document.createElement("div");
   dateWrapper.className = "ess-date-wrapper";
-  const dateLabel = document.createElement("span"); dateLabel.className = "ess-respondent-label"; dateLabel.textContent = "📅 Дата:";
-  const dateInput = document.createElement("input"); dateInput.type = "date"; dateInput.className = "ess-date-input";
+  var dateLabel = document.createElement("span"); dateLabel.className = "ess-respondent-label"; dateLabel.textContent = "📅 Дата:";
+  var dateInput = document.createElement("input"); dateInput.type = "date"; dateInput.className = "ess-date-input";
   dateInput.addEventListener("change", function() { markUnsaved(); });
   dateWrapper.appendChild(dateLabel); dateWrapper.appendChild(dateInput);
 
   respondentArea.appendChild(nameWrapper);
   respondentArea.appendChild(dateWrapper);
 
-  const testsContainer = document.createElement("div");
-  const addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
+  var testsContainer = document.createElement("div");
+  var addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
 
   container.appendChild(toolbar); 
   container.appendChild(respondentArea); 
   container.appendChild(testsContainer); 
   container.appendChild(addBtnBottom);
 
-  const performSave = function() {
+  var performSave = function() {
     if (!isUnsaved) return;
     saveStatus.textContent = "⏳ Запис...";
     try {
@@ -744,27 +767,27 @@
     }
   };
 
-  const saveToFile = function() {
-    const resp = respondentInput.value.trim();
-    const safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
-    const dateStr = dateInput.value || new Date().toISOString().slice(0,10);
-    const filename = "ess-" + safeResp + dateStr + ".json";
+  var saveToFile = function() {
+    var resp = respondentInput.value.trim();
+    var safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
+    var dateStr = dateInput.value || new Date().toISOString().slice(0,10);
+    var filename = "ess-" + safeResp + dateStr + ".json";
     
-    const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+    var blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href = url; a.download = filename; a.click();
     URL.revokeObjectURL(url);
     isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
   };
 
-  const handleFileLoad = function(file) {
+  var handleFileLoad = function(file) {
     if (isUnsaved) {
       if (!confirm("У вас є незбережені дані! Відкриття нового файлу зітре поточні таблиці. Продовжити?")) return;
     }
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.onload = function(e) {
       try {
-        const stateToRestore = parseStateData(JSON.parse(e.target.result));
+        var stateToRestore = parseStateData(JSON.parse(e.target.result));
         respondentInput.value = stateToRestore.respondentName || "";
         dateInput.value = stateToRestore.examDate || "";
         testsContainer.innerHTML = "";
@@ -793,13 +816,13 @@
   window.addEventListener('drop', function(e) {
     e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
+      var file = e.dataTransfer.files[0];
       if (file.name.toLowerCase().indexOf('.json') !== -1) handleFileLoad(file);
       else showError("Будь ласка, перетягніть файл саме у форматі .json");
     }
   });
 
-  const markUnsaved = function() {
+  var markUnsaved = function() {
     if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
     saveStatus.textContent = "🟠 ⚠️ Є незбережені зміни!";
     if (warningTimeout) clearTimeout(warningTimeout); if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
@@ -811,44 +834,44 @@
   window.addEventListener('beforeunload', function(e) { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
   container.addEventListener('focusout', function(e) { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
 
-  const isArt = function(val) {
+  var isArt = function(val) {
     if (val === null || val === undefined) return false;
-    const v = String(val).trim().toLowerCase();
+    var v = String(val).trim().toLowerCase();
     return v === "∅" || v === "а" || v === "a";
   };
 
-  const updateDynamicsChart = function(wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) {
-    const svg = ce.dynamicsSvg;
-    const textDiv = ce.dynamicsText;
+  var updateDynamicsChart = function(wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) {
+    var svg = ce.dynamicsSvg;
+    var textDiv = ce.dynamicsText;
     
-    const elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
-    const elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
-    const elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
-    const elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
-    const elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
+    var elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
+    var elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
+    var elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
+    var elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
+    var elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
     
-    const showTot = elTot ? elTot.checked : true;
-    const showR1 = elR1 ? elR1.checked : false;
-    const showR2 = elR2 ? elR2.checked : false;
-    const showR3 = elR3 ? elR3.checked : false;
-    const showR4 = elR4 ? elR4.checked : false;
+    var showTot = elTot ? elTot.checked : true;
+    var showR1 = elR1 ? elR1.checked : false;
+    var showR2 = elR2 ? elR2.checked : false;
+    var showR3 = elR3 ? elR3.checked : false;
+    var showR4 = elR4 ? elR4.checked : false;
     
     if (!svg) return;
     svg.innerHTML = '';
     
-    const width = svg.clientWidth > 100 ? svg.clientWidth : 800;
-    const height = 90;
+    var width = svg.clientWidth > 100 ? svg.clientWidth : 800;
+    var height = 90;
     svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
     
-    const paddingX = 25, paddingY = 15;
-    const profileWidth = 80; 
-    const profileStartX = width - profileWidth; 
-    const chartWidth = profileStartX - paddingX * 2;
-    const chartHeight = height - paddingY * 2;
-    const centerY = height / 2;
-    const profCenterX = profileStartX + (profileWidth / 2);
+    var paddingX = 25, paddingY = 15;
+    var profileWidth = 80; 
+    var profileStartX = width - profileWidth; 
+    var chartWidth = profileStartX - paddingX * 2;
+    var chartHeight = height - paddingY * 2;
+    var centerY = height / 2;
+    var profCenterX = profileStartX + (profileWidth / 2);
     
-    let maxAbs = 6;
+    var maxAbs = 6;
     chartDataArray.forEach(function(d) {
       if (showTot && Math.abs(d.total) > maxAbs) maxAbs = Math.abs(d.total);
       if (showR1 && d.spots[1] !== undefined && Math.abs(d.spots[1]) > maxAbs) maxAbs = Math.abs(d.spots[1]);
@@ -858,29 +881,29 @@
     });
     maxAbs = Math.ceil(maxAbs / 2) * 2;
     
-    const getY = function(val) { return centerY - (val / maxAbs) * (chartHeight / 2); };
-    const getX = function(idx, len) { return paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2); };
+    var getY = function(val) { return centerY - (val / maxAbs) * (chartHeight / 2); };
+    var getX = function(idx, len) { return paddingX + (len > 1 ? idx * (chartWidth / (len - 1)) : chartWidth / 2); };
 
-    const incZoneTop = getY(3);
-    const incZoneBottom = getY(-3);
-    const incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    var incZoneTop = getY(3);
+    var incZoneBottom = getY(-3);
+    var incRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     incRect.setAttribute("x", paddingX); incRect.setAttribute("y", incZoneTop);
     incRect.setAttribute("width", chartWidth); incRect.setAttribute("height", incZoneBottom - incZoneTop);
     incRect.setAttribute("fill", "rgba(0,0,0,0.04)");
     svg.appendChild(incRect);
 
-    const zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    var zeroLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     zeroLine.setAttribute("x1", paddingX); zeroLine.setAttribute("y1", centerY);
     zeroLine.setAttribute("x2", profileStartX); zeroLine.setAttribute("y2", centerY);
     zeroLine.setAttribute("stroke", "#ccc"); zeroLine.setAttribute("stroke-width", "1");
     zeroLine.setAttribute("stroke-dasharray", "2,2");
     svg.appendChild(zeroLine);
     
-    const labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    var labelPos = document.createElementNS("http://www.w3.org/2000/svg", "text");
     labelPos.setAttribute("x", paddingX + chartWidth/2); labelPos.setAttribute("y", 10); labelPos.setAttribute("text-anchor", "middle"); labelPos.setAttribute("font-size", "9.5"); labelPos.setAttribute("fill", "#aaa"); labelPos.textContent = "+ Порівняння";
     svg.appendChild(labelPos);
     
-    const labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    var labelNeg = document.createElementNS("http://www.w3.org/2000/svg", "text");
     labelNeg.setAttribute("x", paddingX + chartWidth/2); labelNeg.setAttribute("y", height - 4); labelNeg.setAttribute("text-anchor", "middle"); labelNeg.setAttribute("font-size", "9.5"); labelNeg.setAttribute("fill", "#aaa"); labelNeg.textContent = "- Релевантні";
     svg.appendChild(labelNeg);
 
@@ -889,31 +912,31 @@
       return;
     }
 
-    let spotAverages = {1:0, 2:0, 3:0, 4:0};
-    let counts = {1:0, 2:0, 3:0, 4:0};
+    var spotAverages = {1:0, 2:0, 3:0, 4:0};
+    var counts = {1:0, 2:0, 3:0, 4:0};
 
     chartDataArray.forEach(function(d) {
-      for(let col=1; col<=4; col++) {
+      for(var col=1; col<=4; col++) {
         if(d.spots[col] !== undefined) { spotAverages[col] += d.spots[col]; counts[col]++; }
       }
     });
-    for(let col=1; col<=4; col++) { if(counts[col] > 0) spotAverages[col] = spotAverages[col] / counts[col]; }
+    for(var c=1; c<=4; c++) { if(counts[c] > 0) spotAverages[c] = spotAverages[c] / counts[c]; }
 
-    const drawLine = function(key, dataSelector, color, isTotal) {
-      let pathD = ""; let pointCount = 0;
+    var drawLine = function(key, dataSelector, color, isTotal) {
+      var pathD = ""; var pointCount = 0;
       chartDataArray.forEach(function(d, i) {
-        const val = dataSelector(d);
+        var val = dataSelector(d);
         if (val !== undefined) {
-          const x = getX(i, chartDataArray.length); const y = getY(val);
+          var x = getX(i, chartDataArray.length); var y = getY(val);
           if (pointCount === 0) pathD += 'M ' + x + ' ' + y; else pathD += ' L ' + x + ' ' + y;
           
           if (isTotal && d.hasArtifact) {
-            const tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            var tri = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
             tri.setAttribute("points", x + ',' + (y-6) + ' ' + (x-5) + ',' + (y+4) + ' ' + (x+5) + ',' + (y+4));
             tri.setAttribute("fill", "#f57c00"); tri.setAttribute("stroke", "#fff"); tri.setAttribute("stroke-width", "1");
             svg.appendChild(tri);
           } else {
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", isTotal ? "3.5" : "3");
             circle.setAttribute("fill", color); circle.setAttribute("stroke", "#fff"); circle.setAttribute("stroke-width", "1");
             svg.appendChild(circle);
@@ -922,7 +945,7 @@
         }
       });
       if (pointCount > 1) {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathD); path.setAttribute("fill", "none"); path.setAttribute("stroke", color); path.setAttribute("stroke-width", isTotal ? "2" : "1.5");
         if(!isTotal) path.setAttribute("stroke-dasharray", "4,2");
         svg.insertBefore(path, svg.firstChild); 
@@ -936,47 +959,47 @@
     if (showTot) {
       drawLine("Tot", function(d) { return d.total; }, colors.tot, true);
       chartDataArray.forEach(function(d, i) {
-        const x = getX(i, chartDataArray.length);
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        var x = getX(i, chartDataArray.length);
+        var label = document.createElementNS("http://www.w3.org/2000/svg", "text");
         label.setAttribute("x", x); label.setAttribute("y", centerY + 4); label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "9"); label.setAttribute("fill", "#999"); label.setAttribute("font-weight", "bold");
         label.textContent = "C" + d.chart;
         if(d.total !== 0 || d.hasArtifact) svg.appendChild(label);
       });
     }
 
-    const divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    var divLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     divLine.setAttribute("x1", profileStartX); divLine.setAttribute("y1", 10);
     divLine.setAttribute("x2", profileStartX); divLine.setAttribute("y2", height - 10);
     divLine.setAttribute("stroke", "#ddd"); divLine.setAttribute("stroke-width", "1");
     svg.appendChild(divLine);
 
-    const profZero = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    var profZero = document.createElementNS("http://www.w3.org/2000/svg", "line");
     profZero.setAttribute("x1", profCenterX); profZero.setAttribute("y1", 20);
     profZero.setAttribute("x2", profCenterX); profZero.setAttribute("y2", height - 20);
     profZero.setAttribute("stroke", "#ccc"); profZero.setAttribute("stroke-width", "1"); profZero.setAttribute("stroke-dasharray", "1,1");
     svg.appendChild(profZero);
 
-    const profLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    var profLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
     profLabel.setAttribute("x", profCenterX); profLabel.setAttribute("y", 12); profLabel.setAttribute("text-anchor", "middle"); profLabel.setAttribute("font-size", "9.5"); profLabel.setAttribute("fill", "#666"); profLabel.setAttribute("font-weight", "bold");
     profLabel.textContent = "Профіль";
     svg.appendChild(profLabel);
 
-    const drawProfileBar = function(col, yPos, color) {
+    var drawProfileBar = function(col, yPos, color) {
       if (counts[col] === 0) return;
-      const avg = spotAverages[col];
-      const maxBarW = 25;
-      const barW = Math.abs(avg / maxAbs) * maxBarW;
-      const barX = avg < 0 ? profCenterX - barW : profCenterX;
+      var avg = spotAverages[col];
+      var maxBarW = 25;
+      var barW = Math.abs(avg / maxAbs) * maxBarW;
+      var barX = avg < 0 ? profCenterX - barW : profCenterX;
       
-      const bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      var bar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       bar.setAttribute("x", barX); bar.setAttribute("y", yPos);
       bar.setAttribute("width", barW); bar.setAttribute("height", "6");
       bar.setAttribute("fill", color); bar.setAttribute("rx", "1");
       svg.appendChild(bar);
       
-      const txtX = avg < 0 ? profCenterX + 3 : profCenterX - 3;
-      const txtAnchor = avg < 0 ? "start" : "end";
-      const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      var txtX = avg < 0 ? profCenterX + 3 : profCenterX - 3;
+      var txtAnchor = avg < 0 ? "start" : "end";
+      var lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
       lbl.setAttribute("x", txtX); lbl.setAttribute("y", yPos + 6); lbl.setAttribute("text-anchor", txtAnchor); lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", color);
       lbl.textContent = 'R' + col;
       svg.appendChild(lbl);
@@ -987,12 +1010,12 @@
     drawProfileBar(3, 44, colors[3]);
     drawProfileBar(4, 54, colors[4]);
 
-    let interpLines = [];
-    const totals = chartDataArray.map(function(d) { return d.total; });
-    const first = totals[0], last = totals[totals.length - 1];
-    const trend = last - first;
+    var interpLines = [];
+    var totals = chartDataArray.map(function(d) { return d.total; });
+    var first = totals[0], last = totals[totals.length - 1];
+    var trend = last - first;
     
-    let vectorText = "Нейтральний стан / Фізіологічний шум";
+    var vectorText = "Нейтральний стан / Фізіологічний шум";
     if (totals.every(function(v) { return v === 0; })) vectorText = "Нейтральний стан (шум)";
     else if (totals.every(function(v) { return v <= 0; }) && trend < 0) vectorText = "Сенсибілізація (накопичення напруги)";
     else if (totals.every(function(v) { return v < 0; })) vectorText = "Стабільна реактивність";
@@ -1003,8 +1026,8 @@
     
     interpLines.push('<b>Вектор:</b> ' + vectorText);
 
-    let dominantSpot = null; let minAvg = -1.0; 
-    for(let c=1; c<=4; c++) {
+    var dominantSpot = null; var minAvg = -1.0; 
+    for(var c=1; c<=4; c++) {
       if(counts[c] > 0 && spotAverages[c] <= minAvg) { minAvg = spotAverages[c]; dominantSpot = c; }
     }
     
@@ -1025,9 +1048,9 @@
     textDiv.innerHTML = "<ul>" + interpLines.map(function(line) { return '<li>' + line + '</li>'; }).join('') + "</ul>";
   };
 
-  const calcPneumoESS = function(vRaw, nRaw, vN, nN) {
-    let vA = isArt(vRaw);
-    let nA = isArt(nRaw);
+  var calcPneumoESS = function(vRaw, nRaw, vN, nN) {
+    var vA = isArt(vRaw);
+    var nA = isArt(nRaw);
     if (vA && nA) return { val: 0, fullArt: true, partialArt: false, conflict: false };
     if (vA) return { val: nN, fullArt: false, partialArt: true, conflict: false };
     if (nA) return { val: vN, fullArt: false, partialArt: true, conflict: false };
@@ -1039,20 +1062,20 @@
     return { val: 0, fullArt: false, partialArt: false, conflict: false };
   };
 
-  const gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
-  const getGrandProbValue = function(val) { const v = Math.abs(val); if (v >= 20) return "Pr > 99%"; if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%"; return "p > 0.05"; };
+  var gtProbs = { 3: 64, 4: 68, 5: 72, 6: 76, 7: 80, 8: 83, 9: 86, 10: 88, 11: 91, 12: 92, 13: 94, 14: 95, 15: 96, 16: 97, 17: 98, 18: 98, 19: 99 };
+  var getGrandProbValue = function(val) { var v = Math.abs(val); if (v >= 20) return "Pr > 99%"; if (gtProbs[v]) return "Pr ~ " + gtProbs[v] + "%"; return "p > 0.05"; };
 
-  const getScreeningProbValue = function(val) {
+  var getScreeningProbValue = function(val) {
     if (val <= -12) return "Pr > 99%"; if (val === -11) return "Pr ~ 99%"; if (val === -10) return "Pr ~ 98%"; if (val === -9) return "Pr ~ 97%";
     if (val === -8) return "Pr ~ 95%"; if (val === -7) return "Pr ~ 92%"; if (val === -6) return "Pr ~ 89%"; if (val === -5) return "Pr ~ 85%";
     if (val === -4) return "Pr ~ 79%"; if (val === -3) return "Pr ~ 73%"; 
     return ""; 
   };
 
-  const senterProbsMap = new Map([[-7, 94.0], [-8, 96.2], [-9, 97.8], [-10, 98.8], [-11, 99.4], [-12, 99.7], [-13, 99.9]]);
-  const getSenterProbValue = function(val) { const numVal = Number(val); if (numVal <= -14) return "Pr > 99.9%"; if (senterProbsMap.has(numVal)) return "Pr ~ " + senterProbsMap.get(numVal).toFixed(1) + "%"; return "p > 0.05"; };
+  var senterProbsMap = { '-7': 94.0, '-8': 96.2, '-9': 97.8, '-10': 98.8, '-11': 99.4, '-12': 99.7, '-13': 99.9 };
+  var getSenterProbValue = function(val) { var numVal = Number(val); if (numVal <= -14) return "Pr > 99.9%"; if (senterProbsMap[numVal]) return "Pr ~ " + senterProbsMap[numVal].toFixed(1) + "%"; return "p > 0.05"; };
 
-  const getSpotInfo = function(val, testType) {
+  var getSpotInfo = function(val, testType) {
     if (testType === "screening") {
       if (val <= -3) return { status: "SR", prob: getScreeningProbValue(val), cls: "bg-sr" };
       if (val >= 1) return { status: "NSR", prob: "", cls: "bg-nsr" };
@@ -1063,11 +1086,13 @@
     }
   };
 
-  const getGrandProb = function(grandTotal, activeSpotVals, testType, minSpot, hasAnySR) {
+  var getGrandProb = function(grandTotal, activeSpotVals, testType, minSpot, hasAnySR) {
     if (activeSpotVals.length === 0) return { status: "N/A", prob: "Немає даних", cls: "bg-na" };
     if (testType === "screening") {
       if (hasAnySR) return { status: "SR", prob: "Spot Rule (Є SR)", cls: "bg-sr" };
-      if (activeSpotVals.every(function(v) { return v >= 1; })) return { status: "NSR", prob: "All Spots NSR", cls: "bg-nsr" };
+      var allNSR = true;
+      for(var i=0; i<activeSpotVals.length; i++) { if(activeSpotVals[i] < 1) allNSR = false; }
+      if (allNSR) return { status: "NSR", prob: "All Spots NSR", cls: "bg-nsr" };
       return { status: "INC", prob: "Spot Rule (INC)", cls: "bg-inc" };
     }
     
@@ -1077,9 +1102,9 @@
     return { status: "INC", prob: "Невизначено", cls: "bg-inc" };
   };
 
-  const applyFormat = function(wrapper, formatStr) {
-    const ce = wrapper._cachedElements;
-    const config = formatConfig[formatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+  var applyFormat = function(wrapper, formatStr) {
+    var ce = wrapper._cachedElements;
+    var config = formatConfig[formatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
     
     if (formatStr === "ОБЕРІТЬ ФОРМАТ..." || formatStr === "N/A" || formatStr === "Оберіть формат...") {
         ce.formatSelect.classList.add("format-attention");
@@ -1087,9 +1112,9 @@
         ce.formatSelect.classList.remove("format-attention");
     }
     
-    const scrRadio = ce.typeRadios.find(function(r) { return r.value === 'screening'; });
-    const diagRadio = ce.typeRadios.find(function(r) { return r.value === 'diagnostic'; });
-    const scrLabel = wrapper.querySelector('label[for="' + scrRadio.id + '"]');
+    var scrRadio = ce.typeRadios.find(function(r) { return r.value === 'screening'; });
+    var diagRadio = ce.typeRadios.find(function(r) { return r.value === 'diagnostic'; });
+    var scrLabel = wrapper.querySelector('label[for="' + scrRadio.id + '"]');
     
     if (config.forceDiag) {
         scrRadio.disabled = true;
@@ -1100,22 +1125,22 @@
         if (scrLabel) scrLabel.style.display = 'inline-block';
     }
 
-    const chartToggle4 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; });
-    const chartToggle5 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; });
-    const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
+    var chartToggle4 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; });
+    var chartToggle5 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; });
+    var activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
 
-    for (let col = 1; col <= 4; col++) {
-        const isColDisabled = col > config.cols;
-        const colStr = col.toString();
+    for (var col = 1; col <= 4; col++) {
+        var isColDisabled = col > config.cols;
+        var colStr = col.toString();
         
-        const th = wrapper.querySelector('.ess-th-question[data-th-col="' + colStr + '"]');
+        var th = wrapper.querySelector('.ess-th-question[data-th-col="' + colStr + '"]');
         if (th) isColDisabled ? th.classList.add("col-disabled") : th.classList.remove("col-disabled");
         
-        const colInputs = ce.inputs.filter(function(i) { return i.getAttribute('data-col') === colStr; });
+        var colInputs = ce.inputs.filter(function(i) { return i.getAttribute('data-col') === colStr; });
         colInputs.forEach(function(inp) {
-            const cNum = inp.getAttribute('data-chart');
+            var cNum = inp.getAttribute('data-chart');
             inp.disabled = isColDisabled || !activeCharts[cNum];
-            const td = inp.parentElement;
+            var td = inp.parentElement;
             isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
             if (isColDisabled) {
                 inp.value = ""; 
@@ -1123,36 +1148,36 @@
             }
         });
         
-        const qInp = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + colStr); });
+        var qInp = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + colStr); });
         if (qInp) {
             qInp.disabled = isColDisabled;
             if (isColDisabled) qInp.value = '';
             qInp.parentElement.style.opacity = isColDisabled ? '0.4' : '1';
         }
         
-        const pneumoSums = ce.pneumoSums.filter(function(s) { return s.getAttribute('data-col') === colStr; });
+        var pneumoSums = ce.pneumoSums.filter(function(s) { return s.getAttribute('data-col') === colStr; });
         pneumoSums.forEach(function(span) {
-            const td = span.parentElement;
+            var td = span.parentElement;
             isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
             if (isColDisabled) { span.textContent = ""; td.classList.remove("bg-artifact", "bg-local-artifact"); }
         });
         
-        const subtotalSpans = ce.subtotals.filter(function(s) { return s.getAttribute('data-col') === colStr; });
+        var subtotalSpans = ce.subtotals.filter(function(s) { return s.getAttribute('data-col') === colStr; });
         subtotalSpans.forEach(function(span) {
-            const td = span.parentElement;
+            var td = span.parentElement;
             isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
             if (isColDisabled) span.textContent = "";
         });
         
-        const statusCells = ce.statuses.filter(function(s) { return s.getAttribute('data-col') === colStr; });
+        var statusCells = ce.statuses.filter(function(s) { return s.getAttribute('data-col') === colStr; });
         statusCells.forEach(function(td) {
             isColDisabled ? td.classList.add("col-disabled") : td.classList.remove("col-disabled");
             if (isColDisabled) { td.innerHTML = ""; td.className = "status-cell bg-na col-disabled"; }
         });
         
-        const dynToggle = wrapper.querySelector('input[id^="dyn_r' + colStr + '_"]');
+        var dynToggle = wrapper.querySelector('input[id^="dyn_r' + colStr + '_"]');
         if (dynToggle) {
-            const dynLabel = wrapper.querySelector('label[for="' + dynToggle.id + '"]');
+            var dynLabel = wrapper.querySelector('label[for="' + dynToggle.id + '"]');
             if (isColDisabled) {
                 dynToggle.disabled = true; dynToggle.checked = false;
                 if (dynLabel) dynLabel.style.opacity = '0.3';
@@ -1164,35 +1189,35 @@
     }
   };
 
-  const calculateTest = function(wrapper) {
-    const ce = wrapper._cachedElements;
+  var calculateTest = function(wrapper) {
+    var ce = wrapper._cachedElements;
     if (!ce) return;
     
-    let currentFormatStr = ce.formatSelect.value;
+    var currentFormatStr = ce.formatSelect.value;
     if (currentFormatStr === "N/A" || currentFormatStr === "Оберіть формат...") currentFormatStr = "ОБЕРІТЬ ФОРМАТ...";
-    const allowedCols = (formatConfig[currentFormatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."]).cols;
+    var allowedCols = (formatConfig[currentFormatStr] || formatConfig["ОБЕРІТЬ ФОРМАТ..."]).cols;
     
-    let subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    let colHasData = { 1: false, 2: false, 3: false, 4: false };
+    var subtotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    var colHasData = { 1: false, 2: false, 3: false, 4: false };
     
-    const checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
-    const currentTestType = checkedRadio ? checkedRadio.value : "screening";
+    var checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
+    var currentTestType = checkedRadio ? checkedRadio.value : "screening";
     
     if (ce.contamWrapper) ce.contamWrapper.style.display = (currentTestType === "screening") ? "inline-flex" : "none";
-    const isContamActive = ce.contamToggle ? ce.contamToggle.checked : true;
+    var isContamActive = ce.contamToggle ? ce.contamToggle.checked : true;
     
-    const chartToggle4 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; });
-    const chartToggle5 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; });
-    const activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
+    var chartToggle4 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; });
+    var chartToggle5 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; });
+    var activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
 
-    let spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    let spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    var spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    var spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
 
-    for (let c = 1; c <= 5; c++) {
-      const cStr = c.toString();
-      const rows = ce.rows.filter(function(r) { return r.getAttribute('data-chart-group') === cStr; });
-      const chartInputs = ce.inputs.filter(function(i) { return i.getAttribute('data-chart') === cStr; });
-      if (!activeCharts[c]) { 
+    for (var ch = 1; ch <= 5; ch++) {
+      var cStr = ch.toString();
+      var rows = ce.rows.filter(function(r) { return r.getAttribute('data-chart-group') === cStr; });
+      var chartInputs = ce.inputs.filter(function(i) { return i.getAttribute('data-chart') === cStr; });
+      if (!activeCharts[ch]) { 
           rows.forEach(function(r) { r.classList.add("chart-disabled"); }); 
           chartInputs.forEach(function(i) { if(parseInt(i.getAttribute('data-col')) <= allowedCols) i.setAttribute("disabled", "true"); }); 
       } else { 
@@ -1201,25 +1226,25 @@
       }
     }
     
-    let usePPGCol = {1:false, 2:false, 3:false, 4:false};
-    for (let col = 1; col <= allowedCols; col++) {
-      for (let c = 1; c <= 5; c++) {
-        if (!activeCharts[c]) continue;
-        const pInput = ce.inputsMap[c + '_' + col + '_ppg'];
+    var usePPGCol = {1:false, 2:false, 3:false, 4:false};
+    for (var ccol = 1; ccol <= allowedCols; ccol++) {
+      for (var ch2 = 1; ch2 <= 5; ch2++) {
+        if (!activeCharts[ch2]) continue;
+        var pInput = ce.inputsMap[ch2 + '_' + ccol + '_ppg'];
         if (pInput && !pInput.disabled && pInput.value.trim() !== "" && pInput.value.trim() !== "-") {
-          usePPGCol[col] = true; break;
+          usePPGCol[ccol] = true; break;
         }
       }
     }
 
-    const getValStrict = function(chart, col, row) {
-      const input = ce.inputsMap[chart + '_' + col + '_' + row];
+    var getValStrict = function(chart, col, row) {
+      var input = ce.inputsMap[chart + '_' + col + '_' + row];
       if (!input || input.disabled || parseInt(col) > allowedCols) return { val: 0, art: false, empty: true, raw: "" };
-      const val = input.value.trim();
+      var val = input.value.trim();
       if (isArt(val)) return { val: 0, art: true, empty: false, raw: val };
       if (val === "" || val === "-") return { val: 0, art: false, empty: true, raw: val };
       
-      const num = parseFloat(val);
+      var num = parseFloat(val);
       if (isNaN(num)) return { val: 0, art: true, empty: false, raw: val };
       
       if (row === 'eda' && num !== -2 && num !== 0 && num !== 2) return { val: 0, art: true, empty: false, raw: val };
@@ -1228,28 +1253,28 @@
       return { val: num, art: false, empty: false, raw: val };
     };
 
-    const dynamicsValues = [];
+    var dynamicsValues = [];
 
-    for (let c = 1; c <= 5; c++) {
-      let currentChartSum = 0;
-      let chartHasArt = false;
-      let cSpots = {};
-      let chartHasData = false;
-      const cStr = c.toString();
+    for (var c = 1; c <= 5; c++) {
+      var currentChartSum = 0;
+      var chartHasArt = false;
+      var cSpots = {};
+      var chartHasData = false;
+      var cStr2 = c.toString();
       
-      for (let col = 1; col <= 4; col++) {
+      for (var col = 1; col <= 4; col++) {
         if (col > allowedCols) continue;
-        const colStr = col.toString();
+        var colStr = col.toString();
         
-        const pvInfo = getValStrict(cStr, colStr, 'pneumo-v');
-        const pnInfo = getValStrict(cStr, colStr, 'pneumo-n');
-        const edaInfo = getValStrict(cStr, colStr, 'eda');
-        const carInfo = getValStrict(cStr, colStr, 'cardio');
-        const ppgInfo = getValStrict(cStr, colStr, 'ppg');
+        var pvInfo = getValStrict(cStr2, colStr, 'pneumo-v');
+        var pnInfo = getValStrict(cStr2, colStr, 'pneumo-n');
+        var edaInfo = getValStrict(cStr2, colStr, 'eda');
+        var carInfo = getValStrict(cStr2, colStr, 'cardio');
+        var ppgInfo = getValStrict(cStr2, colStr, 'ppg');
         
-        const colHasCurrentData = !pvInfo.empty || !pnInfo.empty || !edaInfo.empty || !carInfo.empty || !ppgInfo.empty;
+        var colHasCurrentData = !pvInfo.empty || !pnInfo.empty || !edaInfo.empty || !carInfo.empty || !ppgInfo.empty;
         
-        let pneumo = calcPneumoESS(pvInfo.raw, pnInfo.raw, pvInfo.val, pnInfo.val);
+        var pneumo = calcPneumoESS(pvInfo.raw, pnInfo.raw, pvInfo.val, pnInfo.val);
         
         if (colHasCurrentData) {
             if (pvInfo.empty && pnInfo.empty) { pneumo.fullArt = true; pneumo.val = 0; }
@@ -1258,7 +1283,7 @@
             if (usePPGCol[col] && ppgInfo.empty) ppgInfo.art = true;
         }
         
-        const spanPneumo = ce.pneumoSums.find(function(s) { return s.getAttribute('data-chart') === cStr && s.getAttribute('data-col') === colStr; });
+        var spanPneumo = ce.pneumoSums.find(function(s) { return s.getAttribute('data-chart') === cStr2 && s.getAttribute('data-col') === colStr; });
         if (spanPneumo) {
           spanPneumo.parentElement.className = "calc-cell"; 
           if (pneumo.fullArt) {
@@ -1268,14 +1293,14 @@
               spanPneumo.textContent = pneumo.val + " ⚠";
               spanPneumo.parentElement.classList.add("bg-local-artifact");
           } else if (pneumo.conflict) {
-              spanPneumo.innerHTML = '0 <span style="color:#e8a817; font-size:15px; font-weight:bold; cursor:help;" title="Фізіологічний конфлікт (наприклад, +1 та -1)">&#9888;&#xFE0E;</span>';
+              spanPneumo.innerHTML = '0 <span style="color:#d8832b; font-size:14px; font-weight:bold; cursor:help;" title="Фізіологічний конфлікт (наприклад, +1 та -1)">&#9888;</span>';
           } else {
               spanPneumo.textContent = pneumo.val;
           }
         }
         
-        const setVisualArt = function(rowName, isArtif) {
-            const inp = ce.inputsMap[cStr + '_' + colStr + '_' + rowName];
+        var setVisualArt = function(rowName, isArtif) {
+            var inp = ce.inputsMap[cStr2 + '_' + colStr + '_' + rowName];
             if (inp) {
                 if (isArtif) inp.parentElement.classList.add("bg-local-artifact");
                 else inp.parentElement.classList.remove("bg-local-artifact");
@@ -1289,7 +1314,7 @@
         setVisualArt('ppg', ppgInfo.art);
 
         if (activeCharts[c] && colHasCurrentData) {
-            const expWeight = usePPGCol[col] ? 5 : 4;
+            var expWeight = usePPGCol[col] ? 5 : 4;
             spotWeightTotal[col] += expWeight;
             
             if (pneumo.fullArt) spotWeightLost[col] += 1;
@@ -1303,7 +1328,7 @@
             chartHasData = true;
         }
         
-        const colSum = pneumo.val + edaInfo.val + carInfo.val + ppgInfo.val;
+        var colSum = pneumo.val + edaInfo.val + carInfo.val + ppgInfo.val;
         if (activeCharts[c]) {
           subtotals[col] += colSum;
           if(colHasCurrentData) cSpots[col] = colSum;
@@ -1311,7 +1336,7 @@
         currentChartSum += colSum;
       }
       
-      const spanChartTotal = ce.chartTotals.find(function(s) { return s.getAttribute('data-chart') === cStr; });
+      var spanChartTotal = ce.chartTotals.find(function(s) { return s.getAttribute('data-chart') === cStr2; });
       if (spanChartTotal) {
         spanChartTotal.textContent = activeCharts[c] ? currentChartSum : "—";
         spanChartTotal.parentElement.style.opacity = activeCharts[c] ? "1" : "0.5";
@@ -1324,60 +1349,60 @@
 
     wrapper._cachedDynamics = dynamicsValues;
 
-    let testWeightTotal = 0;
-    let testWeightLost = 0;
-    let spotInfos = {}, hasAnySR = false, minSpotVal = Infinity, activeSpotVals = [];
-    let hasAnyNO = false;
+    var testWeightTotal = 0;
+    var testWeightLost = 0;
+    var spotInfos = {}; var hasAnySR = false; var minSpotVal = Infinity; var activeSpotVals = [];
+    var hasAnyNO = false;
 
-    for (let col = 1; col <= 4; col++) {
-      if (col > allowedCols) continue;
-      if (!colHasData[col]) { spotInfos[col] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
+    for (var sCol = 1; sCol <= 4; sCol++) {
+      if (sCol > allowedCols) continue;
+      if (!colHasData[sCol]) { spotInfos[sCol] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
       
-      testWeightTotal += spotWeightTotal[col];
-      testWeightLost += spotWeightLost[col];
+      testWeightTotal += spotWeightTotal[sCol];
+      testWeightLost += spotWeightLost[sCol];
 
-      const val = subtotals[col]; activeSpotVals.push(val);
-      if (val < minSpotVal) minSpotVal = val;
+      var sVal = subtotals[sCol]; activeSpotVals.push(sVal);
+      if (sVal < minSpotVal) minSpotVal = sVal;
       
-      let info = getSpotInfo(val, currentTestType);
-      let spotArtPercent = spotWeightTotal[col] > 0 ? spotWeightLost[col] / spotWeightTotal[col] : 0;
+      var sInfo = getSpotInfo(sVal, currentTestType);
+      var spotArtPercent = spotWeightTotal[sCol] > 0 ? spotWeightLost[sCol] / spotWeightTotal[sCol] : 0;
       
       if (spotArtPercent >= 0.25) {
-          info.status = "NO";
-          info.prob = "≥25% втрачено";
-          info.cls = "bg-no";
+          sInfo.status = "NO";
+          sInfo.prob = "≥25% втрачено";
+          sInfo.cls = "bg-no";
           hasAnyNO = true;
       }
 
-      spotInfos[col] = info;
-      if (info.status === "SR") hasAnySR = true;
+      spotInfos[sCol] = sInfo;
+      if (sInfo.status === "SR") hasAnySR = true;
     }
 
     if (currentTestType === "screening" && hasAnySR && isContamActive) {
-      for (let col = 1; col <= 4; col++) {
-        if (col > allowedCols) continue;
-        if (colHasData[col] && spotInfos[col].status === "NSR") spotInfos[col] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
+      for (var cc = 1; cc <= 4; cc++) {
+        if (cc > allowedCols) continue;
+        if (colHasData[cc] && spotInfos[cc].status === "NSR") spotInfos[cc] = { status: "INC", prob: "Блоковано (є SR)", cls: "bg-inc" };
       }
     }
 
-    let grandTotal = 0;
-    for (let col = 1; col <= 4; col++) {
-      if (col > allowedCols) continue;
-      const colStr = col.toString();
-      const spanSub = ce.subtotals.find(function(s) { return s.getAttribute('data-col') === colStr; });
-      if (spanSub) spanSub.textContent = colHasData[col] ? subtotals[col] : "-";
-      const info = spotInfos[col];
-      const cellStatus = ce.statuses.find(function(s) { return s.getAttribute('data-col') === colStr; });
+    var grandTotal = 0;
+    for (var gc = 1; gc <= 4; gc++) {
+      if (gc > allowedCols) continue;
+      var gcStr = gc.toString();
+      var spanSub = ce.subtotals.find(function(s) { return s.getAttribute('data-col') === gcStr; });
+      if (spanSub) spanSub.textContent = colHasData[gc] ? subtotals[gc] : "-";
+      var info = spotInfos[gc];
+      var cellStatus = ce.statuses.find(function(s) { return s.getAttribute('data-col') === gcStr; });
       if (cellStatus) {
         cellStatus.className = "status-cell " + info.cls;
         cellStatus.innerHTML = (info.status === "N/A" || info.status === "-") ? '<span style="color:#888;">' + info.status + '</span>' : '<span class="status-badge">' + info.status + '</span><span class="prob-text">' + info.prob + '</span>';
       }
-      if (colHasData[col]) grandTotal += subtotals[col];
+      if (colHasData[gc]) grandTotal += subtotals[gc];
     }
 
     if (ce.grandTotal) ce.grandTotal.textContent = activeSpotVals.length > 0 ? grandTotal : (allowedCols > 0 ? "0" : "—");
     
-    let grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
+    var grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
     
     if (currentTestType === "screening" && !hasAnySR) {
         if (hasAnyNO && grandInfo.status !== "NO") {
@@ -1387,8 +1412,8 @@
         }
     }
 
-    let testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
-    const highArtifacts = testArtPercent >= 0.25;
+    var testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
+    var highArtifacts = testArtPercent >= 0.25;
 
     if (highArtifacts && allowedCols > 0) {
         grandInfo.status = "NO";
@@ -1418,33 +1443,33 @@
       else ce.scaleLabels.innerHTML = '<span style="color: #ff0000;">◀ SR (Є Spot ≤ -3)</span><span style="color: #fbc02d;">INC</span><span style="color: #2e7d32;">NSR (Всі ≥ +1) ▶</span>';
     }
     if (ce.scaleMarker) {
-      const minVal = -12, maxVal = 12;
-      const clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
-      const percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
+      var minVal = -12, maxVal = 12;
+      var clamped = Math.max(minVal, Math.min(maxVal, grandTotal));
+      var percentage = ((clamped - minVal) / (maxVal - minVal)) * 100;
       ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
 
     updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent, hasAnyNO);
   };
 
-  const createTestTable = function(savedData) {
+  var createTestTable = function(savedData) {
     if(!savedData) savedData = null;
-    const uid = Math.random().toString(36).substr(2, 9);
-    const wrapper = document.createElement("div"); wrapper.className = "ess-test-wrapper";
+    var uid = Math.random().toString(36).substr(2, 9);
+    var wrapper = document.createElement("div"); wrapper.className = "ess-test-wrapper";
 
-    const rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
-    const titleVal = (savedData && savedData.title !== undefined) ? escapeHtml(savedData.title) : "";
-    const typeVal = (savedData && savedData.type !== undefined) ? escapeHtml(savedData.type) : "screening";
+    var rows = [{ id: 'pneumo-v', label: 'Дихання "В"' }, { id: 'pneumo-n', label: 'Дихання "Н"' }, { id: 'eda', label: 'ЕДА' }, { id: 'cardio', label: 'Кардіо' }, { id: 'ppg', label: 'ФПГ' }];
+    var titleVal = (savedData && savedData.title !== undefined) ? escapeHtml(savedData.title) : "";
+    var typeVal = (savedData && savedData.type !== undefined) ? escapeHtml(savedData.type) : "screening";
     
-    let formatVal = (savedData && savedData.format !== undefined) ? escapeHtml(savedData.format) : "ОБЕРІТЬ ФОРМАТ...";
+    var formatVal = (savedData && savedData.format !== undefined) ? escapeHtml(savedData.format) : "ОБЕРІТЬ ФОРМАТ...";
     if (formatVal === "N/A" || formatVal === "Оберіть формат...") formatVal = "ОБЕРІТЬ ФОРМАТ...";
 
-    const savedQuestions = (savedData && savedData.questions) ? savedData.questions : {};
-    const formatOptions = TEST_FORMATS.map(function(f) { return '<option value="' + escapeHtml(f) + '" ' + (f === formatVal ? 'selected' : '') + '>' + escapeHtml(f) + '</option>'; }).join('');
+    var savedQuestions = (savedData && savedData.questions) ? savedData.questions : {};
+    var formatOptions = TEST_FORMATS.map(function(f) { return '<option value="' + escapeHtml(f) + '" ' + (f === formatVal ? 'selected' : '') + '>' + escapeHtml(f) + '</option>'; }).join('');
 
-    const ds = (savedData && savedData.dynState) ? savedData.dynState : { tot: true, r1: false, r2: false, r3: false, r4: false };
+    var ds = (savedData && savedData.dynState) ? savedData.dynState : { tot: true, r1: false, r2: false, r3: false, r4: false };
 
-    let tableHtml = '<div class="ess-test-top-bar">' +
+    var tableHtml = '<div class="ess-test-top-bar">' +
         '<div class="ess-top-bar-left">' +
           '<select class="ess-format-select" title="Формат тестування">' + formatOptions + '</select>' +
           '<div class="ess-type-toggle toggle-type">' +
@@ -1476,18 +1501,18 @@
         '</thead>' +
         '<tbody>';
 
-    for (let c = 1; c <= 5; c++) {
-      let isChecked = (savedData && savedData.chartToggles && savedData.chartToggles[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
-      let headerText = (c === 4 || c === 5) ? '<label class="chart-toggle-label"><input type="checkbox" class="chart-toggle" data-chart="' + c + '" ' + isChecked + '> Chart #' + c + '</label>' : 'Chart #' + c;
+    for (var c = 1; c <= 5; c++) {
+      var isChecked = (savedData && savedData.chartToggles && savedData.chartToggles[c] !== undefined) ? (savedData.chartToggles[c] ? "checked" : "") : "checked";
+      var headerText = (c === 4 || c === 5) ? '<label class="chart-toggle-label"><input type="checkbox" class="chart-toggle" data-chart="' + c + '" ' + isChecked + '> Chart #' + c + '</label>' : 'Chart #' + c;
       tableHtml += '<tr data-chart-group="' + c + '"><td colspan="10" class="chart-header">' + headerText + '</td></tr>';
       
-      for (let r = 0; r < rows.length; r++) {
+      for (var r = 0; r < rows.length; r++) {
         tableHtml += '<tr data-chart-group="' + c + '"><th scope="row" class="row-label">' + rows[r].label + '</th>';
-        for (let col = 1; col <= 4; col++) {
-          const cellVal = (savedData && savedData.values && savedData.values[c + '_' + col + '_' + rows[r].id] !== undefined) ? escapeHtml(savedData.values[c + '_' + col + '_' + rows[r].id]) : "";
-          const isEda = rows[r].id === 'eda';
-          const titleText = isEda ? "Допустимо: -2, 0, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
-          const inputHtml = '<input type="text" class="score-input" data-chart="' + c + '" data-col="' + col + '" data-row="' + rows[r].id + '" value="' + cellVal + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="' + titleText + '">';
+        for (var col = 1; col <= 4; col++) {
+          var cellVal = (savedData && savedData.values && savedData.values[c + '_' + col + '_' + rows[r].id] !== undefined) ? escapeHtml(savedData.values[c + '_' + col + '_' + rows[r].id]) : "";
+          var isEda = rows[r].id === 'eda';
+          var titleText = isEda ? "Допустимо: -2, 0, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
+          var inputHtml = '<input type="text" class="score-input" data-chart="' + c + '" data-col="' + col + '" data-row="' + rows[r].id + '" value="' + cellVal + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="' + titleText + '">';
           
           if (rows[r].id === 'pneumo-v') {
             tableHtml += '<td>' + inputHtml + '</td><td rowspan="2" class="calc-cell"><span data-calc="pneumo-sum" data-chart="' + c + '" data-col="' + col + '">0</span></td>';
@@ -1508,9 +1533,9 @@
           '<label class="contam-toggle-wrapper" style="display: ' + (typeVal === 'screening' ? 'inline-flex' : 'none') + '; align-items:center; justify-content:flex-end; gap:2px; font-size:9px; margin-top:4px; cursor:pointer; color:#666;">' +
             '<input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 🔒 Контам.' +
           '</label></td>';
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + col + '">-</td>';
+    for (var tc = 1; tc <= 4; tc++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + tc + '">-</td>';
     tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); color:#666;">Сума<br>чарту</td></tr><tr>';
-    for (let col = 1; col <= 4; col++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + col + '">-</span></td>';
+    for (var sc = 1; sc <= 4; sc++) tableHtml += '<td colspan="2" class="calc-cell"><span data-calc="subtotal" data-col="' + sc + '">-</span></td>';
     tableHtml += '</tr><tr><td class="total-label">Grand Total</td>' +
         '<td colspan="6" class="calc-cell" style="font-size: 15px; color: #3a7cfd;"><span data-calc="grand-total">0</span></td>' +
         '<td colspan="3" class="status-cell bg-na" data-calc-cell="grand-status">Немає даних</td></tr></tbody></table></div>' +
@@ -1533,21 +1558,21 @@
 
     wrapper.innerHTML = tableHtml;
 
-    const inputsArray = Array.from(wrapper.querySelectorAll("input.score-input"));
-    const inputsMap = {};
+    var inputsArray = Array.from(wrapper.querySelectorAll("input.score-input"));
+    var inputsMap = {};
     inputsArray.forEach(function(i) { inputsMap[i.getAttribute('data-chart') + '_' + i.getAttribute('data-col') + '_' + i.getAttribute('data-row')] = i; });
 
-    const modalOverlay = wrapper.querySelector(".ess-modal-overlay");
+    var modalOverlay = wrapper.querySelector(".ess-modal-overlay");
     wrapper.querySelector(".ess-questions-btn").addEventListener('click', function() { modalOverlay.classList.add("active"); });
-    const closeModal = function() { modalOverlay.classList.remove("active"); };
+    var closeModal = function() { modalOverlay.classList.remove("active"); };
     wrapper.querySelector(".ess-modal-close").addEventListener('click', closeModal);
     wrapper.querySelector(".ess-modal-cancel").addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeModal(); });
     
     wrapper.querySelector(".ess-modal-save").addEventListener('click', function() {
       wrapper.querySelectorAll(".ess-question-input").forEach(function(inp) {
-        const qKey = inp.getAttribute('data-q');
-        const th = wrapper.querySelector('.ess-th-question[data-th-col="' + qKey.replace('R','') + '"]');
+        var qKey = inp.getAttribute('data-q');
+        var th = wrapper.querySelector('.ess-th-question[data-th-col="' + qKey.replace('R','') + '"]');
         if (th) th.title = escapeHtml(inp.value ? qKey + ": " + inp.value : '');
       });
       closeModal(); markUnsaved();
@@ -1580,21 +1605,21 @@
     wrapper._cachedElements.formatSelect.setAttribute('data-prev-val', formatVal);
     applyFormat(wrapper, formatVal);
 
-    let calcTimeout;
-    const debouncedCalc = function() { clearTimeout(calcTimeout); calcTimeout = setTimeout(function() { calculateTest(wrapper); markUnsaved(); }, 50); };
+    var calcTimeout;
+    var debouncedCalc = function() { clearTimeout(calcTimeout); calcTimeout = setTimeout(function() { calculateTest(wrapper); markUnsaved(); }, 50); };
 
     wrapper._cachedElements.formatSelect.addEventListener('change', function(e) {
-        const newFormat = e.target.value;
-        const prevFormat = e.target.getAttribute('data-prev-val') || "ОБЕРІТЬ ФОРМАТ...";
-        const newConfig = formatConfig[newFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
-        const prevConfig = formatConfig[prevFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+        var newFormat = e.target.value;
+        var prevFormat = e.target.getAttribute('data-prev-val') || "ОБЕРІТЬ ФОРМАТ...";
+        var newConfig = formatConfig[newFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
+        var prevConfig = formatConfig[prevFormat] || formatConfig["ОБЕРІТЬ ФОРМАТ..."];
         
         if (newConfig.cols < prevConfig.cols) {
-            let hasData = false;
-            for (let col = newConfig.cols + 1; col <= prevConfig.cols; col++) {
-                for (let c = 1; c <= 5; c++) {
+            var hasData = false;
+            for (var dc = newConfig.cols + 1; dc <= prevConfig.cols; dc++) {
+                for (var cc = 1; cc <= 5; cc++) {
                     ['pneumo-v', 'pneumo-n', 'eda', 'cardio', 'ppg'].forEach(function(r) {
-                        const inp = wrapper._cachedElements.inputsMap[c + '_' + col + '_' + r];
+                        var inp = wrapper._cachedElements.inputsMap[cc + '_' + dc + '_' + r];
                         if (inp && inp.value.trim() !== '') hasData = true;
                     });
                 }
@@ -1608,7 +1633,7 @@
         }
         
         if (prevConfig.forceDiag && !newConfig.forceDiag) {
-            const scrRadio = wrapper._cachedElements.typeRadios.find(function(r) { return r.value === 'screening'; });
+            var scrRadio = wrapper._cachedElements.typeRadios.find(function(r) { return r.value === 'screening'; });
             if (scrRadio) scrRadio.checked = true;
         }
         
@@ -1642,8 +1667,8 @@
 
     wrapper.addEventListener('input', function(e) {
       if (e.target.tagName === 'INPUT' && e.target.classList.contains('score-input')) {
-        const el = e.target;
-        let val = el.value.trim().toLowerCase();
+        var el = e.target;
+        var val = el.value.trim().toLowerCase();
         
         if (val.startsWith('+')) {
             val = val.slice(1);
@@ -1656,7 +1681,7 @@
             el.value = '∅';
         } else if (val !== '∅' && val !== 'а' && val !== 'a' && val !== 'А') {
             if (val !== "" && val !== "-") {
-              const num = Number(val);
+              var num = Number(val);
               if (isNaN(num)) {
                 el.value = "";
               } else {
@@ -1678,8 +1703,8 @@
           e.preventDefault(); e.target.value = (e.target.getAttribute('data-row') === 'eda') ? "-2" : "-1"; debouncedCalc();
         } else if (e.key === 'Enter') {
           e.preventDefault();
-          const activeInputs = wrapper._cachedElements.inputs.filter(function(i) { return !i.disabled; });
-          const nextInput = activeInputs.slice(activeInputs.indexOf(e.target) + 1).find(function(i) { return i.getAttribute('data-col') === e.target.getAttribute('data-col'); });
+          var activeInputs = wrapper._cachedElements.inputs.filter(function(i) { return !i.disabled; });
+          var nextInput = activeInputs.slice(activeInputs.indexOf(e.target) + 1).find(function(i) { return i.getAttribute('data-col') === e.target.getAttribute('data-col'); });
           if (nextInput) { nextInput.focus(); nextInput.select(); }
         }
       }
@@ -1692,10 +1717,10 @@
 
   addBtnBottom.addEventListener("click", function() { createTestTable(); markUnsaved(); });
 
-  const init = function() {
-    let loadedData = { respondentName: "", examDate: "", tests: [] };
+  var init = function() {
+    var loadedData = { respondentName: "", examDate: "", tests: [] };
     try {
-      const raw = localStorage.getItem("ess_polygraph_data");
+      var raw = localStorage.getItem("ess_polygraph_data");
       if (raw) loadedData = parseStateData(JSON.parse(raw));
     } catch (e) { showError("Помилка завантаження даних."); }
     
@@ -1711,7 +1736,7 @@
     isRestoringHistory = false; recordState();
   };
 
-  let globalResizeTimer;
+  var globalResizeTimer;
   window.addEventListener('resize', function() {
     clearTimeout(globalResizeTimer);
     globalResizeTimer = setTimeout(function() {
