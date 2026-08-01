@@ -281,22 +281,37 @@ td.col-disabled input.score-input { display: none !important; }
    МЕДІА-ЗАПИТИ (ДРУК ТА ЕКСПОРТ В PDF)
    ========================================================================== */
 @media print {
-  @page { margin: 1.5cm; }
-  body { background: #fff; padding: 0; margin: 0; }
+  @page { margin: 1cm; }
   
-  /* Приховуємо шапку (заголовок та логотип), меню, вікно пароля та кнопки */
-  .app-header, .auth-overlay, .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-toast, .ess-modal-overlay { 
+  body, html { 
+    background: #fff; 
+    padding: 0; 
+    margin: 0; 
+    display: block !important; 
+    height: auto !important;
+  }
+  
+  .ess-module-container, #app, #main-app-container {
+    display: block !important;
+  }
+  
+  /* Приховуємо шапку, меню, вікно пароля та кнопки */
+  .app-header, .auth-overlay, .ess-toolbar, .ess-save-status, .ess-add-btn, 
+  .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, 
+  .chart-toggle-label input, .ess-error-toast, .ess-modal-overlay { 
     display: none !important; 
   }
   
-  /* Блок респондента: залишаємо лише на першій сторінці зверху */
+  /* Блок респондента: лише зверху */
   .ess-respondent-area { 
     border: none !important; 
     background: transparent !important; 
     box-shadow: none !important; 
-    padding: 0 0 20px 0 !important; 
-    margin-bottom: 0 !important; 
+    padding: 0 0 10px 0 !important; 
+    margin-bottom: 10px !important; 
+    page-break-after: avoid !important;
   }
+  
   .ess-name-wrapper input[type="text"], .ess-date-input { 
     border: none !important; 
     background: transparent !important; 
@@ -304,31 +319,52 @@ td.col-disabled input.score-input { display: none !important; }
     font-weight: 800 !important; 
   }
   
-  /* КОЖЕН ТЕСТ НА ОКРЕМІЙ СТОРІНЦІ */
+  /* ТЕСТ (Захист від розривів) */
   .ess-test-wrapper { 
     border: none !important; 
     background: transparent !important; 
     box-shadow: none !important; 
-    margin: 0 0 30px 0 !important; 
+    margin: 0 !important; 
     padding: 0 !important; 
-    page-break-inside: avoid; 
-    break-inside: avoid;
-    page-break-after: always; /* Розрив сторінки після кожного тесту */
-    break-after: page;
+    page-break-inside: avoid !important; 
+    break-inside: avoid !important;
   }
   
-  /* Скасовуємо розрив після найостаннішого тесту, щоб не було порожньої сторінки в кінці */
-  .ess-test-wrapper:last-child {
-    page-break-after: auto;
-    break-after: auto;
+  /* РОЗРИВ СТОРІНКИ: кожен тест, починаючи з другого, йде з нової сторінки */
+  .ess-test-wrapper + .ess-test-wrapper {
+    page-break-before: always !important;
+    break-before: page !important;
+    margin-top: 20px !important;
   }
 
   .ess-table-responsive { overflow: visible !important; }
   .ess-table { min-width: 100% !important; width: 100% !important; }
-  .chart-disabled { display: none !important; }
-  .ess-table input.score-input, .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
   
-  .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-no, .bg-artifact, .bg-local-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  /* Стискаємо таблицю, щоб вона гарантовано влізла на 1 сторінку */
+  .ess-table th, .ess-table td {
+    padding: 1px !important;
+    height: 20px !important;
+  }
+
+  .chart-disabled { display: none !important; }
+  .ess-table input.score-input, .ess-test-title-area input[type="text"] { 
+    border: none !important; 
+    background: transparent !important; 
+    color: black !important; 
+    font-weight: bold !important; 
+  }
+  
+  /* Економія місця внизу тесту */
+  .ess-scale-container, .ess-dynamics-container {
+    margin-top: 5px !important;
+    padding: 4px !important;
+  }
+  
+  .ess-table, .ess-scale-container, .ess-dynamics-container, 
+  .bg-sr, .bg-nsr, .bg-inc, .bg-no, .bg-artifact, .bg-local-artifact { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+  }
   
   /* Кольори статусів при друці */
   .bg-sr, .bg-nsr { color: white !important; }
