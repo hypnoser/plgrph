@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.32.0</title>
+  <title>ESS-M Calculator v4.33.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -100,8 +100,9 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    .bg-artifact, .bg-local-artifact { background-color: #d98522 !important; color: #ffffff !important; font-weight: 800; }
-    .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #d98522 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
+    /* Артефакти з приглушеним кольором (виправлено за запитом) */
+    .bg-artifact, .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; }
+    .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
     .ess-table td.bg-local-artifact input.score-input:focus { background-color: rgba(255,255,255,0.2) !important; }
     
@@ -267,30 +268,11 @@
     const styles = styleEl ? styleEl.textContent : "";
     const scriptEl = document.getElementById('main-script');
     const scriptText = scriptEl ? scriptEl.textContent : "";
-    const iconEl = document.querySelector('link[rel="icon"]');
-    const icon = iconEl ? iconEl.href : "";
     
-    const htmlArr = [
-      '<!DOCTYPE html>',
-      '<html lang="uk">',
-      '<head>',
-      '  <meta charset="UTF-8">',
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '  <title>ESS-M Calculator v4.32.0</title>',
-      '  <link rel="icon" href="' + icon + '">',
-      '  <style>' + styles + '</style>',
-      '</head>',
-      '<body>',
-      '  <div class="app-header">',
-      '    <img src="184235.png" alt="PLGRPH" class="app-logo">',
-      '    <h1 class="app-title">ESS-M Calculator</h1>',
-      '  </div>',
-      '  <div id="app"></div>',
-      '  <scr' + 'ipt id="main-script">' + scriptText + '</scr' + 'ipt>',
-      '</body>',
-      '</html>'
-    ];
-    return htmlArr.join('\n');
+    const htmlTop = '<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.33.0</title>\n  <style>' + styles + '</style>\n</head>\n<body>\n  <div class="app-header">\n    <img src="184235.png" alt="PLGRPH" class="app-logo">\n    <h1 class="app-title">ESS-M Calculator</h1>\n  </div>\n  <div id="app"></div>\n  <scr';
+    
+    const htmlBottom = 'ipt id="main-script">' + scriptText + '</scr' + 'ipt>\n</body>\n</html>';
+    return htmlTop + htmlBottom;
   };
 
   const openHelpPage = function() {
@@ -376,7 +358,7 @@
       '      <ul>',
       '        <li><strong>🛡️ Захист від контамінації (Spot Rule):</strong> Працює автоматично у скринінговому режимі. Галочка <b>"🔒 Контам."</b> над статусами гарантує, що якщо хоча б одне релевантне питання отримало статус SR, весь тест не може бути позитивним, і статус <i>NSR</i> блокується, змінюючись на <i>INC</i>.</li>',
       '        <li><strong>📊 Аналізатор динаміки:</strong> Графік внизу таблиці показує фізіологічний тренд респондента. Ви можете вимкнути загальну "Σ Суму", клікнувши на кнопки <b>R1, R2, R3, R4</b>. Це дозволяє ізолювати реакції і побачити графік виключно по одному питанню — ідеальний інструмент для пошуку "Домінанти".</li>',
-      '        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань. Після збереження цей текст буде з'являтися як підказка при наведенні курсору миші на заголовок колонки.</li>',
+      '        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань. Після збереження цей текст буде з\'являтися як підказка при наведенні курсору миші на заголовок колонки.</li>',
       '        <li><strong>🎹 Гарячі клавіші:</strong>',
       '          <ul>',
       '            <li>Щоб ввести від\'ємний бал, просто натисніть клавішу <kbd>-</kbd> (мінус) на клавіатурі, і програма автоматично підставить <b>-1</b> (або <b>-2</b>, якщо це колонка ЕДА).</li>',
@@ -395,10 +377,10 @@
       '      <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>',
       '    </div>',
       '    <div class="footer-center">',
-      '      ESS-M Calculator v4.32.0 &copy; 2026',
+      '      ESS-M Calculator v4.33.0 &copy; 2026',
       '    </div>',
       '    <div class="footer-right">',
-      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.32.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
+      '      <a href="' + htmlDataUrl + '" download="ESS-M_Calculator_v4.33.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>',
       '    </div>',
       '  </div>',
       '</body>',
