@@ -186,12 +186,10 @@ td.col-disabled input.score-input { display: none !important; }
 
 .bg-sr { background-color: #ff0000 !important; color: #ffffff !important; }
 .bg-nsr { background-color: #2e7d32 !important; color: #ffffff !important; }
-/* Вимога: INC та NO - чорним текстом на сірому фоні */
 .bg-inc { background-color: #e0e0e0 !important; color: #000000 !important; }
 .bg-no { background-color: #bdbdbd !important; color: #000000 !important; }
 .bg-na { background-color: transparent !important; color: #888 !important; }
 
-/* Приглушено-помаранчевий для артефактів */
 .bg-artifact, .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; }
 .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
 .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
@@ -268,7 +266,6 @@ td.col-disabled input.score-input { display: none !important; }
   .app-header { flex-direction: column; text-align: center; gap: 12px; }
   .app-title { border-left: none; border-top: 2px solid #ccc; padding-left: 0; padding-top: 12px; }
   
-  /* Жорстка лінія для меню з горизонтальним скролом */
   .ess-toolbar { justify-content: flex-start; gap: 3px; padding: 6px 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .ess-toolbar::-webkit-scrollbar { display: none; }
   .ess-toolbar-btn { flex-shrink: 0; }
@@ -284,18 +281,56 @@ td.col-disabled input.score-input { display: none !important; }
    МЕДІА-ЗАПИТИ (ДРУК ТА ЕКСПОРТ В PDF)
    ========================================================================== */
 @media print {
-  body { background: #fff; padding: 0; }
-  .app-header { margin-bottom: 20px; }
-  .auth-overlay, .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-toast, .ess-modal-overlay { display: none !important; }
-  .ess-respondent-area { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
-  .ess-name-wrapper input[type="text"], .ess-date-input { border: none !important; background: transparent !important; color: black !important; font-weight: 800 !important; }
-  .ess-test-wrapper { border: none !important; background: transparent !important; box-shadow: none !important; margin-bottom: 30px !important; padding: 0 !important; page-break-inside: avoid; }
+  @page { margin: 1.5cm; }
+  body { background: #fff; padding: 0; margin: 0; }
+  
+  /* Приховуємо шапку (заголовок та логотип), меню, вікно пароля та кнопки */
+  .app-header, .auth-overlay, .ess-toolbar, .ess-save-status, .ess-add-btn, .ess-test-top-bar, .contam-toggle-wrapper, .ess-delete-btn, .chart-toggle-label input, .ess-error-toast, .ess-modal-overlay { 
+    display: none !important; 
+  }
+  
+  /* Блок респондента: залишаємо лише на першій сторінці зверху */
+  .ess-respondent-area { 
+    border: none !important; 
+    background: transparent !important; 
+    box-shadow: none !important; 
+    padding: 0 0 20px 0 !important; 
+    margin-bottom: 0 !important; 
+  }
+  .ess-name-wrapper input[type="text"], .ess-date-input { 
+    border: none !important; 
+    background: transparent !important; 
+    color: black !important; 
+    font-weight: 800 !important; 
+  }
+  
+  /* КОЖЕН ТЕСТ НА ОКРЕМІЙ СТОРІНЦІ */
+  .ess-test-wrapper { 
+    border: none !important; 
+    background: transparent !important; 
+    box-shadow: none !important; 
+    margin: 0 0 30px 0 !important; 
+    padding: 0 !important; 
+    page-break-inside: avoid; 
+    break-inside: avoid;
+    page-break-after: always; /* Розрив сторінки після кожного тесту */
+    break-after: page;
+  }
+  
+  /* Скасовуємо розрив після найостаннішого тесту, щоб не було порожньої сторінки в кінці */
+  .ess-test-wrapper:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
   .ess-table-responsive { overflow: visible !important; }
   .ess-table { min-width: 100% !important; width: 100% !important; }
   .chart-disabled { display: none !important; }
   .ess-table input.score-input, .ess-test-title-area input[type="text"] { border: none !important; background: transparent !important; color: black !important; font-weight: bold !important; }
   
   .ess-table, .ess-scale-container, .ess-dynamics-container, .bg-sr, .bg-nsr, .bg-inc, .bg-no, .bg-artifact, .bg-local-artifact { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  
+  /* Кольори статусів при друці */
   .bg-sr, .bg-nsr { color: white !important; }
   .bg-no, .bg-inc { color: black !important; }
   .bg-sr .prob-text, .bg-nsr .prob-text, .bg-no .prob-text { color: inherit !important; }
