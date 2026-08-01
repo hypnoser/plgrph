@@ -1,1 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Посібник: ESS-M Calculator v5.0</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Стилі ізольовані для ідеального відображення як документа */
+    :root {
+      --primary: #3a7cfd;
+      --success: #2e7d32;
+      --danger: #d32f2f;
+      --warning: #f57c00;
+      --bg: #f5f7fa;
+      --text: #2c3e50;
+      --text-muted: #5c6c7c;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text); background-color: var(--bg); margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .paper { background: var(--surface); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 40px; }
+    
+    header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 30px; }
+    header img { height: 60px; mix-blend-mode: multiply; }
+    header h1 { margin: 0; font-size: 28px; font-weight: 800; color: var(--text); border-left: 3px solid var(--border); padding-left: 20px; }
+    
+    h2 { color: var(--success); font-size: 22px; margin-top: 40px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    h3 { color: var(--primary); font-size: 18px; margin-top: 25px; }
+    p, li { font-size: 15px; color: #444; }
+    ul, ol { padding-left: 24px; margin-bottom: 20px; }
+    li { margin-bottom: 10px; }
+    
+    .security-box { background: #fff5f5; border-left: 5px solid var(--danger); padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 10px rgba(211,47,47,0.05); }
+    .security-box strong { color: var(--danger); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .highlight-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; }
+    .highlight-card h3 { margin-top: 0; }
+    
+    kbd { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; font-size: 13px; font-family: monospace; color: var(--text); box-shadow: 0 2px 0 #cbd5e1; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--primary); font-weight: bold; }
+    
+    .footer { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px; }
+    
+    @media (max-width: 600px) {
+      .container { margin: 15px auto; }
+      .paper { padding: 20px; }
+      header { flex-direction: column; text-align: center; }
+      header h1 { border-left: none; border-top: 3px solid var(--border); padding-left: 0; padding-top: 15px; }
+    }
+  </style>
+</head>
+<body>
 
+<div class="container">
+  <div class="paper">
+    <header>
+      <img src="images/logo.png" alt="PLGRPH Logo">
+      <div>
+        <h1>Розширений посібник</h1>
+        <div style="color: var(--text-muted); padding-left: 20px; font-weight: 500;">ESS-M Calculator v5.0</div>
+      </div>
+    </header>
+
+    <p><strong>ESS-M Calculator</strong> — це спеціалізований інструмент поліграфолога, розроблений для математично точного підрахунку балів за системою Empirical Scoring System - Multinomial. Програма автоматизує рутину, гарантує повну відповідність стандартам APA (American Polygraph Association) та нівелює людський фактор при складанні звітів.</p>
+
+    <div class="security-box">
+      <strong>🛡️ КРИТИЧНО: Приватність та Безпека даних</strong>
+      <p>Цей додаток створено за принципом <b>Zero-Knowledge Architecture</b> (Нульове розголошення):</p>
+      <ul>
+        <li><strong>Автономність:</strong> Програма не має серверів і не передає дані в Інтернет. Усі підрахунки відбуваються локально на вашому пристрої.</li>
+        <li><strong>Вразливість кешу:</strong> Дані автоматично зберігаються лише в тимчасовий кеш браузера (localStorage). <b>Якщо ви очистите історію браузера або закриєте вкладку в режимі "Інкогніто", всі поточні тести безповоротно зникнуть.</b></li>
+        <li><strong>Єдиний захист:</strong> Використовуйте кнопку <code>📥</code> (Завантажити JSON), щоб створити зашифрований файл-бекап на вашому ПК. Для відновлення роботи просто перетягніть цей файл у вікно калькулятора.</li>
+        <li><strong>Пароль:</strong> Для входу у програму завжди використовується майстер-пароль: <kbd>plgrph</kbd>.</li>
+      </ul>
+    </div>
+
+    <h2>🎯 Для кого цей інструмент?</h2>
+    <p>Калькулятор розроблений для практикуючих поліграфологів, які використовують методику багатономіального емпіричного оцінювання (ESS-M) у:</p>
+    <ul>
+      <li>Багатотемних скринінгових перевірках (AFMGQT, LEPET).</li>
+      <li>Однотемних діагностичних розслідуваннях (ZCT, DLDT, Federal).</li>
+    </ul>
+
+    <h2>🛠️ Ключові методологічні функції</h2>
+    
+    <div class="highlight-card">
+      <h3>1. Сувора валідація даних</h3>
+      <p>Калькулятор не дозволить вам зробити помилку в цифрах. Спроба ввести текст або недопустимий бал буде заблокована. <b>Увага до ЕДА:</b> Згідно зі стандартами ESS, канал електродермальної активності оцінюється лише у <code>-2</code>, <code>0</code> або <code>2</code> бали (правило 2:1). Введення 1 або -1 для ЕДА автоматично ігнорується.</p>
+    </div>
+
+    <div class="highlight-card">
+      <h3>2. Розумне дихання та Фізіологічний конфлікт</h3>
+      <p>Програма аналізує верхнє та нижнє дихання в комплексі:</p>
+      <ul>
+        <li>Якщо обидва канали порожні — це <b>Артефакт</b> (втрата даних <code>∅</code>).</li>
+        <li>Якщо на верхньому диханні бал <code>+1</code>, а на нижньому <code>-1</code> — сума дорівнює нулю, але калькулятор розпізнає це як <b>Фізіологічний конфлікт</b> і маркує його золотим трикутником <code style="color:#f57c00">⚠</code>.</li>
+      </ul>
+    </div>
+
+    <div class="highlight-card">
+      <h3>3. Диференційна вага артефактів (Rule of 25%)</h3>
+      <p>Втрата каналу ЕДА (через артефакт) штрафується у 2 бали надійності, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик), цьому питанню автоматично присвоюється статус <b>NO (No Opinion)</b>.</p>
+    </div>
+
+    <div class="highlight-card">
+      <h3>4. Автоматична контамінація (Spot Rule)</h3>
+      <p>У скринінгових тестах галочка "🔒 Контам." гарантує виконання жорсткого правила: якщо хоча б одне питання в тесті отримало статус <b>SR (Значуща реакція)</b>, загальний статус <i>NSR</i> блокується, і всі інші позитивні питання отримують статус <i>INC</i>.</p>
+    </div>
+
+    <h2>📖 Покроковий алгоритм роботи</h2>
+    <ol>
+      <li><strong>Вхід:</strong> Запустіть файл <code>index.html</code> та введіть пароль <kbd>plgrph</kbd>.</li>
+      <li><strong>Ініціалізація:</strong> Введіть П.І.Б. респондента та виберіть дату. Ці дані сформують назву ваших файлів експорту (напр., <code>ess-Ivanov_I-2026-08-01.md</code>).</li>
+      <li><strong>Створення тесту:</strong> Натисніть "Додати обрахунок". Обов'язково <b>оберіть формат тесту</b> (DLST, AFMGQT тощо) у лівому верхньому куті, щоб розблокувати потрібну кількість колонок.</li>
+      <li><strong>Внесення даних:</strong> Переносьте бали з поліграми. 
+        <br><i>Лайфхак:</i> Натисніть клавішу <kbd>-</kbd> (мінус), щоб миттєво ввести від'ємне значення. Клавіша <kbd>Enter</kbd> перекидає курсор на клітинку нижче.</li>
+      <li><strong>Артефакти:</strong> Якщо ділянка нечитабельна, введіть літеру <kbd>А</kbd> або два нулі <kbd>00</kbd>. Клітинка стане оранжевою, позначаючи втрату даних.</li>
+      <li><strong>Редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> і впишіть реальну семантику (текст запитань).</li>
+    </ol>
+
+    <h2>📊 Експорт та Звітність</h2>
+    <p>Забудьте про копіювання таблиць у Word. У верхній панелі є потужні інструменти експорту:</p>
+    <ul>
+      <li><kbd>📥</kbd> <b>Експорт JSON:</b> Завантажує "сирий" файл бази даних. Використовуйте його, щоб зберегти прогрес або передати файл колезі (який відкриє його через кнопку "📂 Відкрити").</li>
+      <li><kbd>📝</kbd> <b>Експорт Markdown (.md):</b> Ідеальний текстовий звіт для ваших архівів (Zettelkasten, Obsidian, Notion). Генерує готовий документ з таблицями, метаданими, кольоровим маркуванням статусів (NSR - зелений, SR - червоний) та автоматичним висновком по всім створеним тестам.</li>
+      <li><kbd>🖨️</kbd> <b>Друк / PDF:</b> Форматує сторінку під офіційний бланк формату А4.</li>
+    </ul>
+
+    <div class="footer">
+      <p>ESS-M Calculator v5.0 | Розроблено для професійних поліграфологів<br>
+      <a href="https://plgrph.pp.ua" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: bold;">plgrph.pp.ua</a></p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
