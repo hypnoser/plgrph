@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Посібник: ESS-M Calculator v5.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
+  
+  <!-- Підключаємо бібліотеку JSZip для створення архівів на льоту -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <style>
     /* Стилі ізольовані для ідеального відображення як документа */
     :root {
@@ -45,7 +49,6 @@
     kbd { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; font-size: 13px; font-family: monospace; color: var(--text); box-shadow: 0 2px 0 #cbd5e1; }
     code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--primary); font-weight: bold; }
     
-    /* Оновлений підвал з кнопкою */
     .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
     .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
     .footer-left { text-align: left; }
@@ -54,7 +57,8 @@
     .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 16px; letter-spacing: 0.5px; transition: color 0.2s; }
     .help-footer a.plgrph-link:hover { color: var(--primary); }
     
-    .dl-btn { display: inline-block; background: var(--primary); color: #fff !important; padding: 12px 24px; border-radius: 6px; text-decoration: none !important; font-weight: bold; font-size: 14px; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    /* Оновлена кнопка завантаження */
+    .dl-btn { display: inline-block; background: var(--primary); color: #fff !important; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: inherit; }
     .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
     .dl-btn:active { transform: translateY(1px); }
     
@@ -148,7 +152,7 @@
 
       <div class="offline-box">
         <strong>⚡ Абсолютна автономність (Офлайн версія)</strong>
-        <p>Оскільки калькулятор має модульну архітектуру, для повноцінної роботи без Інтернету вам потрібна вся папка з файлами. Натисніть на синю кнопку внизу сторінки, щоб завантажити <b>ZIP-архів</b>. Розпакуйте його на своєму комп'ютері (наприклад, на Робочий стіл) та просто відкрийте файл <code>index.html</code>. Калькулятор готовий до роботи офлайн!</p>
+        <p>Калькулятор має повністю модульну архітектуру. Ви можете завантажити його до себе на комп'ютер, розпакувати архів і працювати взагалі без підключення до мережі Інтернет. Для цього натисніть кнопку "Завантажити калькулятор" внизу сторінки.</p>
       </div>
 
     </div>
@@ -163,10 +167,71 @@
     ESS-M Calculator v5.0 &copy; 2026
   </div>
   <div class="footer-right">
-    <!-- Кнопка завантаження архіву. Посилання має вести на реальний архів calc.zip -->
-    <a href="calc.zip" download class="dl-btn">⬇ Завантажити калькулятор (.zip)</a>
+    <button id="dynamic-download-btn" class="dl-btn">⬇ Завантажити калькулятор (.zip)</button>
   </div>
 </footer>
+
+<!-- Скрипт генерації ZIP архіву -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dlBtn = document.getElementById('dynamic-download-btn');
+    
+    if (dlBtn) {
+      dlBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        // Змінюємо статус кнопки
+        const originalText = dlBtn.textContent;
+        dlBtn.textContent = "⏳ Збираємо архів...";
+        dlBtn.style.opacity = "0.7";
+        dlBtn.style.pointerEvents = "none";
+        
+        try {
+          const zip = new JSZip();
+          
+          // Текстові файли для завантаження
+          const filesToFetch = ['index.html', 'style.css', 'script.js', 'info.html'];
+          
+          for (const file of filesToFetch) {
+            const response = await fetch(file);
+            if (!response.ok) throw new Error("Файл не знайдено: " + file);
+            const text = await response.text();
+            zip.file(file, text); // Додаємо чистий файл з сервера в архів
+          }
+          
+          // Завантажуємо зображення
+          const imgFolder = zip.folder("images");
+          const imgResponse = await fetch('images/logo.png');
+          if (imgResponse.ok) {
+            const imgBlob = await imgResponse.blob();
+            imgFolder.file('logo.png', imgBlob);
+          }
+          
+          // Генеруємо ZIP-архів
+          const content = await zip.generateAsync({type:"blob"});
+          
+          // Створюємо посилання та запускаємо завантаження
+          const url = URL.createObjectURL(content);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "ESS-M_Calculator_v5.0.zip";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+        } catch (error) {
+          alert("Помилка формування архіву.\n\nЦя функція працює автоматично лише тоді, коли калькулятор розміщено на веб-сервері (в Інтернеті). Якщо ви відкрили файл локально, ця дія недоступна.");
+        } finally {
+          // Повертаємо кнопці початковий вигляд
+          dlBtn.textContent = originalText;
+          dlBtn.style.opacity = "1";
+          dlBtn.style.pointerEvents = "auto";
+        }
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
