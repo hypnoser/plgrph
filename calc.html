@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.28.0</title>
+  <title>ESS-M Calculator v4.29.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -204,73 +204,73 @@
     <h1 class="app-title">ESS-M Calculator</h1>
   </div>
   <div id="app"></div>
-  <script id="main-script">
-    const appRoot = document.getElementById("app");
-    const container = document.createElement("div");
-    container.className = "ess-module-container";
-    appRoot.appendChild(container);
+<script id="main-script">
+  const appRoot = document.getElementById("app");
+  const container = document.createElement("div");
+  container.className = "ess-module-container";
+  appRoot.appendChild(container);
+  
+  let isUnsaved = false;
+
+  const TEST_FORMATS = [
+    "ОБЕРІТЬ ФОРМАТ...",
+    "DLST",
+    "DLDT",
+    "LEPET",
+    "AFMGQT (2RQ)",
+    "AFMGQT (3RQ)",
+    "AFMGQT (4RQ)",
+    "BOST",
+    "FEDERAL (BI-ZONE)",
+    "FEDERAL ZCT",
+    "UTAH ZCT",
+    "UTAH MGQT"
+  ];
+  
+  const formatConfig = {
+      "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
+      "DLST": { cols: 2, forceDiag: false },
+      "DLDT": { cols: 2, forceDiag: true },
+      "LEPET": { cols: 3, forceDiag: false },
+      "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
+      "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
+      "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
+      "BOST": { cols: 2, forceDiag: true },
+      "FEDERAL (BI-ZONE)": { cols: 2, forceDiag: true },
+      "FEDERAL ZCT": { cols: 3, forceDiag: true },
+      "UTAH ZCT": { cols: 3, forceDiag: true },
+      "UTAH MGQT": { cols: 4, forceDiag: true }
+  };
+
+  const escapeHtml = (str) => {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  };
+
+  const showError = (msg) => {
+    const errDiv = document.createElement("div");
+    errDiv.className = "ess-error-toast";
+    errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
+    document.body.appendChild(errDiv);
+    setTimeout(() => {
+        errDiv.style.opacity = "0";
+        errDiv.style.transform = "translate(-50%, 20px)";
+        setTimeout(() => errDiv.remove(), 300);
+    }, 5000);
+  };
+
+  const getCleanHtml = () => {
+    const styleEl = document.querySelector('style');
+    const styles = styleEl ? styleEl.textContent : "";
+    const scriptEl = document.getElementById('main-script');
+    const scriptText = scriptEl ? scriptEl.textContent : "";
     
-    let isUnsaved = false;
-
-    const TEST_FORMATS = [
-      "ОБЕРІТЬ ФОРМАТ...",
-      "DLST",
-      "DLDT",
-      "LEPET",
-      "AFMGQT (2RQ)",
-      "AFMGQT (3RQ)",
-      "AFMGQT (4RQ)",
-      "BOST",
-      "FEDERAL (BI-ZONE)",
-      "FEDERAL ZCT",
-      "UTAH ZCT",
-      "UTAH MGQT"
-    ];
-    
-    const formatConfig = {
-        "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
-        "DLST": { cols: 2, forceDiag: false },
-        "DLDT": { cols: 2, forceDiag: true },
-        "LEPET": { cols: 3, forceDiag: false },
-        "AFMGQT (2RQ)": { cols: 2, forceDiag: false },
-        "AFMGQT (3RQ)": { cols: 3, forceDiag: false },
-        "AFMGQT (4RQ)": { cols: 4, forceDiag: false },
-        "BOST": { cols: 2, forceDiag: true },
-        "FEDERAL (BI-ZONE)": { cols: 2, forceDiag: true },
-        "FEDERAL ZCT": { cols: 3, forceDiag: true },
-        "UTAH ZCT": { cols: 3, forceDiag: true },
-        "UTAH MGQT": { cols: 4, forceDiag: true }
-    };
-
-    const escapeHtml = (str) => {
-      if (str === null || str === undefined) return "";
-      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    };
-
-    const showError = (msg) => {
-      const errDiv = document.createElement("div");
-      errDiv.className = "ess-error-toast";
-      errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
-      document.body.appendChild(errDiv);
-      setTimeout(() => {
-          errDiv.style.opacity = "0";
-          errDiv.style.transform = "translate(-50%, 20px)";
-          setTimeout(() => errDiv.remove(), 300);
-      }, 5000);
-    };
-
-    const getCleanHtml = () => {
-      const styleEl = document.querySelector('style');
-      const styles = styleEl ? styleEl.innerHTML : "";
-      const scriptEl = document.getElementById('main-script');
-      const scriptText = scriptEl ? scriptEl.innerHTML : "";
-      
-      const htmlTop = `<!DOCTYPE html>
+    const htmlTop = `<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.28.0</title>
+  <title>ESS-M Calculator v4.29.0</title>
   <style>${styles}</style>
 </head>
 <body>
@@ -280,25 +280,25 @@
   </div>
   <div id="app"></div>
   <scr`;
-      
-      const htmlBottom = `ipt id="main-script">${scriptText}</scr` + `ipt>
+    
+    const htmlBottom = `ipt id="main-script">${scriptText}</scr` + `ipt>
 </body>
 </html>`;
-      return htmlTop + htmlBottom;
-    };
+    return htmlTop + htmlBottom;
+  };
 
-    const openHelpPage = () => {
-      const helpWin = window.open("", "_blank");
-      if (!helpWin) {
-          showError("Браузер заблокував відкриття довідки. Будь ласка, дозвольте спливаючі вікна.");
-          return;
-      }
+  const openHelpPage = () => {
+    const helpWin = window.open("", "_blank");
+    if (!helpWin) {
+        showError("Браузер заблокував відкриття довідки. Будь ласка, дозвольте спливаючі вікна.");
+        return;
+    }
 
-      const cleanHtml = getCleanHtml();
-      const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
-      const htmlDataUrl = URL.createObjectURL(blobHtml);
+    const cleanHtml = getCleanHtml();
+    const blobHtml = new Blob([cleanHtml], { type: "text/html;charset=utf-8" });
+    const htmlDataUrl = URL.createObjectURL(blobHtml);
 
-      const helpContent = `<!DOCTYPE html>
+    const helpContent = `<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -364,9 +364,10 @@
       <div class="highlight-box">
         <h2>🛠️ Головні можливості та Механіки</h2>
         <ul>
-          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру (наприклад, <code>3</code> або текст) буде автоматично заблокована і перетворена на артефакт (втрату даних).</li>
+          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру (наприклад, <code>3</code> або текст) буде автоматично заблокована і перетворена на артефакт.</li>
+          <li><strong>Суворий розрахунок ЕДА:</strong> Згідно з правилами ESS, канал ЕДА не може бути оцінений в 1 бал. Калькулятор жорстко приймає виключно <code>-2</code>, <code>0</code> або <code>2</code> бали (на відміну від пневмо і кардіо, де використовуються 1, 0, -1).</li>
           <li><strong>Диференційна вага артефактів (Per-spot):</strong> Увага до якості каналів! Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик ЕДА), калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>
-          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту" (коли ви не ввели нічого, або ввели символ артефакту). Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором.</li>
+          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором.</li>
         </ul>
       </div>
 
@@ -405,10 +406,10 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.28.0 &copy; 2026
+      ESS-M Calculator v4.29.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.28.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.29.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
@@ -1082,7 +1083,7 @@
         const num = parseFloat(val);
         if (isNaN(num)) return { val: 0, art: true, empty: false, raw: val };
         
-        if (row === 'eda' && Math.abs(num) > 2) return { val: 0, art: true, empty: false, raw: val };
+        if (row === 'eda' && ![-2, 0, 2].includes(num)) return { val: 0, art: true, empty: false, raw: val };
         if (row !== 'eda' && Math.abs(num) > 1) return { val: 0, art: true, empty: false, raw: val };
         
         return { val: num, art: false, empty: false, raw: val };
@@ -1346,7 +1347,7 @@
           for (let col = 1; col <= 4; col++) {
             const cellVal = savedData?.values?.[`${c}_${col}_${rows[r].id}`] !== undefined ? escapeHtml(savedData.values[`${c}_${col}_${rows[r].id}`]) : "";
             const isEda = rows[r].id === 'eda';
-            const titleText = isEda ? "Допустимо: -2, -1, 0, 1, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
+            const titleText = isEda ? "Допустимо: -2, 0, 2. Клавіша '-' для швидкого вводу." : "Допустимо: -1, 0, 1. Клавіша '-' для швидкого вводу.";
             const inputHtml = `<input type="text" class="score-input" data-chart="${c}" data-col="${col}" data-row="${rows[r].id}" value="${cellVal}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="${titleText}">`;
             
             if (rows[r].id === 'pneumo-v') {
@@ -1548,7 +1549,7 @@
                 if (isNaN(num)) {
                   el.value = "";
                 } else {
-                  if (el.getAttribute('data-row') === 'eda' && ![-2, -1, 0, 1, 2].includes(num)) el.value = "";
+                  if (el.getAttribute('data-row') === 'eda' && ![-2, 0, 2].includes(num)) el.value = "";
                   else if (el.getAttribute('data-row') !== 'eda' && ![-1, 0, 1].includes(num)) el.value = "";
                   else el.value = val;
                 }
