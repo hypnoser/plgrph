@@ -1,34 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   
   // ==========================================
-  // 1. АВТОРИЗАЦІЯ ТА ПАРОЛЬ
-  // ==========================================
-  var authOverlay = document.getElementById('auth-overlay');
-  var mainAppContainer = document.getElementById('main-app-container');
-  var passInput = document.getElementById('auth-password');
-  var authBtn = document.getElementById('auth-submit-btn');
-  var authError = document.getElementById('auth-error');
-
-  var unlockApp = function() {
-    if (passInput.value === 'plgrph') {
-      authOverlay.style.display = 'none';
-      mainAppContainer.style.display = 'block';
-      initApp(); // Запускаємо програму лише після пароля
-    } else {
-      authError.style.display = 'block';
-      var modal = authOverlay.querySelector('.auth-modal');
-      modal.style.animation = 'none';
-      setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
-    }
-  };
-
-  authBtn.addEventListener('click', unlockApp);
-  passInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') unlockApp();
-  });
-
-  // ==========================================
-  // 2. ОСНОВНА ЛОГІКА КАЛЬКУЛЯТОРА
+  // ОГОЛОШЕННЯ БАЗОВИХ ЗМІННИХ ТА UI ЕЛЕМЕНТІВ
   // ==========================================
   
   var appRoot = document.getElementById("app");
@@ -79,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 5000);
   };
 
-  // Відкриття довідкової сторінки (тепер це окремий файл)
   var openHelpPage = function() {
     window.open("info.html", "_blank");
   };
@@ -145,7 +117,11 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     });
 
-    return { respondentName: respondentInput.value, examDate: dateInput.value, tests: tests };
+    return { 
+      respondentName: respondentInput.value, 
+      examDate: dateInput.value, 
+      tests: tests 
+    };
   };
 
   var recordState = function() {
@@ -156,8 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     stateHistory = stateHistory.slice(0, historyIndex + 1);
     stateHistory.push(state);
-    if (stateHistory.length > 50) stateHistory.shift();
-    else historyIndex++;
+    
+    if (stateHistory.length > 50) {
+      stateHistory.shift();
+    } else {
+      historyIndex++;
+    }
     
     updateUndoRedoButtons();
   };
@@ -374,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
       URL.revokeObjectURL(url);
   };
 
-  // Створення тулбару
   var toolbar = document.createElement("div");
   toolbar.className = "ess-toolbar";
 
@@ -382,8 +361,17 @@ document.addEventListener('DOMContentLoaded', function() {
   var sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
   var btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
   
-  var fileInput = document.getElementById("file-import"); // Беремо з HTML
-  btnOpen.onclick = function() { fileInput.click(); };
+  var fileInput = document.getElementById("file-import");
+  if(fileInput) {
+      btnOpen.onclick = function() { fileInput.click(); };
+  } else {
+      fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = ".json";
+      fileInput.style.display = "none";
+      toolbar.appendChild(fileInput);
+      btnOpen.onclick = function() { fileInput.click(); };
+  }
 
   var btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити JSON"); btnSaveJson.onclick = function() { saveToFile(); };
   var sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
@@ -497,10 +485,12 @@ document.addEventListener('DOMContentLoaded', function() {
     reader.readAsText(file);
   };
 
-  fileInput.addEventListener("change", function(e) { 
-    if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
-    e.target.value = ""; 
-  });
+  if(fileInput) {
+    fileInput.addEventListener("change", function(e) { 
+      if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
+      e.target.value = ""; 
+    });
+  }
 
   window.addEventListener('dragover', function(e) { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
   window.addEventListener('dragleave', function(e) { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
@@ -1427,14 +1417,47 @@ document.addEventListener('DOMContentLoaded', function() {
     isRestoringHistory = false; recordState();
   };
 
-  var globalResizeTimer;
-  window.addEventListener('resize', function() {
-    clearTimeout(globalResizeTimer);
-    globalResizeTimer = setTimeout(function() {
-      document.querySelectorAll('.ess-test-wrapper').forEach(function(wrapper) {
-         if(wrapper._cachedElements) calculateTest(wrapper);
-      });
-    }, 150);
-  });
+  // ==========================================
+  // 1. АВТОРИЗАЦІЯ ТА ПАРОЛЬ (ВИКЛИК В КІНЦІ)
+  // ==========================================
+  var authOverlay = document.getElementById('auth-overlay');
+  var mainAppContainer = document.getElementById('main-app-container');
+  var passInput = document.getElementById('auth-password');
+  var authBtn = document.getElementById('auth-submit-btn');
+  var authError = document.getElementById('auth-error');
+
+  var isAuthorized = false;
+  try {
+    isAuthorized = localStorage.getItem('ess_auth_passed') === 'true';
+  } catch(e) {}
+
+  var unlockApp = function(saveToLocal) {
+    authOverlay.style.display = 'none';
+    mainAppContainer.style.display = 'block';
+    if (saveToLocal) {
+      try { localStorage.setItem('ess_auth_passed', 'true'); } catch(e) {}
+    }
+    initApp();
+  };
+
+  if (isAuthorized) {
+    unlockApp(false);
+  } else {
+    var checkPassword = function() {
+      if (passInput.value === 'plgrph') {
+        unlockApp(true);
+      } else {
+        authError.style.display = 'block';
+        var modal = authOverlay.querySelector('.auth-modal');
+        modal.style.animation = 'none';
+        setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
+      }
+    };
+
+    authBtn.addEventListener('click', checkPassword);
+    passInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  }
 
 });
