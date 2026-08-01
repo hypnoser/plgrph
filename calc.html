@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.29.0</title>
+  <title>ESS-M Calculator v4.30.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -78,6 +78,7 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
+    /* Відключені (заблоковані форматом) колонки */
     .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
     th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
     td.col-disabled input.score-input { display: none !important; }
@@ -100,8 +101,9 @@
     .bg-no { background-color: #757575 !important; color: #ffffff !important; }
     .bg-na { background-color: transparent !important; color: #888 !important; }
     
-    .bg-artifact, .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; }
-    .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #f57c00 !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
+    /* Артефакти з приглушеним кольором */
+    .bg-artifact, .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; }
+    .chart-disabled .bg-artifact, .chart-disabled .bg-local-artifact { background-color: #d8832b !important; color: #ffffff !important; font-weight: 800; opacity: 0.6; }
     .ess-table td.bg-local-artifact input.score-input { color: #ffffff !important; font-weight: 800; }
     .ess-table td.bg-local-artifact input.score-input:focus { background-color: rgba(255,255,255,0.2) !important; }
     
@@ -270,7 +272,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.29.0</title>
+  <title>ESS-M Calculator v4.30.0</title>
   <style>${styles}</style>
 </head>
 <body>
@@ -367,7 +369,7 @@
           <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру (наприклад, <code>3</code> або текст) буде автоматично заблокована і перетворена на артефакт.</li>
           <li><strong>Суворий розрахунок ЕДА:</strong> Згідно з правилами ESS, канал ЕДА не може бути оцінений в 1 бал. Калькулятор жорстко приймає виключно <code>-2</code>, <code>0</code> або <code>2</code> бали (на відміну від пневмо і кардіо, де використовуються 1, 0, -1).</li>
           <li><strong>Диференційна вага артефактів (Per-spot):</strong> Увага до якості каналів! Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик ЕДА), калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>
-          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором.</li>
+          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором. Фізіологічний конфлікт маркується золотим трикутником із знаком оклику.</li>
         </ul>
       </div>
 
@@ -406,10 +408,10 @@
       <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
     </div>
     <div class="footer-center">
-      ESS-M Calculator v4.29.0 &copy; 2026
+      ESS-M Calculator v4.30.0 &copy; 2026
     </div>
     <div class="footer-right">
-      <a href="${htmlDataUrl}" download="ESS-M_Calculator_v4.29.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
+      <a href="\${htmlDataUrl}" download="ESS-M_Calculator_v4.30.0.html" class="dl-btn">⬇ Завантажити програму (.html)</a>
     </div>
   </div>
 </body>
@@ -1129,7 +1131,7 @@
                 spanPneumo.textContent = pneumo.val + " ⚠";
                 spanPneumo.parentElement.classList.add("bg-local-artifact");
             } else if (pneumo.conflict) {
-                spanPneumo.textContent = "0 ⚠";
+                spanPneumo.innerHTML = '0 <span style="color:#e8a817; font-size:15px; font-weight:bold;" title="Фізіологічний конфлікт">&#9888;&#xFE0E;</span>';
             } else {
                 spanPneumo.textContent = pneumo.val;
             }
