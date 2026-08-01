@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.30.0</title>
+  <title>ESS-M Calculator v4.31.0</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
   <style>
     * { box-sizing: border-box; }
@@ -15,15 +15,15 @@
 
     .ess-module-container { max-width: 880px; margin: 0 auto; flex: 1; width: 100%; padding-bottom: 20px; }
     
-    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-    .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; }
+    .ess-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; margin-bottom: 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .ess-toolbar-btn { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; padding: 0; transition: all 0.2s ease; color: #555; position: relative; flex-shrink: 0; }
     .ess-toolbar-btn:hover:not(:disabled) { background: rgba(58,124,253,0.1); border-color: rgba(58,124,253,0.25); color: #3a7cfd; }
     .ess-toolbar-btn.danger-btn:hover:not(:disabled) { background: rgba(255,0,0,0.1); border-color: rgba(255,0,0,0.25); color: #ff0000; }
     .ess-toolbar-btn:active:not(:disabled) { transform: scale(0.92); }
     .ess-toolbar-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .ess-toolbar-sep { width: 1px; height: 22px; background: #ddd; margin: 0 4px; }
+    .ess-toolbar-sep { width: 1px; height: 22px; background: #ddd; margin: 0 4px; flex-shrink: 0; }
     
-    .ess-save-status { width: auto; margin-left: auto; padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 5px; text-align: center; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; white-space: nowrap; }
+    .ess-save-status { width: auto; margin-left: auto; padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 5px; text-align: center; background-color: #2e7d32; color: #fff; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); user-select: none; pointer-events: none; white-space: nowrap; flex-shrink: 0; }
     .ess-save-status.unsaved { background-color: #f57c00; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
     
@@ -78,7 +78,6 @@
     .chart-disabled td { color: #999 !important; border-color: rgba(128,128,128,0.3) !important; }
     .chart-disabled input.score-input { color: transparent !important; }
     
-    /* Відключені (заблоковані форматом) колонки */
     .col-disabled { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #ededed 4px, #ededed 8px) !important; color: transparent !important; pointer-events: none; }
     th.col-disabled { color: #aaa !important; background: repeating-linear-gradient(45deg, #d5d5d5, #d5d5d5 4px, #e3e3e3 4px, #e3e3e3 8px) !important; }
     td.col-disabled input.score-input { display: none !important; }
@@ -166,10 +165,11 @@
     @media (max-width: 650px) {
       .app-header { flex-direction: column; text-align: center; gap: 12px; }
       .app-title { border-left: none; border-top: 2px solid #ccc; padding-left: 0; padding-top: 12px; }
-      .ess-toolbar { justify-content: center; gap: 3px; padding: 6px 4px; }
-      .ess-toolbar-btn { width: 30px; height: 30px; font-size: 16px; }
-      .ess-toolbar-sep { margin: 0 2px; }
-      .ess-save-status { margin: 4px auto 0 auto; width: 100%; }
+      .ess-toolbar { justify-content: flex-start; gap: 3px; padding: 6px 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .ess-toolbar::-webkit-scrollbar { display: none; }
+      .ess-toolbar-btn { width: 30px; height: 30px; font-size: 16px; flex-shrink: 0; }
+      .ess-toolbar-sep { margin: 0 2px; flex-shrink: 0; }
+      .ess-save-status { margin: auto 0 auto auto; }
       .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
       .ess-delete-btn { align-self: flex-end; margin-top: -26px; }
       .dyn-mode-toggle { justify-content: center; width: 100%; }
@@ -267,25 +267,9 @@
     const scriptEl = document.getElementById('main-script');
     const scriptText = scriptEl ? scriptEl.textContent : "";
     
-    const htmlTop = `<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESS-M Calculator v4.30.0</title>
-  <style>${styles}</style>
-</head>
-<body>
-  <div class="app-header">
-    <img src="184235.png" alt="PLGRPH" class="app-logo">
-    <h1 class="app-title">ESS-M Calculator</h1>
-  </div>
-  <div id="app"></div>
-  <scr`;
+    const htmlTop = `<!DOCTYPE html>\n<html lang="uk">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>ESS-M Calculator v4.30.0</title>\n  <style>${styles}</style>\n</head>\n<body>\n  <div class="app-header">\n    <img src="184235.png" alt="PLGRPH" class="app-logo">\n    <h1 class="app-title">ESS-M Calculator</h1>\n  </div>\n  <div id="app"></div>\n  <scr`;
     
-    const htmlBottom = `ipt id="main-script">${scriptText}</scr` + `ipt>
-</body>
-</html>`;
+    const htmlBottom = `ipt id="main-script">${scriptText}</scr` + `ipt>\n</body>\n</html>`;
     return htmlTop + htmlBottom;
   };
 
@@ -360,25 +344,26 @@
           <li><strong>Жодних серверів:</strong> Програма працює <b>виключно у вашому браузері</b>. Дані ваших респондентів, їхні імена та бали <b>НІКОЛИ</b> не передаються в Інтернет.</li>
           <li><strong>Небезпека кешу:</strong> Тимчасове автозбереження відбувається у локальну пам'ять браузера (localStorage). <b>Якщо ви очистите історію браузера або відкриєте програму в режимі "Інкогніто", всі ваші таблиці безповоротно зникнуть!</b></li>
         </ul>
-        <p><strong>Рішення (Експорт у .json):</strong> Єдиний надійний спосіб зберегти ваші тести — використовувати кнопку <code>📥 Завантажити (.json)</code> у верхньому меню. Це створить захищений файл-бекап на вашому комп'ютері. Щоб повернутися до роботи, просто <b>перетягніть цей файл мишкою</b> на сторінку програми або натисніть <code>📂 Відкрити</code>.</p>
+        <p><strong>Рішення (Експорт):</strong> Використовуйте кнопки <code>📥</code> (JSON) або <code>📝</code> (Markdown) у верхньому меню. Це створить захищений файл-бекап на вашому комп'ютері.</p>
       </div>
 
       <div class="highlight-box">
         <h2>🛠️ Головні можливості та Механіки</h2>
         <ul>
-          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру (наприклад, <code>3</code> або текст) буде автоматично заблокована і перетворена на артефакт.</li>
+          <li><strong>Експорт у Markdown (📝):</strong> Генерація ідеально структурованого текстового звіту (YAML, таблиці, теги), готового до вставки у ваші щоденні нотатки чи бази знань (Zettelkasten). Звіт охоплює <b>усі тести</b>, створені на сторінці.</li>
+          <li><strong>Сувора валідація даних:</strong> Калькулятор приймає лише дозволені системою ESS-M значення. Спроба ввести недопустиму цифру буде автоматично заблокована і перетворена на артефакт.</li>
           <li><strong>Суворий розрахунок ЕДА:</strong> Згідно з правилами ESS, канал ЕДА не може бути оцінений в 1 бал. Калькулятор жорстко приймає виключно <code>-2</code>, <code>0</code> або <code>2</code> бали (на відміну від пневмо і кардіо, де використовуються 1, 0, -1).</li>
-          <li><strong>Диференційна вага артефактів (Per-spot):</strong> Увага до якості каналів! Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик ЕДА), калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>
-          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором. Фізіологічний конфлікт маркується золотим трикутником із знаком оклику.</li>
+          <li><strong>Диференційна вага артефактів (Per-spot):</strong> Втрата каналу ЕДА оцінюється у 2 бали, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання (Spot) втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик ЕДА), калькулятор автоматично присвоює цьому питанню статус <b>NO (No Opinion)</b>. Вага ФПГ обчислюється динамічно і лише там, де ви ввели дані.</li>
+          <li><strong>Розумне дихання:</strong> Калькулятор відрізняє "фізіологічний конфлікт" (коли ви ввели +1 на верхньому диханні і -1 на нижньому, що дає суму 0) від "реального артефакту". Пуста клітинка в активному питанні завжди сприймається як втрата даних і позначається оранжевим кольором. Фізіологічний конфлікт маркується золотим трикутником <code>⚠</code>.</li>
         </ul>
       </div>
 
       <h2>🚀 Просунутий функціонал та Приховані фічі</h2>
       <ul>
-        <li><strong>🛡️ Захист від контамінації (Spot Rule):</strong> Працює автоматично у скринінговому режимі. Галочка <b>"🔒 Контам."</b> над статусами гарантує, що якщо хоча б одне релевантне питання отримало статус SR (Significant Response), весь тест не може бути позитивним, і статус <i>NSR</i> блокується, змінюючись на <i>INC</i>.</li>
-        <li><strong>📊 Аналізатор динаміки та Ізоляція трендів:</strong> Графік внизу таблиці показує фізіологічний тренд респондента (вектор). Ви можете вимкнути загальну "Σ Суму", клікнувши на кнопки <b>R1, R2, R3, R4</b>. Це дозволяє ізолювати реакції і побачити графік виключно по одному питанню — ідеальний інструмент для пошуку "Домінанти".</li>
-        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань (наприклад: <i>"Це ви вкрали гроші з сейфу?"</i>). Після збереження цей текст буде з'являтися як підказка щоразу, коли ви наводите курсор миші на заголовок колонки (R1, R2...).</li>
-        <li><strong>🎹 Гарячі клавіші (Лайфхаки швидкості):</strong> 
+        <li><strong>🛡️ Захист від контамінації (Spot Rule):</strong> Працює автоматично у скринінговому режимі. Галочка <b>"🔒 Контам."</b> над статусами гарантує, що якщо хоча б одне релевантне питання отримало статус SR, весь тест не може бути позитивним, і статус <i>NSR</i> блокується, змінюючись на <i>INC</i>.</li>
+        <li><strong>📊 Аналізатор динаміки:</strong> Графік внизу таблиці показує фізіологічний тренд респондента. Ви можете вимкнути загальну "Σ Суму", клікнувши на кнопки <b>R1, R2, R3, R4</b>. Це дозволяє ізолювати реакції і побачити графік виключно по одному питанню — ідеальний інструмент для пошуку "Домінанти".</li>
+        <li><strong>📝 Вбудований редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> над таблицею, щоб відкрити модальне вікно. Впишіть туди реальні формулювання ваших питань. Після збереження цей текст буде з'являтися як підказка при наведенні курсору миші на заголовок колонки (R1, R2...), а також виводитиметься в Markdown звіті.</li>
+        <li><strong>🎹 Гарячі клавіші:</strong> 
           <ul>
             <li>Щоб ввести від'ємний бал, не обов'язково друкувати "-1". Просто натисніть клавішу <kbd>-</kbd> (мінус) на клавіатурі, і програма автоматично підставить <b>-1</b> (або <b>-2</b>, якщо це колонка ЕДА).</li>
             <li>Використовуйте <kbd>Enter</kbd> для миттєвого стрибка на клітинку нижче в тій самій колонці.</li>
@@ -386,19 +371,9 @@
         </li>
       </ul>
 
-      <h2>📖 Покрокова інструкція по роботі</h2>
-      <ol>
-        <li><strong>Базове налаштування:</strong> Введіть П.І.Б. респондента та дату. Це дуже важливо, адже саме з цих даних калькулятор згенерує зрозумілу назву файлу при збереженні (напр., <i>ess-Ivanov-Ivan-2026-07-31.json</i>). Натисніть <code>+ Додати обрахунок</code>.</li>
-        <li><strong>Вибір формату (Критичний крок):</strong> Таблиця заблокована за замовчуванням. Знайдіть пульсуючу синю рамку в лівому верхньому куті та оберіть формат вашого тесту (наприклад, <i>UTAH ZCT</i> або <i>AFMGQT</i>). Калькулятор сам розблокує необхідну кількість колонок (від 2 до 4). <b>Увага:</b> Формати типу Federal, BOST чи Utah автоматично фіксуються в режимі "Діагностичний".</li>
-        <li><strong>Введення артефактів (Missing Data):</strong> Якщо ділянка поліграми зіпсована (рух, глибокий вдих), і ви не можете її оцінити — двічі натисніть <kbd>0</kbd> (програма перетворить це на символ <code>∅</code>), АБО введіть літеру <kbd>А</kbd>. Клітинка забарвиться в оранжевий колір, бал обнулиться, а система врахує це як втрату даних при розрахунку надійності.</li>
-        <li><strong>Керування чартами:</strong> У таблиці передбачено 5 чартів. Якщо ви провели стандартний тест із 3 чартів — просто зніміть галочки <code>☑ Chart #4</code> та <code>☑ Chart #5</code> праворуч. Вони стануть напівпрозорими і виключаться з загального розрахунку.</li>
-        <li><strong>Генерація звіту:</strong> Коли всі дані введені, натисніть <code>🖨️</code> у верхньому меню. Програма приховає всі кнопки та зайві елементи керування, залишивши лише ідеально чистий, форматований бланк, готовий до збереження у форматі PDF або прямого друку на папір.</li>
-      </ol>
-
       <div class="offline-box">
         <strong>⚡ Абсолютна автономність (Офлайн версія)</strong>
-        <p>Ми розуміємо, що тестування часто проходять у місцях без Інтернету, або на службових комп'ютерах з обмеженим доступом. Ви можете зробити цей калькулятор незалежним додатком.</p>
-        <p>Натисніть на синю кнопку внизу цієї сторінки. На ваш ПК завантажиться єдиний чистий файл <code>.html</code>. Покладіть його в папку разом із файлом нашого логотипу (<code>184235.png</code>) і відкривайте у будь-якому браузері (Chrome, Edge, Safari) навіть без підключення до мережі. Весь функціонал працюватиме локально!</p>
+        <p>Натисніть на синю кнопку внизу цієї сторінки. На ваш ПК завантажиться єдиний чистий файл <code>.html</code>. Покладіть його в папку разом із файлом нашого логотипу (<code>184235.png</code>) і відкривайте у будь-якому браузері навіть без підключення до мережі. Весь функціонал працюватиме локально!</p>
       </div>
     </div>
   </div>
@@ -415,7 +390,7 @@
     </div>
   </div>
 </body>
-</html>`;
+</html>\`;
 
       helpWin.document.open();
       helpWin.document.write(helpContent);
@@ -540,6 +515,139 @@
       });
     };
 
+    const colorizeStatus = (statusText) => {
+        if(statusText.includes("NSR")) return `<span style="color:#2e7d32; font-weight:bold;">${statusText}</span>`;
+        if(statusText.includes("SR")) return `<span style="color:#ff0000; font-weight:bold;">${statusText}</span>`;
+        if(statusText.includes("INC")) return `<span style="color:#f57c00; font-weight:bold;">${statusText}</span>`;
+        if(statusText.includes("NO")) return `<span style="color:#757575; font-weight:bold;">${statusText}</span>`;
+        return statusText;
+    };
+
+    const saveToMarkdown = () => {
+        const respName = respondentInput.value.trim() || 'Невідомо';
+        const dateVal = dateInput.value || new Date().toISOString().slice(0,10);
+        
+        let md = `---\n`;
+        md += `tags:\n  - polygraph_report\n  - ess_m\n`;
+        md += `date: ${dateVal}\n`;
+        md += `respondent: ${respName}\n`;
+        md += `---\n\n`;
+        md += `# Звіт поліграфологічного тестування: ${respName}\n\n`;
+        md += `**Дата проведення:** [[${dateVal}]]\n\n`;
+        md += `## Спостереження за поведінкою під час тесту\n`;
+        md += `<!-- Додайте ваші нотатки щодо поведінки, стану респондента та особливостей передтестової бесіди тут... -->\n\n`;
+        md += `---\n\n`;
+
+        const testWrappers = testsContainer.querySelectorAll('.ess-test-wrapper');
+        if(testWrappers.length === 0) {
+            md += `*Немає даних для відображення.*\n`;
+        }
+
+        testWrappers.forEach((wrapper, index) => {
+            const ce = wrapper._cachedElements;
+            if(!ce) return;
+            
+            const title = ce.titleInput.value || `Тест ${index + 1}`;
+            const format = ce.formatSelect.value;
+            const type = ce.typeRadios.find(r => r.checked)?.value === 'screening' ? 'Скринінговий' : 'Діагностичний';
+            const allowedCols = formatConfig[format]?.cols || 0;
+            
+            md += `### Тест №${index + 1}: ${title}\n`;
+            md += `**Формат:** ${format} | **Тип:** ${type}\n\n`;
+
+            if(allowedCols === 0) {
+                md += `*Формат не обрано.*\n\n---\n\n`;
+                return;
+            }
+
+            md += `**Семантика (Релевантні питання):**\n`;
+            for(let col = 1; col <= allowedCols; col++) {
+                const qInput = ce.questionInputs.find(i => i.getAttribute('data-q') === `R${col}`);
+                const qText = qInput ? qInput.value : '';
+                md += `- **R${col}:** ${qText || '...'}\n`;
+            }
+            md += `\n`;
+
+            const activeCharts = [];
+            for(let c=1; c<=5; c++) {
+                const toggle = ce.chartToggles.find(t => t.getAttribute('data-chart') == c);
+                if(!toggle || toggle.checked) activeCharts.push(c);
+            }
+
+            md += `**Матриця балів:**\n`;
+            let th = `| Питання |`;
+            let sep = `| :--- |`;
+            activeCharts.forEach(c => { th += ` C${c} |`; sep += ` :---: |`; });
+            th += ` Subtotal | Статус |\n`;
+            sep += ` :---: | :--- |\n`;
+            md += th + sep;
+
+            const dynVals = wrapper._cachedDynamics || [];
+            const getSpotSum = (c, col) => {
+                const chartData = dynVals.find(d => d.chart == c);
+                if(chartData && chartData.spots[col] !== undefined) {
+                    return chartData.spots[col];
+                }
+                return "-";
+            };
+
+            for(let col = 1; col <= allowedCols; col++) {
+                let rowStr = `| **R${col}** |`;
+                activeCharts.forEach(c => {
+                    rowStr += ` ${getSpotSum(c, col)} |`;
+                });
+                const subSpan = ce.subtotals.find(s => s.getAttribute('data-col') == col);
+                const subVal = subSpan ? subSpan.textContent : "-";
+                rowStr += ` **${subVal}** |`;
+
+                const statusCell = ce.statuses.find(s => s.getAttribute('data-col') == col);
+                let statusText = "-";
+                if(statusCell) {
+                    const badge = statusCell.querySelector('.status-badge');
+                    if(badge) statusText = badge.textContent;
+                }
+                rowStr += ` ${colorizeStatus(statusText)} |\n`;
+                md += rowStr;
+            }
+
+            const gTotal = ce.grandTotal ? ce.grandTotal.textContent : "0";
+            let gRow = `| **Grand Total** |`;
+            activeCharts.forEach(() => { gRow += ` |`; });
+            gRow += ` **${gTotal}** | |\n`;
+            md += gRow;
+
+            md += `\n**Контроль якості (QC & Аналіз):**\n`;
+            const listItems = ce.dynamicsText.querySelectorAll('li');
+            listItems.forEach(li => {
+                let htmlContent = li.innerHTML;
+                htmlContent = htmlContent.replace(/<b>/g, '**').replace(/<\/b>/g, '**');
+                htmlContent = htmlContent.replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');
+                md += `- ${htmlContent.trim()}\n`;
+            });
+
+            md += `\n**Висновок (Тест №${index + 1}):**\n`;
+            let gStatusBadge = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
+            let gProb = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
+            
+            if (gStatusBadge && gProb) {
+                md += `> Результат: ${colorizeStatus(gStatusBadge.textContent)} (${gProb.textContent})\n\n`;
+            } else if(ce.grandStatus) {
+                md += `> Результат: ${ce.grandStatus.textContent}\n\n`;
+            }
+
+            md += `---\n\n`;
+        });
+
+        const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); 
+        const safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
+        a.href = url; 
+        a.download = `ess-${safeResp}${dateVal}.md`; 
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     const toolbar = document.createElement("div");
     toolbar.className = "ess-toolbar";
 
@@ -554,7 +662,7 @@
     toolbar.appendChild(fileInput);
     btnOpen.onclick = () => fileInput.click();
 
-    const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити"); btnSaveJson.onclick = () => saveToFile();
+    const btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити JSON"); btnSaveJson.onclick = () => saveToFile();
     const sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
     const btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = () => restoreState(historyIndex - 1);
     const btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = () => restoreState(historyIndex + 1);
@@ -563,6 +671,9 @@
       btnRedo.disabled = historyIndex >= stateHistory.length - 1;
     };
     const sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
+    
+    const btnMarkdown = document.createElement("button"); btnMarkdown.className = "ess-toolbar-btn"; btnMarkdown.innerHTML = "📝"; btnMarkdown.title = "Експорт у Markdown (.md)"; btnMarkdown.setAttribute("aria-label", "Експорт Markdown"); btnMarkdown.onclick = () => saveToMarkdown();
+    
     const btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = () => setTimeout(() => window.print(), 150);
     const btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
     btnClearAll.onclick = () => {
@@ -580,7 +691,7 @@
 
     toolbar.appendChild(btnSave); toolbar.appendChild(sep1); toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson);
     toolbar.appendChild(sep2); toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep3);
-    toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
+    toolbar.appendChild(btnMarkdown); toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
     toolbar.appendChild(saveStatus);
 
     const respondentArea = document.createElement("div"); 
@@ -1131,7 +1242,7 @@
                 spanPneumo.textContent = pneumo.val + " ⚠";
                 spanPneumo.parentElement.classList.add("bg-local-artifact");
             } else if (pneumo.conflict) {
-                spanPneumo.innerHTML = '0 <span style="color:#e8a817; font-size:15px; font-weight:bold;" title="Фізіологічний конфлікт">&#9888;&#xFE0E;</span>';
+                spanPneumo.innerHTML = '0 <span style="color:#d8832b; font-size:14px; font-weight:bold; cursor:help;" title="Фізіологічний конфлікт (наприклад, +1 та -1)">&#9888;</span>';
             } else {
                 spanPneumo.textContent = pneumo.val;
             }
@@ -1184,6 +1295,8 @@
           dynamicsValues.push({ chart: c, total: currentChartSum, hasArtifact: chartHasArt, spots: cSpots });
         }
       }
+
+      wrapper._cachedDynamics = dynamicsValues;
 
       let testWeightTotal = 0;
       let testWeightLost = 0;
