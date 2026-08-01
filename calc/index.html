@@ -19,16 +19,22 @@
   <div id="auth-overlay" class="auth-overlay">
     <div class="auth-modal">
       <img src="images/logo.png" alt="PLGRPH Logo" class="auth-logo">
-      <h2>Захищений доступ</h2>
-      <p>Введіть пароль для доступу до калькулятора ESS-M.</p>
+      <h2>ESS-M Calculator v5.0</h2>
+      <p>Введіть пароль для доступу до калькулятора.</p>
       
       <div class="auth-input-group">
-        <input type="password" id="auth-password" placeholder="Пароль..." autocomplete="off">
+        <input type="password" id="auth-password" placeholder="******" autocomplete="off">
         <button id="auth-submit-btn">Увійти</button>
       </div>
       
       <div id="auth-error" class="auth-error-msg" style="display: none;">
         ❌ Невірний пароль. Спробуйте ще раз.
+      </div>
+
+      <!-- Посилання для користувачів -->
+      <div style="margin-top: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 14px;">
+        <a href="info.html" target="_blank" style="color: #3a7cfd; text-decoration: none; font-weight: 600; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">📖 Про калькулятор</a>
+        <a href="mailto:plgrph@protonmail.com" style="color: #757575; text-decoration: none; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#3a7cfd'" onmouseout="this.style.color='#757575'">✉️ Контакт для зв'язку</a>
       </div>
     </div>
   </div>
