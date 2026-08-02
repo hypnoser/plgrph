@@ -113,7 +113,6 @@ window.CIT_API = (function() {
 
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
-      
       tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight: normal;">Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
         tableHtml += '<th style="font-weight: normal;">' + s + '</th>';
@@ -138,6 +137,7 @@ window.CIT_API = (function() {
           var pStr = formatPr(pVal);
           
           if (sc > r * 2) pStr = ""; 
+
           if (sc < 3 && pStr === "> 99%") pStr = ">.99"; 
           
           var activeClass = (r === validCount && sc === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
@@ -248,11 +248,11 @@ window.CIT_API = (function() {
         '</div>' +
       '</div>' +
       '<div class="cit-layout">' +
-        '<div class="cit-tests-wrapper">' +
+        '<div class="cit-tests-wrapper" style="width: 100%;">' +
           '<div class="cit-rows"></div>' +
         '</div>' +
         '<hr style="border:0; border-top:1px solid #e2e8f0; width:100%; margin:10px 0;">' +
-        '<div class="cit-results-wrapper">' +
+        '<div class="cit-results-wrapper" style="width: 100%;">' +
           '<div class="cit-dashboard">' +
             '<div class="cit-dash-box"><div class="cit-dash-label">Придатних</div><div class="cit-dash-value val-count">-</div></div>' +
             '<div class="cit-dash-box"><div class="cit-dash-label">Заг. бал</div><div class="cit-dash-value val-score">-</div></div>' +
@@ -440,20 +440,21 @@ window.CIT_API = (function() {
         .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: inherit; }
         .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         
-        .cit-layout { display: flex; flex-direction: column; gap: 10px; }
+        .cit-layout { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
-        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: start; }
+        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; align-items: start; }
         @media (max-width: 768px) { .cit-rows { grid-template-columns: 1fr; } }
         
-        .cit-test-row { display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e8f0; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .cit-test-row { display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e8f0; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); width: 100%; box-sizing: border-box; }
         .cit-test-row:hover { background: #f1f5f9; border-color: #cbd5e1; }
         
-        .cit-btn-edit { width: 30px; height: 30px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; border: none; background: #475569; color: #fff; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-        .cit-btn-edit:hover { background: #334155; transform: scale(1.05); }
+        /* Світла кнопка шестірні */
+        .cit-btn-edit { width: 30px; height: 30px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; border-radius: 4px; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .cit-btn-edit:hover { background: #e2e8f0; color: #0f172a; transform: scale(1.05); }
         
-        .cit-test-info { flex: 1; display: flex; flex-direction: column; margin-left: 4px; line-height: 1.3; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .cit-test-info { flex: 1; display: flex; flex-direction: column; margin-left: 4px; line-height: 1.3; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
         
-        .cit-score { width: 40px; height: 30px; text-align: center; font-weight: 800; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; padding: 4px; outline: none; }
+        .cit-score { width: 40px; height: 30px; text-align: center; font-weight: 800; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; padding: 4px; outline: none; flex-shrink: 0; }
         .cit-score:focus { border-color: #3a7cfd; }
         .cit-score.artifact { background: #fff7ed; border-color: #f97316; color: #ea580c; }
         
@@ -466,7 +467,7 @@ window.CIT_API = (function() {
         .val-nri { background-color: #2e7d32 !important; color: #ffffff !important; }
         .val-no { background-color: #757575 !important; color: #ffffff !important; }
         
-        .cit-matrix-wrapper { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px; overflow-x: auto; margin-bottom:10px; }
+        .cit-matrix-wrapper { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px; overflow-x: auto; margin-bottom:10px; width: 100%; box-sizing: border-box; }
         .cit-matrix-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; color: #333; text-align:center; border-bottom:1px solid #eee; padding-bottom:4px; }
         .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 10.5px; text-align: center; }
         .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 4px 2px; }
