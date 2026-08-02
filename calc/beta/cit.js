@@ -4,69 +4,56 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!citAppRoot) return;
 
   // ==========================================
-  // 1. ІН'ЄКЦІЯ СТИЛІВ ДЛЯ CIT (Ізоляція)
+  // 1. СТИЛІ CIT
   // ==========================================
   var citStyles = document.createElement('style');
   citStyles.innerHTML = `
     .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-    .cit-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 6px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-    .cit-btn { padding: 6px 12px; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #f8fafc; color: #333; transition: all 0.2s; }
-    .cit-btn:hover { background: #e2e8f0; }
-    .cit-btn-primary { background: #3a7cfd; color: #fff; border-color: #3a7cfd; }
-    .cit-btn-primary:hover { background: #2a68e0; }
-    .cit-btn-danger { color: #ff0000; border-color: #ff0000; background: transparent; }
-    .cit-btn-danger:hover { background: rgba(255,0,0,0.1); }
-    .cit-save-status { margin-left: auto; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 4px; background: #2e7d32; color: #fff; }
-    .cit-save-status.unsaved { background: #f57c00; }
-    
-    .cit-respondent-area { display: flex; gap: 15px; background: #fff; padding: 12px 16px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); flex-wrap: wrap; }
-    .cit-input-group { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
-    .cit-label { font-size: 13px; font-weight: 700; color: #555; white-space: nowrap; }
-    .cit-input { flex-grow: 1; border: none; border-bottom: 2px solid transparent; background: transparent; font-size: 15px; font-weight: 700; padding: 2px 4px; outline: none; transition: border-color 0.2s; }
-    .cit-input:focus { border-bottom-color: #3a7cfd; background: rgba(128,128,128,0.05); }
-    
-    .cit-block { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-    .cit-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
-    .cit-block-title { border: none; font-size: 16px; font-weight: 800; color: #222; outline: none; width: 100%; max-width: 400px; background: transparent; }
+    .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .cit-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 8px; }
+    .cit-block-title { border: none; font-size: 14px; font-weight: 700; color: #222; outline: none; width: 100%; max-width: 350px; background: transparent; }
     .cit-block-title:focus { border-bottom: 2px solid #3a7cfd; }
     
-    .cit-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: start; }
+    .cit-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 15px; align-items: start; }
     @media (max-width: 768px) { .cit-layout { grid-template-columns: 1fr; } }
     
-    .cit-test-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; background: #f8fafc; padding: 6px; border-radius: 4px; border: 1px solid #eee; }
-    .cit-test-row input[type="text"] { border: 1px solid #ccc; border-radius: 3px; padding: 6px; font-size: 13px; outline: none; }
+    .cit-test-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; }
+    .cit-test-row input[type="text"] { border: 1px solid #ccc; border-radius: 3px; padding: 5px; font-size: 12px; outline: none; font-family: inherit; }
     .cit-test-row input[type="text"]:focus { border-color: #3a7cfd; }
     .cit-theme, .cit-key { flex-grow: 1; width: 100%; }
-    .cit-score { width: 45px; text-align: center; font-weight: bold; }
+    .cit-score { width: 40px; text-align: center; font-weight: 800; font-size: 13px; }
     .cit-score.artifact { background: #fff7ed; border-color: #f97316; color: #ea580c; }
     
-    .cit-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-    .cit-dash-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; }
-    .cit-dash-label { font-size: 10px; font-weight: bold; color: #64748b; text-transform: uppercase; }
-    .cit-dash-value { font-size: 18px; font-weight: 900; color: #1e293b; margin-top: 4px; }
+    .cit-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+    .cit-dash-box { background: rgba(128,128,128,0.06); border: 1px solid #ddd; border-radius: 4px; padding: 8px; text-align: center; }
+    .cit-dash-label { font-size: 9px; font-weight: bold; color: #666; text-transform: uppercase; }
+    .cit-dash-value { font-size: 16px; font-weight: 900; color: #222; margin-top: 2px; }
     .val-ri { color: #d32f2f !important; }
     .val-nri { color: #2e7d32 !important; }
     .val-no { color: #757575 !important; }
     
-    .cit-matrix-wrapper { background: #fff; border: 1px solid #eee; border-radius: 6px; padding: 10px; overflow-x: auto; }
-    .cit-matrix-title { font-size: 12px; font-weight: bold; margin-bottom: 10px; color: #333; display: flex; justify-content: space-between; }
-    .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; }
-    .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ddd; padding: 4px 2px; }
-    .cit-matrix-table th { background: #f1f5f9; color: #475569; }
-    .cit-cell-dimmed { opacity: 0.3; }
-    .cit-cell-active { background: #3a7cfd !important; color: #fff !important; font-weight: bold; transform: scale(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .cit-matrix-wrapper { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px; overflow-x: auto; }
+    .cit-matrix-title { font-size: 11px; font-weight: bold; margin-bottom: 6px; color: #333; display: flex; justify-content: space-between; }
+    .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 9.5px; text-align: center; }
+    .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 3px 1px; }
+    .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: 800; }
+    .cit-cell-dimmed { opacity: 0.25; background: #fafafa; }
+    .cit-cell-active { background: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
     .cit-cell-active.res-ri { background: #d32f2f !important; }
     .cit-cell-active.res-nri { background: #2e7d32 !important; }
+
+    .cit-conclusion-box { margin-top: 10px; padding: 8px 10px; background: rgba(128,128,128,0.04); border: 1px solid #ddd; border-radius: 4px; font-size: 11.5px; line-height: 1.4; color: #333; }
+    .cit-conclusion-box b { color: #111; }
     
-    .cit-add-block-btn { width: 100%; padding: 12px; font-size: 14px; font-weight: bold; border: 2px dashed #a5b4fc; background: #e0e7ff; color: #3730a3; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-    .cit-add-block-btn:hover { background: #c7d2fe; }
-    
+    .cit-add-block-btn { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: 1px solid #3a7cfd; background: rgba(58,124,253,0.08); color: #3a7cfd; border-radius: 5px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .cit-add-block-btn:hover { background: rgba(58,124,253,0.18); }
+
     @media print {
-      .cit-toolbar, .cit-add-block-btn, .cit-btn-danger, .cit-btn { display: none !important; }
-      .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 30px !important; }
+      .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row { display: none !important; }
+      .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
       .cit-layout { display: block !important; }
       .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
-      .cit-cell-dimmed { opacity: 1 !important; color: #999 !important; }
+      .cit-cell-dimmed { opacity: 1 !important; color: #666 !important; }
     }
   `;
   document.head.appendChild(citStyles);
@@ -83,35 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
     8: { 3:"0.84", 4:"0.70", 5:"0.53", 6:"0.36", 7:"0.22", 8:"0.12", 9:"0.06", 10:"0.03", 11:"0.01", 12:"0.00", 13:"0.00", 14:"0.00", 15:"0.00", 16:"0.00" }
   };
 
-  // ==========================================
-  // 3. СТРУКТУРА ІНТЕРФЕЙСУ
-  // ==========================================
   var citContainer = document.createElement('div');
   citContainer.className = 'cit-container';
-
-  var toolbar = document.createElement('div');
-  toolbar.className = 'cit-toolbar';
-  toolbar.innerHTML = `
-    <button class="cit-btn cit-btn-primary" id="cit-btn-save">💾 Зберегти</button>
-    <button class="cit-btn" id="cit-btn-md">📝 Експорт Markdown</button>
-    <button class="cit-btn" id="cit-btn-print">🖨️ Друк</button>
-    <button class="cit-btn cit-btn-danger" id="cit-btn-clear" style="margin-left: auto;">🗑️ Очистити</button>
-    <div class="cit-save-status" id="cit-save-status">🟢 Збережено</div>
-  `;
-
-  var respondentArea = document.createElement('div');
-  respondentArea.className = 'cit-respondent-area';
-  respondentArea.innerHTML = `
-    <div class="cit-input-group">
-      <span class="cit-label">П.І.Б.:</span>
-      <input type="text" class="cit-input" id="cit-resp-name" placeholder="Введіть дані...">
-    </div>
-    <div class="cit-input-group" style="flex-grow: 0;">
-      <span class="cit-label">Дата:</span>
-      <input type="date" class="cit-input" id="cit-resp-date">
-    </div>
-  `;
-
   var blocksContainer = document.createElement('div');
   blocksContainer.id = 'cit-blocks-container';
 
@@ -119,29 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
   addBlockBtn.className = 'cit-add-block-btn';
   addBlockBtn.textContent = '+ Додати дослідження CIT';
 
-  citContainer.appendChild(toolbar);
-  citContainer.appendChild(respondentArea);
   citContainer.appendChild(blocksContainer);
   citContainer.appendChild(addBlockBtn);
   citAppRoot.appendChild(citContainer);
 
-  var isUnsaved = false;
-  var saveStatusEl = document.getElementById('cit-save-status');
-  var nameInput = document.getElementById('cit-resp-name');
-  var dateInput = document.getElementById('cit-resp-date');
-
-  function markUnsaved() {
-    isUnsaved = true;
-    saveStatusEl.className = 'cit-save-status unsaved';
-    saveStatusEl.textContent = '🟠 Є незбережені зміни';
-  }
-
-  nameInput.addEventListener('input', markUnsaved);
-  dateInput.addEventListener('change', markUnsaved);
-
-  // ==========================================
-  // 4. ЛОГІКА БЛОКІВ ДОСЛІДЖЕННЯ
-  // ==========================================
   var blockCounter = 0;
 
   function createCitBlock(data) {
@@ -169,15 +110,15 @@ document.addEventListener('DOMContentLoaded', function() {
     block.innerHTML = `
       <div class="cit-block-header">
         <input type="text" class="cit-block-title" value="${data.title}" placeholder="Назва дослідження...">
-        <button class="cit-btn cit-btn-danger btn-del-block">Видалити блок</button>
+        <button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження">×</button>
       </div>
       <div class="cit-layout">
         <div class="cit-tests-wrapper">
-          <div style="display:flex; gap:8px; font-size:10px; font-weight:bold; color:#888; padding-left:20px; margin-bottom:4px;">
-            <div style="flex:1;">ТЕМА</div><div style="flex:1;">КЛЮЧ</div><div style="width:45px; text-align:center;">ЕДА</div><div style="width:24px;"></div>
+          <div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; padding-left:18px; margin-bottom:4px;">
+            <div style="flex:1;">ТЕМА</div><div style="flex:1;">КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:24px;"></div>
           </div>
           <div class="cit-rows"></div>
-          <button class="cit-btn" style="width:100%; margin-top:8px;" class="btn-add-row">+ Додати запитання</button>
+          <button class="ess-btn cit-btn-add-row" style="width:100%; margin-top:6px; justify-content:center; background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd;">+ Додати запитання</button>
         </div>
         <div class="cit-results-wrapper">
           <div class="cit-dashboard">
@@ -189,34 +130,43 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="cit-matrix-title"><span>Матриця ймовірностей (Pr)</span><span class="matrix-status" style="color:#3a7cfd;">Введіть дані</span></div>
             ${matrixHtml}
           </div>
+          <div class="cit-conclusion-box">
+            <b>Висновок:</b> <span class="cit-conclusion-text">Недостатньо даних для формування висновку.</span>
+          </div>
         </div>
       </div>
     `;
 
     blocksContainer.appendChild(block);
 
-    block.querySelector('.cit-block-title').addEventListener('input', markUnsaved);
+    var eventTrigger = function() {
+      if (window.PolygraphSuite && typeof window.PolygraphSuite.markUnsaved === 'function') {
+        window.PolygraphSuite.markUnsaved();
+      }
+    };
+
+    block.querySelector('.cit-block-title').addEventListener('input', eventTrigger);
     block.querySelector('.btn-del-block').addEventListener('click', function() {
-      if(confirm('Видалити це дослідження?')) { block.remove(); markUnsaved(); }
+      if(confirm('Видалити це дослідження?')) { block.remove(); eventTrigger(); }
     });
 
     var rowsContainer = block.querySelector('.cit-rows');
-    var btnAddRow = block.querySelectorAll('.cit-btn')[1]; // Second button in block
+    var btnAddRow = block.querySelector('.cit-btn-add-row');
     
     function addRow(theme, key, score) {
       var r = document.createElement('div');
       r.className = 'cit-test-row';
       r.innerHTML = `
-        <span style="font-size:11px; font-weight:bold; color:#999; width:12px;" class="row-num"></span>
+        <span style="font-size:11px; font-weight:bold; color:#888; width:12px;" class="row-num"></span>
         <input type="text" class="cit-theme" placeholder="Тема..." value="${theme || ''}">
         <input type="text" class="cit-key" placeholder="Ключ..." value="${key || ''}">
         <input type="text" class="cit-score" placeholder="-" maxlength="1" value="${score || ''}">
-        <button class="cit-btn cit-btn-danger btn-del-row" style="padding:4px 8px; font-size:14px; line-height:1;">×</button>
+        <button class="ess-delete-btn btn-del-row" style="width:22px; height:22px; font-size:14px; line-height:1;">×</button>
       `;
       rowsContainer.appendChild(r);
 
-      r.querySelector('.cit-theme').addEventListener('input', markUnsaved);
-      r.querySelector('.cit-key').addEventListener('input', markUnsaved);
+      r.querySelector('.cit-theme').addEventListener('input', eventTrigger);
+      r.querySelector('.cit-key').addEventListener('input', eventTrigger);
       var scoreInp = r.querySelector('.cit-score');
       
       scoreInp.addEventListener('input', function(e) {
@@ -225,26 +175,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if(v!=='' && v!=='0' && v!=='1' && v!=='2' && v!=='А' && v!=='A') e.target.value='';
         else e.target.value = (v==='A') ? 'А' : v;
         calcBlock(block);
-        markUnsaved();
+        eventTrigger();
       });
 
       r.querySelector('.btn-del-row').addEventListener('click', function() {
         r.remove();
         updateRowNums(block);
         calcBlock(block);
-        markUnsaved();
+        eventTrigger();
       });
 
       updateRowNums(block);
       calcBlock(block);
     }
 
-    btnAddRow.addEventListener('click', function() { addRow(); markUnsaved(); });
+    btnAddRow.addEventListener('click', function() { addRow(); eventTrigger(); });
 
     if(data.tests && data.tests.length > 0) {
       data.tests.forEach(function(t) { addRow(t.theme, t.key, t.score); });
     } else {
-      for(var i=0; i<3; i++) addRow();
+      // За замовчуванням мінімальна кількість ключів для методики CIT = 4
+      for(var i=0; i<4; i++) addRow();
     }
   }
 
@@ -273,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
     block.querySelector('.val-score').textContent = totalScore;
     var decEl = block.querySelector('.val-decision');
     var statusEl = block.querySelector('.matrix-status');
+    var conclusionEl = block.querySelector('.cit-conclusion-text');
     
     var cells = block.querySelectorAll('.cit-matrix-cell');
     cells.forEach(function(c) { c.className = 'cit-matrix-cell'; });
@@ -281,9 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if(validCount === 0) {
       decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no';
       statusEl.textContent = 'Введіть дані'; statusEl.style.color = '#3a7cfd';
+      conclusionEl.innerHTML = 'Недостатньо даних для формування висновку.';
     } else if(validCount < 3) {
       decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-no';
       statusEl.textContent = 'Мін. 3 тести'; statusEl.style.color = '#666';
+      conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів (мінімум 3).';
     } else {
       block.querySelector('.cit-matrix-table').classList.add('has-data');
       cells.forEach(function(c) { c.classList.add('cit-cell-dimmed'); });
@@ -294,142 +248,113 @@ document.addEventListener('DOMContentLoaded', function() {
       statusEl.textContent = isRI ? 'Впізнання (RI)' : 'Немає впізнання (NRI)';
       statusEl.style.color = isRI ? '#d32f2f' : '#2e7d32';
 
+      var probStr = "";
+      var probPercent = "";
       if(validCount <= 8) {
         var targetCell = block.querySelector('.cit-matrix-cell[data-t="'+validCount+'"][data-s="'+totalScore+'"]');
         if(targetCell) {
           targetCell.classList.remove('cit-cell-dimmed');
           targetCell.classList.add('cit-cell-active');
           targetCell.classList.add(isRI ? 'res-ri' : 'res-nri');
+          probStr = probData[validCount][totalScore] || "";
+          if (probStr !== "" && probStr !== "-") {
+            probPercent = probStr === "0.00" ? "< 1%" : Math.round(parseFloat(probStr) * 100) + '%';
+          }
         }
       } else {
         statusEl.textContent = decEl.textContent + ' (Макс. 8 у матриці)';
       }
+
+      // Автоматична генерація висновку
+      if (isRI) {
+        conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>RI (Recognition Indicated)</b> — наявні ознаки впізнання/знання деталей досліджуваної події.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним (не знає деталей), становить приблизно <b>' + probPercent + '</b>.' : '');
+      } else {
+        conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>NRI (No Recognition Indicated)</b> — ознаки впізнання прихованої інформації відсутні.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним відносно деталей, становить приблизно <b>' + probPercent + '</b>.' : '');
+      }
     }
   }
 
-  // ==========================================
-  // 5. ЕКСПОРТ ТА ЗБЕРЕЖЕННЯ
-  // ==========================================
-  function collectData() {
-    var state = { respondentName: nameInput.value, examDate: dateInput.value, blocks: [] };
-    blocksContainer.querySelectorAll('.cit-block').forEach(function(b) {
-      var tests = [];
-      b.querySelectorAll('.cit-test-row').forEach(function(r) {
-        tests.push({
-          theme: r.querySelector('.cit-theme').value,
-          key: r.querySelector('.cit-key').value,
-          score: r.querySelector('.cit-score').value
+  // Експорт/Імпорт API для єдиного робочого простору
+  window.PolygraphSuiteCIT = {
+    collectState: function() {
+      var blocks = [];
+      blocksContainer.querySelectorAll('.cit-block').forEach(function(b) {
+        var tests = [];
+        b.querySelectorAll('.cit-test-row').forEach(function(r) {
+          tests.push({
+            theme: r.querySelector('.cit-theme').value,
+            key: r.querySelector('.cit-key').value,
+            score: r.querySelector('.cit-score').value
+          });
+        });
+        blocks.push({
+          title: b.querySelector('.cit-block-title').value,
+          tests: tests
         });
       });
-      state.blocks.push({
-        title: b.querySelector('.cit-block-title').value,
-        tests: tests
-      });
-    });
-    return state;
-  }
-
-  function performSave() {
-    try {
-      localStorage.setItem("cit_standalone_data", JSON.stringify(collectData()));
-      isUnsaved = false;
-      saveStatusEl.className = 'cit-save-status';
-      saveStatusEl.textContent = '🟢 Збережено';
-    } catch(e) {}
-  }
-
-  function loadData() {
-    try {
-      var raw = localStorage.getItem("cit_standalone_data");
-      if(raw) {
-        var data = JSON.parse(raw);
-        nameInput.value = data.respondentName || '';
-        dateInput.value = data.examDate || '';
-        if(data.blocks && data.blocks.length > 0) {
-          data.blocks.forEach(function(b) { createCitBlock(b); });
-        } else {
-          createCitBlock();
-        }
+      return blocks;
+    },
+    restoreState: function(data) {
+      blocksContainer.innerHTML = '';
+      blockCounter = 0;
+      if(data && data.length > 0) {
+        data.forEach(function(b) { createCitBlock(b); });
       } else {
         createCitBlock();
       }
-    } catch(e) { createCitBlock(); }
-    performSave();
-  }
-
-  document.getElementById('cit-btn-save').addEventListener('click', performSave);
-  
-  document.getElementById('cit-btn-print').addEventListener('click', function() { window.print(); });
-  
-  document.getElementById('cit-btn-clear').addEventListener('click', function() {
-    if(confirm('Очистити всі дослідження CIT?')) {
-      nameInput.value = ''; dateInput.value = '';
-      blocksContainer.innerHTML = ''; blockCounter = 0;
+    },
+    clearAll: function() {
+      blocksContainer.innerHTML = '';
+      blockCounter = 0;
       createCitBlock();
-      markUnsaved();
+    },
+    getMarkdown: function() {
+      var data = this.collectState();
+      if(data.length === 0) return "";
+      var md = "";
+      data.forEach(function(b, idx) {
+        md += '### ' + (b.title || 'Дослідження CIT №' + (idx+1)) + '\n\n';
+        md += '| № | Тема | Ключ | Бал ЕДА |\n';
+        md += '| :---: | :--- | :--- | :---: |\n';
+        
+        var validCount = 0; var totScore = 0;
+        b.tests.forEach(function(t, i) {
+          var s = t.score === '' ? '-' : t.score;
+          md += '| ' + (i+1) + ' | ' + (t.theme || '-') + ' | ' + (t.key || '-') + ' | **' + s + '** |\n';
+          if(s!=='А' && s!=='A' && s!=='-') {
+            validCount++; totScore += parseInt(s, 10);
+          }
+        });
+
+        md += '\n**Результат дослідження:**\n';
+        md += '- **Придатних тестів:** ' + validCount + '\n';
+        md += '- **Загальний бал:** ' + totScore + '\n';
+
+        if(validCount < 3) {
+          md += '- **Висновок:** **NO OPINION** (Менше 3 придатних тестів).\n';
+        } else {
+          var isRI = totScore >= validCount;
+          md += '- **Висновок:** **' + (isRI ? 'RI (Впізнання виявлено)' : 'NRI (Ознаки впізнання відсутні)') + '**\n';
+          if(validCount <= 8) {
+            var probDec = probData[validCount][totScore] || "N/A";
+            var probPercent = (probDec !== "N/A" && probDec !== "-") ? Math.round(parseFloat(probDec) * 100) + '%' : "N/A";
+            if (probDec === "0.00") probPercent = "< 1%";
+            md += '- **Ймовірність наївності (Pr):** ~' + probPercent + '\n';
+          }
+        }
+        md += '\n---\n';
+      });
+      return md;
+    }
+  };
+
+  addBlockBtn.addEventListener('click', function() { 
+    createCitBlock(); 
+    if (window.PolygraphSuite && typeof window.PolygraphSuite.markUnsaved === 'function') {
+      window.PolygraphSuite.markUnsaved();
     }
   });
 
-  addBlockBtn.addEventListener('click', function() { createCitBlock(); markUnsaved(); });
-
-  document.getElementById('cit-btn-md').addEventListener('click', function() {
-    var data = collectData();
-    var respName = data.respondentName.trim() || 'Невідомо';
-    var dateVal = data.examDate || new Date().toISOString().slice(0,10);
-    
-    var md = '---\n';
-    md += 'tags:\n  - polygraph_report\n  - cit\n';
-    md += 'date: ' + dateVal + '\n';
-    md += 'respondent: ' + respName + '\n';
-    md += '---\n\n';
-    md += '# Звіт: Тест на приховану інформацію (CIT)\n\n';
-    md += '**Респондент:** ' + respName + '\n';
-    md += '**Дата проведення:** [[' + dateVal + ']]\n\n---\n\n';
-
-    if(data.blocks.length === 0) md += '*Немає даних.*\n';
-
-    data.blocks.forEach(function(b, idx) {
-      md += '### ' + (b.title || 'Дослідження CIT №' + (idx+1)) + '\n\n';
-      md += '| № | Тема | Ключ | Бал ЕДА |\n';
-      md += '| :---: | :--- | :--- | :---: |\n';
-      
-      var validCount = 0; var totScore = 0;
-      b.tests.forEach(function(t, i) {
-        var s = t.score === '' ? '-' : t.score;
-        md += '| ' + (i+1) + ' | ' + (t.theme || '-') + ' | ' + (t.key || '-') + ' | **' + s + '** |\n';
-        if(s!=='А' && s!=='A' && s!=='-') {
-          validCount++; totScore += parseInt(s, 10);
-        }
-      });
-
-      md += '\n**Результат:**\n';
-      md += '- **Придатних тестів:** ' + validCount + '\n';
-      md += '- **Загальний бал:** ' + totScore + '\n';
-
-      if(validCount < 3) {
-        md += '- **Висновок:** **NO OPINION** (Менше 3 придатних тестів).\n';
-      } else {
-        var isRI = totScore >= validCount;
-        md += '- **Висновок:** **' + (isRI ? 'RI (Впізнання виявлено)' : 'NRI (Ознаки впізнання відсутні)') + '**\n';
-        if(validCount <= 8) {
-          var probDec = probData[validCount][totScore] || "N/A";
-          var probPercent = (probDec !== "N/A" && probDec !== "-") ? Math.round(parseFloat(probDec) * 100) + '%' : "N/A";
-          if (probDec === "0.00") probPercent = "< 1%";
-          md += '- **Ймовірність наївності (Pr):** ~' + probPercent + ' (Шанс, що опитуваний не знає деталей)\n';
-        }
-      }
-      md += '\n---\n';
-    });
-
-    var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a"); 
-    a.href = url; 
-    a.download = 'cit-' + (respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "") + dateVal + '.md'; 
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  // Запуск
-  loadData();
+  // Ініціалізація за замовчуванням, якщо глобальний завантажувач ще не викликав
+  createCitBlock();
 });
