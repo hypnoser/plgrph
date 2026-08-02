@@ -4,7 +4,6 @@ window.APP_API = (function() {
 
   return {
     init: function() {
-      // 1. ЖОРСТКЕ ПЕРЕХОПЛЕННЯ ТУЛБАРУ (Видалення старих обробників подій з ess.js)
       ['g-save', 'g-open', 'g-save-json', 'g-markdown', 'g-print', 'g-clear'].forEach(function(id) {
         var el = document.getElementById(id);
         if(el) {
@@ -13,7 +12,6 @@ window.APP_API = (function() {
         }
       });
 
-      // 2. Ініціалізація змінних
       saveStatus = document.getElementById('g-status');
       nameInp = document.getElementById('global-resp-name');
       dateInp = document.getElementById('global-exam-date');
@@ -21,7 +19,6 @@ window.APP_API = (function() {
       if(nameInp) nameInp.addEventListener('input', this.markUnsaved.bind(this));
       if(dateInp) dateInp.addEventListener('change', this.markUnsaved.bind(this));
 
-      // 3. Прив'язка нових глобальних подій
       var btnSave = document.getElementById('g-save');
       if(btnSave) btnSave.addEventListener('click', this.performSave.bind(this));
       
@@ -49,7 +46,6 @@ window.APP_API = (function() {
           try {
             var parsed = JSON.parse(evt.target.result);
             
-            // Міграція зі старих версій
             if (parsed.tests && !parsed.ess) {
                 parsed.ess = parsed.tests;
             }
@@ -83,7 +79,6 @@ window.APP_API = (function() {
         });
       }
 
-      // Drag and Drop
       window.addEventListener('dragover', function(e) { 
         e.preventDefault(); 
         document.body.style.backgroundColor = '#e3f2fd'; 
@@ -149,7 +144,6 @@ window.APP_API = (function() {
         var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a"); 
-        var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "";
         a.href = url; 
         a.download = 'polygraph-suite-' + safeResp + dateVal + '.md'; 
         a.click();
@@ -190,13 +184,22 @@ window.APP_API = (function() {
           var parsed = JSON.parse(raw);
           if(parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
           if(parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
-          if(window.ESS_API) window.ESS_API.restoreState(parsed.ess || []);
-          if(window.CIT_API) window.CIT_API.restoreState(parsed.cit || []);
+          
+          // Ізольовані блоки відновлення: помилка в одному не зламає інший
+          if(window.ESS_API) {
+            try { window.ESS_API.restoreState(parsed.ess || []); } 
+            catch(e) { console.error('ESS Restore Error:', e); }
+          }
+          if(window.CIT_API) {
+            try { window.CIT_API.restoreState(parsed.cit || []); } 
+            catch(e) { console.error('CIT Restore Error:', e); }
+          }
         } else {
           if(window.ESS_API) window.ESS_API.restoreState([]);
           if(window.CIT_API) window.CIT_API.restoreState([]);
         }
-      } catch(e) {
+      } catch(err) {
+        console.error('loadData Error:', err);
         if(window.ESS_API) window.ESS_API.restoreState([]);
         if(window.CIT_API) window.CIT_API.restoreState([]);
       }
@@ -244,10 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   try {
     if (window.ESS_API) window.ESS_API.init();
-    else console.error("⚠️ Модуль ESS_API не знайдено! Перевірте чи існує файл ess.js");
+    else console.error("⚠️ Модуль ESS_API не знайдено!");
 
     if (window.CIT_API) window.CIT_API.init();
-    else console.error("⚠️ Модуль CIT_API не знайдено! Перевірте чи існує файл cit.js");
+    else console.error("⚠️ Модуль CIT_API не знайдено!");
 
     if (window.APP_API) {
       window.APP_API.init();
