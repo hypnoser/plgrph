@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Довідка | Polygraph Suite v6.2</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <style>
+    body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #334155; line-height: 1.6; padding: 20px; }
+    .container { max-width: 850px; margin: 0 auto; background: #ffffff; padding: 40px 50px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    h1 { color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 30px; text-align: center; }
+    h2 { color: #3a7cfd; margin-top: 40px; margin-bottom: 15px; font-size: 1.5em; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+    h3 { color: #475569; margin-top: 25px; }
+    p { margin-bottom: 15px; font-size: 15px; }
+    ul { margin-bottom: 15px; padding-left: 25px; }
+    li { margin-bottom: 8px; font-size: 15px; }
+    .alert-box { background: #eff6ff; border-left: 4px solid #3a7cfd; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+    .security-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+    strong { color: #0f172a; }
+    .footer { text-align: center; margin-top: 50px; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Довідка: Polygraph Suite v6.2</h1>
+
+    <div class="alert-box">
+      <strong>Polygraph Suite</strong> — це комплексний цифровий інструмент для поліграфологів, призначений для математичного обрахунку поліграм, формування матриць рішень та генерації автоматизованих звітів згідно зі стандартами Американської асоціації поліграфологів (APA).
+    </div>
+
+    <h2>1. Методологія ESS-Multinomial (ESS-M)</h2>
+    <p>Модуль ESS-M призначений для обрахунку форматів тестів діагностики та скринінгу з використанням Емпіричної системи оцінювання (Empirical Scoring System).</p>
+    <ul>
+      <li><strong>Підтримка шкал:</strong> Алгоритм підтримує як 3-бальну, так і 7-бальну систему оцінювання реакцій (для каналів дихання, ЕДА, кардіо та PPG).</li>
+      <li><strong>Генерація рішень:</strong> Система автоматично розраховує P-value (ймовірність статистичної помилки) та застосовує порогові значення (cutscores).</li>
+      <li><strong>Категорії рішень згідно з APA:</strong>
+        <ul>
+          <li><strong>DI / SR (Deception Indicated / Significant Responses):</strong> Значущі реакції або ознаки приховування інформації.</li>
+          <li><strong>NDI / NSR (No Deception Indicated / No Significant Responses):</strong> Немає значущих реакцій.</li>
+          <li><strong>INC / NO (Inconclusive / No Opinion):</strong> Невизначений результат (бракує статистичних даних для категоричного висновку).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>2. Методологія Concealed Information Test (CIT)</h2>
+    <p>Модуль CIT (Тест на приховану інформацію) автоматизує розрахунок ймовірностей за методом Девіда Ліккена (David Lykken) з використанням динамічного поліноміального розподілу.</p>
+    <ul>
+      <li><strong>Структура стимулів:</strong> Калькулятор дозволяє налаштовувати точну кількість стимулів у кожному тесті. Кожен тест повинен містити мінімум 4 варіанти: один <strong>Ключ (Key)</strong> та кілька <strong>Альтернативних варіантів (Foils)</strong>.</li>
+      <li><strong>Математична матриця:</strong> На відміну від статичних таблиць, алгоритм генерує динамічну 2D-матрицю ймовірностей на основі точної кількості наданих альтернатив (k-value).</li>
+      <li><strong>Категорії рішень:</strong>
+        <ul>
+          <li><strong>RI (Recognition Indicated):</strong> Впізнання виявлено. Обстежуваний володіє прихованою інформацією.</li>
+          <li><strong>NRI (No Recognition Indicated):</strong> Ознаки впізнання відсутні.</li>
+          <li><strong>Pr (Ймовірність необізнаності):</strong> Математично розрахована ймовірність того, що обстежуваний є необізнаним щодо деталей події (наївним об'єктом / naive subject).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="security-box">
+      <h2>3. Безпека, Конфіденційність та Офлайн-робота</h2>
+      <p><strong>Повна автономність (Zero-Server Architecture):</strong> Цей додаток розроблено з урахуванням найвищих стандартів конфіденційності. <strong>Система не використовує сервери для обробки та не відправляє ваші дані в Інтернет.</strong> Усі розрахунки та збереження виконуються виключно локально — в ізольованому кеші вашого браузера (Local Storage).</p>
+      
+      <p><strong>Архівування та запуск без Інтернету:</strong> Ви можете зберегти цей інструмент на свій комп'ютер назавжди.</p>
+      <ol>
+        <li>Натисніть <code>Ctrl + S</code> (або <code>Cmd + S</code> на Mac) під час перегляду сторінки програми.</li>
+        <li>Збережіть сторінку у форматі "Вебсторінка, повністю" (Webpage, complete) в окрему папку.</li>
+        <li>Відтепер ви можете відкривати файл <code>index.html</code> з цієї папки та працювати з додатком без доступу до мережі Інтернет.</li>
+      </ol>
+    </div>
+
+    <h2>4. Експорт даних та Друк (PDF)</h2>
+    <ul>
+      <li><strong>Експорт у `.json`:</strong> Зберігає повний "зліпок" сесії (П.І.Б., дати, всі таблиці ESS-M та CIT) в один резервний файл. Ви можете відновити всю роботу в один клік, перетягнувши (Drag & Drop) цей файл назад у вікно браузера.</li>
+      <li><strong>Експорт у `.md` (Markdown):</strong> Генерує зручний текстовий протокол дослідження, який ідеально підходить для копіювання в Microsoft Word або Obsidian (системи Zettelkasten).</li>
+      <li><strong>Друк / PDF:</strong> При натисканні на кнопку принтера (або <code>Ctrl + P</code>) браузер автоматично застосовує спеціальні стилі друку. Зайві кнопки зникають, а дослідження оптимізуються. <em>Примітка: вбудовано захист, який запобігає розриву таблиць та графіків ESS-M між двома сторінками формату А4 під час генерації PDF.</em></li>
+    </ul>
+
+    <div class="footer">
+      Polygraph Suite v6.2 | Розроблено для професійного використання
+    </div>
+  </div>
+
+</body>
+</html>
