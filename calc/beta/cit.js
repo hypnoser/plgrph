@@ -239,12 +239,12 @@ window.CIT_API = (function() {
     block.id = bId;
 
     block.innerHTML = 
-      '<div class="cit-block-header">' +
-        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
-        '<div class="cit-block-actions">' +
-          '<button class="ess-btn cit-btn-add-row" title="Додати новий тест">+ Додати тест</button>' +
+      '<div class="cit-block-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px dashed #ccc; padding-bottom:10px; flex-wrap: wrap; gap: 10px;">' +
+        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження..." style="border:none; font-size:15px; font-weight:700; color:#222; outline:none; flex: 1; min-width: 200px; background:transparent;">' +
+        '<div class="cit-block-actions" style="display:flex; align-items:center; gap:6px; flex-wrap: wrap;">' +
+          '<button class="ess-btn cit-btn-add-row" style="background:rgba(58,124,253,0.1); color:#3a7cfd; border:1px solid #3a7cfd; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;" title="Додати новий тест">+ Додати тест</button>' +
           '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити введені бали">Очистити дані</button>' +
-          '<button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження повністю">×</button>' +
+          '<button class="ess-btn ess-delete-btn btn-del-block" style="margin:0;" title="Видалити дослідження повністю">×</button>' +
         '</div>' +
       '</div>' +
       '<div class="cit-layout">' +
@@ -440,23 +440,17 @@ window.CIT_API = (function() {
         .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: inherit; }
         .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         
-        .cit-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .cit-block-title { border: none; font-size: 15px; font-weight: 700; color: #222; outline: none; flex: 1; min-width: 200px; background: transparent; }
-        .cit-block-title:focus { border-bottom: 2px solid #3a7cfd; }
-        .cit-block-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        
         .cit-layout { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
-        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; align-items: start; }
+        /* Зміна відступу: 4px по вертикалі, 10px по горизонталі */
+        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; width: 100%; align-items: start; }
         
-        /* Додано min-width: 0 щоб запобігти Grid Blowout при довгому тексті */
         .cit-test-row { display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e8f0; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); width: 100%; box-sizing: border-box; min-width: 0; }
         .cit-test-row:hover { background: #f1f5f9; border-color: #cbd5e1; }
         
         .cit-btn-edit { width: 30px; height: 30px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; border-radius: 4px; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
         .cit-btn-edit:hover { background: #e2e8f0; color: #0f172a; transform: scale(1.05); }
         
-        /* Налаштування для обрізання тексту всередині плашок з тестами */
         .cit-test-info { flex: 1; display: flex; flex-direction: column; margin-left: 4px; line-height: 1.3; overflow: hidden; min-width: 0; }
         .cit-test-info > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
         
@@ -487,11 +481,9 @@ window.CIT_API = (function() {
         .cit-add-block-btn { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: 1px solid #3a7cfd; background: rgba(58,124,253,0.08); color: #3a7cfd; border-radius: 5px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .cit-add-block-btn:hover { background: rgba(58,124,253,0.18); }
         
-        .cit-btn-add-row { background: rgba(58,124,253,0.1); color: #3a7cfd; border: 1px solid #3a7cfd; padding: 4px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        
-        /* МОБІЛЬНА АДАПТИВНІСТЬ */
         @media (max-width: 768px) { 
-          .cit-rows { grid-template-columns: 1fr; } 
+          /* Зміна відступу для мобільної версії: 4px по вертикалі */
+          .cit-rows { grid-template-columns: 1fr; gap: 4px; } 
           .cit-dashboard { grid-template-columns: 1fr 1fr; gap: 8px; }
           .cit-block-actions { width: 100%; justify-content: space-between; }
           .cit-btn-add-row, .btn-clear-block { flex: 1; text-align: center; }
