@@ -88,14 +88,18 @@ window.APP_API = (function() {
       var btnPrint = document.getElementById('g-print');
       if(btnPrint) btnPrint.addEventListener('click', function() { window.print(); });
 
+      // ПОВНІСТЮ ОНОВЛЕНА КНОПКА ЗАГАЛЬНОГО ОЧИЩЕННЯ
       var btnClear = document.getElementById('g-clear');
       if(btnClear) btnClear.addEventListener('click', function() {
-        if(confirm('Очистити всі дані в обох вкладках (Нова сесія)?')) {
-          if(nameInp) nameInp.value = ''; 
-          if(dateInp) dateInp.value = '';
-          if(window.ESS_API) window.ESS_API.clearAll();
-          if(window.CIT_API) window.CIT_API.clearAll();
-          this.markUnsaved();
+        if(confirm('Очистити всі дані в обох вкладках (Почати нову сесію)?')) {
+          // Жорстке видалення всієї пам'яті
+          localStorage.removeItem('polygraph_suite_data');
+          localStorage.removeItem('ess_polygraph_data');
+          localStorage.removeItem('cit_standalone_data');
+          localStorage.removeItem('polygraph_suite_master_data');
+          
+          // Миттєве перезавантаження гарантує 100% чистий аркуш
+          location.reload();
         }
       }.bind(this));
 
