@@ -29,25 +29,29 @@ window.APP_API = (function() {
         URL.revokeObjectURL(url);
       }.bind(this));
 
-      // Функція обробки завантаженого файлу (з підтримкою старого формату)
+      // 100% надійний алгоритм імпорту
       var handleFileLoad = function(file) {
         var reader = new FileReader();
         reader.onload = function(evt) {
           try {
             var parsed = JSON.parse(evt.target.result);
             
-            // МІГРАЦІЯ: Якщо це старий файл тільки з ESS-M (де масив називався tests)
+            // Міграція для найстаріших файлів
             if (parsed.tests && !parsed.ess) {
                 parsed.ess = parsed.tests;
             }
 
-            if(parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
-            if(parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
-            if(parsed.ess && window.ESS_API) window.ESS_API.restoreState(parsed.ess);
-            if(parsed.cit && window.CIT_API) window.CIT_API.restoreState(parsed.cit);
+            // Прямий запис у пам'ять для уникнення конфліктів рендерингу
+            var cleanState = {
+              respondentName: parsed.respondentName || "",
+              examDate: parsed.examDate || "",
+              ess: parsed.ess || [],
+              cit: parsed.cit || []
+            };
+            localStorage.setItem('polygraph_suite_data', JSON.stringify(cleanState));
             
-            window.APP_API.performSave();
-            alert('Дані успішно завантажено!');
+            alert('Дані успішно завантажено! Сторінку буде оновлено для відображення змін.');
+            location.reload(); // Миттєве перезавантаження з новими даними
           } catch(err) { alert('Помилка читання файлу JSON. Файл пошкоджено або має невірний формат.'); }
         };
         reader.readAsText(file);
@@ -63,7 +67,6 @@ window.APP_API = (function() {
         });
       }
 
-      // Drag and Drop (Перетягування файлу)
       window.addEventListener('dragover', function(e) { 
         e.preventDefault(); 
         document.body.style.backgroundColor = '#e3f2fd'; 
@@ -88,17 +91,13 @@ window.APP_API = (function() {
       var btnPrint = document.getElementById('g-print');
       if(btnPrint) btnPrint.addEventListener('click', function() { window.print(); });
 
-      // ПОВНІСТЮ ОНОВЛЕНА КНОПКА ЗАГАЛЬНОГО ОЧИЩЕННЯ
       var btnClear = document.getElementById('g-clear');
       if(btnClear) btnClear.addEventListener('click', function() {
         if(confirm('Очистити всі дані в обох вкладках (Почати нову сесію)?')) {
-          // Жорстке видалення всієї пам'яті
           localStorage.removeItem('polygraph_suite_data');
           localStorage.removeItem('ess_polygraph_data');
           localStorage.removeItem('cit_standalone_data');
           localStorage.removeItem('polygraph_suite_master_data');
-          
-          // Миттєве перезавантаження гарантує 100% чистий аркуш
           location.reload();
         }
       }.bind(this));
@@ -172,15 +171,15 @@ window.APP_API = (function() {
           var parsed = JSON.parse(raw);
           if(parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
           if(parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
-          if(window.ESS_API) window.ESS_API.restoreState(parsed.ess);
-          if(window.CIT_API) window.CIT_API.restoreState(parsed.cit);
+          if(window.ESS_API) window.ESS_API.restoreState(parsed.ess || []);
+          if(window.CIT_API) window.CIT_API.restoreState(parsed.cit || []);
         } else {
-          if(window.ESS_API) window.ESS_API.restoreState(null);
-          if(window.CIT_API) window.CIT_API.restoreState(null);
+          if(window.ESS_API) window.ESS_API.restoreState([]);
+          if(window.CIT_API) window.CIT_API.restoreState([]);
         }
       } catch(e) {
-        if(window.ESS_API) window.ESS_API.restoreState(null);
-        if(window.CIT_API) window.CIT_API.restoreState(null);
+        if(window.ESS_API) window.ESS_API.restoreState([]);
+        if(window.CIT_API) window.CIT_API.restoreState([]);
       }
     }
   };
