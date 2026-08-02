@@ -114,10 +114,9 @@ window.CIT_API = (function() {
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
       
-      // Знято жирний шрифт із заголовка "Кількість тестів \ Бал"
       tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight: normal;">Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
-        tableHtml += '<th>' + s + '</th>';
+        tableHtml += '<th style="font-weight: normal;">' + s + '</th>';
       }
       tableHtml += '</tr></thead><tbody>';
 
@@ -133,7 +132,6 @@ window.CIT_API = (function() {
         
         var rowPr = calculateDynamicPr(rowTests);
         
-        // Знято жирний шрифт із номерів тестів у першій колонці
         tableHtml += '<tr><th style="font-weight: normal;">' + r + '</th>';
         for(var sc = 0; sc <= maxPossibleScore; sc++) {
           var pVal = (sc < rowPr.length) ? rowPr[sc] : 0;
@@ -168,7 +166,8 @@ window.CIT_API = (function() {
     if(!opts || opts.length < 4) opts = ["", "", "", ""];
     var keyIdx = parseInt(row.getAttribute('data-key-index') || "0", 10);
     var score = row.querySelector('.cit-score').value;
-    return { options: opts, keyIndex: keyIdx, score: score };
+    var theme = row.getAttribute('data-theme') || "";
+    return { theme: theme, options: opts, keyIndex: keyIdx, score: score };
   }
 
   function renderTestRow(block, testData, index) {
@@ -178,17 +177,20 @@ window.CIT_API = (function() {
     var opts = testData.options || ["", "", "", ""];
     var keyIdx = testData.keyIndex || 0;
     var keyText = opts[keyIdx] || "...";
+    var theme = testData.theme || "";
     
     r.setAttribute('data-options', JSON.stringify(opts));
     r.setAttribute('data-key-index', keyIdx);
     r.setAttribute('data-options-count', opts.length);
+    r.setAttribute('data-theme', theme);
 
     var scoreValue = testData.score != null ? String(testData.score) : '';
 
-    // Знято жирний шрифт (font-weight:normal) з назви "Тест №X"
+    var displayText = theme ? ('<span style="font-weight:normal; color:#333;">' + escapeHtml(theme) + '</span> \\ <b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>') : ('<b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>');
+
     r.innerHTML = 
       '<button class="ess-btn cit-btn-edit" style="width:28px; height:28px; font-size:14px; padding:0; display:flex; align-items:center; justify-content:center; border:1px solid #ccc; background:#fff; color:#555;" title="Редагувати питання">📝</button>' +
-      '<span class="cit-test-name" style="flex:1; font-size:13px; font-weight:normal; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:8px;">Тест №<span class="t-num">' + (index+1) + '</span>: <span style="color:#3a7cfd;">' + escapeHtml(keyText) + '</span></span>' +
+      '<span class="cit-test-name" style="flex:1; font-size:13px; font-weight:normal; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:8px;">№<span class="t-num">' + (index+1) + '</span>: ' + displayText + '</span>' +
       '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + escapeHtml(scoreValue) + '" title="Допустимо: 0, 1, 2, А">' +
       '<button class="ess-delete-btn btn-del-row" style="width:28px; height:28px; font-size:16px; line-height:1; margin-left:4px;">×</button>';
     
@@ -248,7 +250,7 @@ window.CIT_API = (function() {
       '<div class="cit-layout" style="' + gridStyle + '">' +
         '<div class="cit-tests-wrapper">' +
           '<div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; margin-bottom:6px; border-bottom:1px solid #eee; padding-bottom:4px;">' +
-            '<div style="width:28px;"></div><div style="flex:1; margin-left:8px;">ТЕСТ / КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:32px;"></div>' +
+            '<div style="width:28px;"></div><div style="flex:1; margin-left:8px;">ОЗНАКА \\ КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:32px;"></div>' +
           '</div>' +
           '<div class="cit-rows"></div>' +
           '<button class="ess-btn cit-btn-add-row" style="width:100%; margin-top:10px; justify-content:center; background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd;">+ Додати тест</button>' +
@@ -289,7 +291,7 @@ window.CIT_API = (function() {
     var btnAddRow = block.querySelector('.cit-btn-add-row');
     btnAddRow.addEventListener('click', function() { 
       var newIndex = block.querySelectorAll('.cit-test-row').length;
-      var newRow = renderTestRow(block, {options:["","","",""], keyIndex:0, score:""}, newIndex);
+      var newRow = renderTestRow(block, {theme:"", options:["","","",""], keyIndex:0, score:""}, newIndex);
       calcBlock(block);
       triggerUnsaved();
       openModal(block.id, newIndex, newRow);
@@ -298,14 +300,14 @@ window.CIT_API = (function() {
     var existingTests = 0;
     if(data && data.tests && data.tests.length > 0) {
       data.tests.forEach(function(t, i) { 
-        if(t.key !== undefined && !t.options) t = { options: [t.key, "", "", ""], keyIndex:0, score: t.score };
+        if(t.key !== undefined && !t.options) t = { theme: "", options: [t.key, "", "", ""], keyIndex:0, score: t.score };
         renderTestRow(block, t, i); 
         existingTests++;
       });
     }
     
     while(existingTests < 4) {
-      renderTestRow(block, {options:["","","",""], keyIndex:0, score:""}, existingTests);
+      renderTestRow(block, {theme:"", options:["","","",""], keyIndex:0, score:""}, existingTests);
       existingTests++;
     }
 
@@ -323,6 +325,9 @@ window.CIT_API = (function() {
         '<div class="ess-modal-header">' +
           '<h3 id="cit-modal-title">Питання для Тесту</h3>' +
           '<button class="ess-modal-close" id="cit-modal-close-x">&times;</button>' +
+        '</div>' +
+        '<div style="margin-bottom:12px;">' +
+          '<input type="text" id="cit-modal-theme-input" placeholder="Назва тесту (ознака, напр. Зброя)..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:13px; font-family:inherit;">' +
         '</div>' +
         '<div style="font-size:11px; color:#666; margin-bottom:10px;">Введіть усі варіанти відповідей (мінімум 4). Відмітьте радіокнопкою те питання, яке є Ключем.</div>' +
         '<div class="ess-modal-body" id="cit-modal-options-list" style="max-height:50vh; overflow-y:auto; padding-right:5px;"></div>' +
@@ -364,14 +369,17 @@ window.CIT_API = (function() {
         return;
       }
 
+      var themeVal = document.getElementById('cit-modal-theme-input').value.trim();
+
       targetRow.setAttribute('data-options', JSON.stringify(opts));
       targetRow.setAttribute('data-key-index', keyIdx);
       targetRow.setAttribute('data-options-count', opts.length);
+      targetRow.setAttribute('data-theme', themeVal);
       
       var keyText = opts[keyIdx] || "...";
+      var displayText = themeVal ? ('<span style="font-weight:normal; color:#333;">' + escapeHtml(themeVal) + '</span> \\ <b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>') : ('<b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>');
       
-      // Знято жирний шрифт (font-weight:normal) з назви "Тест №X"
-      targetRow.querySelector('.cit-test-name').innerHTML = 'Тест №<span class="t-num">' + (currentEditTestIndex+1) + '</span>: <span style="color:#3a7cfd;">' + escapeHtml(keyText) + '</span>';
+      targetRow.querySelector('.cit-test-name').innerHTML = '№<span class="t-num">' + (currentEditTestIndex+1) + '</span>: ' + displayText;
 
       calcBlock(block);
       triggerUnsaved();
@@ -410,9 +418,11 @@ window.CIT_API = (function() {
     currentEditTestIndex = testIndex;
     
     document.getElementById('cit-modal-title').textContent = "Питання для Тесту №" + (testIndex + 1);
-    modalOptsContainer.innerHTML = '';
-
+    
     var state = getTestState(rowEl);
+    document.getElementById('cit-modal-theme-input').value = state.theme || "";
+
+    modalOptsContainer.innerHTML = '';
     state.options.forEach(function(opt, idx) {
       renderModalOption(opt, idx === state.keyIndex);
     });
@@ -544,15 +554,16 @@ window.CIT_API = (function() {
         
         var validCount = 0; var totScore = 0; var validParams = [];
         
-        md += '| № | Ключ | Фойли (Інші варіанти) | Бал ЕДА |\n';
+        md += '| № | Ознака \\ Ключ | Фойли (Інші варіанти) | Бал ЕДА |\n';
         md += '| :---: | :--- | :--- | :---: |\n';
 
         b.tests.forEach(function(t, i) {
           var s = t.score === '' ? '-' : t.score;
           var keyText = t.options[t.keyIndex] || "-";
+          var themeStr = t.theme ? (t.theme + ' \\ ') : '';
           var foils = t.options.filter(function(opt, fi) { return fi !== t.keyIndex; }).join(", ");
           
-          md += '| ' + (i+1) + ' | **' + keyText + '** | ' + foils + ' | **' + s + '** |\n';
+          md += '| ' + (i+1) + ' | ' + themeStr + '**' + keyText + '** | ' + foils + ' | **' + s + '** |\n';
           
           if(s!=='А' && s!=='A' && s!=='-') {
             validCount++; 
