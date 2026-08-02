@@ -14,14 +14,14 @@ window.CIT_API = (function() {
     if(window.APP_API) window.APP_API.markUnsaved();
   };
 
-  // Динамічний розрахунок ймовірностей (Поліноміальний розподіл)
-  // Враховує різну кількість опцій (k) у кожному тесті.
-  function calculateDynamicPr(validTests) {
-    if (validTests.length === 0) return [];
+  // Алгоритм точної калькуляції ймовірностей (Поліноміальний розподіл).
+  // Ідеально підтримує стандартну матрицю Ліккена
+  function calculateDynamicPr(testsArray) {
+    if (testsArray.length === 0) return [];
     var poly = [1.0];
-    for (var i = 0; i < validTests.length; i++) {
-      var k = validTests[i].optionsCount;
-      if (k < 3) k = 3; // Захист від ділення на 0, хоча мінімум 4
+    for (var i = 0; i < testsArray.length; i++) {
+      var k = testsArray[i].optionsCount;
+      if (k < 3) k = 3; 
       var p2 = 1 / k;
       var p1 = 1 / k;
       var p0 = (k - 2) / k;
@@ -35,7 +35,6 @@ window.CIT_API = (function() {
       poly = next_poly;
     }
     
-    // Кумулятивна ймовірність P(Score >= s)
     var cumulative = new Array(poly.length).fill(0);
     var sum = 0;
     for (var m = poly.length - 1; m >= 0; m--) {
@@ -101,7 +100,6 @@ window.CIT_API = (function() {
         decEl.className = 'cit-dash-value val-decision ' + (isRI ? 'val-ri' : 'val-nri');
       }
 
-      // Розрахунок динамічної ймовірності
       var cumulativePr = calculateDynamicPr(validTestsParams);
       var currentPr = (totalScore < cumulativePr.length) ? cumulativePr[totalScore] : 0;
       var probDisplay = formatPr(currentPr);
@@ -111,22 +109,48 @@ window.CIT_API = (function() {
         probEl.style.color = isRI ? '#d32f2f' : '#2e7d32';
       }
 
-      // Генерація динамічної 1D таблиці
-      var maxPossibleScore = validCount * 2;
-      var tableHtml = '<div class="cit-matrix-title">Динамічна таблиця ймовірностей (Pr) для поточного дослідження</div>';
-      tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th>Бал</th>';
+      // ГЕНЕРАЦІЯ МУЛЬТИ-РЯДКОВОЇ ТАБЛИЦІ
+      var baseTests = validTestsParams;
+      var startRow = Math.max(3, validCount - 2);
+      var endRow = Math.max(startRow + 4, validCount + 2); // Гарантує мінімум 5 рядків
+
+      var maxPossibleScore = endRow * 2;
+      var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
+      tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th>Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
         tableHtml += '<th>' + s + '</th>';
       }
-      tableHtml += '</tr></thead><tbody><tr><th>Pr</th>';
-      
-      for(var s2 = 0; s2 <= maxPossibleScore; s2++) {
-        var pVal = (s2 < cumulativePr.length) ? cumulativePr[s2] : 0;
-        var pStr = formatPr(pVal);
-        var activeClass = (s2 === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
-        tableHtml += '<td class="' + activeClass + '">' + pStr + '</td>';
+      tableHtml += '</tr></thead><tbody>';
+
+      for (var r = startRow; r <= endRow; r++) {
+        var rowTests = [];
+        for (var i = 0; i < r; i++) {
+          if (i < baseTests.length) {
+            rowTests.push(baseTests[i]);
+          } else {
+            // Для теоретичних майбутніх рядків припускаємо структуру останнього придатного тесту
+            rowTests.push(baseTests[baseTests.length - 1]);
+          }
+        }
+        
+        var rowPr = calculateDynamicPr(rowTests);
+        
+        tableHtml += '<tr><th>' + r + '</th>';
+        for(var sc = 0; sc <= maxPossibleScore; sc++) {
+          var pVal = (sc < rowPr.length) ? rowPr[sc] : 0;
+          var pStr = formatPr(pVal);
+          
+          if (sc > r * 2) pStr = ""; // Ховаємо неможливі бали
+
+          // Щоб відповідати Ліккену, високі ймовірності в початкових стовпцях візуалізуються як >.99
+          if (sc < 3 && pStr === "> 99%") pStr = ">.99"; 
+          
+          var activeClass = (r === validCount && sc === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
+          tableHtml += '<td class="' + activeClass + '">' + pStr + '</td>';
+        }
+        tableHtml += '</tr>';
       }
-      tableHtml += '</tr></tbody></table>';
+      tableHtml += '</tbody></table>';
       
       if(matrixWrapper) matrixWrapper.innerHTML = tableHtml;
 
@@ -255,18 +279,15 @@ window.CIT_API = (function() {
       openModal(block.id, newIndex, newRow);
     });
 
-    // Відновлення або створення нових
     var existingTests = 0;
     if(data.tests && data.tests.length > 0) {
       data.tests.forEach(function(t, i) { 
-        // Міграція зі старого формату (якщо був лише key)
         if(t.key !== undefined && !t.options) t = { options: [t.key, "", "", ""], keyIndex:0, score: t.score };
         renderTestRow(block, t, i); 
         existingTests++;
       });
     }
     
-    // Мінімум 4 тести для дослідження CIT
     while(existingTests < 4) {
       renderTestRow(block, {options:["","","",""], keyIndex:0, score:""}, existingTests);
       existingTests++;
@@ -513,7 +534,7 @@ window.CIT_API = (function() {
         b.tests.forEach(function(t, i) {
           var s = t.score === '' ? '-' : t.score;
           var keyText = t.options[t.keyIndex] || "-";
-          var foils = t.options.filter((opt, fi) => fi !== t.keyIndex).join(", ");
+          var foils = t.options.filter(function(opt, fi) { return fi !== t.keyIndex; }).join(", ");
           
           md += '| ' + (i+1) + ' | **' + keyText + '** | ' + foils + ' | **' + s + '** |\n';
           
