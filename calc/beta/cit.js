@@ -442,7 +442,6 @@ window.CIT_API = (function() {
         
         .cit-layout { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
-        /* Зміна відступу: 4px по вертикалі, 10px по горизонталі */
         .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; width: 100%; align-items: start; }
         
         .cit-test-row { display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e8f0; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); width: 100%; box-sizing: border-box; min-width: 0; }
@@ -478,11 +477,14 @@ window.CIT_API = (function() {
         .cit-cell-active.res-nri { background-color: #2e7d32 !important; color: #ffffff !important; }
         
         .cit-conclusion-box { padding: 8px 10px; background: rgba(128,128,128,0.04); border: 1px solid #ddd; border-radius: 4px; font-size: 12px; line-height: 1.4; color: #333; }
-        .cit-add-block-btn { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: 1px solid #3a7cfd; background: rgba(58,124,253,0.08); color: #3a7cfd; border-radius: 5px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .cit-add-block-btn:hover { background: rgba(58,124,253,0.18); }
+        
+        /* ЗМІНЕНИЙ СТИЛЬ КНОПКИ (Суцільний синій) */
+        .cit-add-block-btn { width: 100%; padding: 10px; font-size: 14px; font-weight: bold; border: none; background-color: #3a7cfd; color: #ffffff; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; margin-top: 15px; box-shadow: 0 2px 4px rgba(58,124,253,0.2); }
+        .cit-add-block-btn:hover { background-color: #2563eb; box-shadow: 0 4px 6px rgba(58,124,253,0.3); }
+        
+        .cit-btn-add-row { background: rgba(58,124,253,0.1); color: #3a7cfd; border: 1px solid #3a7cfd; padding: 4px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         
         @media (max-width: 768px) { 
-          /* Зміна відступу для мобільної версії: 4px по вертикалі */
           .cit-rows { grid-template-columns: 1fr; gap: 4px; } 
           .cit-dashboard { grid-template-columns: 1fr 1fr; gap: 8px; }
           .cit-block-actions { width: 100%; justify-content: space-between; }
