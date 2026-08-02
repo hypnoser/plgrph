@@ -38,8 +38,9 @@ window.APP_API = (function() {
               var parsed = JSON.parse(evt.target.result);
               if(parsed.respondentName !== undefined) nameInp.value = parsed.respondentName;
               if(parsed.examDate !== undefined) dateInp.value = parsed.examDate;
-              if(parsed.ess) window.ESS_API.restoreState(parsed.ess);
-              if(parsed.cit) window.CIT_API.restoreState(parsed.cit);
+              
+              window.ESS_API.restoreState(parsed.ess || null);
+              window.CIT_API.restoreState(parsed.cit || null);
               
               this.performSave();
               alert('Дані успішно завантажено!');
@@ -124,8 +125,8 @@ window.APP_API = (function() {
           var parsed = JSON.parse(raw);
           if(parsed.respondentName !== undefined) nameInp.value = parsed.respondentName;
           if(parsed.examDate !== undefined) dateInp.value = parsed.examDate;
-          if(parsed.ess) window.ESS_API.restoreState(parsed.ess);
-          if(parsed.cit) window.CIT_API.restoreState(parsed.cit);
+          window.ESS_API.restoreState(parsed.ess);
+          window.CIT_API.restoreState(parsed.cit);
         } else {
           window.ESS_API.restoreState(null);
           window.CIT_API.restoreState(null);
