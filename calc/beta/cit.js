@@ -113,7 +113,6 @@ window.CIT_API = (function() {
 
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
-      
       tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight: normal;">Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
         tableHtml += '<th style="font-weight: normal;">' + s + '</th>';
@@ -237,23 +236,18 @@ window.CIT_API = (function() {
     block.className = 'cit-block';
     block.id = bId;
 
-    var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
-
     block.innerHTML = 
-      '<div class="cit-block-header">' +
-        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
+      '<div class="cit-block-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px dashed #ccc; padding-bottom:10px;">' +
+        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження..." style="border:none; font-size:14px; font-weight:700; color:#222; outline:none; width:100%; max-width:350px; background:transparent;">' +
         '<div style="display:flex; align-items:center; gap:6px;">' +
-          '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити цифри цієї таблиці">Очистити пам\'ять</button>' +
+          '<button class="ess-btn cit-btn-add-row" style="background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;" title="Додати новий тест">+ Додати тест</button>' +
+          '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити цифри цієї таблиці">Очистити дані</button>' +
           '<button class="ess-btn ess-delete-btn btn-del-block" style="margin:0;" title="Видалити дослідження повністю">×</button>' +
         '</div>' +
       '</div>' +
-      '<div class="cit-layout" style="' + gridStyle + '">' +
-        '<div class="cit-tests-wrapper">' +
-          '<div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; margin-bottom:6px; border-bottom:1px solid #eee; padding-bottom:4px;">' +
-            '<div style="width:28px;"></div><div style="flex:1; margin-left:8px;">ОЗНАКА \\ КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:32px;"></div>' +
-          '</div>' +
+      '<div>' +
+        '<div class="cit-tests-wrapper" style="margin-bottom:20px;">' +
           '<div class="cit-rows"></div>' +
-          '<button class="ess-btn cit-btn-add-row" style="width:100%; margin-top:10px; justify-content:center; background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd;">+ Додати тест</button>' +
         '</div>' +
         '<div class="cit-results-wrapper">' +
           '<div class="cit-dashboard">' +
@@ -272,6 +266,8 @@ window.CIT_API = (function() {
     blocksContainer.appendChild(block);
 
     block.querySelector('.cit-block-title').addEventListener('input', triggerUnsaved);
+    block.querySelector('.cit-block-title').addEventListener('focus', function(e) { e.target.style.borderBottom = '2px solid #3a7cfd'; });
+    block.querySelector('.cit-block-title').addEventListener('blur', function(e) { e.target.style.borderBottom = 'none'; });
     
     block.querySelector('.btn-del-block').addEventListener('click', function() {
       if(confirm('Видалити це дослідження повністю?')) { block.remove(); triggerUnsaved(); }
@@ -439,14 +435,12 @@ window.CIT_API = (function() {
       citStyles.innerHTML = `
         .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: inherit; }
         .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .cit-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 8px; }
-        .cit-block-title { border: none; font-size: 14px; font-weight: 700; color: #222; outline: none; width: 100%; max-width: 350px; background: transparent; }
-        .cit-block-title:focus { border-bottom: 2px solid #3a7cfd; }
         
-        .cit-layout { display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start; }
-        @media (max-width: 768px) { .cit-layout { grid-template-columns: 1fr; } }
+        /* 2-КОЛОНКОВА СІТКА ДЛЯ ТЕСТІВ */
+        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+        @media (max-width: 768px) { .cit-rows { grid-template-columns: 1fr; } }
         
-        .cit-test-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; transition: background 0.2s; }
+        .cit-test-row { display: flex; gap: 6px; align-items: center; background: #f8fafc; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; transition: background 0.2s; }
         .cit-test-row:hover { background: #f1f5f9; }
         .cit-score { width: 40px; text-align: center; font-weight: 800; font-size: 13px; border: 1px solid #ccc; border-radius: 3px; padding: 5px; outline: none; }
         .cit-score:focus { border-color: #3a7cfd; }
@@ -478,7 +472,6 @@ window.CIT_API = (function() {
         @media print {
           .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row, .cit-btn-edit, .btn-clear-block { display: none !important; }
           .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
-          .cit-layout { display: block !important; }
           .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
           .cit-cell-dimmed { opacity: 1 !important; color: #666 !important; }
         }
