@@ -14,8 +14,7 @@ window.CIT_API = (function() {
     if(window.APP_API) window.APP_API.markUnsaved();
   };
 
-  // Алгоритм точної калькуляції ймовірностей (Поліноміальний розподіл).
-  // Ідеально підтримує стандартну матрицю Ліккена
+  // Алгоритм точної калькуляції ймовірностей (Поліноміальний розподіл)
   function calculateDynamicPr(testsArray) {
     if (testsArray.length === 0) return [];
     var poly = [1.0];
@@ -91,7 +90,7 @@ window.CIT_API = (function() {
     } else if(validCount < 3) {
       if(decEl) { decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-decision val-no'; }
       if(probEl) { probEl.textContent = '-'; probEl.style.color = '#222'; }
-      if(matrixWrapper) matrixWrapper.innerHTML = '<div style="color:#d32f2f; font-size:11px;"><b>Увага:</b> Для роботи статистичної матриці необхідно щонайменше <b>3</b> придатних тести.</div>';
+      if(matrixWrapper) matrixWrapper.innerHTML = '<div style="color:#ff0000; font-size:11px;"><b>Увага:</b> Для роботи статистичної матриці необхідно щонайменше <b>3</b> придатних тести.</div>';
       if(conclusionEl) conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів (Введено: <b>'+validCount+'</b>).';
     } else {
       var isRI = totalScore >= validCount;
@@ -106,13 +105,13 @@ window.CIT_API = (function() {
 
       if(probEl) {
         probEl.textContent = probDisplay;
-        probEl.style.color = isRI ? '#d32f2f' : '#2e7d32';
+        probEl.style.color = isRI ? '#ff0000' : '#2e7d32';
       }
 
       // ГЕНЕРАЦІЯ МУЛЬТИ-РЯДКОВОЇ ТАБЛИЦІ
       var baseTests = validTestsParams;
       var startRow = Math.max(3, validCount - 2);
-      var endRow = Math.max(startRow + 4, validCount + 2); // Гарантує мінімум 5 рядків
+      var endRow = Math.max(startRow + 4, validCount + 2);
 
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
@@ -128,7 +127,6 @@ window.CIT_API = (function() {
           if (i < baseTests.length) {
             rowTests.push(baseTests[i]);
           } else {
-            // Для теоретичних майбутніх рядків припускаємо структуру останнього придатного тесту
             rowTests.push(baseTests[baseTests.length - 1]);
           }
         }
@@ -140,9 +138,8 @@ window.CIT_API = (function() {
           var pVal = (sc < rowPr.length) ? rowPr[sc] : 0;
           var pStr = formatPr(pVal);
           
-          if (sc > r * 2) pStr = ""; // Ховаємо неможливі бали
+          if (sc > r * 2) pStr = ""; 
 
-          // Щоб відповідати Ліккену, високі ймовірності в початкових стовпцях візуалізуються як >.99
           if (sc < 3 && pStr === "> 99%") pStr = ">.99"; 
           
           var activeClass = (r === validCount && sc === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
@@ -430,20 +427,32 @@ window.CIT_API = (function() {
         .cit-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
         .cit-dash-box { background: rgba(128,128,128,0.06); border: 1px solid #ddd; border-radius: 4px; padding: 6px 4px; text-align: center; }
         .cit-dash-label { font-size: 8.5px; font-weight: bold; color: #666; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* СТИЛІ ПЛАШКИ РІШЕННЯ З ПОВНОЮ ЗАЛИВКОЮ ТА БІЛИМ ТЕКСТОМ */
         .cit-dash-value { font-size: 15px; font-weight: 900; color: #222; margin-top: 2px; }
-        .val-ri { color: #d32f2f !important; }
-        .val-nri { color: #2e7d32 !important; }
-        .val-no { color: #757575 !important; }
+        .cit-dash-value.val-decision {
+          padding: 3px 10px;
+          border-radius: 4px;
+          display: inline-block;
+          color: #ffffff !important;
+          font-size: 14px;
+          letter-spacing: 0.5px;
+        }
+        .val-ri { background-color: #ff0000 !important; color: #ffffff !important; }
+        .val-nri { background-color: #2e7d32 !important; color: #ffffff !important; }
+        .val-no { background-color: #757575 !important; color: #ffffff !important; }
         
         .cit-matrix-wrapper { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px; overflow-x: auto; margin-bottom:10px; }
         .cit-matrix-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; color: #333; text-align:center; border-bottom:1px solid #eee; padding-bottom:4px; }
-        .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+        .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 10.5px; text-align: center; }
         .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 4px 2px; }
         .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: 800; }
         .cit-cell-dimmed { opacity: 0.3; background: #fafafa; }
+        
+        /* КЛІТИНКА МАТРИЦІ З ЯСКРАВО-ЧЕРВОНИМ КОЛЬОРОМ #ff0000 */
         .cit-cell-active { background-color: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.05); box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; z-index: 5; border:1px solid #fff; }
-        .cit-cell-active.res-ri { background-color: #d32f2f !important; }
-        .cit-cell-active.res-nri { background-color: #2e7d32 !important; }
+        .cit-cell-active.res-ri { background-color: #ff0000 !important; color: #ffffff !important; }
+        .cit-cell-active.res-nri { background-color: #2e7d32 !important; color: #ffffff !important; }
         
         .cit-conclusion-box { padding: 8px 10px; background: rgba(128,128,128,0.04); border: 1px solid #ddd; border-radius: 4px; font-size: 12px; line-height: 1.4; color: #333; }
         .cit-add-block-btn { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: 1px solid #3a7cfd; background: rgba(58,124,253,0.08); color: #3a7cfd; border-radius: 5px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
