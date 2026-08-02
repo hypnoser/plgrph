@@ -4,6 +4,16 @@ window.APP_API = (function() {
 
   return {
     init: function() {
+      // 1. ЖОРСТКЕ ПЕРЕХОПЛЕННЯ ТУЛБАРУ (Видалення старих обробників подій з ess.js)
+      ['g-save', 'g-open', 'g-save-json', 'g-markdown', 'g-print', 'g-clear'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if(el) {
+          var clone = el.cloneNode(true);
+          el.parentNode.replaceChild(clone, el);
+        }
+      });
+
+      // 2. Ініціалізація змінних
       saveStatus = document.getElementById('g-status');
       nameInp = document.getElementById('global-resp-name');
       dateInp = document.getElementById('global-exam-date');
@@ -11,6 +21,7 @@ window.APP_API = (function() {
       if(nameInp) nameInp.addEventListener('input', this.markUnsaved.bind(this));
       if(dateInp) dateInp.addEventListener('change', this.markUnsaved.bind(this));
 
+      // 3. Прив'язка нових глобальних подій
       var btnSave = document.getElementById('g-save');
       if(btnSave) btnSave.addEventListener('click', this.performSave.bind(this));
       
@@ -25,48 +36,54 @@ window.APP_API = (function() {
 
         var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
         var url = URL.createObjectURL(blob);
-        var a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+        var a = document.createElement("a"); 
+        a.href = url; 
+        a.download = filename; 
+        a.click();
         URL.revokeObjectURL(url);
       }.bind(this));
 
-      // 100% надійний алгоритм імпорту
       var handleFileLoad = function(file) {
         var reader = new FileReader();
         reader.onload = function(evt) {
           try {
             var parsed = JSON.parse(evt.target.result);
             
-            // Міграція для найстаріших файлів
+            // Міграція зі старих версій
             if (parsed.tests && !parsed.ess) {
                 parsed.ess = parsed.tests;
             }
 
-            // Прямий запис у пам'ять для уникнення конфліктів рендерингу
             var cleanState = {
               respondentName: parsed.respondentName || "",
               examDate: parsed.examDate || "",
               ess: parsed.ess || [],
               cit: parsed.cit || []
             };
-            localStorage.setItem('polygraph_suite_data', JSON.stringify(cleanState));
             
+            localStorage.setItem('polygraph_suite_data', JSON.stringify(cleanState));
             alert('Дані успішно завантажено! Сторінку буде оновлено для відображення змін.');
-            location.reload(); // Миттєве перезавантаження з новими даними
+            location.reload(); 
           } catch(err) { alert('Помилка читання файлу JSON. Файл пошкоджено або має невірний формат.'); }
         };
         reader.readAsText(file);
       };
 
       var fileInput = document.getElementById('file-import');
-      var btnOpen = document.getElementById('g-open');
-      if(btnOpen && fileInput) {
-        btnOpen.addEventListener('click', function() { fileInput.click(); });
-        fileInput.addEventListener('change', function(e) {
+      if(fileInput) {
+        var newFileInput = fileInput.cloneNode(true);
+        fileInput.parentNode.replaceChild(newFileInput, fileInput);
+        
+        var btnOpen = document.getElementById('g-open');
+        if(btnOpen) btnOpen.addEventListener('click', function() { newFileInput.click(); });
+        
+        newFileInput.addEventListener('change', function(e) {
           if(e.target.files[0]) handleFileLoad(e.target.files[0]);
-          fileInput.value = '';
+          newFileInput.value = '';
         });
       }
 
+      // Drag and Drop
       window.addEventListener('dragover', function(e) { 
         e.preventDefault(); 
         document.body.style.backgroundColor = '#e3f2fd'; 
@@ -133,7 +150,9 @@ window.APP_API = (function() {
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a"); 
         var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "";
-        a.href = url; a.download = 'polygraph-suite-' + safeResp + dateVal + '.md'; a.click();
+        a.href = url; 
+        a.download = 'polygraph-suite-' + safeResp + dateVal + '.md'; 
+        a.click();
         URL.revokeObjectURL(url);
       }.bind(this));
     },
