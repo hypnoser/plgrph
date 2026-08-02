@@ -1003,16 +1003,16 @@ window.ESS_API = (function() {
 
     restoreState: function(testsData) {
       testsContainer.innerHTML = "";
-      if (testsData && testsData.length > 0) {
+      if (Array.isArray(testsData) && testsData.length > 0) {
           testsData.forEach(function(d) { createTestTable(d); });
       } else {
-          createTestTable();
+          createTestTable(null);
       }
     },
 
     clearAll: function() {
       testsContainer.innerHTML = "";
-      createTestTable();
+      createTestTable(null);
     },
 
     getMarkdown: function() {
