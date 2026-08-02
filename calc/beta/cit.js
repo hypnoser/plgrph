@@ -49,14 +49,15 @@ window.CIT_API = (function() {
 
     var valCountEl = block.querySelector('.val-count');
     var valScoreEl = block.querySelector('.val-score');
-    if(valCountEl) valCountEl.textContent = validCount;
-    if(valScoreEl) valScoreEl.textContent = totalScore;
-
     var decEl = block.querySelector('.val-decision');
+    var probEl = block.querySelector('.val-prob');
     var statusEl = block.querySelector('.matrix-status');
     var conclusionEl = block.querySelector('.cit-conclusion-text');
     var matrixTable = block.querySelector('.cit-matrix-table');
     
+    if(valCountEl) valCountEl.textContent = validCount;
+    if(valScoreEl) valScoreEl.textContent = totalScore;
+
     // Очищення матриці
     var cells = block.querySelectorAll('.cit-matrix-cell');
     cells.forEach(function(c) { 
@@ -66,11 +67,13 @@ window.CIT_API = (function() {
 
     // Логіка рішень
     if(validCount === 0) {
-      if(decEl) { decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no'; }
+      if(decEl) { decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-decision val-no'; }
+      if(probEl) { probEl.textContent = '-'; }
       if(statusEl) { statusEl.textContent = 'Введіть дані'; statusEl.style.color = '#3a7cfd'; }
       if(conclusionEl) conclusionEl.innerHTML = 'Недостатньо даних для формування висновку.';
     } else if(validCount < 3) {
-      if(decEl) { decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-no'; }
+      if(decEl) { decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-decision val-no'; }
+      if(probEl) { probEl.textContent = '-'; }
       if(statusEl) { statusEl.textContent = 'Мін. 3 тести (Введено: '+validCount+')'; statusEl.style.color = '#666'; }
       if(conclusionEl) conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів. Введено балів: <b>'+validCount+'</b>. Для роботи таблиці ймовірностей (CIT) необхідно щонайменше <b>3</b> запитання.';
     } else {
@@ -79,7 +82,8 @@ window.CIT_API = (function() {
       var isRI = totalScore >= validCount;
       if(decEl) {
         decEl.textContent = isRI ? 'RI' : 'NRI';
-        decEl.className = 'cit-dash-value ' + (isRI ? 'val-ri' : 'val-nri');
+        // Важливо: зберігаємо базовий клас val-decision, щоб не втратити доступ до елемента
+        decEl.className = 'cit-dash-value val-decision ' + (isRI ? 'val-ri' : 'val-nri');
       }
       if(statusEl) {
         statusEl.textContent = isRI ? 'Впізнання (RI)' : 'Немає впізнання (NRI)';
@@ -88,6 +92,7 @@ window.CIT_API = (function() {
 
       var probStr = "";
       var probPercent = "";
+      var probDisplay = "-";
       
       if(validCount <= 8) {
         // Підсвітка клітинки
@@ -106,19 +111,26 @@ window.CIT_API = (function() {
           
           if (probStr !== "" && probStr !== "-" && probStr !== ">.9") {
             probPercent = probStr === "0.00" ? "< 1%" : Math.round(parseFloat(probStr) * 100) + '%';
+            probDisplay = "~ " + probPercent;
           } else if (probStr === ">.9") {
             probPercent = "> 90%";
+            probDisplay = probPercent;
           }
         }
       } else {
         if(statusEl) statusEl.textContent = (isRI ? 'RI' : 'NRI') + ' (Макс. 8 у матриці)';
       }
 
+      if(probEl) {
+        probEl.textContent = probDisplay;
+        probEl.style.color = isRI ? '#d32f2f' : '#222';
+      }
+
       if(conclusionEl) {
         if (isRI) {
-          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>RI (Recognition Indicated)</b> — наявні ознаки впізнання/знання деталей досліджуваної події.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним (не знає деталей), становить приблизно <b>' + probPercent + '</b>.' : '');
+          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>RI (Recognition Indicated)</b> — наявні ознаки впізнання/знання деталей досліджуваної події.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним (не знає деталей), становить <b>' + probPercent + '</b>.' : '');
         } else {
-          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>NRI (No Recognition Indicated)</b> — ознаки впізнання прихованої інформації відсутні.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним відносно деталей, становить приблизно <b>' + probPercent + '</b>.' : '');
+          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>NRI (No Recognition Indicated)</b> — ознаки впізнання прихованої інформації відсутні.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним відносно деталей, становить <b>' + probPercent + '</b>.' : '');
         }
       }
     }
@@ -147,12 +159,15 @@ window.CIT_API = (function() {
     }
     matrixHtml += '</tbody></table>';
 
+    // Зміна пропорції на 35%
+    var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
+
     block.innerHTML = 
       '<div class="cit-block-header">' +
         '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
         '<button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження">×</button>' +
       '</div>' +
-      '<div class="cit-layout">' + // CSS Grid на 35% контролюється стилями нижче
+      '<div class="cit-layout" style="' + gridStyle + '">' +
         '<div class="cit-tests-wrapper">' +
           '<div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; padding-left:18px; margin-bottom:4px;">' +
             '<div style="flex:1;">КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:24px;"></div>' +
@@ -164,7 +179,8 @@ window.CIT_API = (function() {
           '<div class="cit-dashboard">' +
             '<div class="cit-dash-box"><div class="cit-dash-label">Кількість</div><div class="cit-dash-value val-count">-</div></div>' +
             '<div class="cit-dash-box"><div class="cit-dash-label">Заг. бал</div><div class="cit-dash-value val-score">-</div></div>' +
-            '<div class="cit-dash-box"><div class="cit-dash-label">Рішення</div><div class="cit-dash-value val-decision">N/A</div></div>' +
+            '<div class="cit-dash-box"><div class="cit-dash-label">Рішення</div><div class="cit-dash-value val-decision val-no">N/A</div></div>' +
+            '<div class="cit-dash-box"><div class="cit-dash-label">Pr (Наївність)</div><div class="cit-dash-value val-prob">-</div></div>' +
           '</div>' +
           '<div class="cit-matrix-wrapper">' +
             '<div class="cit-matrix-title"><span>Матриця ймовірностей (Pr)</span><span class="matrix-status" style="color:#3a7cfd;">Введіть дані</span></div>' +
@@ -262,10 +278,11 @@ window.CIT_API = (function() {
         .cit-score { width: 40px; text-align: center; font-weight: 800; font-size: 13px; }
         .cit-score.artifact { background: #fff7ed; border-color: #f97316; color: #ea580c; }
         
-        .cit-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-        .cit-dash-box { background: rgba(128,128,128,0.06); border: 1px solid #ddd; border-radius: 4px; padding: 8px; text-align: center; }
-        .cit-dash-label { font-size: 9px; font-weight: bold; color: #666; text-transform: uppercase; }
-        .cit-dash-value { font-size: 16px; font-weight: 900; color: #222; margin-top: 2px; }
+        /* 4 колонки в дашборді */
+        .cit-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        .cit-dash-box { background: rgba(128,128,128,0.06); border: 1px solid #ddd; border-radius: 4px; padding: 6px 4px; text-align: center; }
+        .cit-dash-label { font-size: 8.5px; font-weight: bold; color: #666; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cit-dash-value { font-size: 15px; font-weight: 900; color: #222; margin-top: 2px; }
         .val-ri { color: #d32f2f !important; }
         .val-nri { color: #2e7d32 !important; }
         .val-no { color: #757575 !important; }
@@ -339,7 +356,6 @@ window.CIT_API = (function() {
       blocksContainer.innerHTML = '';
       blockCounter = 0;
       
-      // Захист від старих форматів збереження
       var validData = null;
       if (Array.isArray(data)) validData = data;
       else if (data && Array.isArray(data.blocks)) validData = data.blocks;
