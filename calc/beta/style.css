@@ -241,3 +241,10 @@ td.col-disabled input.score-input { display: none !important; }
   .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
   .cit-matrix-table.has-data .cit-matrix-cell:not(.cit-cell-active) { opacity: 1 !important; color: #666 !important; }
 }
+/* Оптимізація друку PDF для ESS-M: заборона розриву блоку/графіка навпіл */
+@media print {
+  .ess-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
