@@ -1,22 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+window.ESS_API = (function() {
   
-  // ==========================================
-  // ОГОЛОШЕННЯ БАЗОВИХ ЗМІННИХ ТА UI ЕЛЕМЕНТІВ
-  // ==========================================
+  var appRoot, container, testsContainer, addBtnBottom;
   
-  var appRoot = document.getElementById("app");
-  var container = document.createElement("div");
-  container.className = "ess-module-container";
-  appRoot.appendChild(container);
-  
-  var isUnsaved = false;
-
-  var TEST_FORMATS = [
-    "ОБЕРІТЬ ФОРМАТ...", "DLST", "DLDT", "LEPET", 
-    "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", 
-    "BOST", "FEDERAL (BI-ZONE)", "FEDERAL ZCT", 
-    "UTAH ZCT", "UTAH MGQT"
-  ];
+  var TEST_FORMATS = [ "ОБЕРІТЬ ФОРМАТ...", "DLST", "DLDT", "LEPET", "AFMGQT (2RQ)", "AFMGQT (3RQ)", "AFMGQT (4RQ)", "BOST", "FEDERAL (BI-ZONE)", "FEDERAL ZCT", "UTAH ZCT", "UTAH MGQT" ];
   
   var formatConfig = {
       "ОБЕРІТЬ ФОРМАТ...": { cols: 0, forceDiag: false },
@@ -33,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
       "UTAH MGQT": { cols: 4, forceDiag: true }
   };
 
+  var colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
+
   var escapeHtml = function(str) {
     if (str === null || str === undefined) return "";
     return String(str).replace(/[&<>"']/g, function(m) {
@@ -40,140 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
-  var showError = function(msg) {
-    var errDiv = document.createElement("div");
-    errDiv.className = "ess-error-toast";
-    errDiv.innerHTML = "<b>⚠️ Увага:</b> " + escapeHtml(msg);
-    document.body.appendChild(errDiv);
-    setTimeout(function() {
-        errDiv.style.opacity = "0";
-        errDiv.style.transform = "translate(-50%, 20px)";
-        setTimeout(function() { errDiv.remove(); }, 300);
-    }, 5000);
-  };
-
-  var openHelpPage = function() {
-    window.open("info.html", "_blank");
-  };
-
-  var autoSaveTimeout;
-  var warningTimeout;
-  var colors = { tot: "#424242", 1: "#0072B2", 2: "#D55E00", 3: "#009E73", 4: "#CC79A7" };
-
-  var stateHistory = [];
-  var historyIndex = -1;
-  var isRestoringHistory = false;
-  var recordTimeout;
-
-  var parseStateData = function(data) {
-    if (Array.isArray(data)) return { respondentName: "", examDate: "", tests: data };
-    else if (data && data.tests) return data;
-    return { respondentName: "", examDate: "", tests: [] };
-  };
-
-  var collectState = function() {
-    var tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(function(wrapper) {
-      var ce = wrapper._cachedElements;
-      var titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
-      var checkedRadio = ce ? ce.typeRadios.find(function(r) { return r.checked; }) : wrapper.querySelector(".toggle-type input[type='radio']:checked");
-      var formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
-      
-      var elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
-      var elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
-      var elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
-      var elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
-      var elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
-      
-      var dynState = {
-        tot: elTot ? elTot.checked : true,
-        r1: elR1 ? elR1.checked : false,
-        r2: elR2 ? elR2.checked : false,
-        r3: elR3 ? elR3.checked : false,
-        r4: elR4 ? elR4.checked : false
-      };
-
-      var inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
-      var qInputs = ce ? ce.questionInputs : Array.from(wrapper.querySelectorAll(".ess-question-input"));
-      
-      var values = {};
-      inputs.forEach(function(inp) { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
-      var questions = {};
-      qInputs.forEach(function(inp) { questions[inp.getAttribute('data-q')] = inp.value; });
-      
-      var chartToggle4 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; }) : wrapper.querySelector(".chart-toggle[data-chart='4']");
-      var chartToggle5 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; }) : wrapper.querySelector(".chart-toggle[data-chart='5']");
-
-      return {
-        title: titleInput ? titleInput.value : "",
-        format: formatSelect ? formatSelect.value : "ОБЕРІТЬ ФОРМАТ...",
-        questions: questions,
-        type: checkedRadio ? checkedRadio.value : "screening",
-        dynState: dynState,
-        chartToggles: {
-          4: chartToggle4 ? chartToggle4.checked : true,
-          5: chartToggle5 ? chartToggle5.checked : true
-        },
-        values: values
-      };
-    });
-
-    return { 
-      respondentName: respondentInput.value, 
-      examDate: dateInput.value, 
-      tests: tests 
-    };
-  };
-
-  var recordState = function() {
-    if (isRestoringHistory) return;
-    var state = collectState();
-    var stateStr = JSON.stringify(state);
-    if (historyIndex >= 0 && JSON.stringify(stateHistory[historyIndex]) === stateStr) return;
-    
-    stateHistory = stateHistory.slice(0, historyIndex + 1);
-    stateHistory.push(state);
-    
-    if (stateHistory.length > 50) {
-      stateHistory.shift();
-    } else {
-      historyIndex++;
-    }
-    
-    updateUndoRedoButtons();
-  };
-
-  var debouncedRecordState = function() {
-    if (isRestoringHistory) return;
-    clearTimeout(recordTimeout);
-    recordTimeout = setTimeout(recordState, 300);
-  };
-
-  var restoreState = function(index) {
-    if (index < 0 || index >= stateHistory.length) return;
-    isRestoringHistory = true;
-    clearTimeout(recordTimeout);
-    historyIndex = index;
-    var stateToRestore = stateHistory[index];
-    
-    respondentInput.value = stateToRestore.respondentName || "";
-    dateInput.value = stateToRestore.examDate || "";
-    testsContainer.innerHTML = "";
-    
-    if (stateToRestore.tests && stateToRestore.tests.length > 0) {
-        stateToRestore.tests.forEach(function(d) { createTestTable(d); });
-    } else {
-        createTestTable();
-    }
-    
-    try {
-      localStorage.setItem("ess_polygraph_data", JSON.stringify(stateToRestore));
-      isUnsaved = false;
-      saveStatus.classList.remove("unsaved");
-      saveStatus.textContent = "🟢 Дані збережено";
-    } catch(e) {}
-    
-    updateUndoRedoButtons();
-    setTimeout(function() { isRestoringHistory = false; }, 100);
+  var triggerUnsaved = function() {
+    if(window.APP_API) window.APP_API.markUnsaved();
   };
 
   var updateTestNumbers = function() {
@@ -199,321 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
       while(str.length < len) str += ' ';
       return str;
   };
-
-  var saveToMarkdown = function() {
-      var respName = respondentInput.value.trim() || 'Невідомо';
-      var dateVal = dateInput.value || new Date().toISOString().slice(0,10);
-      
-      var md = '---\n';
-      md += 'tags:\n  - polygraph_report\n  - ess_m\n';
-      md += 'date: ' + dateVal + '\n';
-      md += 'respondent: ' + respName + '\n';
-      md += '---\n\n';
-      md += '# Звіт поліграфологічного тестування: ' + respName + '\n\n';
-      md += '**Дата проведення:** [[' + dateVal + ']]\n\n';
-      md += '## Спостереження за поведінкою під час тесту\n';
-      md += '<!-- Додайте ваші нотатки щодо поведінки, стану респондента та особливостей передтестової бесіди тут... -->\n\n';
-      md += '---\n\n';
-
-      var testWrappers = testsContainer.querySelectorAll('.ess-test-wrapper');
-      if(testWrappers.length === 0) {
-          md += '*Немає даних для відображення.*\n';
-      }
-
-      testWrappers.forEach(function(wrapper, index) {
-          var ce = wrapper._cachedElements;
-          if(!ce) return;
-          
-          var title = ce.titleInput.value || ('Тест ' + (index + 1));
-          var format = ce.formatSelect.value;
-          var checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
-          var type = (checkedRadio && checkedRadio.value === 'screening') ? 'Скринінговий' : 'Діагностичний';
-          var isScreening = (type === 'Скринінговий');
-          var allowedCols = (formatConfig[format] && formatConfig[format].cols) ? formatConfig[format].cols : 0;
-          
-          md += '### Тест №' + (index + 1) + ': ' + title + '\n';
-          md += '**Формат:** ' + format + ' | **Тип:** ' + type + '\n\n';
-
-          if(allowedCols === 0) {
-              md += '*Формат не обрано.*\n\n---\n\n';
-              return;
-          }
-
-          var activeCharts = [];
-          for(var c=1; c<=5; c++) {
-              var toggle = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') == c; });
-              if(!toggle || toggle.checked) activeCharts.push(c);
-          }
-
-          md += '**Матриця балів:**\n\n';
-          var th = '| ' + padR('Питання', 8) + ' |';
-          var sep = '| :------- |';
-          activeCharts.forEach(function(c) { 
-              th += ' ' + padR('C' + c, 4) + ' |'; 
-              sep += ' :---: |'; 
-          });
-          th += ' ' + padR('Subtotal', 8) + ' | ' + padR('Статус', 25) + ' |\n';
-          sep += ' :---: | :--- |\n';
-          md += th + sep;
-
-          var dynVals = wrapper._cachedDynamics || [];
-          var getSpotSum = function(c, col) {
-              var chartData = dynVals.find(function(d) { return d.chart == c; });
-              if(chartData && chartData.spots[col] !== undefined) return chartData.spots[col];
-              return "-";
-          };
-
-          for(var col = 1; col <= allowedCols; col++) {
-              var rowStr = '| **' + padR('R' + col, 6) + '** |';
-              activeCharts.forEach(function(c) {
-                  rowStr += ' ' + padR(getSpotSum(c, col), 4) + ' |';
-              });
-              var subSpan = ce.subtotals.find(function(s) { return s.getAttribute('data-col') == col; });
-              var subVal = subSpan ? subSpan.textContent : "-";
-              rowStr += ' **' + padR(subVal, 6) + '** |';
-
-              var statusCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == col; });
-              var statusText = "-";
-              if(statusCell) {
-                  var badge = statusCell.querySelector('.status-badge');
-                  if(badge) statusText = badge.textContent;
-              }
-              rowStr += ' ' + padR(colorizeStatus(statusText), 25) + ' |\n';
-              md += rowStr;
-          }
-
-          var gTotal = ce.grandTotal ? ce.grandTotal.textContent : "0";
-          var gRow = '| **' + padR('G. Total', 6) + '** |';
-          activeCharts.forEach(function() { gRow += ' ' + padR('', 4) + ' |'; });
-          gRow += ' **' + padR(gTotal, 6) + '** | ' + padR('', 25) + ' |\n';
-          md += gRow;
-
-          md += '\n**Контроль якості (QC & Аналіз):**\n';
-          var listItems = ce.dynamicsText.querySelectorAll('li');
-          listItems.forEach(function(li) {
-              var htmlContent = li.innerHTML;
-              htmlContent = htmlContent.replace(/<b>/g, '**').replace(/<\/b>/g, '**');
-              htmlContent = htmlContent.replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');
-              md += '- ' + htmlContent.trim() + '\n';
-          });
-
-          md += '\n**Висновок (Тест №' + (index + 1) + '):**\n';
-          
-          if (isScreening) {
-              md += "Цей скринінговий тест оцінює кожне питання незалежно.\n\n";
-              md += "**Результати за питаннями:**\n";
-              for(var cCol = 1; cCol <= allowedCols; cCol++) {
-                  var qInput = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol); });
-                  var qText = qInput ? qInput.value.trim() : '';
-                  var dispText = qText ? qText : 'Питання R' + cCol;
-                  
-                  var stCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == cCol; });
-                  var stBadge = ""; var pText = "";
-                  if(stCell) {
-                      var bNode = stCell.querySelector('.status-badge');
-                      var pNode = stCell.querySelector('.prob-text');
-                      if(bNode) stBadge = bNode.textContent;
-                      if(pNode) pText = pNode.textContent;
-                  }
-                  if (stBadge && stBadge !== '-' && stBadge !== 'N/A') {
-                      md += '- **R' + cCol + '** ("' + dispText + '"): ' + colorizeStatus(stBadge) + ' ' + (pText ? '(' + pText + ')' : '') + '\n';
-                  }
-              }
-              md += '\n**Загальний підсумок тесту:**\n';
-              var gStBadge = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
-              var gPr = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
-              if (gStBadge) {
-                  md += '> ' + colorizeStatus(gStBadge.textContent) + ' ' + (gPr ? '(' + gPr.textContent + ')' : '') + '\n\n';
-              }
-          } else {
-              md += "Цей діагностичний тест оцінює єдину тематику за сумою всіх релевантних питань.\n\n";
-              md += "**Перевірялась тематика:**\n";
-              for(var cCol2 = 1; cCol2 <= allowedCols; cCol2++) {
-                  var qInp2 = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol2); });
-                  var qTxt2 = qInp2 ? qInp2.value.trim() : '';
-                  if (qTxt2) md += '- R' + cCol2 + ': ' + qTxt2 + '\n';
-              }
-              md += '\n**Загальний підсумок тесту:**\n';
-              var gStB = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
-              var gP = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
-              if (gStB) {
-                  md += '> ' + colorizeStatus(gStB.textContent) + ' ' + (gP ? '(' + gP.textContent + ')' : '') + '\n\n';
-              }
-          }
-
-          md += '---\n\n';
-      });
-
-      var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a"); 
-      var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
-      a.href = url; 
-      a.download = 'ess-' + safeResp + dateVal + '.md'; 
-      a.click();
-      URL.revokeObjectURL(url);
-  };
-
-  var toolbar = document.createElement("div");
-  toolbar.className = "ess-toolbar";
-
-  var btnSave = document.createElement("button"); btnSave.className = "ess-toolbar-btn"; btnSave.innerHTML = "💾"; btnSave.title = "Зберегти"; btnSave.setAttribute("aria-label", "Зберегти"); btnSave.onclick = function() { clearTimeout(warningTimeout); clearTimeout(autoSaveTimeout); performSave(); };
-  var sep1 = document.createElement("div"); sep1.className = "ess-toolbar-sep";
-  var btnOpen = document.createElement("button"); btnOpen.className = "ess-toolbar-btn"; btnOpen.innerHTML = "📂"; btnOpen.title = "Відкрити (.json)"; btnOpen.setAttribute("aria-label", "Відкрити"); 
-  
-  var fileInput = document.getElementById("file-import");
-  if(fileInput) {
-      btnOpen.onclick = function() { fileInput.click(); };
-  } else {
-      fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = ".json";
-      fileInput.style.display = "none";
-      toolbar.appendChild(fileInput);
-      btnOpen.onclick = function() { fileInput.click(); };
-  }
-
-  var btnSaveJson = document.createElement("button"); btnSaveJson.className = "ess-toolbar-btn"; btnSaveJson.innerHTML = "📥"; btnSaveJson.title = "Зберегти (.json)"; btnSaveJson.setAttribute("aria-label", "Завантажити JSON"); btnSaveJson.onclick = function() { saveToFile(); };
-  var sep2 = document.createElement("div"); sep2.className = "ess-toolbar-sep";
-  var btnUndo = document.createElement("button"); btnUndo.className = "ess-toolbar-btn"; btnUndo.innerHTML = "↩️"; btnUndo.title = "Назад"; btnUndo.setAttribute("aria-label", "Назад"); btnUndo.onclick = function() { restoreState(historyIndex - 1); };
-  var btnRedo = document.createElement("button"); btnRedo.className = "ess-toolbar-btn"; btnRedo.innerHTML = "↪️"; btnRedo.title = "Вперед"; btnRedo.setAttribute("aria-label", "Вперед"); btnRedo.onclick = function() { restoreState(historyIndex + 1); };
-  
-  var updateUndoRedoButtons = function() {
-    btnUndo.disabled = historyIndex <= 0;
-    btnRedo.disabled = historyIndex >= stateHistory.length - 1;
-  };
-  
-  var sep3 = document.createElement("div"); sep3.className = "ess-toolbar-sep";
-  var btnMarkdown = document.createElement("button"); btnMarkdown.className = "ess-toolbar-btn"; btnMarkdown.innerHTML = "📝"; btnMarkdown.title = "Експорт у Markdown (.md)"; btnMarkdown.setAttribute("aria-label", "Експорт Markdown"); btnMarkdown.onclick = function() { saveToMarkdown(); };
-  
-  var btnPrint = document.createElement("button"); btnPrint.className = "ess-toolbar-btn"; btnPrint.innerHTML = "🖨️"; btnPrint.title = "Експорт PDF / Друк"; btnPrint.setAttribute("aria-label", "Друк"); btnPrint.onclick = function() { setTimeout(function() { window.print(); }, 150); };
-  var btnClearAll = document.createElement("button"); btnClearAll.className = "ess-toolbar-btn danger-btn"; btnClearAll.innerHTML = "🗑️"; btnClearAll.title = "Очистити всі дані (Нова сесія)"; btnClearAll.setAttribute("aria-label", "Очистити все"); 
-  btnClearAll.onclick = function() {
-    if (confirm("Ви впевнені, що хочете повністю очистити всі таблиці та П.І.Б. респондента? (Буде створено нову чисту сесію)")) {
-      respondentInput.value = ""; 
-      dateInput.value = "";
-      testsContainer.innerHTML = ""; 
-      createTestTable(); 
-      markUnsaved();
-    }
-  };
-  var sep4 = document.createElement("div"); sep4.className = "ess-toolbar-sep";
-  var btnHelp = document.createElement("button"); btnHelp.className = "ess-toolbar-btn"; btnHelp.innerHTML = "❓"; btnHelp.title = "Довідка / Інструкція"; btnHelp.setAttribute("aria-label", "Довідка"); btnHelp.onclick = function() { openHelpPage(); };
-  var saveStatus = document.createElement("div"); saveStatus.className = "ess-save-status"; saveStatus.textContent = "🟢 Дані збережено";
-
-  toolbar.appendChild(btnSave); toolbar.appendChild(sep1); toolbar.appendChild(btnOpen); toolbar.appendChild(btnSaveJson);
-  toolbar.appendChild(sep2); toolbar.appendChild(btnUndo); toolbar.appendChild(btnRedo); toolbar.appendChild(sep3);
-  toolbar.appendChild(btnMarkdown); toolbar.appendChild(btnPrint); toolbar.appendChild(btnClearAll); toolbar.appendChild(sep4); toolbar.appendChild(btnHelp);
-  toolbar.appendChild(saveStatus);
-
-  var respondentArea = document.createElement("div"); 
-  respondentArea.className = "ess-respondent-area";
-  
-  var nameWrapper = document.createElement("div");
-  nameWrapper.className = "ess-name-wrapper";
-  var respondentLabel = document.createElement("span"); respondentLabel.className = "ess-respondent-label"; respondentLabel.textContent = "П.І.Б. респондента:";
-  var respondentInput = document.createElement("input"); respondentInput.type = "text"; respondentInput.placeholder = "Введіть прізвище, ім'я та по батькові...";
-  respondentInput.autocomplete = "off"; respondentInput.spellcheck = false;
-  respondentInput.addEventListener("input", function() { markUnsaved(); });
-  nameWrapper.appendChild(respondentLabel); nameWrapper.appendChild(respondentInput);
-  
-  var dateWrapper = document.createElement("div");
-  dateWrapper.className = "ess-date-wrapper";
-  var dateLabel = document.createElement("span"); dateLabel.className = "ess-respondent-label"; dateLabel.textContent = "📅 Дата:";
-  var dateInput = document.createElement("input"); dateInput.type = "date"; dateInput.className = "ess-date-input";
-  dateInput.addEventListener("change", function() { markUnsaved(); });
-  dateWrapper.appendChild(dateLabel); dateWrapper.appendChild(dateInput);
-
-  respondentArea.appendChild(nameWrapper);
-  respondentArea.appendChild(dateWrapper);
-
-  var testsContainer = document.createElement("div");
-  var addBtnBottom = document.createElement("button"); addBtnBottom.className = "ess-add-btn"; addBtnBottom.textContent = "+ Додати обрахунок";
-
-  container.appendChild(toolbar); 
-  container.appendChild(respondentArea); 
-  container.appendChild(testsContainer); 
-  container.appendChild(addBtnBottom);
-
-  var performSave = function() {
-    if (!isUnsaved) return;
-    saveStatus.textContent = "⏳ Запис...";
-    try {
-      localStorage.setItem("ess_polygraph_data", JSON.stringify(collectState()));
-      isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
-    } catch (error) {
-      saveStatus.textContent = "❌ Помилка збереження!"; saveStatus.classList.add("unsaved"); showError("Помилка запису в localStorage: " + error.message);
-    }
-  };
-
-  var saveToFile = function() {
-    var resp = respondentInput.value.trim();
-    var safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
-    var dateStr = dateInput.value || new Date().toISOString().slice(0,10);
-    var filename = "ess-" + safeResp + dateStr + ".json";
-    
-    var blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a"); a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-    isUnsaved = false; saveStatus.classList.remove("unsaved"); saveStatus.textContent = "🟢 Дані збережено";
-  };
-
-  var handleFileLoad = function(file) {
-    if (isUnsaved) {
-      if (!confirm("У вас є незбережені дані! Відкриття нового файлу зітре поточні таблиці. Продовжити?")) return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        var stateToRestore = parseStateData(JSON.parse(e.target.result));
-        respondentInput.value = stateToRestore.respondentName || "";
-        dateInput.value = stateToRestore.examDate || "";
-        testsContainer.innerHTML = "";
-        
-        if (stateToRestore.tests && stateToRestore.tests.length > 0) {
-            stateToRestore.tests.forEach(function(d) { createTestTable(d); });
-        } else {
-            createTestTable();
-        }
-        
-        performSave();
-        saveStatus.textContent = "🟢 Дані завантажено";
-        stateHistory = []; historyIndex = -1; recordState();
-      } catch (err) { showError("Помилка завантаження файлу: " + err.message); }
-    };
-    reader.readAsText(file);
-  };
-
-  if(fileInput) {
-    fileInput.addEventListener("change", function(e) { 
-      if (e.target.files[0]) handleFileLoad(e.target.files[0]); 
-      e.target.value = ""; 
-    });
-  }
-
-  window.addEventListener('dragover', function(e) { e.preventDefault(); document.body.style.backgroundColor = '#e3f2fd'; });
-  window.addEventListener('dragleave', function(e) { e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5'; });
-  window.addEventListener('drop', function(e) {
-    e.preventDefault(); document.body.style.backgroundColor = '#f5f5f5';
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      var file = e.dataTransfer.files[0];
-      if (file.name.toLowerCase().indexOf('.json') !== -1) handleFileLoad(file);
-      else showError("Будь ласка, перетягніть файл саме у форматі .json");
-    }
-  });
-
-  var markUnsaved = function() {
-    if (!isUnsaved) { isUnsaved = true; saveStatus.classList.add("unsaved"); }
-    saveStatus.textContent = "🟠 ⚠️ Є незбережені зміни!";
-    if (warningTimeout) clearTimeout(warningTimeout); if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-    warningTimeout = setTimeout(function() { if (isUnsaved) saveStatus.textContent = "⏳ Автозбереження через 10 сек..."; }, 50000);
-    autoSaveTimeout = setTimeout(function() { performSave(); }, 60000);
-    debouncedRecordState();
-  };
-
-  window.addEventListener('beforeunload', function(e) { if (isUnsaved) { performSave(); e.preventDefault(); e.returnValue = 'У вас є незбережені дані!'; }});
-  container.addEventListener('focusout', function(e) { if (!container.contains(e.relatedTarget) && isUnsaved) performSave(); });
 
   var isArt = function(val) {
     if (val === null || val === undefined) return false;
@@ -1256,7 +797,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var th = wrapper.querySelector('.ess-th-question[data-th-col="' + qKey.replace('R','') + '"]');
         if (th) th.title = escapeHtml(inp.value ? qKey + ": " + inp.value : '');
       });
-      closeModal(); markUnsaved();
+      closeModal(); triggerUnsaved();
     });
 
     wrapper._cachedElements = {
@@ -1287,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyFormat(wrapper, formatVal);
 
     var calcTimeout;
-    var debouncedCalc = function() { clearTimeout(calcTimeout); calcTimeout = setTimeout(function() { calculateTest(wrapper); markUnsaved(); }, 50); };
+    var debouncedCalc = function() { clearTimeout(calcTimeout); calcTimeout = setTimeout(function() { calculateTest(wrapper); triggerUnsaved(); }, 50); };
 
     wrapper._cachedElements.formatSelect.addEventListener('change', function(e) {
         var newFormat = e.target.value;
@@ -1307,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (hasData) break;
             }
             if (hasData) {
-                showError('Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R' + (newConfig.cols + 1) + ') або використайте "Очистити пам\'ять".');
+                alert('Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R' + (newConfig.cols + 1) + ') або використайте "Очистити пам\'ять".');
                 e.target.value = prevFormat;
                 return;
             }
@@ -1321,21 +862,20 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.setAttribute('data-prev-val', newFormat);
         applyFormat(wrapper, newFormat);
         debouncedCalc();
-        markUnsaved();
+        triggerUnsaved();
     });
 
     wrapper.querySelectorAll('.chart-toggle').forEach(function(el) { el.addEventListener('change', debouncedCalc); });
     wrapper.querySelectorAll('.dyn-mode-toggle input').forEach(function(el) { el.addEventListener('change', debouncedCalc); });
     if(wrapper.querySelector(".contam-toggle")) wrapper.querySelector(".contam-toggle").addEventListener("change", debouncedCalc);
-    if(wrapper.querySelector(".ess-test-title-area input[type='text']")) wrapper.querySelector(".ess-test-title-area input[type='text']").addEventListener('input', markUnsaved);
+    if(wrapper.querySelector(".ess-test-title-area input[type='text']")) wrapper.querySelector(".ess-test-title-area input[type='text']").addEventListener('input', triggerUnsaved);
     wrapper.querySelectorAll(".toggle-type input[type='radio']").forEach(function(el) { el.addEventListener('change', debouncedCalc); });
 
     wrapper.querySelector(".ess-delete-btn").addEventListener("click", function() {
       if (confirm("Видалити цей тест?")) {
         wrapper.remove();
         updateTestNumbers();
-        addBtnBottom.focus();
-        markUnsaved();
+        triggerUnsaved();
       }
     });
 
@@ -1396,68 +936,212 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTest(wrapper);
   };
 
-  addBtnBottom.addEventListener("click", function() { createTestTable(); markUnsaved(); });
+  return {
+    init: function() {
+      appRoot = document.getElementById("app");
+      container = document.createElement("div");
+      container.className = "ess-module-container";
+      
+      testsContainer = document.createElement("div");
+      addBtnBottom = document.createElement("button"); 
+      addBtnBottom.className = "ess-add-btn"; 
+      addBtnBottom.textContent = "+ Додати обрахунок ESS-M";
+      addBtnBottom.addEventListener("click", function() { createTestTable(); triggerUnsaved(); });
 
-  var initApp = function() {
-    var loadedData = { respondentName: "", examDate: "", tests: [] };
-    try {
-      var raw = localStorage.getItem("ess_polygraph_data");
-      if (raw) loadedData = parseStateData(JSON.parse(raw));
-    } catch (e) { showError("Помилка завантаження даних."); }
-    
-    respondentInput.value = loadedData.respondentName || "";
-    dateInput.value = loadedData.examDate || "";
-    
-    if (loadedData.tests && loadedData.tests.length > 0) {
-        loadedData.tests.forEach(function(data) { createTestTable(data); });
-    } else {
-        createTestTable();
-    }
-    
-    isRestoringHistory = false; recordState();
-  };
+      container.appendChild(testsContainer); 
+      container.appendChild(addBtnBottom);
+      appRoot.appendChild(container);
+    },
 
-  // ==========================================
-  // 1. АВТОРИЗАЦІЯ ТА ПАРОЛЬ (ВИКЛИК В КІНЦІ)
-  // ==========================================
-  var authOverlay = document.getElementById('auth-overlay');
-  var mainAppContainer = document.getElementById('main-app-container');
-  var passInput = document.getElementById('auth-password');
-  var authBtn = document.getElementById('auth-submit-btn');
-  var authError = document.getElementById('auth-error');
+    collectState: function() {
+      var tests = Array.from(testsContainer.querySelectorAll(".ess-test-wrapper")).map(function(wrapper) {
+        var ce = wrapper._cachedElements;
+        var titleInput = ce ? ce.titleInput : wrapper.querySelector(".ess-test-title-area input[type='text']");
+        var checkedRadio = ce ? ce.typeRadios.find(function(r) { return r.checked; }) : wrapper.querySelector(".toggle-type input[type='radio']:checked");
+        var formatSelect = ce ? ce.formatSelect : wrapper.querySelector(".ess-format-select");
+        
+        var elTot = wrapper.querySelector('input[id^="dyn_tot_"]');
+        var elR1 = wrapper.querySelector('input[id^="dyn_r1_"]');
+        var elR2 = wrapper.querySelector('input[id^="dyn_r2_"]');
+        var elR3 = wrapper.querySelector('input[id^="dyn_r3_"]');
+        var elR4 = wrapper.querySelector('input[id^="dyn_r4_"]');
+        
+        var dynState = {
+          tot: elTot ? elTot.checked : true,
+          r1: elR1 ? elR1.checked : false,
+          r2: elR2 ? elR2.checked : false,
+          r3: elR3 ? elR3.checked : false,
+          r4: elR4 ? elR4.checked : false
+        };
 
-  var isAuthorized = false;
-  try {
-    isAuthorized = localStorage.getItem('ess_auth_passed') === 'true';
-  } catch(e) {}
+        var inputs = ce ? ce.inputs : Array.from(wrapper.querySelectorAll("input.score-input"));
+        var qInputs = ce ? ce.questionInputs : Array.from(wrapper.querySelectorAll(".ess-question-input"));
+        
+        var values = {};
+        inputs.forEach(function(inp) { values[inp.getAttribute('data-chart') + '_' + inp.getAttribute('data-col') + '_' + inp.getAttribute('data-row')] = inp.value; });
+        var questions = {};
+        qInputs.forEach(function(inp) { questions[inp.getAttribute('data-q')] = inp.value; });
+        
+        var chartToggle4 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '4'; }) : wrapper.querySelector(".chart-toggle[data-chart='4']");
+        var chartToggle5 = ce ? ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; }) : wrapper.querySelector(".chart-toggle[data-chart='5']");
 
-  var unlockApp = function(saveToLocal) {
-    authOverlay.style.display = 'none';
-    mainAppContainer.style.display = 'block';
-    if (saveToLocal) {
-      try { localStorage.setItem('ess_auth_passed', 'true'); } catch(e) {}
-    }
-    initApp();
-  };
+        return {
+          title: titleInput ? titleInput.value : "",
+          format: formatSelect ? formatSelect.value : "ОБЕРІТЬ ФОРМАТ...",
+          questions: questions,
+          type: checkedRadio ? checkedRadio.value : "screening",
+          dynState: dynState,
+          chartToggles: {
+            4: chartToggle4 ? chartToggle4.checked : true,
+            5: chartToggle5 ? chartToggle5.checked : true
+          },
+          values: values
+        };
+      });
+      return tests;
+    },
 
-  if (isAuthorized) {
-    unlockApp(false);
-  } else {
-    var checkPassword = function() {
-      if (passInput.value === 'plgrph') {
-        unlockApp(true);
+    restoreState: function(testsData) {
+      testsContainer.innerHTML = "";
+      if (testsData && testsData.length > 0) {
+          testsData.forEach(function(d) { createTestTable(d); });
       } else {
-        authError.style.display = 'block';
-        var modal = authOverlay.querySelector('.auth-modal');
-        modal.style.animation = 'none';
-        setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
+          createTestTable();
       }
-    };
+    },
 
-    authBtn.addEventListener('click', checkPassword);
-    passInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
-  }
+    clearAll: function() {
+      testsContainer.innerHTML = "";
+      createTestTable();
+    },
 
-});
+    getMarkdown: function() {
+      var testWrappers = testsContainer.querySelectorAll('.ess-test-wrapper');
+      if(testWrappers.length === 0) return "";
+      
+      var md = "";
+      testWrappers.forEach(function(wrapper, index) {
+          var ce = wrapper._cachedElements;
+          if(!ce) return;
+          
+          var title = ce.titleInput.value || ('Тест ' + (index + 1));
+          var format = ce.formatSelect.value;
+          var checkedRadio = ce.typeRadios.find(function(r) { return r.checked; });
+          var type = (checkedRadio && checkedRadio.value === 'screening') ? 'Скринінговий' : 'Діагностичний';
+          var isScreening = (type === 'Скринінговий');
+          var allowedCols = (formatConfig[format] && formatConfig[format].cols) ? formatConfig[format].cols : 0;
+          
+          md += '### Тест №' + (index + 1) + ': ' + title + '\n';
+          md += '**Формат:** ' + format + ' | **Тип:** ' + type + '\n\n';
+
+          if(allowedCols === 0) {
+              md += '*Формат не обрано.*\n\n---\n\n';
+              return;
+          }
+
+          var activeCharts = [];
+          for(var c=1; c<=5; c++) {
+              var toggle = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') == c; });
+              if(!toggle || toggle.checked) activeCharts.push(c);
+          }
+
+          md += '**Матриця балів:**\n\n';
+          var th = '| ' + padR('Питання', 8) + ' |';
+          var sep = '| :------- |';
+          activeCharts.forEach(function(c) { 
+              th += ' ' + padR('C' + c, 4) + ' |'; 
+              sep += ' :---: |'; 
+          });
+          th += ' ' + padR('Subtotal', 8) + ' | ' + padR('Статус', 25) + ' |\n';
+          sep += ' :---: | :--- |\n';
+          md += th + sep;
+
+          var dynVals = wrapper._cachedDynamics || [];
+          var getSpotSum = function(c, col) {
+              var chartData = dynVals.find(function(d) { return d.chart == c; });
+              if(chartData && chartData.spots[col] !== undefined) return chartData.spots[col];
+              return "-";
+          };
+
+          for(var col = 1; col <= allowedCols; col++) {
+              var rowStr = '| **' + padR('R' + col, 6) + '** |';
+              activeCharts.forEach(function(c) {
+                  rowStr += ' ' + padR(getSpotSum(c, col), 4) + ' |';
+              });
+              var subSpan = ce.subtotals.find(function(s) { return s.getAttribute('data-col') == col; });
+              var subVal = subSpan ? subSpan.textContent : "-";
+              rowStr += ' **' + padR(subVal, 6) + '** |';
+
+              var statusCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == col; });
+              var statusText = "-";
+              if(statusCell) {
+                  var badge = statusCell.querySelector('.status-badge');
+                  if(badge) statusText = badge.textContent;
+              }
+              rowStr += ' ' + padR(colorizeStatus(statusText), 25) + ' |\n';
+              md += rowStr;
+          }
+
+          var gTotal = ce.grandTotal ? ce.grandTotal.textContent : "0";
+          var gRow = '| **' + padR('G. Total', 6) + '** |';
+          activeCharts.forEach(function() { gRow += ' ' + padR('', 4) + ' |'; });
+          gRow += ' **' + padR(gTotal, 6) + '** | ' + padR('', 25) + ' |\n';
+          md += gRow;
+
+          md += '\n**Контроль якості (QC & Аналіз):**\n';
+          var listItems = ce.dynamicsText.querySelectorAll('li');
+          listItems.forEach(function(li) {
+              var htmlContent = li.innerHTML;
+              htmlContent = htmlContent.replace(/<b>/g, '**').replace(/<\/b>/g, '**');
+              htmlContent = htmlContent.replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');
+              md += '- ' + htmlContent.trim() + '\n';
+          });
+
+          md += '\n**Висновок (Тест №' + (index + 1) + '):**\n';
+          
+          if (isScreening) {
+              md += "Цей скринінговий тест оцінює кожне питання незалежно.\n\n";
+              md += "**Результати за питаннями:**\n";
+              for(var cCol = 1; cCol <= allowedCols; cCol++) {
+                  var qInput = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol); });
+                  var qText = qInput ? qInput.value.trim() : '';
+                  var dispText = qText ? qText : 'Питання R' + cCol;
+                  
+                  var stCell = ce.statuses.find(function(s) { return s.getAttribute('data-col') == cCol; });
+                  var stBadge = ""; var pText = "";
+                  if(stCell) {
+                      var bNode = stCell.querySelector('.status-badge');
+                      var pNode = stCell.querySelector('.prob-text');
+                      if(bNode) stBadge = bNode.textContent;
+                      if(pNode) pText = pNode.textContent;
+                  }
+                  if (stBadge && stBadge !== '-' && stBadge !== 'N/A') {
+                      md += '- **R' + cCol + '** ("' + dispText + '"): ' + colorizeStatus(stBadge) + ' ' + (pText ? '(' + pText + ')' : '') + '\n';
+                  }
+              }
+              md += '\n**Загальний підсумок тесту:**\n';
+              var gStBadge = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
+              var gPr = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
+              if (gStBadge) {
+                  md += '> ' + colorizeStatus(gStBadge.textContent) + ' ' + (gPr ? '(' + gPr.textContent + ')' : '') + '\n\n';
+              }
+          } else {
+              md += "Цей діагностичний тест оцінює єдину тематику за сумою всіх релевантних питань.\n\n";
+              md += "**Перевірялась тематика:**\n";
+              for(var cCol2 = 1; cCol2 <= allowedCols; cCol2++) {
+                  var qInp2 = ce.questionInputs.find(function(i) { return i.getAttribute('data-q') === ('R' + cCol2); });
+                  var qTxt2 = qInp2 ? qInp2.value.trim() : '';
+                  if (qTxt2) md += '- R' + cCol2 + ': ' + qTxt2 + '\n';
+              }
+              md += '\n**Загальний підсумок тесту:**\n';
+              var gStB = ce.grandStatus ? ce.grandStatus.querySelector('.status-badge') : null;
+              var gP = ce.grandStatus ? ce.grandStatus.querySelector('.prob-text') : null;
+              if (gStB) {
+                  md += '> ' + colorizeStatus(gStB.textContent) + ' ' + (gP ? '(' + gP.textContent + ')' : '') + '\n\n';
+              }
+          }
+      });
+      return md;
+    }
+  };
+})();
