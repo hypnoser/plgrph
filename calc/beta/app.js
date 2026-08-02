@@ -29,30 +29,61 @@ window.APP_API = (function() {
         URL.revokeObjectURL(url);
       }.bind(this));
 
+      // Функція обробки завантаженого файлу (з підтримкою старого формату)
+      var handleFileLoad = function(file) {
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          try {
+            var parsed = JSON.parse(evt.target.result);
+            
+            // МІГРАЦІЯ: Якщо це старий файл тільки з ESS-M (де масив називався tests)
+            if (parsed.tests && !parsed.ess) {
+                parsed.ess = parsed.tests;
+            }
+
+            if(parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
+            if(parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
+            if(parsed.ess && window.ESS_API) window.ESS_API.restoreState(parsed.ess);
+            if(parsed.cit && window.CIT_API) window.CIT_API.restoreState(parsed.cit);
+            
+            window.APP_API.performSave();
+            alert('Дані успішно завантажено!');
+          } catch(err) { alert('Помилка читання файлу JSON. Файл пошкоджено або має невірний формат.'); }
+        };
+        reader.readAsText(file);
+      };
+
       var fileInput = document.getElementById('file-import');
       var btnOpen = document.getElementById('g-open');
       if(btnOpen && fileInput) {
         btnOpen.addEventListener('click', function() { fileInput.click(); });
         fileInput.addEventListener('change', function(e) {
-          if(e.target.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(evt) {
-              try {
-                var parsed = JSON.parse(evt.target.result);
-                if(parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
-                if(parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
-                if(parsed.ess && window.ESS_API) window.ESS_API.restoreState(parsed.ess);
-                if(parsed.cit && window.CIT_API) window.CIT_API.restoreState(parsed.cit);
-                
-                this.performSave();
-                alert('Дані успішно завантажено!');
-              } catch(err) { alert('Помилка читання файлу JSON.'); }
-            }.bind(this);
-            reader.readAsText(e.target.files[0]);
-          }
+          if(e.target.files[0]) handleFileLoad(e.target.files[0]);
           fileInput.value = '';
-        }.bind(this));
+        });
       }
+
+      // Drag and Drop (Перетягування файлу)
+      window.addEventListener('dragover', function(e) { 
+        e.preventDefault(); 
+        document.body.style.backgroundColor = '#e3f2fd'; 
+      });
+      window.addEventListener('dragleave', function(e) { 
+        e.preventDefault(); 
+        document.body.style.backgroundColor = '#f5f5f5'; 
+      });
+      window.addEventListener('drop', function(e) {
+        e.preventDefault(); 
+        document.body.style.backgroundColor = '#f5f5f5';
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            var file = e.dataTransfer.files[0];
+            if (file.name.toLowerCase().indexOf('.json') !== -1) {
+                handleFileLoad(file);
+            } else {
+                alert("Будь ласка, перетягніть файл саме у форматі .json");
+            }
+        }
+      });
 
       var btnPrint = document.getElementById('g-print');
       if(btnPrint) btnPrint.addEventListener('click', function() { window.print(); });
@@ -153,7 +184,6 @@ window.APP_API = (function() {
 
 document.addEventListener('DOMContentLoaded', function() {
   
-  // 1. ОДРАЗУ АВТОРИЗАЦІЯ (БЛОКУВАННЯ ПОМИЛОК ІНШИХ МОДУЛІВ)
   var authOverlay = document.getElementById('auth-overlay');
   var mainAppContainer = document.getElementById('main-app-container');
   var passInput = document.getElementById('auth-password');
@@ -174,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var checkPassword = function() {
       if(!passInput) return;
       var val = passInput.value.trim().toLowerCase();
-      // Перевірка пароля
       if (val === 'plgrph' || val === 'здікзр') unlockApp(true);
       else {
         if(authError) authError.style.display = 'block';
@@ -191,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if(passInput) passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
   }
 
-  // 2. БЕЗПЕЧНА ІНІЦІАЛІЗАЦІЯ МОДУЛІВ (Покаже алерт, якщо чогось не вистачає)
   try {
     if (window.ESS_API) window.ESS_API.init();
     else console.error("⚠️ Модуль ESS_API не знайдено! Перевірте чи існує файл ess.js");
@@ -205,10 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   } catch (error) {
     console.error("Помилка при ініціалізації: ", error);
-    alert("Сталася помилка при завантаженні калькуляторів. Можливо, один із файлів (ess.js або cit.js) відсутній, або браузер використовує старий кеш. Деталі: " + error.message);
+    alert("Сталася помилка при завантаженні калькуляторів. Деталі: " + error.message);
   }
 
-  // 3. ПЕРЕМИКАЧ ВКЛАДОК
   var tabBtns = document.querySelectorAll('.suite-tab-btn');
   var tabContents = document.querySelectorAll('.suite-tab-content');
   tabBtns.forEach(function(btn) {
