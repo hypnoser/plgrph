@@ -1,8 +1,161 @@
+window.APP_API = (function() {
+  var isUnsaved = false;
+  var saveStatus, nameInp, dateInp;
+
+  return {
+    init: function() {
+      saveStatus = document.getElementById('g-status');
+      nameInp = document.getElementById('global-resp-name');
+      dateInp = document.getElementById('global-exam-date');
+
+      nameInp.addEventListener('input', this.markUnsaved.bind(this));
+      dateInp.addEventListener('change', this.markUnsaved.bind(this));
+
+      document.getElementById('g-save').addEventListener('click', this.performSave.bind(this));
+      
+      document.getElementById('g-save-json').addEventListener('click', function() {
+        this.performSave();
+        var state = this.collectGlobalState();
+        var resp = nameInp.value.trim();
+        var safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "";
+        var dateStr = dateInp.value || new Date().toISOString().slice(0,10);
+        var filename = "polygraph-suite-" + safeResp + dateStr + ".json";
+
+        var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+        URL.revokeObjectURL(url);
+      }.bind(this));
+
+      var fileInput = document.getElementById('file-import');
+      document.getElementById('g-open').addEventListener('click', function() { fileInput.click(); });
+      
+      fileInput.addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(evt) {
+            try {
+              var parsed = JSON.parse(evt.target.result);
+              if(parsed.respondentName !== undefined) nameInp.value = parsed.respondentName;
+              if(parsed.examDate !== undefined) dateInp.value = parsed.examDate;
+              if(parsed.ess) window.ESS_API.restoreState(parsed.ess);
+              if(parsed.cit) window.CIT_API.restoreState(parsed.cit);
+              
+              this.performSave();
+              alert('Дані успішно завантажено!');
+            } catch(err) { alert('Помилка читання файлу JSON.'); }
+          }.bind(this);
+          reader.readAsText(e.target.files[0]);
+        }
+        fileInput.value = '';
+      }.bind(this));
+
+      document.getElementById('g-print').addEventListener('click', function() { window.print(); });
+
+      document.getElementById('g-clear').addEventListener('click', function() {
+        if(confirm('Очистити всі дані в обох вкладках (Нова сесія)?')) {
+          nameInp.value = ''; dateInp.value = '';
+          window.ESS_API.clearAll();
+          window.CIT_API.clearAll();
+          this.markUnsaved();
+        }
+      }.bind(this));
+
+      document.getElementById('g-help').addEventListener('click', function() { window.open('info.html', '_blank'); });
+
+      document.getElementById('g-markdown').addEventListener('click', function() {
+        var respName = nameInp.value.trim() || 'Невідомо';
+        var dateVal = dateInp.value || new Date().toISOString().slice(0,10);
+        
+        var md = '---\n';
+        md += 'tags:\n  - polygraph_report\n  - suite\n';
+        md += 'date: ' + dateVal + '\n';
+        md += 'respondent: ' + respName + '\n';
+        md += '---\n\n';
+        md += '# Комплексний звіт поліграфолога\n\n';
+        md += '**Респондент:** ' + respName + '\n';
+        md += '**Дата проведення:** [[' + dateVal + ']]\n\n---\n\n';
+
+        var essMd = window.ESS_API.getMarkdown();
+        if(essMd) md += '## 1. Скринінг / Діагностика (ESS-M)\n\n' + essMd + '\n\n---\n\n';
+        
+        var citMd = window.CIT_API.getMarkdown();
+        if(citMd) md += '## 2. Тест на приховану інформацію (CIT)\n\n' + citMd + '\n\n---\n\n';
+
+        var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a"); 
+        var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "";
+        a.href = url; a.download = 'polygraph-suite-' + safeResp + dateVal + '.md'; a.click();
+        URL.revokeObjectURL(url);
+      }.bind(this));
+    },
+
+    collectGlobalState: function() {
+      return {
+        respondentName: nameInp.value,
+        examDate: dateInp.value,
+        ess: window.ESS_API.collectState(),
+        cit: window.CIT_API.collectState()
+      };
+    },
+
+    markUnsaved: function() {
+      if(!isUnsaved) {
+        isUnsaved = true;
+        if(saveStatus) { saveStatus.classList.add('unsaved'); saveStatus.textContent = '🟠 Є незбережені зміни'; }
+      }
+    },
+
+    performSave: function() {
+      try {
+        localStorage.setItem('polygraph_suite_data', JSON.stringify(this.collectGlobalState()));
+        isUnsaved = false;
+        if(saveStatus) { saveStatus.classList.remove('unsaved'); saveStatus.textContent = '🟢 Дані збережено'; }
+      } catch(e) {
+        if(saveStatus) { saveStatus.classList.add('unsaved'); saveStatus.textContent = '❌ Помилка запису'; }
+      }
+    },
+
+    loadData: function() {
+      try {
+        var raw = localStorage.getItem('polygraph_suite_data');
+        if(raw) {
+          var parsed = JSON.parse(raw);
+          if(parsed.respondentName !== undefined) nameInp.value = parsed.respondentName;
+          if(parsed.examDate !== undefined) dateInp.value = parsed.examDate;
+          if(parsed.ess) window.ESS_API.restoreState(parsed.ess);
+          if(parsed.cit) window.CIT_API.restoreState(parsed.cit);
+        } else {
+          window.ESS_API.restoreState(null);
+          window.CIT_API.restoreState(null);
+        }
+      } catch(e) {
+        window.ESS_API.restoreState(null);
+        window.CIT_API.restoreState(null);
+      }
+    }
+  };
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
-  
-  // ==========================================
-  // 1. СИСТЕМА АВТОРИЗАЦІЇ
-  // ==========================================
+  window.ESS_API.init();
+  window.CIT_API.init();
+  window.APP_API.init();
+  window.APP_API.loadData();
+
+  var tabBtns = document.querySelectorAll('.suite-tab-btn');
+  var tabContents = document.querySelectorAll('.suite-tab-content');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      tabContents.forEach(function(c) { c.style.display = 'none'; c.classList.remove('active'); });
+      btn.classList.add('active');
+      var targetEl = document.getElementById(btn.getAttribute('data-target'));
+      if(targetEl) { targetEl.style.display = 'block'; targetEl.classList.add('active'); }
+    });
+  });
+
   var authOverlay = document.getElementById('auth-overlay');
   var mainAppContainer = document.getElementById('main-app-container');
   var passInput = document.getElementById('auth-password');
@@ -10,257 +163,27 @@ document.addEventListener('DOMContentLoaded', function() {
   var authError = document.getElementById('auth-error');
 
   var isAuthorized = false;
-  try { isAuthorized = localStorage.getItem('polygraph_suite_auth') === 'true'; } catch(e) {}
+  try { isAuthorized = localStorage.getItem('suite_auth') === 'true'; } catch(e) {}
 
   var unlockApp = function(saveToLocal) {
-    if(authOverlay) authOverlay.style.display = 'none';
-    if(mainAppContainer) mainAppContainer.style.display = 'block';
-    if (saveToLocal) {
-      try { localStorage.setItem('polygraph_suite_auth', 'true'); } catch(e) {}
-    }
-    loadFromLocalStorage(); // Завантажуємо дані після входу
+    authOverlay.style.display = 'none';
+    mainAppContainer.style.display = 'block';
+    if (saveToLocal) { try { localStorage.setItem('suite_auth', 'true'); } catch(e) {} }
   };
 
-  if (isAuthorized) {
-    unlockApp(false);
-  } else {
+  if (isAuthorized) { unlockApp(false); } 
+  else {
     var checkPassword = function() {
       var val = passInput.value.trim().toLowerCase();
-      // Підтримка англійської та української розкладки
-      if (val === 'plgrph' || val === 'здікзр') {
-        unlockApp(true);
-      } else {
-        if(authError) authError.style.display = 'block';
-        if(authOverlay) {
-          var modal = authOverlay.querySelector('.auth-modal');
-          if(modal) {
-            modal.style.animation = 'none';
-            setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
-          }
-        }
+      if (val === 'plgrph' || val === 'здікзр') unlockApp(true);
+      else {
+        authError.style.display = 'block';
+        var modal = authOverlay.querySelector('.auth-modal');
+        modal.style.animation = 'none';
+        setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
       }
     };
-    
-    if(authBtn) authBtn.addEventListener('click', checkPassword);
-    if(passInput) passInput.addEventListener('keydown', function(e) { 
-      if (e.key === 'Enter') checkPassword(); 
-    });
+    authBtn.addEventListener('click', checkPassword);
+    passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
   }
-
-  // ==========================================
-  // 2. ПЕРЕМИКАННЯ ВКЛАДОК (TABS)
-  // ==========================================
-  var tabButtons = document.querySelectorAll('.tab-btn');
-  var tabContents = document.querySelectorAll('.tab-content');
-
-  tabButtons.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      // Знімаємо active з усіх
-      tabButtons.forEach(function(b) { b.classList.remove('active'); });
-      tabContents.forEach(function(c) { c.classList.remove('active'); });
-      
-      // Додаємо active на натиснуту
-      btn.classList.add('active');
-      var targetId = btn.getAttribute('data-tab');
-      var targetContent = document.getElementById(targetId);
-      if (targetContent) targetContent.classList.add('active');
-    });
-  });
-
-  // ==========================================
-  // 3. ГЛОБАЛЬНИЙ ОБ'ЄКТ (API ДЛЯ МОДУЛІВ)
-  // ==========================================
-  // Створюємо "мости" для модулів ess.js та cit.js
-  window.PolygraphApp.ess = {
-    collectState: function() { return []; },
-    restoreState: function(data) {},
-    getMarkdown: function() { return ""; },
-    clearAll: function() {}
-  };
-  
-  window.PolygraphApp.cit = {
-    collectState: function() { return []; },
-    restoreState: function(data) {},
-    getMarkdown: function() { return ""; },
-    clearAll: function() {}
-  };
-
-  var saveStatus = document.getElementById("save-status");
-  var respondentInput = document.getElementById("respondent-name");
-  var dateInput = document.getElementById("exam-date");
-  
-  var autoSaveTimeout;
-
-  window.PolygraphApp.markUnsaved = function() {
-    if (!window.PolygraphApp.isUnsaved) { 
-      window.PolygraphApp.isUnsaved = true; 
-      if(saveStatus) saveStatus.classList.add("unsaved"); 
-    }
-    if(saveStatus) saveStatus.textContent = "🟠 Є незбережені зміни!";
-    
-    clearTimeout(autoSaveTimeout);
-    autoSaveTimeout = setTimeout(window.PolygraphApp.performSave, 5000); // Автозбереження кожні 5 сек
-  };
-
-  // Реєструємо зміни в загальних полях
-  if(respondentInput) respondentInput.addEventListener("input", window.PolygraphApp.markUnsaved);
-  if(dateInput) dateInput.addEventListener("change", window.PolygraphApp.markUnsaved);
-
-  // ==========================================
-  // 4. ГЛОБАЛЬНЕ ЗБЕРЕЖЕННЯ ТА ЗАВАНТАЖЕННЯ
-  // ==========================================
-  var collectGlobalState = function() {
-    return {
-      respondentName: respondentInput ? respondentInput.value : "",
-      examDate: dateInput ? dateInput.value : "",
-      essData: window.PolygraphApp.ess.collectState(),
-      citData: window.PolygraphApp.cit.collectState()
-    };
-  };
-
-  window.PolygraphApp.performSave = function() {
-    try {
-      var state = collectGlobalState();
-      localStorage.setItem("polygraph_suite_data", JSON.stringify(state));
-      window.PolygraphApp.isUnsaved = false;
-      if(saveStatus) {
-        saveStatus.classList.remove("unsaved");
-        saveStatus.textContent = "🟢 Дані збережено";
-      }
-    } catch (error) {
-      if(saveStatus) {
-        saveStatus.textContent = "❌ Помилка запису!";
-        saveStatus.classList.add("unsaved");
-      }
-    }
-  };
-
-  var loadFromLocalStorage = function() {
-    try {
-      var raw = localStorage.getItem("polygraph_suite_data");
-      if (raw) {
-        var data = JSON.parse(raw);
-        restoreGlobalState(data);
-      } else {
-        // Якщо даних немає, ініціалізуємо пусті модулі
-        window.PolygraphApp.ess.restoreState(null);
-        window.PolygraphApp.cit.restoreState(null);
-      }
-    } catch (e) {
-      console.error("Помилка завантаження кешу");
-    }
-  };
-
-  var restoreGlobalState = function(data) {
-    if (!data) return;
-    if (respondentInput) respondentInput.value = data.respondentName || "";
-    if (dateInput) dateInput.value = data.examDate || "";
-    
-    // Передаємо дані у відповідні модулі
-    window.PolygraphApp.ess.restoreState(data.essData);
-    window.PolygraphApp.cit.restoreState(data.citData);
-    
-    // Оновлюємо статус
-    window.PolygraphApp.performSave();
-  };
-
-  // ==========================================
-  // 5. ЕКСПОРТ (JSON)
-  // ==========================================
-  document.getElementById("btn-save").addEventListener("click", window.PolygraphApp.performSave);
-
-  document.getElementById("btn-save-json").addEventListener("click", function() {
-    var state = collectGlobalState();
-    var resp = state.respondentName.trim();
-    var safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_').replace(/_+/g, '_') + "-" : "";
-    var dateStr = state.examDate || new Date().toISOString().slice(0,10);
-    var filename = "polygraph-" + safeResp + dateStr + ".json";
-    
-    var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a"); a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-    
-    window.PolygraphApp.performSave();
-  });
-
-  // Імпорт (JSON)
-  var fileInput = document.getElementById("file-import");
-  document.getElementById("btn-open").addEventListener("click", function() { fileInput.click(); });
-  fileInput.addEventListener("change", function(e) { 
-    if (e.target.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          var data = JSON.parse(evt.target.result);
-          restoreGlobalState(data);
-          alert("Дані успішно завантажено!");
-        } catch (err) { alert("Помилка завантаження файлу. Невірний формат."); }
-      };
-      reader.readAsText(e.target.files[0]);
-    }
-    e.target.value = ""; 
-  });
-
-  // ==========================================
-  // 6. ЕКСПОРТ У MARKDOWN (ОБ'ЄДНАНИЙ ЗВІТ)
-  // ==========================================
-  document.getElementById("btn-markdown").addEventListener("click", function() {
-    var state = collectGlobalState();
-    var respName = state.respondentName.trim() || 'Невідомо';
-    var dateVal = state.examDate || new Date().toISOString().slice(0,10);
-    
-    var md = '---\n';
-    md += 'tags:\n  - polygraph_report\n  - ess_m\n  - cit\n';
-    md += 'date: ' + dateVal + '\n';
-    md += 'respondent: ' + respName + '\n';
-    md += '---\n\n';
-    md += '# Комплексний звіт поліграфолога\n\n';
-    md += '**Респондент:** ' + respName + '\n';
-    md += '**Дата проведення:** [[' + dateVal + ']]\n\n';
-    md += '---\n\n';
-    
-    // Додаємо звіт ESS-M
-    var essMd = window.PolygraphApp.ess.getMarkdown();
-    if (essMd && essMd.trim() !== "") {
-      md += '## 1. Скринінг / Діагностика (ESS-M)\n\n';
-      md += essMd + '\n\n---\n\n';
-    }
-    
-    // Додаємо звіт CIT
-    var citMd = window.PolygraphApp.cit.getMarkdown();
-    if (citMd && citMd.trim() !== "") {
-      md += '## 2. Тест на приховану інформацію (CIT)\n\n';
-      md += citMd + '\n\n---\n\n';
-    }
-    
-    if (!essMd && !citMd) {
-      md += '*Немає даних для відображення.*\n';
-    }
-
-    var blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a"); 
-    var safeResp = respName ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + "-" : "";
-    a.href = url; 
-    a.download = 'report-' + safeResp + dateVal + '.md'; 
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  // ==========================================
-  // 7. ДОДАТКОВІ ІНСТРУМЕНТИ
-  // ==========================================
-  document.getElementById("btn-print").addEventListener("click", function() { window.print(); });
-  
-  document.getElementById("btn-clear-all").addEventListener("click", function() {
-    if (confirm("УВАГА! Ви впевнені, що хочете повністю очистити всі тести (ESS-M та CIT) і почати нове дослідження?")) {
-      if(respondentInput) respondentInput.value = "";
-      if(dateInput) dateInput.value = "";
-      window.PolygraphApp.ess.clearAll();
-      window.PolygraphApp.cit.clearAll();
-      window.PolygraphApp.markUnsaved();
-    }
-  });
-
 });
