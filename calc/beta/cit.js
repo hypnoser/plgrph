@@ -8,6 +8,7 @@ window.CIT_API = (function() {
     return String(str).replace(/[&<>"']/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
   };
 
+  // База ймовірностей для CIT
   const probData = {
     3: { 3:"0.28", 4:"0.13", 5:"0.03", 6:"0.01" },
     4: { 3:"0.44", 4:"0.25", 5:"0.10", 6:"0.04", 7:"0.01", 8:"0.00" },
@@ -31,9 +32,10 @@ window.CIT_API = (function() {
     var validCount = 0;
     var totalScore = 0;
     
+    // Підрахунок балів
     block.querySelectorAll('.cit-score').forEach(function(inp) {
       inp.classList.remove('artifact');
-      var v = inp.value.trim();
+      var v = inp.value.trim().toUpperCase();
       if (v === 'А' || v === 'A') {
         inp.classList.add('artifact');
       } else if (v !== '') {
@@ -45,56 +47,79 @@ window.CIT_API = (function() {
       }
     });
 
-    block.querySelector('.val-count').textContent = validCount;
-    block.querySelector('.val-score').textContent = totalScore;
+    var valCountEl = block.querySelector('.val-count');
+    var valScoreEl = block.querySelector('.val-score');
+    if(valCountEl) valCountEl.textContent = validCount;
+    if(valScoreEl) valScoreEl.textContent = totalScore;
+
     var decEl = block.querySelector('.val-decision');
     var statusEl = block.querySelector('.matrix-status');
     var conclusionEl = block.querySelector('.cit-conclusion-text');
     var matrixTable = block.querySelector('.cit-matrix-table');
     
+    // Очищення матриці
     var cells = block.querySelectorAll('.cit-matrix-cell');
     cells.forEach(function(c) { 
       c.classList.remove('cit-cell-active', 'res-ri', 'res-nri'); 
     });
-    matrixTable.classList.remove('has-data');
+    if(matrixTable) matrixTable.classList.remove('has-data');
 
+    // Логіка рішень
     if(validCount === 0) {
-      decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no';
-      statusEl.textContent = 'Введіть дані'; statusEl.style.color = '#3a7cfd';
-      conclusionEl.innerHTML = 'Недостатньо даних для формування висновку. Для роботи матриці Ліккена необхідно мінімум 3 запитання.';
+      if(decEl) { decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no'; }
+      if(statusEl) { statusEl.textContent = 'Введіть дані'; statusEl.style.color = '#3a7cfd'; }
+      if(conclusionEl) conclusionEl.innerHTML = 'Недостатньо даних для формування висновку.';
     } else if(validCount < 3) {
-      decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-no';
-      statusEl.textContent = 'Мін. 3 тести (Зараз: '+validCount+')'; statusEl.style.color = '#666';
-      conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів. Введено балів: <b>'+validCount+'</b>. Для роботи таблиці ймовірностей (CIT) необхідно щонайменше <b>3</b> запитання.';
+      if(decEl) { decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-no'; }
+      if(statusEl) { statusEl.textContent = 'Мін. 3 тести (Введено: '+validCount+')'; statusEl.style.color = '#666'; }
+      if(conclusionEl) conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів. Введено балів: <b>'+validCount+'</b>. Для роботи таблиці ймовірностей (CIT) необхідно щонайменше <b>3</b> запитання.';
     } else {
-      matrixTable.classList.add('has-data');
+      if(matrixTable) matrixTable.classList.add('has-data');
 
       var isRI = totalScore >= validCount;
-      decEl.textContent = isRI ? 'RI' : 'NRI';
-      decEl.className = 'cit-dash-value ' + (isRI ? 'val-ri' : 'val-nri');
-      statusEl.textContent = isRI ? 'Впізнання (RI)' : 'Немає впізнання (NRI)';
-      statusEl.style.color = isRI ? '#d32f2f' : '#2e7d32';
+      if(decEl) {
+        decEl.textContent = isRI ? 'RI' : 'NRI';
+        decEl.className = 'cit-dash-value ' + (isRI ? 'val-ri' : 'val-nri');
+      }
+      if(statusEl) {
+        statusEl.textContent = isRI ? 'Впізнання (RI)' : 'Немає впізнання (NRI)';
+        statusEl.style.color = isRI ? '#d32f2f' : '#2e7d32';
+      }
 
       var probStr = "";
       var probPercent = "";
+      
       if(validCount <= 8) {
+        // Підсвітка клітинки
         var targetCell = block.querySelector('.cit-matrix-cell[data-t="'+validCount+'"][data-s="'+totalScore+'"]');
         if(targetCell) {
           targetCell.classList.add('cit-cell-active');
           targetCell.classList.add(isRI ? 'res-ri' : 'res-nri');
-          probStr = probData[validCount][totalScore] || "";
-          if (probStr !== "" && probStr !== "-") {
+          
+          // Витягуємо ймовірність безпечно
+          var pData = probData[validCount];
+          if (pData && pData[totalScore]) {
+            probStr = pData[totalScore];
+          } else if (totalScore < 3) {
+            probStr = ">.9";
+          }
+          
+          if (probStr !== "" && probStr !== "-" && probStr !== ">.9") {
             probPercent = probStr === "0.00" ? "< 1%" : Math.round(parseFloat(probStr) * 100) + '%';
+          } else if (probStr === ">.9") {
+            probPercent = "> 90%";
           }
         }
       } else {
-        statusEl.textContent = decEl.textContent + ' (Макс. 8 у матриці)';
+        if(statusEl) statusEl.textContent = (isRI ? 'RI' : 'NRI') + ' (Макс. 8 у матриці)';
       }
 
-      if (isRI) {
-        conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>RI (Recognition Indicated)</b> — наявні ознаки впізнання/знання деталей досліджуваної події.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним (не знає деталей), становить приблизно <b>' + probPercent + '</b>.' : '');
-      } else {
-        conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>NRI (No Recognition Indicated)</b> — ознаки впізнання прихованої інформації відсутні.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним відносно деталей, становить приблизно <b>' + probPercent + '</b>.' : '');
+      if(conclusionEl) {
+        if (isRI) {
+          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>RI (Recognition Indicated)</b> — наявні ознаки впізнання/знання деталей досліджуваної події.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним (не знає деталей), становить приблизно <b>' + probPercent + '</b>.' : '');
+        } else {
+          conclusionEl.innerHTML = 'За результатами тесту зафіксовано сумарний бал <b>' + totalScore + '</b> при <b>' + validCount + '</b> придатних тестах. Висновок: <b>NRI (No Recognition Indicated)</b> — ознаки впізнання прихованої інформації відсутні.' + (probPercent ? ' Ймовірність того, що обстежуваний є наївним відносно деталей, становить приблизно <b>' + probPercent + '</b>.' : '');
+        }
       }
     }
   }
@@ -106,6 +131,7 @@ window.CIT_API = (function() {
     var block = document.createElement('div');
     block.className = 'cit-block';
     
+    // Генерація таблиці
     var matrixHtml = '<table class="cit-matrix-table"><thead><tr><th>CIT\\Score</th>';
     for(var s=0; s<=16; s++) matrixHtml += '<th>'+s+'</th>';
     matrixHtml += '</tr></thead><tbody>';
@@ -121,15 +147,12 @@ window.CIT_API = (function() {
     }
     matrixHtml += '</tbody></table>';
 
-    // Зміна пропорції на 35%
-    var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
-
     block.innerHTML = 
       '<div class="cit-block-header">' +
         '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
         '<button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження">×</button>' +
       '</div>' +
-      '<div class="cit-layout" style="' + gridStyle + '">' +
+      '<div class="cit-layout">' + // CSS Grid на 35% контролюється стилями нижче
         '<div class="cit-tests-wrapper">' +
           '<div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; padding-left:18px; margin-bottom:4px;">' +
             '<div style="flex:1;">КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:24px;"></div>' +
@@ -199,16 +222,19 @@ window.CIT_API = (function() {
 
     btnAddRow.addEventListener('click', function() { addRow(); triggerUnsaved(); });
 
-    var existingTests = (data.tests && data.tests.length > 0) ? data.tests.length : 0;
-    if(existingTests > 0) {
-      data.tests.forEach(function(t) { addRow(t.key, t.score); });
+    // Додаємо збережені питання, якщо є
+    var existingTests = 0;
+    if(data.tests && data.tests.length > 0) {
+      data.tests.forEach(function(t) { 
+        addRow(t.key, t.score); 
+        existingTests++;
+      });
     }
     
-    // СУВОРЕ ПРАВИЛО: Добиваємо порожніми рядками, щоб завжди було мінімум 4 питання
-    var currentRows = block.querySelectorAll('.cit-test-row').length;
-    while(currentRows < 4) {
+    // Суворе правило 4 питань: якщо введено менше 4, добиваємо порожніми рядками
+    while(existingTests < 4) {
       addRow("", "");
-      currentRows++;
+      existingTests++;
     }
   }
 
@@ -216,6 +242,59 @@ window.CIT_API = (function() {
     init: function() {
       citAppRoot = document.getElementById("cit-app");
       if (!citAppRoot) return;
+
+      var citStyles = document.createElement('style');
+      citStyles.innerHTML = `
+        .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: inherit; }
+        .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .cit-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 8px; }
+        .cit-block-title { border: none; font-size: 14px; font-weight: 700; color: #222; outline: none; width: 100%; max-width: 350px; background: transparent; }
+        .cit-block-title:focus { border-bottom: 2px solid #3a7cfd; }
+        
+        /* Пропорція 35% для ключів і 65% для таблиці */
+        .cit-layout { display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start; }
+        @media (max-width: 768px) { .cit-layout { grid-template-columns: 1fr; } }
+        
+        .cit-test-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .cit-test-row input[type="text"] { border: 1px solid #ccc; border-radius: 3px; padding: 5px; font-size: 12px; outline: none; font-family: inherit; }
+        .cit-test-row input[type="text"]:focus { border-color: #3a7cfd; }
+        .cit-theme, .cit-key { flex-grow: 1; width: 100%; }
+        .cit-score { width: 40px; text-align: center; font-weight: 800; font-size: 13px; }
+        .cit-score.artifact { background: #fff7ed; border-color: #f97316; color: #ea580c; }
+        
+        .cit-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+        .cit-dash-box { background: rgba(128,128,128,0.06); border: 1px solid #ddd; border-radius: 4px; padding: 8px; text-align: center; }
+        .cit-dash-label { font-size: 9px; font-weight: bold; color: #666; text-transform: uppercase; }
+        .cit-dash-value { font-size: 16px; font-weight: 900; color: #222; margin-top: 2px; }
+        .val-ri { color: #d32f2f !important; }
+        .val-nri { color: #2e7d32 !important; }
+        .val-no { color: #757575 !important; }
+        
+        .cit-matrix-wrapper { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px; overflow-x: auto; }
+        .cit-matrix-title { font-size: 11px; font-weight: bold; margin-bottom: 6px; color: #333; display: flex; justify-content: space-between; }
+        .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 9.5px; text-align: center; }
+        .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 3px 1px; }
+        .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: 800; }
+        .cit-matrix-table.has-data .cit-matrix-cell:not(.cit-cell-active) { opacity: 0.25; background: #fafafa; }
+        .cit-cell-active { background-color: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; z-index: 5; border:none; }
+        .cit-cell-active.res-ri { background-color: #d32f2f !important; }
+        .cit-cell-active.res-nri { background-color: #2e7d32 !important; }
+        
+        .cit-conclusion-box { margin-top: 10px; padding: 8px 10px; background: rgba(128,128,128,0.04); border: 1px solid #ddd; border-radius: 4px; font-size: 11.5px; line-height: 1.4; color: #333; }
+        .cit-conclusion-box b { color: #111; }
+        
+        .cit-add-block-btn { width: 100%; padding: 8px; font-size: 13px; font-weight: bold; border: 1px solid #3a7cfd; background: rgba(58,124,253,0.08); color: #3a7cfd; border-radius: 5px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .cit-add-block-btn:hover { background: rgba(58,124,253,0.18); }
+        
+        @media print {
+          .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row { display: none !important; }
+          .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
+          .cit-layout { display: block !important; }
+          .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
+          .cit-matrix-table.has-data .cit-matrix-cell:not(.cit-cell-active) { opacity: 1 !important; color: #666 !important; }
+        }
+      `;
+      document.head.appendChild(citStyles);
 
       var citContainer = document.createElement('div');
       citContainer.className = 'cit-container';
@@ -259,8 +338,14 @@ window.CIT_API = (function() {
       if(!blocksContainer) return;
       blocksContainer.innerHTML = '';
       blockCounter = 0;
-      if(Array.isArray(data) && data.length > 0) {
-        data.forEach(function(b) { createCitBlock(b); });
+      
+      // Захист від старих форматів збереження
+      var validData = null;
+      if (Array.isArray(data)) validData = data;
+      else if (data && Array.isArray(data.blocks)) validData = data.blocks;
+      
+      if(validData && validData.length > 0) {
+        validData.forEach(function(b) { createCitBlock(b); });
       } else {
         createCitBlock(null);
       }
