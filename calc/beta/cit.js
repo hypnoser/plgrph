@@ -113,6 +113,7 @@ window.CIT_API = (function() {
 
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
+      
       tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight: normal;">Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
         tableHtml += '<th style="font-weight: normal;">' + s + '</th>';
@@ -137,7 +138,6 @@ window.CIT_API = (function() {
           var pStr = formatPr(pVal);
           
           if (sc > r * 2) pStr = ""; 
-
           if (sc < 3 && pStr === "> 99%") pStr = ">.99"; 
           
           var activeClass = (r === validCount && sc === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
@@ -177,6 +177,7 @@ window.CIT_API = (function() {
     var keyIdx = testData.keyIndex || 0;
     var keyText = opts[keyIdx] || "...";
     var theme = testData.theme || "";
+    var themeText = theme ? escapeHtml(theme) : 'Без назви';
     
     r.setAttribute('data-options', JSON.stringify(opts));
     r.setAttribute('data-key-index', keyIdx);
@@ -185,13 +186,14 @@ window.CIT_API = (function() {
 
     var scoreValue = testData.score != null ? String(testData.score) : '';
 
-    var displayText = theme ? ('<span style="font-weight:normal; color:#333;">' + escapeHtml(theme) + '</span> \\ <b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>') : ('<b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>');
-
     r.innerHTML = 
-      '<button class="ess-btn cit-btn-edit" style="width:28px; height:28px; font-size:14px; padding:0; display:flex; align-items:center; justify-content:center; border:1px solid #ccc; background:#fff; color:#555;" title="Редагувати питання">📝</button>' +
-      '<span class="cit-test-name" style="flex:1; font-size:13px; font-weight:normal; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:8px;">№<span class="t-num">' + (index+1) + '</span>: ' + displayText + '</span>' +
+      '<button class="cit-btn-edit" title="Редагувати питання">⚙</button>' +
+      '<div class="cit-test-info">' +
+        '<div style="font-size:11.5px; color:#555;"><b>№<span class="t-num">' + (index+1) + '</span></b> <span class="cit-theme-text">' + themeText + '</span></div>' +
+        '<div style="font-size:13.5px; font-weight:bold; color:#ff0000; margin-top:2px;">🔑 <span class="cit-key-text">' + escapeHtml(keyText) + '</span></div>' +
+      '</div>' +
       '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + escapeHtml(scoreValue) + '" title="Допустимо: 0, 1, 2, А">' +
-      '<button class="ess-delete-btn btn-del-row" style="width:28px; height:28px; font-size:16px; line-height:1; margin-left:4px;">×</button>';
+      '<button class="ess-delete-btn btn-del-row" style="width:28px; height:28px; font-size:18px; margin-left:4px;">×</button>';
     
     block.querySelector('.cit-rows').appendChild(r);
 
@@ -237,18 +239,19 @@ window.CIT_API = (function() {
     block.id = bId;
 
     block.innerHTML = 
-      '<div class="cit-block-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px dashed #ccc; padding-bottom:10px;">' +
-        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження..." style="border:none; font-size:14px; font-weight:700; color:#222; outline:none; width:100%; max-width:350px; background:transparent;">' +
+      '<div class="cit-block-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px dashed #ccc; padding-bottom:10px;">' +
+        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження..." style="border:none; font-size:15px; font-weight:700; color:#222; outline:none; width:100%; max-width:350px; background:transparent;">' +
         '<div style="display:flex; align-items:center; gap:6px;">' +
-          '<button class="ess-btn cit-btn-add-row" style="background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;" title="Додати новий тест">+ Додати тест</button>' +
-          '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити цифри цієї таблиці">Очистити дані</button>' +
+          '<button class="ess-btn cit-btn-add-row" style="background:rgba(58,124,253,0.1); color:#3a7cfd; border:1px solid #3a7cfd; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer;" title="Додати новий тест">+ Додати тест</button>' +
+          '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити введені бали">Очистити дані</button>' +
           '<button class="ess-btn ess-delete-btn btn-del-block" style="margin:0;" title="Видалити дослідження повністю">×</button>' +
         '</div>' +
       '</div>' +
-      '<div>' +
-        '<div class="cit-tests-wrapper" style="margin-bottom:20px;">' +
+      '<div class="cit-layout">' +
+        '<div class="cit-tests-wrapper">' +
           '<div class="cit-rows"></div>' +
         '</div>' +
+        '<hr style="border:0; border-top:1px solid #e2e8f0; width:100%; margin:10px 0;">' +
         '<div class="cit-results-wrapper">' +
           '<div class="cit-dashboard">' +
             '<div class="cit-dash-box"><div class="cit-dash-label">Придатних</div><div class="cit-dash-value val-count">-</div></div>' +
@@ -373,9 +376,10 @@ window.CIT_API = (function() {
       targetRow.setAttribute('data-theme', themeVal);
       
       var keyText = opts[keyIdx] || "...";
-      var displayText = themeVal ? ('<span style="font-weight:normal; color:#333;">' + escapeHtml(themeVal) + '</span> \\ <b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>') : ('<b><span style="color:#ff0000;">' + escapeHtml(keyText) + '</span></b>');
+      var themeText = themeVal ? escapeHtml(themeVal) : 'Без назви';
       
-      targetRow.querySelector('.cit-test-name').innerHTML = '№<span class="t-num">' + (currentEditTestIndex+1) + '</span>: ' + displayText;
+      targetRow.querySelector('.cit-theme-text').innerHTML = themeText;
+      targetRow.querySelector('.cit-key-text').textContent = keyText;
 
       calcBlock(block);
       triggerUnsaved();
@@ -436,13 +440,20 @@ window.CIT_API = (function() {
         .cit-container { max-width: 880px; margin: 0 auto; width: 100%; padding-bottom: 30px; font-family: inherit; }
         .cit-block { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         
-        /* 2-КОЛОНКОВА СІТКА ДЛЯ ТЕСТІВ */
-        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+        .cit-layout { display: flex; flex-direction: column; gap: 10px; }
+        
+        .cit-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: start; }
         @media (max-width: 768px) { .cit-rows { grid-template-columns: 1fr; } }
         
-        .cit-test-row { display: flex; gap: 6px; align-items: center; background: #f8fafc; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; transition: background 0.2s; }
-        .cit-test-row:hover { background: #f1f5f9; }
-        .cit-score { width: 40px; text-align: center; font-weight: 800; font-size: 13px; border: 1px solid #ccc; border-radius: 3px; padding: 5px; outline: none; }
+        .cit-test-row { display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid #e2e8f0; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .cit-test-row:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        
+        .cit-btn-edit { width: 30px; height: 30px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; border: none; background: #475569; color: #fff; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .cit-btn-edit:hover { background: #334155; transform: scale(1.05); }
+        
+        .cit-test-info { flex: 1; display: flex; flex-direction: column; margin-left: 4px; line-height: 1.3; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        
+        .cit-score { width: 40px; height: 30px; text-align: center; font-weight: 800; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; padding: 4px; outline: none; }
         .cit-score:focus { border-color: #3a7cfd; }
         .cit-score.artifact { background: #fff7ed; border-color: #f97316; color: #ea580c; }
         
@@ -459,7 +470,7 @@ window.CIT_API = (function() {
         .cit-matrix-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; color: #333; text-align:center; border-bottom:1px solid #eee; padding-bottom:4px; }
         .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 10.5px; text-align: center; }
         .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 4px 2px; }
-        .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: 800; }
+        .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: normal; }
         .cit-cell-dimmed { opacity: 0.3; background: #fafafa; }
         .cit-cell-active { background-color: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.05); box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; z-index: 5; border:1px solid #fff; }
         .cit-cell-active.res-ri { background-color: #ff0000 !important; color: #ffffff !important; }
@@ -472,6 +483,7 @@ window.CIT_API = (function() {
         @media print {
           .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row, .cit-btn-edit, .btn-clear-block { display: none !important; }
           .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
+          .cit-layout { display: block !important; }
           .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
           .cit-cell-dimmed { opacity: 1 !important; color: #666 !important; }
         }
