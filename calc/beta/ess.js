@@ -701,7 +701,7 @@ window.ESS_API = (function() {
             '<label for="diag_' + uid + '">🔍 Діагностичний</label>' +
           '</div>' +
           '<button class="ess-btn ess-questions-btn" title="Редагувати питання">📝 Питання</button>' +
-          '<button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити пам\'ять</button>' +
+          '<button class="ess-btn ess-clear-btn" title="Очистити цифри цієї таблиці">Очистити дані</button>' +
         '</div>' +
         '<button class="ess-delete-btn" title="Видалити тест">×</button>' +
       '</div>' +
@@ -848,7 +848,7 @@ window.ESS_API = (function() {
                 if (hasData) break;
             }
             if (hasData) {
-                alert('Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R' + (newConfig.cols + 1) + ') або використайте "Очистити пам\'ять".');
+                alert('Неможливо звузити формат тесту. Видаліть дані з зайвих питань (починаючи з R' + (newConfig.cols + 1) + ') або використайте "Очистити дані".');
                 e.target.value = prevFormat;
                 return;
             }
