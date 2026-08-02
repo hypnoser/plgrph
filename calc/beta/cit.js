@@ -113,7 +113,9 @@ window.CIT_API = (function() {
 
       var maxPossibleScore = endRow * 2;
       var tableHtml = '<div class="cit-matrix-title">Динамічна матриця ймовірностей (Pr)</div>';
-      tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th>Кількість тестів \\ Бал</th>';
+      
+      // Знято жирний шрифт із заголовка "Кількість тестів \ Бал"
+      tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight: normal;">Кількість тестів \\ Бал</th>';
       for(var s = 0; s <= maxPossibleScore; s++) {
         tableHtml += '<th>' + s + '</th>';
       }
@@ -131,7 +133,8 @@ window.CIT_API = (function() {
         
         var rowPr = calculateDynamicPr(rowTests);
         
-        tableHtml += '<tr><th>' + r + '</th>';
+        // Знято жирний шрифт із номерів тестів у першій колонці
+        tableHtml += '<tr><th style="font-weight: normal;">' + r + '</th>';
         for(var sc = 0; sc <= maxPossibleScore; sc++) {
           var pVal = (sc < rowPr.length) ? rowPr[sc] : 0;
           var pStr = formatPr(pVal);
@@ -172,7 +175,6 @@ window.CIT_API = (function() {
     var r = document.createElement('div');
     r.className = 'cit-test-row';
     
-    // Захист від битих JSON-об'єктів
     var opts = testData.options || ["", "", "", ""];
     var keyIdx = testData.keyIndex || 0;
     var keyText = opts[keyIdx] || "...";
@@ -183,9 +185,10 @@ window.CIT_API = (function() {
 
     var scoreValue = testData.score != null ? String(testData.score) : '';
 
+    // Знято жирний шрифт (font-weight:normal) з назви "Тест №X"
     r.innerHTML = 
       '<button class="ess-btn cit-btn-edit" style="width:28px; height:28px; font-size:14px; padding:0; display:flex; align-items:center; justify-content:center; border:1px solid #ccc; background:#fff; color:#555;" title="Редагувати питання">📝</button>' +
-      '<span class="cit-test-name" style="flex:1; font-size:13px; font-weight:700; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:8px;">Тест №<span class="t-num">' + (index+1) + '</span>: <span style="color:#3a7cfd;">' + escapeHtml(keyText) + '</span></span>' +
+      '<span class="cit-test-name" style="flex:1; font-size:13px; font-weight:normal; color:#333; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:8px;">Тест №<span class="t-num">' + (index+1) + '</span>: <span style="color:#3a7cfd;">' + escapeHtml(keyText) + '</span></span>' +
       '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + escapeHtml(scoreValue) + '" title="Допустимо: 0, 1, 2, А">' +
       '<button class="ess-delete-btn btn-del-row" style="width:28px; height:28px; font-size:16px; line-height:1; margin-left:4px;">×</button>';
     
@@ -234,7 +237,6 @@ window.CIT_API = (function() {
 
     var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
 
-    // ВІЗУАЛЬНО ІДЕНТИЧНА КНОПКА ОЧИЩЕННЯ
     block.innerHTML = 
       '<div class="cit-block-header">' +
         '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
@@ -273,7 +275,6 @@ window.CIT_API = (function() {
       if(confirm('Видалити це дослідження повністю?')) { block.remove(); triggerUnsaved(); }
     });
 
-    // ФУНКЦІЯ ОЧИЩЕННЯ
     block.querySelector('.btn-clear-block').addEventListener('click', function() {
       if(confirm('Очистити всі введені бали в цьому дослідженні? (Самі питання залишаться)')) {
         block.querySelectorAll('.cit-score').forEach(function(inp) {
@@ -311,9 +312,6 @@ window.CIT_API = (function() {
     calcBlock(block);
   }
 
-  // ==========================================
-  // ЛОГІКА МОДАЛЬНОГО ВІКНА
-  // ==========================================
   var modalEl, modalOptsContainer;
 
   function initModal() {
@@ -371,6 +369,8 @@ window.CIT_API = (function() {
       targetRow.setAttribute('data-options-count', opts.length);
       
       var keyText = opts[keyIdx] || "...";
+      
+      // Знято жирний шрифт (font-weight:normal) з назви "Тест №X"
       targetRow.querySelector('.cit-test-name').innerHTML = 'Тест №<span class="t-num">' + (currentEditTestIndex+1) + '</span>: <span style="color:#3a7cfd;">' + escapeHtml(keyText) + '</span>';
 
       calcBlock(block);
