@@ -37,10 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
     .cit-matrix-table { width: 100%; border-collapse: collapse; font-size: 9.5px; text-align: center; }
     .cit-matrix-table th, .cit-matrix-table td { border: 1px solid #ccc; padding: 3px 1px; }
     .cit-matrix-table th { background: rgba(128,128,128,0.15); color: #222; font-weight: 800; }
-    .cit-cell-dimmed { opacity: 0.25; background: #fafafa; }
-    .cit-cell-active { background: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .cit-cell-active.res-ri { background: #d32f2f !important; }
-    .cit-cell-active.res-nri { background: #2e7d32 !important; }
+    
+    /* Ефекти матриці */
+    .cit-matrix-table.has-data .cit-matrix-cell:not(.cit-cell-active) { opacity: 0.25; background: #fafafa; }
+    .cit-cell-active { background-color: #3a7cfd !important; color: #fff !important; font-weight: 900 !important; transform: scale(1.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; z-index: 5; }
+    .cit-cell-active.res-ri { background-color: #d32f2f !important; }
+    .cit-cell-active.res-nri { background-color: #2e7d32 !important; }
 
     .cit-conclusion-box { margin-top: 10px; padding: 8px 10px; background: rgba(128,128,128,0.04); border: 1px solid #ddd; border-radius: 4px; font-size: 11.5px; line-height: 1.4; color: #333; }
     .cit-conclusion-box b { color: #111; }
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
       .cit-layout { display: block !important; }
       .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
-      .cit-cell-dimmed { opacity: 1 !important; color: #666 !important; }
+      .cit-matrix-table.has-data .cit-matrix-cell:not(.cit-cell-active) { opacity: 1 !important; color: #666 !important; }
     }
   `;
   document.head.appendChild(citStyles);
@@ -194,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(data.tests && data.tests.length > 0) {
       data.tests.forEach(function(t) { addRow(t.theme, t.key, t.score); });
     } else {
-      // За замовчуванням мінімальна кількість ключів для методики CIT = 4
+      // Суворе правило: мінімум 4 ключові питання для одного дослідження CIT
       for(var i=0; i<4; i++) addRow();
     }
   }
@@ -211,12 +213,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     block.querySelectorAll('.cit-score').forEach(function(inp) {
       inp.classList.remove('artifact');
-      var v = inp.value;
+      var v = inp.value.trim();
       if (v==='А' || v==='A') {
         inp.classList.add('artifact');
-      } else if (v!=='') {
+      } else if (v !== '') {
         var n = parseInt(v, 10);
-        if(!isNaN(n)) { validCount++; totalScore += n; }
+        if(!isNaN(n)) { 
+          validCount++; 
+          totalScore += n; 
+        }
       }
     });
 
@@ -225,10 +230,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var decEl = block.querySelector('.val-decision');
     var statusEl = block.querySelector('.matrix-status');
     var conclusionEl = block.querySelector('.cit-conclusion-text');
+    var matrixTable = block.querySelector('.cit-matrix-table');
     
     var cells = block.querySelectorAll('.cit-matrix-cell');
-    cells.forEach(function(c) { c.className = 'cit-matrix-cell'; });
-    block.querySelector('.cit-matrix-table').classList.remove('has-data');
+    cells.forEach(function(c) { 
+      c.classList.remove('cit-cell-active', 'res-ri', 'res-nri'); 
+    });
+    matrixTable.classList.remove('has-data');
 
     if(validCount === 0) {
       decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no';
@@ -239,8 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
       statusEl.textContent = 'Мін. 3 тести'; statusEl.style.color = '#666';
       conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів (мінімум 3).';
     } else {
-      block.querySelector('.cit-matrix-table').classList.add('has-data');
-      cells.forEach(function(c) { c.classList.add('cit-cell-dimmed'); });
+      matrixTable.classList.add('has-data');
 
       var isRI = totalScore >= validCount;
       decEl.textContent = isRI ? 'RI' : 'NRI';
@@ -253,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if(validCount <= 8) {
         var targetCell = block.querySelector('.cit-matrix-cell[data-t="'+validCount+'"][data-s="'+totalScore+'"]');
         if(targetCell) {
-          targetCell.classList.remove('cit-cell-dimmed');
           targetCell.classList.add('cit-cell-active');
           targetCell.classList.add(isRI ? 'res-ri' : 'res-nri');
           probStr = probData[validCount][totalScore] || "";
@@ -355,6 +361,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Ініціалізація за замовчуванням, якщо глобальний завантажувач ще не викликав
   createCitBlock();
 });
