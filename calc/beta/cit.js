@@ -172,8 +172,9 @@ window.CIT_API = (function() {
     var r = document.createElement('div');
     r.className = 'cit-test-row';
     
-    var opts = testData.options;
-    var keyIdx = testData.keyIndex;
+    // Захист від битих JSON-об'єктів
+    var opts = testData.options || ["", "", "", ""];
+    var keyIdx = testData.keyIndex || 0;
     var keyText = opts[keyIdx] || "...";
     
     r.setAttribute('data-options', JSON.stringify(opts));
@@ -233,10 +234,14 @@ window.CIT_API = (function() {
 
     var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
 
+    // ВІЗУАЛЬНО ІДЕНТИЧНА КНОПКА ОЧИЩЕННЯ
     block.innerHTML = 
       '<div class="cit-block-header">' +
         '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
-        '<button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження">×</button>' +
+        '<div style="display:flex; align-items:center; gap:6px;">' +
+          '<button class="ess-btn ess-clear-btn btn-clear-block" title="Очистити цифри цієї таблиці">Очистити пам\'ять</button>' +
+          '<button class="ess-btn ess-delete-btn btn-del-block" style="margin:0;" title="Видалити дослідження повністю">×</button>' +
+        '</div>' +
       '</div>' +
       '<div class="cit-layout" style="' + gridStyle + '">' +
         '<div class="cit-tests-wrapper">' +
@@ -263,8 +268,21 @@ window.CIT_API = (function() {
     blocksContainer.appendChild(block);
 
     block.querySelector('.cit-block-title').addEventListener('input', triggerUnsaved);
+    
     block.querySelector('.btn-del-block').addEventListener('click', function() {
       if(confirm('Видалити це дослідження повністю?')) { block.remove(); triggerUnsaved(); }
+    });
+
+    // ФУНКЦІЯ ОЧИЩЕННЯ
+    block.querySelector('.btn-clear-block').addEventListener('click', function() {
+      if(confirm('Очистити всі введені бали в цьому дослідженні? (Самі питання залишаться)')) {
+        block.querySelectorAll('.cit-score').forEach(function(inp) {
+          inp.value = '';
+          inp.classList.remove('artifact');
+        });
+        calcBlock(block);
+        triggerUnsaved();
+      }
     });
 
     var btnAddRow = block.querySelector('.cit-btn-add-row');
@@ -277,7 +295,7 @@ window.CIT_API = (function() {
     });
 
     var existingTests = 0;
-    if(data.tests && data.tests.length > 0) {
+    if(data && data.tests && data.tests.length > 0) {
       data.tests.forEach(function(t, i) { 
         if(t.key !== undefined && !t.options) t = { options: [t.key, "", "", ""], keyIndex:0, score: t.score };
         renderTestRow(block, t, i); 
@@ -448,7 +466,7 @@ window.CIT_API = (function() {
         .cit-add-block-btn:hover { background: rgba(58,124,253,0.18); }
         
         @media print {
-          .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row, .cit-btn-edit { display: none !important; }
+          .cit-add-block-btn, .btn-del-block, .btn-del-row, .cit-btn-add-row, .cit-btn-edit, .btn-clear-block { display: none !important; }
           .cit-block { border: none !important; box-shadow: none !important; margin-bottom: 20px !important; padding: 0 !important; }
           .cit-layout { display: block !important; }
           .cit-cell-active { transform: none !important; box-shadow: none !important; border: 2px solid #000 !important; color: #000 !important; background: transparent !important; }
