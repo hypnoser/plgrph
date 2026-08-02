@@ -3,7 +3,11 @@ window.CIT_API = (function() {
   var citAppRoot, blocksContainer, addBlockBtn;
   var blockCounter = 0;
 
-  // База ймовірностей для CIT
+  var escapeHtml = function(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+  };
+
   const probData = {
     3: { 3:"0.28", 4:"0.13", 5:"0.03", 6:"0.01" },
     4: { 3:"0.44", 4:"0.25", 5:"0.10", 6:"0.04", 7:"0.01", 8:"0.00" },
@@ -57,11 +61,11 @@ window.CIT_API = (function() {
     if(validCount === 0) {
       decEl.textContent = 'N/A'; decEl.className = 'cit-dash-value val-no';
       statusEl.textContent = 'Введіть дані'; statusEl.style.color = '#3a7cfd';
-      conclusionEl.innerHTML = 'Недостатньо даних для формування висновку.';
+      conclusionEl.innerHTML = 'Недостатньо даних для формування висновку. Для роботи матриці Ліккена необхідно мінімум 3 запитання.';
     } else if(validCount < 3) {
       decEl.textContent = 'NO'; decEl.className = 'cit-dash-value val-no';
-      statusEl.textContent = 'Мін. 3 тести'; statusEl.style.color = '#666';
-      conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів (мінімум 3).';
+      statusEl.textContent = 'Мін. 3 тести (Зараз: '+validCount+')'; statusEl.style.color = '#666';
+      conclusionEl.innerHTML = '<b>NO OPINION:</b> Недостатня кількість придатних тестів. Введено балів: <b>'+validCount+'</b>. Для роботи таблиці ймовірностей (CIT) необхідно щонайменше <b>3</b> запитання.';
     } else {
       matrixTable.classList.add('has-data');
 
@@ -117,15 +121,18 @@ window.CIT_API = (function() {
     }
     matrixHtml += '</tbody></table>';
 
+    // Зміна пропорції на 35%
+    var gridStyle = 'display: grid; grid-template-columns: 35% 1fr; gap: 15px; align-items: start;';
+
     block.innerHTML = 
       '<div class="cit-block-header">' +
-        '<input type="text" class="cit-block-title" value="' + (data.title || '') + '" placeholder="Назва дослідження...">' +
+        '<input type="text" class="cit-block-title" value="' + escapeHtml(data.title || '') + '" placeholder="Назва дослідження...">' +
         '<button class="ess-btn ess-delete-btn btn-del-block" title="Видалити дослідження">×</button>' +
       '</div>' +
-      '<div class="cit-layout">' +
+      '<div class="cit-layout" style="' + gridStyle + '">' +
         '<div class="cit-tests-wrapper">' +
           '<div style="display:flex; gap:6px; font-size:10px; font-weight:bold; color:#666; padding-left:18px; margin-bottom:4px;">' +
-            '<div style="flex:1;">ТЕМА</div><div style="flex:1;">КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:24px;"></div>' +
+            '<div style="flex:1;">КЛЮЧ</div><div style="width:40px; text-align:center;">ЕДА</div><div style="width:24px;"></div>' +
           '</div>' +
           '<div class="cit-rows"></div>' +
           '<button class="ess-btn cit-btn-add-row" style="width:100%; margin-top:6px; justify-content:center; background:rgba(58,124,253,0.06); color:#3a7cfd; border:1px solid #3a7cfd;">+ Додати запитання</button>' +
@@ -156,19 +163,17 @@ window.CIT_API = (function() {
     var rowsContainer = block.querySelector('.cit-rows');
     var btnAddRow = block.querySelector('.cit-btn-add-row');
     
-    function addRow(theme, key, score) {
+    function addRow(key, score) {
       var r = document.createElement('div');
       r.className = 'cit-test-row';
       r.innerHTML = 
         '<span style="font-size:11px; font-weight:bold; color:#888; width:12px;" class="row-num"></span>' +
-        '<input type="text" class="cit-theme" placeholder="Тема..." value="' + (theme || '') + '">' +
-        '<input type="text" class="cit-key" placeholder="Ключ..." value="' + (key || '') + '">' +
-        '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + (score || '') + '">' +
+        '<input type="text" class="cit-key" placeholder="Ключ..." value="' + escapeHtml(key || '') + '">' +
+        '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + escapeHtml(score || '') + '">' +
         '<button class="ess-delete-btn btn-del-row" style="width:22px; height:22px; font-size:14px; line-height:1;">×</button>';
       
       rowsContainer.appendChild(r);
 
-      r.querySelector('.cit-theme').addEventListener('input', triggerUnsaved);
       r.querySelector('.cit-key').addEventListener('input', triggerUnsaved);
       var scoreInp = r.querySelector('.cit-score');
       
@@ -194,11 +199,16 @@ window.CIT_API = (function() {
 
     btnAddRow.addEventListener('click', function() { addRow(); triggerUnsaved(); });
 
-    if(data.tests && data.tests.length > 0) {
-      data.tests.forEach(function(t) { addRow(t.theme, t.key, t.score); });
-    } else {
-      // Строго 4 питання за замовчуванням
-      for(var i=0; i<4; i++) addRow();
+    var existingTests = (data.tests && data.tests.length > 0) ? data.tests.length : 0;
+    if(existingTests > 0) {
+      data.tests.forEach(function(t) { addRow(t.key, t.score); });
+    }
+    
+    // СУВОРЕ ПРАВИЛО: Добиваємо порожніми рядками, щоб завжди було мінімум 4 питання
+    var currentRows = block.querySelectorAll('.cit-test-row').length;
+    while(currentRows < 4) {
+      addRow("", "");
+      currentRows++;
     }
   }
 
@@ -233,7 +243,6 @@ window.CIT_API = (function() {
         var tests = [];
         b.querySelectorAll('.cit-test-row').forEach(function(r) {
           tests.push({
-            theme: r.querySelector('.cit-theme').value,
             key: r.querySelector('.cit-key').value,
             score: r.querySelector('.cit-score').value
           });
@@ -250,10 +259,10 @@ window.CIT_API = (function() {
       if(!blocksContainer) return;
       blocksContainer.innerHTML = '';
       blockCounter = 0;
-      if(data && data.length > 0) {
+      if(Array.isArray(data) && data.length > 0) {
         data.forEach(function(b) { createCitBlock(b); });
       } else {
-        createCitBlock();
+        createCitBlock(null);
       }
     },
 
@@ -261,7 +270,7 @@ window.CIT_API = (function() {
       if(!blocksContainer) return;
       blocksContainer.innerHTML = '';
       blockCounter = 0;
-      createCitBlock();
+      createCitBlock(null);
     },
 
     getMarkdown: function() {
@@ -270,13 +279,13 @@ window.CIT_API = (function() {
       var md = "";
       data.forEach(function(b, idx) {
         md += '### ' + (b.title || 'Дослідження CIT №' + (idx+1)) + '\n\n';
-        md += '| № | Тема | Ключ | Бал ЕДА |\n';
-        md += '| :---: | :--- | :--- | :---: |\n';
+        md += '| № | Ключ | Бал ЕДА |\n';
+        md += '| :---: | :--- | :---: |\n';
         
         var validCount = 0; var totScore = 0;
         b.tests.forEach(function(t, i) {
           var s = t.score === '' ? '-' : t.score;
-          md += '| ' + (i+1) + ' | ' + (t.theme || '-') + ' | ' + (t.key || '-') + ' | **' + s + '** |\n';
+          md += '| ' + (i+1) + ' | ' + (t.key || '-') + ' | **' + s + '** |\n';
           if(s!=='А' && s!=='A' && s!=='-') {
             validCount++; totScore += parseInt(s, 10);
           }
