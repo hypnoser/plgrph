@@ -3,235 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Посібник: ESS-M Calculator v5.0</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
-  
-  <!-- Підключаємо бібліотеку JSZip для створення архівів на льоту -->
+  <title>Довідка | Polygraph Suite v6.2</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <!-- Підключення бібліотек для створення ZIP-архіву в браузері -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  
   <style>
-    /* Стилі ізольовані для ідеального відображення як документа */
-    :root {
-      --primary: #3a7cfd;
-      --success: #2e7d32;
-      --danger: #d32f2f;
-      --warning: #f57c00;
-      --bg: #f5f7fa;
-      --text: #2c3e50;
-      --text-muted: #5c6c7c;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text); background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-    .content-wrap { flex: 1; }
-    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-    .paper { background: var(--surface); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 40px; }
+    body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #334155; line-height: 1.6; padding: 20px; }
+    .container { max-width: 850px; margin: 0 auto; background: #ffffff; padding: 40px 50px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    h1 { color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 30px; text-align: center; }
+    h2 { color: #3a7cfd; margin-top: 40px; margin-bottom: 15px; font-size: 1.5em; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+    h3 { color: #475569; margin-top: 25px; margin-bottom: 10px; font-size: 1.2em; }
+    p { margin-bottom: 15px; font-size: 15px; }
+    ul, ol { margin-bottom: 15px; padding-left: 25px; }
+    li { margin-bottom: 8px; font-size: 15px; }
+    .alert-box { background: #eff6ff; border-left: 4px solid #3a7cfd; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+    .security-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+    strong { color: #0f172a; }
+    .footer { text-align: center; margin-top: 50px; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
     
-    header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 30px; }
-    header img { height: 60px; mix-blend-mode: multiply; }
-    header h1 { margin: 0; font-size: 28px; font-weight: 800; color: var(--text); border-left: 3px solid var(--border); padding-left: 20px; }
+    .download-btn-container { text-align: center; margin: 30px 0; }
+    .download-btn { background-color: #10b981; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); transition: 0.2s; }
+    .download-btn:hover { background-color: #059669; transform: scale(1.02); }
+    .download-btn:disabled { background-color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
     
-    h2 { color: var(--success); font-size: 22px; margin-top: 40px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    h3 { color: var(--primary); font-size: 18px; margin-top: 25px; }
-    p, li { font-size: 15px; color: #444; }
-    ul, ol { padding-left: 24px; margin-bottom: 20px; }
-    li { margin-bottom: 10px; }
-    
-    .security-box { background: #fff5f5; border-left: 5px solid var(--danger); padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 10px rgba(211,47,47,0.05); }
-    .security-box strong { color: var(--danger); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    
-    .offline-box { background: #f0f7ff; border-left: 5px solid var(--primary); padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0; box-shadow: 0 2px 10px rgba(58,124,253,0.05); }
-    .offline-box strong { color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .highlight-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; }
-    .highlight-card h3 { margin-top: 0; }
-    
-    kbd { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; font-size: 13px; font-family: monospace; color: var(--text); box-shadow: 0 2px 0 #cbd5e1; }
-    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--primary); font-weight: bold; }
-    
-    .help-footer { background-color: #1a1a1a; color: #ccc; padding: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; flex-wrap: wrap; gap: 16px; margin-top: auto; }
-    .footer-left, .footer-center, .footer-right { flex: 1; min-width: 200px; }
-    .footer-left { text-align: left; }
-    .footer-center { text-align: center; color: #888; }
-    .footer-right { text-align: right; }
-    .help-footer a.plgrph-link { color: #fff; text-decoration: none; font-weight: bold; font-size: 16px; letter-spacing: 0.5px; transition: color 0.2s; }
-    .help-footer a.plgrph-link:hover { color: var(--primary); }
-    
-    /* Оновлена кнопка завантаження */
-    .dl-btn { display: inline-block; background: var(--primary); color: #fff !important; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: inherit; }
-    .dl-btn:hover { background: #2a68e0; transform: translateY(-1px); }
-    .dl-btn:active { transform: translateY(1px); }
-    
-    @media (max-width: 700px) {
-      .container { margin: 15px auto; }
-      .paper { padding: 20px; }
-      header { flex-direction: column; text-align: center; }
-      header h1 { border-left: none; border-top: 3px solid var(--border); padding-left: 0; padding-top: 15px; }
-      .help-footer { flex-direction: column; text-align: center; }
-      .footer-left, .footer-center, .footer-right { text-align: center; flex: none; width: 100%; }
-    }
+    .instruction-step { display: inline-block; background: #e2e8f0; color: #334155; width: 24px; height: 24px; text-align: center; border-radius: 50%; font-weight: bold; margin-right: 8px; line-height: 24px; font-size: 13px; }
   </style>
 </head>
 <body>
 
-<div class="content-wrap">
   <div class="container">
-    <div class="paper">
-      <header>
-        <img src="images/logo.png" alt="PLGRPH Logo">
-        <div>
-          <h1>Розширений посібник</h1>
-          <div style="color: var(--text-muted); padding-left: 20px; font-weight: 500;">ESS-M Calculator v5.0</div>
-        </div>
-      </header>
+    <h1>Довідка: Polygraph Suite v6.2</h1>
 
-      <p><strong>ESS-M Calculator</strong> — це спеціалізований інструмент поліграфолога, розроблений для математично точного підрахунку балів за системою Empirical Scoring System - Multinomial. Програма автоматизує рутину, гарантує повну відповідність стандартам APA (American Polygraph Association) та нівелює людський фактор при складанні звітів.</p>
+    <div class="alert-box">
+      <strong>Polygraph Suite</strong> — це комплексний цифровий інструмент для поліграфологів, розроблений для точного математичного обрахунку поліграм, побудови статистичних матриць та генерації автоматизованих звітів у строгій відповідності до валідованих методик та стандартів <strong>Американської асоціації поліграфологів (APA)</strong>.
+    </div>
 
-      <div class="security-box">
-        <strong>🛡️ КРИТИЧНО: Приватність та Безпека даних</strong>
-        <p>Цей додаток створено за принципом <b>Zero-Knowledge Architecture</b> (Нульове розголошення):</p>
+    <!-- БЛОК 1: МЕТОДОЛОГІЯ ESS-M -->
+    <h2>1. Методологія ESS-Multinomial (ESS-M)</h2>
+    <p>Модуль ESS-M застосовує Емпіричну систему оцінювання з поліноміальним розподілом (Empirical Scoring System - Multinomial) для математичного аналізу тестів формату CQT.</p>
+    <ul>
+      <li><strong>Принципи оцінювання:</strong> Алгоритм жорстко спирається на стандартизовану, доказову <strong>3-бальну систему оцінювання</strong> фізіологічних ознак (дихання, ЕДА, кардіо), розроблену для ESS. Кожній ознаці присвоюється бал (-1, 0, +1) залежно від емпірично валідованих критеріїв пропорції.</li>
+      <li><strong>Статистична модель:</strong> ESS-M використовує поліноміальний розподіл для розрахунку p-value (ймовірності помилки), враховуючи нормативні дані та математично визначаючи точний поріг (cutscore) для заданої кількості запитань.</li>
+      <li><strong>Категорії рішень (APA Standards):</strong>
         <ul>
-          <li><strong>Автономність:</strong> Програма не має серверів і не передає дані в Інтернет. Усі підрахунки відбуваються локально на вашому пристрої.</li>
-          <li><strong>Вразливість кешу:</strong> Дані автоматично зберігаються лише в тимчасовий кеш браузера (localStorage). <b>Якщо ви очистите історію браузера або закриєте вкладку в режимі "Інкогніто", всі поточні тести безповоротно зникнуть.</b></li>
-          <li><strong>Єдиний захист:</strong> Використовуйте кнопку <code>📥</code> (Завантажити JSON), щоб створити зашифрований файл-бекап на вашому ПК. Для відновлення роботи просто перетягніть цей файл у вікно калькулятора.</li>
-          <li><strong>Пароль:</strong> Для входу у програму завжди використовується майстер-пароль: <kbd>plgrph</kbd>.</li>
+          <li><strong>DI (Deception Indicated) / SR (Significant Responses):</strong> Наявність значущих реакцій (ознак приховування).</li>
+          <li><strong>NDI (No Deception Indicated) / NSR (No Significant Responses):</strong> Ознак приховування не виявлено.</li>
+          <li><strong>INC (Inconclusive) / NO (No Opinion):</strong> Невизначений результат (недостатньо статистичної потужності для прийняття рішення).</li>
         </ul>
-      </div>
+      </li>
+    </ul>
 
-      <h2>🎯 Для кого цей інструмент?</h2>
-      <p>Калькулятор розроблений для практикуючих поліграфологів, які використовують методику багатономіального емпіричного оцінювання (ESS-M) у:</p>
-      <ul>
-        <li>Багатотемних скринінгових перевірках (AFMGQT, LEPET).</li>
-        <li>Однотемних діагностичних розслідуваннях (ZCT, DLDT, Federal).</li>
-      </ul>
+    <h3>Інструкція з використання (ESS-M):</h3>
+    <ol style="list-style: none; padding-left: 0;">
+      <li><span class="instruction-step">1</span> У верхній панелі введіть <strong>П.І.Б. респондента</strong> та <strong>Дату</strong> дослідження.</li>
+      <li><span class="instruction-step">2</span> Перейдіть на вкладку <strong>ESS-M</strong> та натисніть кнопку "+ Додати обрахунок ESS-M".</li>
+      <li><span class="instruction-step">3</span> Вкажіть формат тесту (Діагностика або Скринінг) та тип (You Phase, ZCT, LEPET тощо).</li>
+      <li><span class="instruction-step">4</span> Додайте необхідну кількість контрольних та релевантних питань за допомогою відповідних кнопок.</li>
+      <li><span class="instruction-step">5</span> Введіть вручну оцінені бали (-1, 0, 1) для каналів Пневмо (P1, P2), ЕДА (EDA) та Кардіо/PPG (CV) у відповідні клітинки.</li>
+      <li><span class="instruction-step">6</span> Система автоматично розрахує підсумкові суми, P-value та згенерує обґрунтоване категорійне рішення.</li>
+    </ol>
 
-      <h2>🛠️ Ключові методологічні функції</h2>
+    <!-- БЛОК 2: МЕТОДОЛОГІЯ CIT -->
+    <h2>2. Методологія Concealed Information Test (CIT)</h2>
+    <p>Модуль CIT (Тест на приховану інформацію) автоматизує розрахунок математичної ймовірності за класичною методологією (D. Lykken) з використанням динамічних імовірнісних матриць.</p>
+    <ul>
+      <li><strong>Структура стимулів:</strong> Калькулятор підтримує різну кількість стимулів (мінімум 4). Для кожного питання необхідно визначити <strong>Ознаку (Theme)</strong>, позначити один стимул як <strong>Ключ (Key)</strong>, а решту залишити як Альтернативи (Foils).</li>
+      <li><strong>Обробка даних:</strong> Вводиться бал електрошкірної активності (ЕДА) для ключового стимулу — традиційно "2" (найбільша реакція), "1" (друга за величиною) або "0" (інше).</li>
+      <li><strong>Категорії рішень:</strong>
+        <ul>
+          <li><strong>RI (Recognition Indicated):</strong> Впізнання виявлено. Сумарний бал свідчить про обізнаність.</li>
+          <li><strong>NRI (No Recognition Indicated):</strong> Ознак впізнання не виявлено.</li>
+          <li><strong>Pr (Необізнаність):</strong> Динамічно розрахована ймовірність (p-value) того, що фіксований результат досягнуто випадково обстежуваним, який не володіє деталями (naive subject).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Інструкція з використання (CIT):</h3>
+    <ol style="list-style: none; padding-left: 0;">
+      <li><span class="instruction-step">1</span> Перейдіть на вкладку <strong>CIT</strong> та натисніть "+ Додати дослідження CIT".</li>
+      <li><span class="instruction-step">2</span> У створеному блоці натисніть іконку шестірні <strong>(⚙)</strong> біля тесту.</li>
+      <li><span class="instruction-step">3</span> У модальному вікні введіть <strong>Назву ознаки</strong> (наприклад, "Колір авто"), додайте варіанти відповідей (мінімум 4) і позначте один з них як "Ключ".</li>
+      <li><span class="instruction-step">4</span> Введіть оцінений бал ЕДА (0, 1 або 2) у колонку поруч із тестом. Якщо виявлено артефакт, введіть букву "А".</li>
+      <li><span class="instruction-step">5</span> Матриця праворуч динамічно адаптується під кількість тестів та видасть рішення (RI/NRI) з відповідним рівнем Pr.</li>
+    </ol>
+
+    <!-- БЛОК 3: БЕЗПЕКА ТА ОФЛАЙН -->
+    <div class="security-box">
+      <h2>3. Конфіденційність, Безпека та Офлайн-архів</h2>
+      <p><strong>Повна автономність (Zero-Server Architecture):</strong> Сервіс розроблено з урахуванням абсолютної конфіденційності. <strong>Додаток не має серверної частини, не відправляє, не перехоплює і не зберігає жодних даних у мережі Інтернет.</strong> Усі операції з інформацією респондентів обробляються виключно в оперативній пам'яті та локальному кеші вашого браузера.</p>
       
-      <div class="highlight-card">
-        <h3>1. Сувора валідація даних</h3>
-        <p>Калькулятор не дозволить вам зробити помилку в цифрах. Спроба ввести текст або недопустимий бал буде заблокована. <b>Увага до ЕДА:</b> Згідно зі стандартами ESS, канал електродермальної активності оцінюється лише у <code>-2</code>, <code>0</code> або <code>2</code> бали (правило 2:1). Введення 1 або -1 для ЕДА автоматично ігнорується.</p>
+      <p><strong>Використання офлайн:</strong> Програма є незалежною системою. Ви можете завантажити її на свій комп'ютер у вигляді єдиного архіву та працювати повністю без Інтернету.</p>
+      
+      <div class="download-btn-container">
+        <button id="download-zip-btn" class="download-btn" onclick="downloadSuite()">📦 Завантажити архів програми (.zip)</button>
+        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">(Включає всі скрипти, стилі та логотип для локального запуску)</div>
       </div>
+      
+      <p><em>* Якщо скрипт завантаження не спрацював через блокування браузера, просто натисніть <strong>Ctrl + S</strong> (Cmd + S) на головній сторінці програми та збережіть її як "Вебсторінка, повністю".</em></p>
+    </div>
 
-      <div class="highlight-card">
-        <h3>2. Розумне дихання та Фізіологічний конфлікт</h3>
-        <p>Програма аналізує верхнє та нижнє дихання в комплексі:</p>
-        <ul>
-          <li>Якщо обидва канали порожні — це <b>Артефакт</b> (втрата даних <code>∅</code>).</li>
-          <li>Якщо на верхньому диханні бал <code>+1</code>, а на нижньому <code>-1</code> — сума дорівнює нулю, але калькулятор розпізнає це як <b>Фізіологічний конфлікт</b> і маркує його золотим трикутником <code style="color:#f57c00">⚠</code>.</li>
-        </ul>
-      </div>
+    <!-- БЛОК 4: ЕКСПОРТ -->
+    <h2>4. Експорт даних та створення Звітів</h2>
+    <ul>
+      <li><strong>Експорт у `.json`:</strong> Натисніть "Зберегти (.json)", щоб завантажити файл-зліпок сесії (містить дані обох методик). Ви можете в будь-який момент відновити дослідження, натиснувши "Відкрити" або просто перетягнувши (Drag & Drop) файл у вікно браузера.</li>
+      <li><strong>Експорт у `.md` (Markdown):</strong> Натисніть "Експорт", щоб створити зручний текстовий протокол. Його ідеально використовувати для інтеграції в Microsoft Word, системи Obsidian (Zettelkasten) або Telegram-звіти.</li>
+      <li><strong>Друк у PDF:</strong> Натискання кнопки принтера (або <code>Ctrl + P</code>) автоматично застосовує оптимізовані стилі друку. Зайві елементи керування ховаються. <em>Сервіс автоматично форматує сторінки так, щоб таблиці та графіки ESS-M не розривалися навпіл під час друку.</em></li>
+    </ul>
 
-      <div class="highlight-card">
-        <h3>3. Диференційна вага артефактів (Rule of 25%)</h3>
-        <p>Втрата каналу ЕДА (через артефакт) штрафується у 2 бали надійності, тоді як Пневмо чи Кардіо — у 1 бал. Якщо в межах одного питання втрачено <b>≥ 25%</b> інформації (наприклад, злетів датчик), цьому питанню автоматично присвоюється статус <b>NO (No Opinion)</b>.</p>
-      </div>
-
-      <div class="highlight-card">
-        <h3>4. Автоматична контамінація (Spot Rule)</h3>
-        <p>У скринінгових тестах галочка "🔒 Контам." гарантує виконання жорсткого правила: якщо хоча б одне питання в тесті отримало статус <b>SR (Значуща реакція)</b>, загальний статус <i>NSR</i> блокується, і всі інші позитивні питання отримують статус <i>INC</i>.</p>
-      </div>
-
-      <h2>📖 Покроковий алгоритм роботи</h2>
-      <ol>
-        <li><strong>Вхід:</strong> Запустіть файл <code>index.html</code> та введіть пароль <kbd>plgrph</kbd>.</li>
-        <li><strong>Ініціалізація:</strong> Введіть П.І.Б. респондента та виберіть дату. Ці дані сформують назву ваших файлів експорту (напр., <code>ess-Ivanov_I-2026-08-01.md</code>).</li>
-        <li><strong>Створення тесту:</strong> Натисніть "Додати обрахунок". Обов'язково <b>оберіть формат тесту</b> (DLST, AFMGQT тощо) у лівому верхньому куті, щоб розблокувати потрібну кількість колонок.</li>
-        <li><strong>Внесення даних:</strong> Переносьте бали з поліграми. 
-          <br><i>Лайфхак:</i> Натисніть клавішу <kbd>-</kbd> (мінус), щоб миттєво ввести від'ємне значення. Клавіша <kbd>Enter</kbd> перекидає курсор на клітинку нижче.</li>
-        <li><strong>Артефакти:</strong> Якщо ділянка нечитабельна, введіть літеру <kbd>А</kbd> або два нулі <kbd>00</kbd>. Клітинка стане оранжевою, позначаючи втрату даних.</li>
-        <li><strong>Редактор питань:</strong> Натисніть кнопку <code>📝 Питання</code> і впишіть реальну семантику (текст запитань).</li>
-      </ol>
-
-      <h2>📊 Експорт та Звітність</h2>
-      <p>Забудьте про копіювання таблиць у Word. У верхній панелі є потужні інструменти експорту:</p>
-      <ul>
-        <li><kbd>📥</kbd> <b>Експорт JSON:</b> Завантажує "сирий" файл бази даних. Використовуйте його, щоб зберегти прогрес або передати файл колезі (який відкриє його через кнопку "📂 Відкрити").</li>
-        <li><kbd>📝</kbd> <b>Експорт Markdown (.md):</b> Ідеальний текстовий звіт для ваших архівів (Zettelkasten, Obsidian, Notion). Генерує готовий документ з таблицями, метаданими, кольоровим маркуванням статусів (NSR - зелений, SR - червоний) та автоматичним висновком по всім створеним тестам.</li>
-        <li><kbd>🖨️</kbd> <b>Друк / PDF:</b> Форматує сторінку під офіційний бланк формату А4.</li>
-      </ul>
-
-      <div class="offline-box">
-        <strong>⚡ Абсолютна автономність (Офлайн версія)</strong>
-        <p>Калькулятор має повністю модульну архітектуру. Ви можете завантажити його до себе на комп'ютер, розпакувати архів і працювати взагалі без підключення до мережі Інтернет. Для цього натисніть кнопку "Завантажити калькулятор" внизу сторінки.</p>
-      </div>
-
+    <div class="footer">
+      Polygraph Suite v6.2 | Developed for Professional Assessment Use
     </div>
   </div>
-</div>
 
-<footer class="help-footer">
-  <div class="footer-left">
-    <a href="https://plgrph.pp.ua" target="_blank" class="plgrph-link">plgrph.pp.ua</a>
-  </div>
-  <div class="footer-center">
-    ESS-M Calculator v5.0 &copy; 2026
-  </div>
-  <div class="footer-right">
-    <button id="dynamic-download-btn" class="dl-btn">⬇ Завантажити калькулятор (.zip)</button>
-  </div>
-</footer>
+  <!-- Скрипт для скачування архіву -->
+  <script>
+    function downloadSuite() {
+      const btn = document.getElementById('download-zip-btn');
+      btn.innerText = '⏳ Формування архіву...';
+      btn.disabled = true;
 
-<!-- Скрипт генерації ZIP архіву -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const dlBtn = document.getElementById('dynamic-download-btn');
-    
-    if (dlBtn) {
-      dlBtn.addEventListener('click', async function(e) {
-        e.preventDefault();
+      const zip = new JSZip();
+      
+      // Перелік текстових файлів
+      const files = ['index.html', 'style.css', 'app.js', 'ess.js', 'cit.js', 'info.html'];
+      
+      // Створюємо масив промісів (запитів до локальних файлів)
+      const promises = files.map(file => 
+        fetch(file)
+          .then(response => {
+            if (!response.ok) throw new Error('Не знайдено файл: ' + file);
+            return response.text();
+          })
+          .then(text => zip.file(file, text))
+          .catch(e => console.warn(e)) // Ігноруємо помилки, якщо файл відсутній
+      );
+
+      // Додаємо логотип (бінарний файл) у папку images
+      const imgPromise = fetch('images/logo.png')
+        .then(response => {
+          if (!response.ok) throw new Error('Не знайдено логотип');
+          return response.blob();
+        })
+        .then(blob => zip.folder('images').file('logo.png', blob))
+        .catch(e => console.warn(e));
         
-        // Змінюємо статус кнопки
-        const originalText = dlBtn.textContent;
-        dlBtn.textContent = "⏳ Збираємо архів...";
-        dlBtn.style.opacity = "0.7";
-        dlBtn.style.pointerEvents = "none";
-        
-        try {
-          const zip = new JSZip();
-          
-          // Текстові файли для завантаження
-          const filesToFetch = ['index.html', 'style.css', 'script.js', 'info.html'];
-          
-          for (const file of filesToFetch) {
-            const response = await fetch(file);
-            if (!response.ok) throw new Error("Файл не знайдено: " + file);
-            const text = await response.text();
-            zip.file(file, text); // Додаємо чистий файл з сервера в архів
-          }
-          
-          // Завантажуємо зображення
-          const imgFolder = zip.folder("images");
-          const imgResponse = await fetch('images/logo.png');
-          if (imgResponse.ok) {
-            const imgBlob = await imgResponse.blob();
-            imgFolder.file('logo.png', imgBlob);
-          }
-          
-          // Генеруємо ZIP-архів
-          const content = await zip.generateAsync({type:"blob"});
-          
-          // Створюємо посилання та запускаємо завантаження
-          const url = URL.createObjectURL(content);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "ESS-M_Calculator_v5.0.zip";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          
-        } catch (error) {
-          alert("Помилка формування архіву.\n\nЦя функція працює автоматично лише тоді, коли калькулятор розміщено на веб-сервері (в Інтернеті). Якщо ви відкрили файл локально, ця дія недоступна.");
-        } finally {
-          // Повертаємо кнопці початковий вигляд
-          dlBtn.textContent = originalText;
-          dlBtn.style.opacity = "1";
-          dlBtn.style.pointerEvents = "auto";
-        }
+      promises.push(imgPromise);
+
+      // Після отримання всіх файлів, генеруємо ZIP
+      Promise.all(promises).then(() => {
+        zip.generateAsync({type:"blob"}).then(function(content) {
+          saveAs(content, "Polygraph_Suite_v6.2.zip");
+          btn.innerText = '📦 Завантажити архів програми (.zip)';
+          btn.disabled = false;
+        });
+      }).catch(err => {
+        alert('Сталася помилка формування архіву. Можливо, ваш браузер блокує локальні запити (CORS). Спробуйте використати Ctrl + S для збереження сайту.');
+        btn.innerText = '📦 Завантажити архів програми (.zip)';
+        btn.disabled = false;
       });
     }
-  });
-</script>
+  </script>
 
 </body>
 </html>
