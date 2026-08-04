@@ -3,595 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLGRPH | Центр оцінки достовірності інформації</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <title>PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації</title>
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="manifest" href="/images/site.webmanifest">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+    h1 {
+        font-size: 24px;
+    }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8f9fc;
-            color: #1e293b;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* Navigation */
-        nav {
-            width: 100%;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid #e2e8f0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 12px 32px;
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff; /* Фон сторінки білий */
+            overflow: hidden; /* Прибираємо скролінг */
         }
-
-        .nav-logo img {
-            height: 40px;
-            width: auto;
-            display: block;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 36px;
-            font-size: 15px;
-            font-weight: 500;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: #475569;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #0f172a;
-        }
-
-        .nav-links a.active {
-            color: #4f46e5;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nav-links a.active svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        /* Hero */
-        .hero {
-            width: 100%;
-            background: #fff;
-            padding: 64px 32px 0;
-            text-align: center;
-        }
-
-        .hero-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #eef2ff;
-            color: #4f46e5;
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 28px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .hero-badge span {
-            width: 8px;
-            height: 8px;
-            background: #4f46e5;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .hero h1 {
-            font-size: clamp(36px, 5vw, 56px);
-            font-weight: 800;
-            line-height: 1.1;
-            color: #0f172a;
-            letter-spacing: -0.02em;
-        }
-
-        /* Video Section */
-        .video-section {
-            width: 100%;
-            background: #fff;
-            padding: 48px 32px 0;
-        }
-
-        .video-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .video-wrapper {
+        .container {
+            position: relative;
             width: 100%;
             max-width: 640px;
-            margin: 0 auto;
-            background: #fff;
-        }
-
-        .video-wrapper video {
-            width: 100%;
             height: auto;
-            display: block;
+            display: flex;
+            flex-direction: column;          
+            align-items: center;
         }
-
-        /* Result Section */
-        .result-section {
-            width: 100%;
-            background: #f8f9fc;
-            padding: 32px 32px 80px;
+      
+        #logoVideo {
+            width: 100%; /* Встановлюємо ширину відео */
+            height: auto; /* Встановлюємо висоту відео */
+            object-fit: contain; /* Зберігаємо співвідношення сторін відео */
         }
-
-        .result-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .result-header {
+        #textContainer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #444444;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out; /* Плавний перехід для тексту */
+            margin-top: 20px; /* Відступ від відео для тексту */
             text-align: center;
-            margin-bottom: 48px;
+            max-width: 640px;
         }
-
-        .result-header h2 {
-            font-size: clamp(28px, 3.5vw, 36px);
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 12px;
-        }
-
-        .result-header p {
-            font-size: 18px;
-            color: #64748b;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .result-cards {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-        }
-
-        .result-card {
-            flex: 1;
-            min-width: 0;
-            max-width: 340px;
-            background: #fff;
-            border-radius: 16px;
-            padding: 40px 32px;
-            border: 1px solid #e2e8f0;
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-
-        .result-card:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-            transform: translateY(-2px);
-        }
-
-        .result-icon {
-            width: 48px;
-            height: 48px;
-            background: #eef2ff;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .result-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: #4f46e5;
-            stroke-width: 2;
-            fill: none;
-        }
-
-        .result-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 10px;
-        }
-
-        .result-card p {
+        #sloganContainer {
             font-size: 16px;
-            color: #64748b;
-            margin: 0;
-            line-height: 1.7;
+            color: #0079c5;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Плавний перехід для тексту */
+            margin-top: 10px;
+            text-align: center;
+            max-width: 640px;
+            font-style:italic;
+            font-weight: 100;
+            font-family: "Sofia Sans", sans-serif;
+            font-optical-sizing: auto;
         }
-
-        /* Calculator Section */
-        .calc-section {
-            width: 100%;
-            background: #fff;
-            padding: 80px 32px;
-        }
-
-        .calc-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .calc-box {
-            background: #f8f9fc;
-            border-radius: 24px;
-            padding: 56px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .calc-content {
-            max-width: 700px;
-        }
-
-        .calc-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4f46e5;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .calc-badge svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            fill: none;
-        }
-
-        .calc-box h3 {
-            font-size: clamp(28px, 3.5vw, 36px);
-            font-weight: 800;
-            margin: 0 0 16px;
-            color: #0f172a;
-            line-height: 1.2;
-        }
-
-        .calc-box p {
-            font-size: 17px;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-
-        .calc-box p.secondary {
-            font-size: 15px;
-            color: #64748b;
-            margin-bottom: 32px;
-        }
-
-        .calc-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4f46e5;
-            color: #fff;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            transition: background 0.2s, transform 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .calc-btn:hover {
-            background: #4338ca;
-            transform: translateY(-1px);
-        }
-
-        .calc-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            fill: none;
-        }
-
-        /* Footer */
-        footer {
-            width: 100%;
-            background: #0f172a;
-            padding: 56px 32px 32px;
-        }
-
-        .footer-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand img {
-            height: 40px;
-            width: auto;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .footer-brand p {
-            font-size: 14px;
-            color: #94a3b8;
-            margin: 0;
-            line-height: 1.6;
-            max-width: 280px;
-        }
-
-        .footer-columns {
-            display: flex;
-            gap: 60px;
-            flex-wrap: wrap;
-        }
-
-        .footer-column h4 {
-            font-size: 12px;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-        }
-
-        .footer-column a {
-            display: block;
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 10px;
-            transition: color 0.2s;
-        }
-
-        .footer-column a:hover {
-            color: #e2e8f0;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #1e293b;
-            padding-top: 24px;
+        #email {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out; /* Плавний перехід для тексту */
+            color:blue;
             text-align: center;
         }
+        
+        #textContainer.visible {
+            opacity: 1;
+        }
+        
+        #sloganContainer.visible {
+            opacity: 1;
+        }
+        
+        #email.visible {
+            opacity: 1;
+        }
 
-        .footer-bottom p {
+        /* === БЛОК КАЛЬКУЛЯТОРА (Прототип 3) === */
+        #calcBlock {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            max-width: 640px;
+            width: 100%;
+        }
+        #calcBlock.visible {
+            opacity: 1;
+        }
+        .calc-deco-line {
+            width: 60px;
+            height: 2px;
+            background: #0079c5;
+            margin: 0 auto;
+        }
+        .calc-deco-line.top {
+            margin-bottom: 25px;
+        }
+        .calc-deco-line.bottom {
+            margin-top: 30px;
+        }
+        .calc-label {
             font-size: 13px;
-            color: #64748b;
-            margin: 0;
+            color: #0079c5;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-family: "Sofia Sans", sans-serif;
+        }
+        .calc-title {
+            font-family: "Sofia Sans", sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #333;
+            margin: 0 0 15px 0;
+            line-height: 1.3;
+        }
+        .calc-quote {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.7;
+            margin: 0 auto 25px auto;
+            max-width: 540px;
+            font-style: italic;
+            font-weight: 300;
+            font-family: "Sofia Sans", sans-serif;
+        }
+        .calc-meta {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 25px;
+            font-family: "Sofia Sans", sans-serif;
+        }
+        .calc-link {
+            color: #0079c5;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-bottom: 1px solid #0079c5;
+            padding-bottom: 2px;
+            transition: opacity 0.3s;
+            font-family: "Sofia Sans", sans-serif;
+        }
+        .calc-link:hover {
+            opacity: 0.7;
         }
 
-        /* Mobile */
+        /* Медіа-запити для мобільних пристроїв */
         @media (max-width: 768px) {
-            .nav-container {
-                padding: 12px 20px;
+            .container {
+                width: 80vw; /* Використовувати 80% від ширини вьюпорта */
             }
+            #textContainer {
+                font-size: 20px; /* Зменшення розміру шрифту для мобільних пристроїв */
+                padding: 0 10px; /* Відступи всередині контенту для кращого вигляду на мобільних пристроях */
+            }
+            #sloganContainer {
+                font-size: 16px;
+                padding: 0 10px;
+                font-style:italic;
+                font-weight: 100;
+                font-family: "Sofia Sans", sans-serif;
+                font-optical-sizing: auto;
+            }
+            #calcBlock {
+                padding: 30px 15px;
+            }
+            .calc-title {
+                font-size: 20px;
+            }
+            .calc-quote {
+                font-size: 15px;
+                padding: 0 10px;
+            }
+        }
 
-            .nav-links {
-                gap: 20px;
+        @media (max-width: 480px) {
+            .container {
+                width: 95vw; /* Використовувати 95% від ширини вьюпорта */
+            }
+            #textContainer {
+                font-size: 18px; /* Ще більше зменшення розміру шрифту для дуже малих пристроїв */
+                padding: 0 10px; /* Відступи всередині контенту для кращого вигляду на мобільних пристроях */
+            }
+            #sloganContainer {
+                font-size: 14px;
+                padding: 0 10px;
+                font-style: italic;
+                font-weight: 100;
+                font-family: "Sofia Sans", sans-serif;
+                font-optical-sizing: auto;
+            }
+            #calcBlock {
+                padding: 25px 10px;
+                margin-top: 30px;
+            }
+            .calc-title {
+                font-size: 18px;
+            }
+            .calc-quote {
                 font-size: 14px;
             }
-
-            .hero {
-                padding: 40px 20px 0;
+            .calc-label {
+                font-size: 12px;
+                letter-spacing: 2px;
             }
-
-            .video-section {
-                padding: 32px 20px 60px;
-            }
-
-            .result-section,
-            .calc-section {
-                padding: 60px 20px;
-            }
-
-            .result-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .result-card {
-                max-width: 100%;
-                width: 100%;
-            }
-
-            .calc-box {
-                padding: 32px 24px;
-            }
-
-            .footer-top {
-                flex-direction: column;
-                gap: 32px;
-            }
-
-            .footer-columns {
-                gap: 40px;
+            .calc-link {
+                font-size: 14px;
             }
         }
+        
+        .hidden-part {
+            display: none;
+        }
+        .email:before {
+            content: "plgrph";
+            color:#0079C5;
+        }
+        .email:after {
+            content: "@protonmail.com";
+            color:#0079C5;
+        }
     </style>
-<base target="_blank">
+  
+  
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-YGBY8WF4E6');
+</script>
+  
+  
 </head>
 <body>
-
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="nav-logo">
-                <img src="images/logo.png" alt="PLGRPH">
-            </a>
-            <div class="nav-links">
-                <a href="#about">Про нас</a>
-                <a href="#result">Результат</a>
-                <a href="/calc/" class="active">
-                    Калькулятор
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                    </svg>
-                </a>
-                <a href="#contacts">Контакти</a>
-            </div>
+    <div class="container">
+        <video id="logoVideo" muted autoplay preload="auto">
+            <source src="images/logo.webm" type="video/webm"> <!-- Переміщено в папку images -->
+            Ваш браузер не підтримує відео тег.
+        </video>
+        <div id="textContainer">
+            <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1><br>
+<!-- <span style="color: #007bff;">СЕРГІЯ КОРЖОВА</span></h1>  --> 
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="about">
-        <div class="hero-container">
-            <div class="hero-badge">
-                <span></span>
-                Центр оцінки достовірності інформації
-            </div>
-            <h1>
-                Найскладніші ситуації.<br>
-                Найвища точність.<br>
-                Найдорожче — істина.
-            </h1>
+        <div id="sloganContainer">
+            <h2>Найскладніші ситуації. Найвища точність.<br> 
+Найдорожче - істина!</h2>
         </div>
-    </section>
+    </div><br>
+  <br>
 
-    <!-- Video Section -->
-    <section class="video-section">
-        <div class="video-container">
-            <div class="video-wrapper">
-                <video id="logoVideo" muted autoplay preload="auto">
-                    <source src="images/logo.webm" type="video/webm">
-                    Ваш браузер не підтримує відео тег.
-                </video>
-            </div>
+    <!-- === БЛОК КАЛЬКУЛЯТОРА (Прототип 3: Лідер думок) === -->
+    <div id="calcBlock">
+        <div class="calc-deco-line top"></div>
+        
+        <div class="calc-label">Стандарт галузі</div>
+        
+        <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
+        
+        <p class="calc-quote">
+            «Коли твої інструменти стають інструментами колег — це означає, 
+            що твій підхід працює.»
+        </p>
+        
+        <div class="calc-meta">
+            Розробка PLGRPH · використовується поліграфологами України та інших країн
         </div>
-    </section>
+        
+        <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-link">
+            Детальніше про калькулятор →
+        </a>
+        
+        <div class="calc-deco-line bottom"></div>
+    </div>
 
-    <!-- Result Section -->
-    <section class="result-section" id="result">
-        <div class="result-container">
-            <div class="result-header">
-                <h2>Що ви отримаєте</h2>
-                <p>Результат звернення до PLGRPH</p>
-            </div>
-            <div class="result-cards">
-                <div class="result-card">
-                    <div class="result-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </div>
-                    <h3>Ясність</h3>
-                    <p>Чітке розуміння реальної картини подій там, де інтуїція та здогади дають збій.</p>
-                </div>
-                <div class="result-card">
-                    <div class="result-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <h3>Впевненість</h3>
-                    <p>Обґрунтована впевненість у фактах для прийняття вагомих особистих та ділових рішень.</p>
-                </div>
-                <div class="result-card">
-                    <div class="result-icon">
-                        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <h3>Об'єктивність</h3>
-                    <p>Чітке розуміння фактів без впливу емоцій та особистих симпатій.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<div id="footer" class="container">
+    <div id="email" class="text-block">
+        <!-- <a href="https://t.me/plgrph_ua" class="link" target="_blank">Telegram</a> -->
+        <a href="mailto:plgrph@protonmail.com" class="link" target="_blank">Email</a>
+       <!-- <a href="https://www.linkedin.com/in/korzhov-sv/" class="link" target="_blank">LinkedIn</a>  -->
+    </div>
+    <div class="center font-monospace fs-6" style="margin-top:50px;">© 2021-2026</div>
+</div> 
+  
+  
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.getElementById('logoVideo');
+            var textContainer = document.getElementById('textContainer');
+            var sloganContainer = document.getElementById('sloganContainer');
+            var email = document.getElementById('email');
+            var calcBlock = document.getElementById('calcBlock');
 
-    <!-- Calculator Section -->
-    <section class="calc-section">
-        <div class="calc-container">
-            <div class="calc-box">
-                <div class="calc-content">
-                    <div class="calc-badge">
-                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                        Наукова діяльність
-                    </div>
-                    <h3>Polygraph Suite v6.2</h3>
-                    <p>Власна розробка програмного забезпечення для поліграфологів. Калькулятор для структурування тестових питань та спрощення аналізу поліграм.</p>
-                    <p class="secondary">Постійна робота над удосконаленням методології та інструментів — частина нашого підходу до точності.</p>
-                    <a href="/calc/" class="calc-btn">
-                        Перейти до калькулятора
-                        <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+            setTimeout(function() {
+                video.play().catch(function(error) {
+                    console.log('Відео не може бути автоматично запущене:', error);
+                });
+            }, 2000); // 1000 мілісекунд затримки (1 секунда)
 
-    <!-- Footer -->
-    <footer id="contacts">
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <img src="images/logo.png" alt="PLGRPH">
-                    <p>Центр оцінки достовірності інформації</p>
-                </div>
-                <div class="footer-columns">
-                    <div class="footer-column">
-                        <h4>Навігація</h4>
-                        <a href="#about">Про нас</a>
-                        <a href="#result">Результат</a>
-                        <a href="/calc/">Калькулятор</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Контакти</h4>
-                        <a href="mailto:plgrph@protonmail.com">Email</a>
-                        <a href="https://t.me/plgrph_ua" target="_blank" rel="noopener noreferrer">Telegram</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2013–2026 PLGRPH. Центр оцінки достовірності інформації.</p>
-            </div>
-        </div>
-    </footer>
+            video.onended = function() {
+                // Показати h1 одразу після завершення відео
+                textContainer.classList.add('visible');
+                
+                // Показати h2 через 1 секунди після h1
+                setTimeout(function() {
+                    sloganContainer.classList.add('visible');
+                }, 1000); // 1000 мілісекунд затримки (1 секунда)
+                
+                // Показати емейл через 1 секунду після h1
+                setTimeout(function() {
+                    if (email) {
+                        email.classList.add('visible');
+                    }
+                }, 2000); // 1000 мілісекунд затримки (1 секунда)
 
+                // Показати блок калькулятора через 3.5 секунди після завершення відео
+                setTimeout(function() {
+                    if (calcBlock) {
+                        calcBlock.classList.add('visible');
+                    }
+                }, 3500);
+            };
+        });
+    </script>
 </body>
 </html>
