@@ -59,7 +59,7 @@
             opacity: 1;
         }
 
-        /* === СЛОГАН: 3 рядки з послідовною анімацією === */
+        /* === СЛОГАН === */
         #sloganContainer {
             margin-top: 14px;
             display: flex;
@@ -92,7 +92,6 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* Текст: ефект друкарської машинки */
         .slogan-text {
             display: inline-block;
             clip-path: inset(0 100% 0 0);
@@ -101,7 +100,6 @@
         .slogan-line.visible .slogan-text {
             clip-path: inset(0 0% 0 0);
         }
-        /* Галочка: з'являється після тексту */
         .slogan-check {
             width: 22px;
             height: 22px;
@@ -126,6 +124,29 @@
             stroke-dashoffset: 0;
         }
 
+        /* === РОЗДІЛЮВАЛЬНА ЛІНІЯ === */
+        .divider-wrap {
+            width: 100%;
+            max-width: 640px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            margin: 18px 0 6px 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .divider-wrap.visible {
+            opacity: 1;
+        }
+        .divider-line {
+            width: 0;
+            height: 1px;
+            background: rgba(0, 121, 197, 0.35);
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .divider-wrap.visible .divider-line {
+            width: 100%;
+        }
+
         #email {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
@@ -138,7 +159,7 @@
 
         /* === БЛОК КАЛЬКУЛЯТОРА === */
         #calcBlock {
-            margin-top: 30px;
+            margin-top: 24px;
             margin-bottom: 30px;
             padding: 0 20px;
             opacity: 0;
@@ -360,7 +381,11 @@
             </div>
         </div>
     </div>
-    <br><br>
+
+    <!-- === РОЗДІЛЮВАЛЬНА ЛІНІЯ === -->
+    <div class="divider-wrap" id="dividerWrap">
+        <div class="divider-line"></div>
+    </div>
 
     <!-- === БЛОК КАЛЬКУЛЯТОРА === -->
     <div id="calcBlock">
@@ -392,8 +417,9 @@
             var video = document.getElementById('logoVideo');
             var textContainer = document.getElementById('textContainer');
             var sloganLines = document.querySelectorAll('.slogan-line');
-            var email = document.getElementById('email');
+            var dividerWrap = document.getElementById('dividerWrap');
             var calcBlock = document.getElementById('calcBlock');
+            var email = document.getElementById('email');
 
             setTimeout(function() {
                 video.play().catch(function(error) {
@@ -404,20 +430,25 @@
             video.onended = function() {
                 textContainer.classList.add('visible');
                 
-                // Слоган: 3 рядки з інтервалом 1с
+                // Слоган: 3 рядки
                 setTimeout(function() { sloganLines[0].classList.add('visible'); }, 1000);
                 setTimeout(function() { sloganLines[1].classList.add('visible'); }, 2000);
                 setTimeout(function() { sloganLines[2].classList.add('visible'); }, 3000);
                 
-                // Спочатку блок калькулятора
+                // Лінія — одразу після повного слогану
+                setTimeout(function() {
+                    if (dividerWrap) dividerWrap.classList.add('visible');
+                }, 4200);
+                
+                // Блок калькулятора після лінії
                 setTimeout(function() {
                     if (calcBlock) calcBlock.classList.add('visible');
-                }, 4500);
+                }, 5800);
                 
-                // Потім email (після калькулятора)
+                // Email — фінал
                 setTimeout(function() {
                     if (email) email.classList.add('visible');
-                }, 6000);
+                }, 7200);
             };
         });
     </script>
