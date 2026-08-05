@@ -221,6 +221,109 @@ document.addEventListener('DOMContentLoaded', function() {
   var isAuthorized = false;
   try { isAuthorized = localStorage.getItem('suite_auth') === 'true'; } catch(e) {}
 
+  // База питань (12 штук)
+  var quizQuestions = [
+    {
+      text: "Який пристрій використовується для реєстрації фізіологічних реакцій під час дослідження?",
+      options: [
+        { text: "Поліграф", correct: true },
+        { text: "Рентген-апарат", correct: false },
+        { text: "УЗД-сканер", correct: false }
+      ]
+    },
+    {
+      text: "Що вимірює канал EDA на поліграфі?",
+      options: [
+        { text: "Електродермальну активність (потовиділення)", correct: true },
+        { text: "Температуру тіла", correct: false },
+        { text: "Рівень цукру в крові", correct: false }
+      ]
+    },
+    {
+      text: "Який тест перевіряє, чи знає людина деталі події, які вона не повинна знати?",
+      options: [
+        { text: "CIT (Concealed Information Test)", correct: true },
+        { text: "Тест на IQ", correct: false },
+        { text: "Тест Роршаха", correct: false }
+      ]
+    },
+    {
+      text: "Який канал на поліграфі реєструє зміни частоти серцевих скорочень?",
+      options: [
+        { text: "Кардіо (кардіографія)", correct: true },
+        { text: "Термометр", correct: false },
+        { text: "Глюкометр", correct: false }
+      ]
+    },
+    {
+      text: "Що таке «базова лінія» (baseline) у поліграфному тестуванні?",
+      options: [
+        { text: "Початковий рівень фізіологічної активності перед стимулом", correct: true },
+        { text: "Лінія на папері", correct: false },
+        { text: "Медичний діагноз", correct: false }
+      ]
+    },
+    {
+      text: "Який тест порівнює реакції на релевантні та порівняльні питання?",
+      options: [
+        { text: "CQT (Comparison Question Test)", correct: true },
+        { text: "MMPI", correct: false },
+        { text: "Тест на слух", correct: false }
+      ]
+    },
+    {
+      text: "Що означає абревіатура EDA?",
+      options: [
+        { text: "Electrodermal Activity", correct: true },
+        { text: "Electronic Data Analysis", correct: false },
+        { text: "Emotional Detection Algorithm", correct: false }
+      ]
+    },
+    {
+      text: "Який орган реагує на зміни в каналі пневмографії?",
+      options: [
+        { text: "Легені / дихальна система", correct: true },
+        { text: "Печінка", correct: false },
+        { text: "Нирки", correct: false }
+      ]
+    },
+    {
+      text: "Що таке «релевантне питання» у CQT?",
+      options: [
+        { text: "Питання, безпосередньо пов'язане з розслідуваною подією", correct: true },
+        { text: "Питання про погоду", correct: false },
+        { text: "Питання про хобі респондента", correct: false }
+      ]
+    },
+    {
+      text: "Який метод оцінювання CIT запропонував Девід Ліккен?",
+      options: [
+        { text: "Ранжування амплітуд ЕДР (0, 1, 2)", correct: true },
+        { text: "Вимірювання температури тіла", correct: false },
+        { text: "Аналіз голосу", correct: false }
+      ]
+    },
+    {
+      text: "Що таке «порівняльне питання» у CQT?",
+      options: [
+        { text: "Питання про загальні правопорушення, не пов'язане з цільовою подією", correct: true },
+        { text: "Питання про сім'ю респондента", correct: false },
+        { text: "Питання про улюблену їжу", correct: false }
+      ]
+    },
+    {
+      text: "Які бали допустимі для каналу ЕДА в ESS-M?",
+      options: [
+        { text: "-2, 0, +2", correct: true },
+        { text: "-5, 0, +5", correct: false },
+        { text: "1, 2, 3", correct: false }
+      ]
+    }
+  ];
+
+  // Вибрані питання для поточної сесії (3 з 12)
+  var currentQuizQuestions = [];
+
   // Стан квізу
   var quizState = {
     currentQuestion: 0,
@@ -231,6 +334,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var MAX_ATTEMPTS_PER_QUESTION = 3;
   var MAX_TOTAL_ATTEMPTS = 9;
+
+  function shuffleArray(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function generateQuiz() {
+    // Вибираємо 3 випадкові питання з 12
+    var shuffled = shuffleArray(quizQuestions);
+    currentQuizQuestions = shuffled.slice(0, 3);
+
+    // Рендеримо кожне питання
+    for (var i = 0; i < 3; i++) {
+      var q = currentQuizQuestions[i];
+      var stepNum = i + 1;
+
+      // Текст питання
+      var textEl = document.getElementById('quiz-q-text-' + stepNum);
+      if (textEl) textEl.textContent = stepNum + '. ' + q.text;
+
+      // Варіанти відповідей (перемішані)
+      var shuffledOpts = shuffleArray(q.options);
+      var optsContainer = document.getElementById('quiz-q-options-' + stepNum);
+      if (optsContainer) {
+        optsContainer.innerHTML = '';
+        shuffledOpts.forEach(function(opt) {
+          var btn = document.createElement('button');
+          btn.className = 'auth-quiz-option';
+          btn.setAttribute('data-q', stepNum);
+          btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+          btn.textContent = opt.text;
+          optsContainer.appendChild(btn);
+        });
+      }
+    }
+  }
 
   function showAuthStep(stepId) {
     var steps = authOverlay.querySelectorAll('.auth-step');
@@ -245,17 +388,20 @@ document.addEventListener('DOMContentLoaded', function() {
     quizState.totalAttempts = 0;
     quizState.blocked = false;
 
+    // Скидання візуальних станів кнопок
     authOverlay.querySelectorAll('.auth-quiz-option').forEach(function(btn) {
       btn.classList.remove('correct', 'wrong');
       btn.disabled = false;
     });
 
+    // Скидання повідомлень про помилки
     ['quiz-error-q1', 'quiz-error-q2', 'quiz-error-q3'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) { el.style.display = 'none'; }
     });
 
-    ['quiz-attempts-q1', 'quiz-attempts-q2', 'quiz-attempts-q3'].forEach(function(id, idx) {
+    // Скидання лічильників спроб
+    ['quiz-attempts-q1', 'quiz-attempts-q2', 'quiz-attempts-q3'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) {
         el.textContent = 'Спроба 1 з 3';
@@ -263,9 +409,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    // Скидання прогрес-бару
     authOverlay.querySelectorAll('.auth-quiz-dot').forEach(function(dot) {
       dot.classList.remove('active', 'correct');
     });
+
+    // Перегенерація питань
+    generateQuiz();
   }
 
   function unlockApp(saveToLocal) {
@@ -377,20 +527,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  authOverlay.querySelectorAll('.auth-quiz-option').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      if (btn.disabled) return;
-      var qNum = parseInt(btn.getAttribute('data-q'), 10);
-      var isCorrect = btn.getAttribute('data-correct') === 'true';
-      btn.disabled = true;
-      if (isCorrect) {
-        btn.classList.add('correct');
-        handleCorrectAnswer(qNum);
-      } else {
-        btn.classList.add('wrong');
-        handleWrongAnswer(qNum);
-      }
-    });
+  // Event delegation для кнопок квізу (динамічно генеруються)
+  authOverlay.addEventListener('click', function(e) {
+    var btn = e.target.closest('.auth-quiz-option');
+    if (!btn) return;
+    if (btn.disabled) return;
+
+    var qNum = parseInt(btn.getAttribute('data-q'), 10);
+    var isCorrect = btn.getAttribute('data-correct') === 'true';
+    btn.disabled = true;
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      handleCorrectAnswer(qNum);
+    } else {
+      btn.classList.add('wrong');
+      handleWrongAnswer(qNum);
+    }
   });
 
   var quizUnlockBtn = document.getElementById('auth-quiz-unlock-btn');
