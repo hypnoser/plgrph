@@ -1,586 +1,196 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- === SEO CORE === -->
-    <title>PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації</title>
-    <meta name="description" content="PLGRPH — професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, складні ситуації будь-якої складності. Власний онлайн-калькулятор для поліграфологів.">
-    <meta name="keywords" content="поліграф, детектор брехні, поліграфолог, перевірка на брехню, оцінка достовірності інформації, поліграфологічна перевірка, PLGRPH, поліграф Київ, поліграф Україна, онлайн калькулятор поліграф">
-    <meta name="author" content="PLGRPH">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <link rel="canonical" href="https://plgrph.pp.ua/">
-    <link rel="alternate" hreflang="uk" href="https://plgrph.pp.ua/">
-    
-    <!-- === OPEN GRAPH === -->
-    <meta property="og:locale" content="uk_UA">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації">
-    <meta property="og:description" content="Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.">
-    <meta property="og:url" content="https://plgrph.pp.ua/">
-    <meta property="og:site_name" content="PLGRPH">
-    <meta property="og:image" content="https://plgrph.pp.ua/images/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:type" content="image/jpeg">
-    
-    <!-- === TWITTER CARDS === -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації">
-    <meta name="twitter:description" content="Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.">
-    <meta name="twitter:image" content="https://plgrph.pp.ua/images/og-image.jpg">
-    
-    <!-- === FAVICONS === -->
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-    <link rel="manifest" href="/images/site.webmanifest">
-    <link rel="shortcut icon" href="/images/favicon.ico">
-    <link rel="stylesheet" href="/css/styles.css">
-    
-    <!-- === FONTS === -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-    
-    <!-- === MS TILE === -->
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-config" content="/images/browserconfig.xml">
-    <meta name="theme-color" content="#ffffff">
-    
-    <!-- === SCHEMA.ORG JSON-LD === -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Organization",
-          "@id": "https://plgrph.pp.ua/#organization",
-          "name": "PLGRPH",
-          "alternateName": "Центр оцінки достовірності інформації",
-          "url": "https://plgrph.pp.ua/",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://plgrph.pp.ua/images/logo.png",
-            "width": 512,
-            "height": 512
-          },
-          "description": "Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.",
-          "foundingDate": "2013",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "email": "plgrph@protonmail.com",
-            "availableLanguage": ["Ukrainian", "Russian", "English"]
-          },
-          "sameAs": [
-            "https://t.me/plgrph_ukr"
-          ]
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://plgrph.pp.ua/#website",
-          "url": "https://plgrph.pp.ua/",
-          "name": "PLGRPH",
-          "publisher": {
-            "@id": "https://plgrph.pp.ua/#organization"
-          },
-          "inLanguage": "uk"
-        },
-        {
-          "@type": "WebPage",
-          "@id": "https://plgrph.pp.ua/#webpage",
-          "url": "https://plgrph.pp.ua/",
-          "name": "PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації",
-          "isPartOf": {
-            "@id": "https://plgrph.pp.ua/#website"
-          },
-          "about": {
-            "@id": "https://plgrph.pp.ua/#organization"
-          },
-          "description": "Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.",
-          "inLanguage": "uk"
-        },
-        {
-          "@type": "SoftwareApplication",
-          "name": "Поліграфологічний онлайн-калькулятор PLGRPH",
-          "applicationCategory": "ScientificApplication",
-          "operatingSystem": "Any",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "UAH"
-          },
-          "url": "https://plgrph.pp.ua/calc/",
-          "creator": {
-            "@id": "https://plgrph.pp.ua/#organization"
-          }
-        }
-      ]
-    }
-    </script>
-    
-    <style>
-        h1 {
-            font-size: 24px;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #ffffff;
-        }
-        .container {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
-            height: auto;
-            display: flex;
-            flex-direction: column;          
-            align-items: center;
-        }
-      
-        #logoVideo {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
-        #textContainer {
-            font-size: 24px;
-            font-weight: bold;
-            color: #444444;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            margin-top: 20px;
-            text-align: center;
-            max-width: 640px;
-        }
-        #textContainer.visible {
-            opacity: 1;
-        }
-
-        /* === СЛОГАН === */
-        #sloganContainer {
-            margin-top: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 640px;
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-        .slogan-line {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 10px;
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 22px;
-            color: #0079c5;
-            font-style: italic;
-            font-weight: 300;
-            font-optical-sizing: auto;
-            opacity: 0;
-            transform: translateX(-20px);
-            transition: all 0.5s ease-out;
-        }
-        .slogan-line:last-child {
-            margin-bottom: 0;
-        }
-        .slogan-line.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .slogan-text {
-            display: inline-block;
-            clip-path: inset(0 100% 0 0);
-            transition: clip-path 0.6s steps(20);
-        }
-        .slogan-line.visible .slogan-text {
-            clip-path: inset(0 0% 0 0);
-        }
-        .slogan-check {
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.1s;
-            transition-delay: 0.6s;
-            flex-shrink: 0;
-        }
-        .slogan-line.visible .slogan-check {
-            opacity: 1;
-        }
-        .check-path {
-            stroke-dasharray: 25;
-            stroke-dashoffset: 25;
-            transition: stroke-dashoffset 0.4s ease-out;
-            transition-delay: 0.6s;
-        }
-        .slogan-line.visible .check-path {
-            stroke-dashoffset: 0;
-        }
-
-        /* === РОЗДІЛЮВАЛЬНА ЛІНІЯ === */
-        .divider-wrap {
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
-            margin: 20px 0 8px 0;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .divider-wrap.visible {
-            opacity: 1;
-        }
-        .divider-line {
-            width: 0;
-            height: 1px;
-            background: rgba(0, 121, 197, 0.35);
-            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .divider-wrap.visible .divider-line {
-            width: 100%;
-        }
-
-        /* === КОНТАКТИ (Telegram + Email) === */
-        #contacts {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            text-align: center;
-        }
-        #contacts.visible {
-            opacity: 1;
-        }
-        .contact-link {
-            color: #0079c5;
-            text-decoration: none;
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 15px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            transition: opacity 0.3s;
-        }
-        .contact-link:hover {
-            opacity: 0.7;
-        }
-        .contact-sep {
-            color: #ccc;
-            margin: 0 12px;
-            font-size: 14px;
-            user-select: none;
-        }
-
-        /* === БЛОК КАЛЬКУЛЯТОРА === */
-        #calcBlock {
-            margin-top: 24px;
-            margin-bottom: 30px;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            box-sizing: border-box;
-        }
-        #calcBlock.visible {
-            opacity: 1;
-        }
-        .calc-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 36px 32px;
-            box-shadow: 0 4px 24px rgba(0, 121, 197, 0.08), 0 1px 4px rgba(0,0,0,0.04);
-            text-align: center;
-            border: 1px solid rgba(0, 121, 197, 0.1);
-        }
-        .calc-badge {
-            display: inline-block;
-            font-size: 11px;
-            color: #0079c5;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 16px;
-            font-family: "Sofia Sans", sans-serif;
-            background: rgba(0, 121, 197, 0.08);
-            padding: 6px 14px;
-            border-radius: 20px;
-        }
-        .calc-title {
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 22px;
-            font-weight: 600;
-            color: #222;
-            margin: 0 0 10px 0;
-            line-height: 1.3;
-        }
-        .calc-desc {
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 15px;
-            color: #666;
-            line-height: 1.6;
-            margin: 0 0 24px 0;
-            font-weight: 400;
-        }
-        .calc-features {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-        }
-        .calc-feature {
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 13px;
-            color: #444;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .calc-feature::before {
-            content: "✓";
-            color: #0079c5;
-            font-weight: 700;
-            font-size: 14px;
-        }
-        .calc-btn {
-            display: inline-block;
-            padding: 14px 32px;
-            background: #0079c5;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-family: "Sofia Sans", sans-serif;
-            letter-spacing: 0.3px;
-        }
-        .calc-btn:hover {
-            background: #005fa3;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 121, 197, 0.3);
-        }
-        .calc-note {
-            font-family: "Sofia Sans", sans-serif;
-            font-size: 12px;
-            color: #999;
-            margin-top: 14px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-
-        /* Медіа-запити */
-        @media (max-width: 768px) {
-            .container {
-                width: 80vw;
-            }
-            #textContainer {
-                font-size: 20px;
-                padding: 0 10px;
-            }
-            .slogan-line {
-                font-size: 20px;
-                gap: 12px;
-                margin-bottom: 8px;
-            }
-            .slogan-check {
-                width: 22px;
-                height: 22px;
-            }
-            .calc-card {
-                padding: 28px 20px;
-            }
-            .calc-title {
-                font-size: 20px;
-            }
-            .calc-features {
-                gap: 12px;
-                flex-direction: column;
-                align-items: center;
-            }
-            .contact-link {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                width: 95vw;
-            }
-            #textContainer {
-                font-size: 18px;
-                padding: 0 10px;
-            }
-            .slogan-line {
-                font-size: 18px;
-                margin-bottom: 6px;
-                gap: 10px;
-            }
-            .slogan-check {
-                width: 20px;
-                height: 20px;
-            }
-            .calc-card {
-                padding: 24px 16px;
-                border-radius: 12px;
-            }
-            .calc-title {
-                font-size: 18px;
-            }
-            .calc-desc {
-                font-size: 14px;
-            }
-            .calc-btn {
-                width: 100%;
-                padding: 14px 20px;
-                box-sizing: border-box;
-            }
-            .contact-link {
-                font-size: 13px;
-            }
-            .contact-sep {
-                margin: 0 8px;
-            }
-        }
-        
-        .hidden-part {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ВЕРСІЯ В ОПИСІ ВКЛАДКИ БРАУЗЕРА -->
+  <title>Polygraph Suite v6.3</title>
   
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-YGBY8WF4E6');
-    </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== СТИЛІ КВІЗУ АВТОРИЗАЦІЇ ===== */
+    .auth-step { display: none; }
+    .auth-step.active { display: block; animation: authFadeIn 0.35s ease; }
+    @keyframes authFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .auth-forgot-link { color: #3a7cfd; font-size: 13px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 14px; transition: opacity 0.2s; }
+    .auth-forgot-link:hover { text-decoration: underline; opacity: 0.85; }
+    .auth-quiz-progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+    .auth-quiz-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; transition: all 0.3s ease; }
+    .auth-quiz-dot.active { background: #3a7cfd; width: 24px; border-radius: 4px; }
+    .auth-quiz-dot.correct { background: #2e7d32; }
+    .auth-quiz-question { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 16px; line-height: 1.5; text-align: left; }
+    .auth-quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .auth-quiz-option { display: block; width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; font-size: 14px; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s ease; font-family: inherit; }
+    .auth-quiz-option:hover:not(:disabled) { border-color: #3a7cfd; background: #f8fafc; }
+    .auth-quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
+    .auth-quiz-option.correct { border-color: #2e7d32; background: #f0fdf4; color: #166534; }
+    .auth-quiz-option.wrong { border-color: #d32f2f; background: #fef2f2; color: #991b1b; }
+    .auth-quiz-attempts { font-size: 12px; color: #64748b; margin-top: 10px; }
+    .auth-quiz-attempts.danger { color: #d32f2f; font-weight: 700; }
+    .auth-quiz-unlock-btn { width: 100%; margin-top: 16px; padding: 12px; background: #2e7d32; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .auth-quiz-unlock-btn:hover { background: #1b5e20; }
+  </style>
+<base target="_blank">
 </head>
 <body>
-    <div class="container">
-        <!-- Відео БЕЗ poster — жодних накладок, жодного миготіння -->
-        <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto">
-            <source src="images/logo.webm" type="video/webm">
-            <source src="images/logo.mp4" type="video/mp4">
-            Ваш браузер не підтримує відео тег.
-        </video>
-        <img src="images/logo-poster.jpg" alt="PLGRPH логотип" style="position:absolute;width:1px;height:1px;opacity:0;">
-        <div id="textContainer">
-            <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1><br>
+
+  <!-- ЕКРАН АВТОРИЗАЦІЇ -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-modal" id="auth-modal-box">
+
+      <!-- КРОК 1: Ввід пароля -->
+      <div id="auth-step-login" class="auth-step active">
+        <img src="images/logo.png" alt="PLGRPH Logo" class="auth-logo">
+        <h2>Polygraph Suite</h2>
+        <p>Введіть пароль для доступу до робочого простору.</p>
+        <div class="auth-input-group">
+          <input type="password" id="auth-password" placeholder="******" autocomplete="off">
+          <button id="auth-submit-btn">Увійти</button>
         </div>
-        <div id="sloganContainer">
-            <div class="slogan-line">
-                <span class="slogan-check">
-                    <svg width="24" height="24" viewBox="0 0 20 20">
-                        <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span class="slogan-text">Ситуації будь-якої складності</span>
-            </div>
-            <div class="slogan-line">
-                <span class="slogan-check">
-                    <svg width="24" height="24" viewBox="0 0 20 20">
-                        <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span class="slogan-text">Відповіді на ваші сумніви</span>
-            </div>
-            <div class="slogan-line">
-                <span class="slogan-check">
-                    <svg width="24" height="24" viewBox="0 0 20 20">
-                        <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span class="slogan-text">Впевненість у результатах</span>
-            </div>
+        <div id="auth-error" class="auth-error-msg" style="display: none;">
+          ❌ Невірний пароль. Спробуйте ще раз.
         </div>
+        <a href="#" id="auth-forgot-link" class="auth-forgot-link">🔑 Забули пароль?</a>
+        <div style="margin-top: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 14px;">
+          <a href="info.html" target="_blank" style="color: #3a7cfd; text-decoration: none; font-weight: 600;">📖 Про додаток</a>
+          <a href="mailto:plgrph@protonmail.com" style="color: #757575; text-decoration: none; font-weight: 600;">✉️ Email</a>
+          <a href="https://t.me/plgrph_ukr" target="_blank" style="color: #757575; text-decoration: none; font-weight: 600;">📱 Telegram</a>
+        </div>
+      </div>
+
+      <!-- КРОК 2: Квіз Питання 1 -->
+      <div id="auth-step-q1" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot active"></div>
+          <div class="auth-quiz-dot"></div>
+          <div class="auth-quiz-dot"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
+        <div class="auth-quiz-question" id="quiz-q-text-1"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-1"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q1">Спроба 1 з 3</div>
+        <div class="auth-error-msg" id="quiz-error-q1" style="display: none;"></div>
+        <a href="#" class="auth-forgot-link" id="quiz-back-to-login" style="margin-top: 14px;">← Повернутися до входу</a>
+      </div>
+
+      <!-- КРОК 3: Квіз Питання 2 -->
+      <div id="auth-step-q2" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot active"></div>
+          <div class="auth-quiz-dot"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
+        <div class="auth-quiz-question" id="quiz-q-text-2"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-2"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q2">Спроба 1 з 3</div>
+        <div class="auth-error-msg" id="quiz-error-q2" style="display: none;"></div>
+      </div>
+
+      <!-- КРОК 4: Квіз Питання 3 -->
+      <div id="auth-step-q3" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot active"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
+        <div class="auth-quiz-question" id="quiz-q-text-3"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-3"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q3">Спроба 1 з 3</div>
+        <div class="auth-error-msg" id="quiz-error-q3" style="display: none;"></div>
+      </div>
+
+      <!-- КРОК 5: Успіх -->
+      <div id="auth-step-success" class="auth-step">
+        <div style="font-size: 48px; margin-bottom: 8px;">✅</div>
+        <h2 style="color: #2e7d32; font-size: 22px; margin-bottom: 6px;">Доступ відновлено</h2>
+        <p style="font-size: 14px; color: #666; margin-bottom: 16px;">Ви успішно пройшли перевірку знань</p>
+        <div style="background: #f0fdf4; border: 2px solid #2e7d32; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px;">Ваш пароль для входу:</div>
+          <code style="font-size: 24px; font-weight: 800; color: #2e7d32; letter-spacing: 3px; font-family: monospace;">plgrph</code>
+        </div>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Запам'ятайте або запишіть його. При наступному очищенні кешу браузера пароль знадобиться знову.</p>
+        <button id="auth-quiz-unlock-btn" class="auth-quiz-unlock-btn">🚀 Увійти в систему</button>
+      </div>
+
+      <!-- КРОК 6: Блокування -->
+      <div id="auth-step-blocked" class="auth-step">
+        <div style="font-size: 48px; margin-bottom: 8px;">🚫</div>
+        <h2 style="color: #d32f2f; font-size: 22px; margin-bottom: 6px;">Доступ заблоковано</h2>
+        <p style="font-size: 14px; color: #666; margin-bottom: 16px;">Вичерпано максимальну кількість спроб</p>
+        <div style="color: #d32f2f; font-size: 15px; font-weight: 700; margin-top: 16px; line-height: 1.5;">
+          Ви тричі неправильно відповіли на питання.<br>Доступ до системи тимчасово заблоковано.
+        </div>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 16px;">Зверніться до адміністратора або спробуйте пізніше.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ОСНОВНИЙ ДОДАТОК -->
+  <div id="main-app-container" style="display: none;">
+    
+    <header class="app-header">
+      <img src="images/logo.png" alt="PLGRPH" class="app-logo">
+      <!-- ВЕРСІЯ У ШАПЦІ ПРОГРАМИ -->
+      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v6.3</span></h1>
+    </header>
+    
+    <!-- ЄДИНЕ МЕНЮ ТА П.І.Б. ДЛЯ ВСІХ ВКЛАДОК -->
+    <div class="suite-toolbar-area">
+      <div class="ess-toolbar" id="global-toolbar">
+        <button class="ess-toolbar-btn" id="g-save" title="Зберегти">💾</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-open" title="Відкрити (.json)">📂</button>
+        <button class="ess-toolbar-btn" id="g-save-json" title="Зберегти (.json)">📥</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-markdown" title="Експорт у Markdown (.md)">📝</button>
+        <button class="ess-toolbar-btn" id="g-print" title="Друк / PDF">🖨️</button>
+        <button class="ess-toolbar-btn danger-btn" id="g-clear" title="Очистити все">🗑️</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-help" title="Довідка">❓</button>
+        <div class="ess-save-status" id="g-status">🟢 Дані збережено</div>
+      </div>
+
+      <div class="ess-respondent-area">
+        <div class="ess-name-wrapper">
+          <span class="ess-respondent-label">П.І.Б. респондента:</span>
+          <input type="text" id="global-resp-name" placeholder="Введіть прізвище, ім'я та по батькові..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ess-date-wrapper">
+          <span class="ess-respondent-label">📅 Дата:</span>
+          <input type="date" id="global-exam-date" class="ess-date-input">
+        </div>
+      </div>
     </div>
 
-    <div class="container">
-        <div class="divider-wrap" id="dividerWrap">
-            <div class="divider-line"></div>
-        </div>
-
-        <div id="calcBlock">
-            <div class="calc-card">
-                <div class="calc-badge">Власна розробка</div>
-                <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
-                <p class="calc-desc">
-                    Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
-                </p>
-                <div class="calc-features">
-                    <div class="calc-feature">Науково обґрунтована методологія</div>
-                    <div class="calc-feature">Валідізовано на практиці</div>
-                    <div class="calc-feature">Використання в оборонній сфері</div>
-                </div>
-                <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
-                <div class="calc-note">тільки для поліграфологів</div>
-            </div>
-        </div>
+    <!-- ПЕРЕМИКАЧ ВКЛАДОК -->
+    <div class="suite-tabs-container">
+      <button class="suite-tab-btn active" data-target="tab-ess">ESS-M</button>
+      <button class="suite-tab-btn" data-target="tab-cit">CIT</button>
     </div>
 
-    <div id="footer" class="container">
-        <div id="contacts" class="text-block"></div>
-        <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
-    </div> 
-  
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // === JS-збірка контактів (Telegram + Email) ===
-            var user = "plgrph";
-            var domain = "protonmail.com";
-            var email = user + "@" + domain;
-            var telegramUrl = "https://t.me/plgrph_ukr";
-            var contactsContainer = document.getElementById('contacts');
-            if (contactsContainer) {
-                contactsContainer.innerHTML = 
-                    '<a href="' + telegramUrl + '" target="_blank" class="contact-link">Telegram</a>' +
-                    '<span class="contact-sep">|</span>' +
-                    '<a href="mailto:' + email + '" class="contact-link">' + email + '</a>';
-            }
+    <!-- КОНТЕЙНЕРИ МЕТОДИК -->
+    <div id="tab-ess" class="suite-tab-content active">
+      <main id="app"></main>
+    </div>
 
-            var video = document.getElementById('logoVideo');
-            var textContainer = document.getElementById('textContainer');
-            var sloganLines = document.querySelectorAll('.slogan-line');
-            var dividerWrap = document.getElementById('dividerWrap');
-            var calcBlock = document.getElementById('calcBlock');
+    <div id="tab-cit" class="suite-tab-content" style="display: none;">
+      <main id="cit-app"></main>
+    </div>
+    
+    <input type="file" id="file-import" accept=".json" style="display: none;">
+  </div>
 
-            setTimeout(function() {
-                video.play().catch(function(error) {
-                    console.log('Відео не може бути автоматично запущене:', error);
-                });
-            }, 2500);
+  <!-- СКРИПТИ -->
+  <script src="ess.js"></script>
+  <script src="cit.js"></script>
+  <script src="app.js"></script>
 
-            video.onended = function() {
-                textContainer.classList.add('visible');
-                
-                setTimeout(function() { sloganLines[0].classList.add('visible'); }, 1000);
-                setTimeout(function() { sloganLines[1].classList.add('visible'); }, 2000);
-                setTimeout(function() { sloganLines[2].classList.add('visible'); }, 3000);
-                
-                setTimeout(function() {
-                    if (dividerWrap) dividerWrap.classList.add('visible');
-                }, 4200);
-                
-                setTimeout(function() {
-                    if (calcBlock) calcBlock.classList.add('visible');
-                }, 5800);
-                
-                setTimeout(function() {
-                    if (contactsContainer) contactsContainer.classList.add('visible');
-                }, 7200);
-            };
-        });
-    </script>
 </body>
 </html>
