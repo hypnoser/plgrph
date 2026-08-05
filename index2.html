@@ -59,12 +59,12 @@
             opacity: 1;
         }
 
-        /* === СЛОГАН (виправлено вирівнювання і розмір) === */
+        /* === СЛОГАН === */
         #sloganContainer {
             margin-top: 14px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* ЦЕНТРУВАННЯ рядків */
+            align-items: center;
             max-width: 640px;
             width: 100%;
             padding: 0 20px;
@@ -76,7 +76,7 @@
             gap: 14px;
             margin-bottom: 10px;
             font-family: "Sofia Sans", sans-serif;
-            font-size: 22px; /* ЗБІЛЬШЕНО з 20px */
+            font-size: 22px;
             color: #0079c5;
             font-style: italic;
             font-weight: 300;
@@ -101,7 +101,7 @@
             clip-path: inset(0 0% 0 0);
         }
         .slogan-check {
-            width: 24px; /* трохи більша галочка під крупніший шрифт */
+            width: 24px;
             height: 24px;
             display: inline-flex;
             align-items: center;
@@ -276,7 +276,7 @@
                 padding: 0 10px;
             }
             .slogan-line {
-                font-size: 20px; /* ЗБІЛЬШЕНО з 18px */
+                font-size: 20px;
                 gap: 12px;
                 margin-bottom: 8px;
             }
@@ -306,7 +306,7 @@
                 padding: 0 10px;
             }
             .slogan-line {
-                font-size: 18px; /* ЗБІЛЬШЕНО з 16px */
+                font-size: 18px;
                 margin-bottom: 6px;
                 gap: 10px;
             }
@@ -346,7 +346,6 @@
     </script>
 </head>
 <body>
-    <!-- === ВЕРХНІЙ БЛОК === -->
     <div class="container">
         <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto" poster="images/logo-poster.jpg">
             <source src="images/logo.webm" type="video/webm">
@@ -384,7 +383,6 @@
         </div>
     </div>
 
-    <!-- === СЕРЕДНІЙ БЛОК (лінія + калькулятор) — той самий контейнер === -->
     <div class="container">
         <div class="divider-wrap" id="dividerWrap">
             <div class="divider-line"></div>
@@ -398,9 +396,9 @@
                     Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
                 </p>
                 <div class="calc-features">
-                    <div class="calc-feature">Досвід сотень перевірок</div>
-                    <div class="calc-feature">Визнання професійної спільноти</div>
-                    <div class="calc-feature">Об'єктивність результатів</div>
+                    <div class="calc-feature">Науково обґрунтована методологія</div>
+                    <div class="calc-feature">Валідізовано на практиці</div>
+                    <div class="calc-feature">Використання в оборонній сфері</div>
                 </div>
                 <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
                 <div class="calc-note">тільки для поліграфологів</div>
@@ -408,7 +406,6 @@
         </div>
     </div>
 
-    <!-- === ФУТЕР === -->
     <div id="footer" class="container">
         <div id="email" class="text-block"></div>
         <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
@@ -416,7 +413,6 @@
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // JS-збірка email
             var user = "plgrph";
             var domain = "protonmail.com";
             var email = user + "@" + domain;
