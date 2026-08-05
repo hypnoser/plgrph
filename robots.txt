@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /calc/
+
+Sitemap: https://plgrph.pp.ua/sitemap.xml
