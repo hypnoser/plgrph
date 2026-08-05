@@ -208,44 +208,195 @@ window.APP_API = (function() {
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-  
+
+  /* ===== ЛОГІКА АВТОРИЗАЦІЇ ТА КВІЗУ ===== */
   var authOverlay = document.getElementById('auth-overlay');
   var mainAppContainer = document.getElementById('main-app-container');
   var passInput = document.getElementById('auth-password');
   var authBtn = document.getElementById('auth-submit-btn');
   var authError = document.getElementById('auth-error');
+  var forgotLink = document.getElementById('auth-forgot-link');
+  var backToLoginLink = document.getElementById('quiz-back-to-login');
 
   var isAuthorized = false;
   try { isAuthorized = localStorage.getItem('suite_auth') === 'true'; } catch(e) {}
 
-  var unlockApp = function(saveToLocal) {
+  // Стан квізу
+  var quizState = {
+    currentQuestion: 0,
+    attemptsPerQuestion: [0, 0, 0],
+    totalAttempts: 0,
+    blocked: false
+  };
+
+  var MAX_ATTEMPTS_PER_QUESTION = 3;
+  var MAX_TOTAL_ATTEMPTS = 9;
+
+  function showAuthStep(stepId) {
+    var steps = authOverlay.querySelectorAll('.auth-step');
+    steps.forEach(function(s) { s.classList.remove('active'); });
+    var target = document.getElementById(stepId);
+    if (target) target.classList.add('active');
+  }
+
+  function resetQuizState() {
+    quizState.currentQuestion = 0;
+    quizState.attemptsPerQuestion = [0, 0, 0];
+    quizState.totalAttempts = 0;
+    quizState.blocked = false;
+
+    authOverlay.querySelectorAll('.auth-quiz-option').forEach(function(btn) {
+      btn.classList.remove('correct', 'wrong');
+      btn.disabled = false;
+    });
+
+    ['quiz-error-q1', 'quiz-error-q2', 'quiz-error-q3'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.style.display = 'none'; }
+    });
+
+    ['quiz-attempts-q1', 'quiz-attempts-q2', 'quiz-attempts-q3'].forEach(function(id, idx) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.textContent = 'Спроба 1 з 3';
+        el.classList.remove('danger');
+      }
+    });
+
+    authOverlay.querySelectorAll('.auth-quiz-dot').forEach(function(dot) {
+      dot.classList.remove('active', 'correct');
+    });
+  }
+
+  function unlockApp(saveToLocal) {
     if(authOverlay) authOverlay.style.display = 'none';
     if(mainAppContainer) mainAppContainer.style.display = 'block';
     if(saveToLocal) { try { localStorage.setItem('suite_auth', 'true'); } catch(e) {} }
-  };
-
-  if (isAuthorized) { unlockApp(false); } 
-  else {
-    var checkPassword = function() {
-      if(!passInput) return;
-      var val = passInput.value.trim().toLowerCase();
-      if (val === 'plgrph' || val === 'здікзр') unlockApp(true);
-      else {
-        if(authError) authError.style.display = 'block';
-        if(authOverlay) {
-          var modal = authOverlay.querySelector('.auth-modal');
-          if(modal) {
-            modal.style.animation = 'none';
-            setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
-          }
-        }
-      }
-    };
-    if(authBtn) authBtn.addEventListener('click', checkPassword);
-    if(passInput) passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
   }
 
-  try {
+  function handleWrongAnswer(qNum) {
+    var qIndex = qNum - 1;
+    quizState.attemptsPerQuestion[qIndex]++;
+    quizState.totalAttempts++;
+
+    var remaining = MAX_ATTEMPTS_PER_QUESTION - quizState.attemptsPerQuestion[qIndex];
+    var errEl = document.getElementById('quiz-error-q' + qNum);
+    var attEl = document.getElementById('quiz-attempts-q' + qNum);
+
+    if (errEl) {
+      errEl.textContent = '❌ Неправильно. Залишилось спроб: ' + remaining;
+      errEl.style.display = 'block';
+    }
+    if (attEl) {
+      attEl.textContent = 'Спроба ' + (quizState.attemptsPerQuestion[qIndex] + 1) + ' з ' + MAX_ATTEMPTS_PER_QUESTION;
+      if (remaining === 1) attEl.classList.add('danger');
+    }
+
+    if (remaining <= 0 || quizState.totalAttempts >= MAX_TOTAL_ATTEMPTS) {
+      quizState.blocked = true;
+      try { sessionStorage.setItem('suite_auth_blocked', 'true'); } catch(e) {}
+      setTimeout(function() { showAuthStep('auth-step-blocked'); }, 600);
+    } else {
+      setTimeout(function() {
+        var options = authOverlay.querySelectorAll('.auth-quiz-option[data-q="' + qNum + '"]');
+        options.forEach(function(btn) {
+          btn.classList.remove('wrong');
+          btn.disabled = false;
+        });
+        if (errEl) errEl.style.display = 'none';
+      }, 1200);
+    }
+  }
+
+  function handleCorrectAnswer(qNum) {
+    var options = authOverlay.querySelectorAll('.auth-quiz-option[data-q="' + qNum + '"]');
+    options.forEach(function(btn) { btn.disabled = true; });
+
+    var dots = authOverlay.querySelectorAll('#auth-step-q' + qNum + ' .auth-quiz-dot');
+    dots.forEach(function(dot) {
+      if (dot.classList.contains('active')) dot.classList.add('correct');
+    });
+
+    setTimeout(function() {
+      if (qNum === 3) {
+        showAuthStep('auth-step-success');
+      } else {
+        showAuthStep('auth-step-q' + (qNum + 1));
+      }
+    }, 500);
+  }
+
+  function checkPassword() {
+    if(!passInput) return;
+    var val = passInput.value.trim().toLowerCase();
+    if (val === 'plgrph' || val === 'здікзр') unlockApp(true);
+    else {
+      if(authError) authError.style.display = 'block';
+      if(authOverlay) {
+        var modal = authOverlay.querySelector('.auth-modal');
+        if(modal) {
+          modal.style.animation = 'none';
+          setTimeout(function() { modal.style.animation = 'shake 0.4s'; }, 10);
+        }
+      }
+    }
+  }
+
+  // Перевірка блокування в сесії
+  var isSessionBlocked = false;
+  try { isSessionBlocked = sessionStorage.getItem('suite_auth_blocked') === 'true'; } catch(e) {}
+
+  if (isSessionBlocked) {
+    showAuthStep('auth-step-blocked');
+  } else if (isAuthorized) {
+    unlockApp(false);
+  } else {
+    showAuthStep('auth-step-login');
+  }
+
+  if(authBtn) authBtn.addEventListener('click', checkPassword);
+  if(passInput) passInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+
+  if (forgotLink) {
+    forgotLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      resetQuizState();
+      showAuthStep('auth-step-q1');
+    });
+  }
+
+  if (backToLoginLink) {
+    backToLoginLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      resetQuizState();
+      showAuthStep('auth-step-login');
+    });
+  }
+
+  authOverlay.querySelectorAll('.auth-quiz-option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (btn.disabled) return;
+      var qNum = parseInt(btn.getAttribute('data-q'), 10);
+      var isCorrect = btn.getAttribute('data-correct') === 'true';
+      btn.disabled = true;
+      if (isCorrect) {
+        btn.classList.add('correct');
+        handleCorrectAnswer(qNum);
+      } else {
+        btn.classList.add('wrong');
+        handleWrongAnswer(qNum);
+      }
+    });
+  });
+
+  var quizUnlockBtn = document.getElementById('auth-quiz-unlock-btn');
+  if (quizUnlockBtn) {
+    quizUnlockBtn.addEventListener('click', function() {
+      unlockApp(true);
+    });
+  }
+
+  /* ===== ІНІЦІАЛІЗАЦІЯ МОДУЛІВ ===== */  try {
     if (window.ESS_API) window.ESS_API.init();
     else console.error("⚠️ Модуль ESS_API не знайдено!");
 
