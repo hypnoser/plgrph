@@ -147,14 +147,26 @@
             width: 100%;
         }
 
+        /* === EMAIL (JS-збірка) === */
         #email {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            color: blue;
             text-align: center;
         }
         #email.visible {
             opacity: 1;
+        }
+        .email-link {
+            color: #0079c5;
+            text-decoration: none;
+            font-family: "Sofia Sans", sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: opacity 0.3s;
+        }
+        .email-link:hover {
+            opacity: 0.7;
         }
 
         /* === БЛОК КАЛЬКУЛЯТОРА === */
@@ -325,14 +337,6 @@
         .hidden-part {
             display: none;
         }
-        .email:before {
-            content: "plgrph";
-            color: #0079C5;
-        }
-        .email:after {
-            content: "@protonmail.com";
-            color: #0079C5;
-        }
     </style>
   
     <!-- Google tag (gtag.js) -->
@@ -407,19 +411,27 @@
 
     <div id="footer" class="container">
         <div id="email" class="text-block">
-            <a href="mailto:plgrph@protonmail.com" class="link" target="_blank">Email</a>
+            <!-- Email збирається через JS -->
         </div>
         <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
     </div> 
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // === JS-збірка email (обфускація) ===
+            var user = "plgrph";
+            var domain = "protonmail.com";
+            var email = user + "@" + domain;
+            var emailContainer = document.getElementById('email');
+            if (emailContainer) {
+                emailContainer.innerHTML = '<a href="mailto:' + email + '" class="email-link">' + email + '</a>';
+            }
+
             var video = document.getElementById('logoVideo');
             var textContainer = document.getElementById('textContainer');
             var sloganLines = document.querySelectorAll('.slogan-line');
             var dividerWrap = document.getElementById('dividerWrap');
             var calcBlock = document.getElementById('calcBlock');
-            var email = document.getElementById('email');
 
             setTimeout(function() {
                 video.play().catch(function(error) {
@@ -447,7 +459,7 @@
                 
                 // Email — фінал
                 setTimeout(function() {
-                    if (email) email.classList.add('visible');
+                    if (emailContainer) emailContainer.classList.add('visible');
                 }, 7200);
             };
         });
