@@ -145,12 +145,34 @@
             align-items: center;
         }
       
+        /* === ВІДЕО + POSTER === */
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
         #logoVideo {
             width: 100%;
             height: auto;
             object-fit: contain;
-            background: transparent;
+            display: block;
         }
+        #videoPoster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('images/logo-poster.jpg') center center / contain no-repeat;
+            z-index: 2;
+            opacity: 1;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        #videoPoster.hidden {
+            opacity: 0;
+        }
+
         #textContainer {
             font-size: 24px;
             font-weight: bold;
@@ -468,11 +490,16 @@
 </head>
 <body>
     <div class="container">
-        <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto" poster="images/logo-poster.jpg">
-            <source src="images/logo.webm" type="video/webm">
-            <source src="images/logo.mp4" type="video/mp4">
-            Ваш браузер не підтримує відео тег.
-        </video>
+        <!-- === ВІДЕО З ОКРЕМИМ POSTER (плавне зникнення) === -->
+        <div class="video-wrap">
+            <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto">
+                <source src="images/logo.webm" type="video/webm">
+                <source src="images/logo.mp4" type="video/mp4">
+                Ваш браузер не підтримує відео тег.
+            </video>
+            <div id="videoPoster"></div>
+        </div>
+        
         <div id="textContainer">
             <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1><br>
         </div>
@@ -548,6 +575,7 @@
             }
 
             var video = document.getElementById('logoVideo');
+            var poster = document.getElementById('videoPoster');
             var textContainer = document.getElementById('textContainer');
             var sloganLines = document.querySelectorAll('.slogan-line');
             var dividerWrap = document.getElementById('dividerWrap');
@@ -555,8 +583,13 @@
 
             setTimeout(function() {
                 video.play().then(function() {
-                    // Прибираємо poster після початку відтворення — плавний перехід, без миготіння
-                    video.removeAttribute('poster');
+                    // Плавно ховаємо poster, коли відео точно почалося
+                    if (poster) {
+                        poster.classList.add('hidden');
+                        setTimeout(function() {
+                            poster.style.display = 'none';
+                        }, 400); // Час transition з CSS
+                    }
                 }).catch(function(error) {
                     console.log('Відео не може бути автоматично запущене:', error);
                 });
