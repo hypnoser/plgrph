@@ -55,31 +55,73 @@
             text-align: center;
             max-width: 640px;
         }
+        #textContainer.visible {
+            opacity: 1;
+        }
+
+        /* === СЛОГАН: 3 рядки з анімованими галочками === */
         #sloganContainer {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 640px;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .slogan-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-family: "Sofia Sans", sans-serif;
             font-size: 16px;
             color: #0079c5;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            margin-top: 10px;
-            text-align: center;
-            max-width: 640px;
             font-style: italic;
             font-weight: 100;
-            font-family: "Sofia Sans", sans-serif;
             font-optical-sizing: auto;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.6s ease-out;
         }
+        .slogan-line:last-child {
+            margin-bottom: 0;
+        }
+        .slogan-line.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .slogan-check {
+            color: #0079c5;
+            font-weight: 700;
+            font-size: 18px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+        .slogan-line.visible .slogan-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .slogan-text {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.5s ease-out 0.15s;
+        }
+        .slogan-line.visible .slogan-text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         #email {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
             color: blue;
             text-align: center;
-        }
-        
-        #textContainer.visible {
-            opacity: 1;
-        }
-        #sloganContainer.visible {
-            opacity: 1;
         }
         #email.visible {
             opacity: 1;
@@ -194,13 +236,11 @@
                 font-size: 20px;
                 padding: 0 10px;
             }
-            #sloganContainer {
+            .slogan-line {
+                font-size: 15px;
+            }
+            .slogan-check {
                 font-size: 16px;
-                padding: 0 10px;
-                font-style: italic;
-                font-weight: 100;
-                font-family: "Sofia Sans", sans-serif;
-                font-optical-sizing: auto;
             }
             .calc-card {
                 padding: 28px 20px;
@@ -223,13 +263,13 @@
                 font-size: 18px;
                 padding: 0 10px;
             }
-            #sloganContainer {
+            .slogan-line {
                 font-size: 14px;
-                padding: 0 10px;
-                font-style: italic;
-                font-weight: 100;
-                font-family: "Sofia Sans", sans-serif;
-                font-optical-sizing: auto;
+                margin-bottom: 6px;
+            }
+            .slogan-check {
+                font-size: 15px;
+                width: 18px;
             }
             .calc-card {
                 padding: 24px 16px;
@@ -281,8 +321,18 @@
             <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1><br>
         </div>
         <div id="sloganContainer">
-            <h2>Найскладніші ситуації. Найвища точність.<br> 
-            Найдорожче - істина!</h2>
+            <div class="slogan-line">
+                <span class="slogan-check">✓</span>
+                <span class="slogan-text">Складні питання</span>
+            </div>
+            <div class="slogan-line">
+                <span class="slogan-check">✓</span>
+                <span class="slogan-text">Точні відповіді</span>
+            </div>
+            <div class="slogan-line">
+                <span class="slogan-check">✓</span>
+                <span class="slogan-text">Істина понад усе</span>
+            </div>
         </div>
     </div>
     <br><br>
@@ -316,7 +366,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var video = document.getElementById('logoVideo');
             var textContainer = document.getElementById('textContainer');
-            var sloganContainer = document.getElementById('sloganContainer');
+            var sloganLines = document.querySelectorAll('.slogan-line');
             var email = document.getElementById('email');
             var calcBlock = document.getElementById('calcBlock');
 
@@ -324,26 +374,30 @@
                 video.play().catch(function(error) {
                     console.log('Відео не може бути автоматично запущене:', error);
                 });
-            }, 2500); // +0,5 секунди
+            }, 2500);
 
             video.onended = function() {
                 textContainer.classList.add('visible');
                 
                 setTimeout(function() {
-                    sloganContainer.classList.add('visible');
+                    if (sloganLines[0]) sloganLines[0].classList.add('visible');
                 }, 1000);
                 
                 setTimeout(function() {
-                    if (email) {
-                        email.classList.add('visible');
-                    }
-                }, 2000);
-
+                    if (sloganLines[1]) sloganLines[1].classList.add('visible');
+                }, 1500);
+                
                 setTimeout(function() {
-                    if (calcBlock) {
-                        calcBlock.classList.add('visible');
-                    }
-                }, 3000); // послідовно, рівномірно
+                    if (sloganLines[2]) sloganLines[2].classList.add('visible');
+                }, 2000);
+                
+                setTimeout(function() {
+                    if (email) email.classList.add('visible');
+                }, 3000);
+                
+                setTimeout(function() {
+                    if (calcBlock) calcBlock.classList.add('visible');
+                }, 4000);
             };
         });
     </script>
