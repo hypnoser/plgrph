@@ -296,9 +296,9 @@
                 Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
             </p>
             <div class="calc-features">
-                <div class="calc-feature">Практичний досвід</div>
-                <div class="calc-feature">Міжнародне використання</div>
-                <div class="calc-feature">Відкритий доступ</div>
+                <div class="calc-feature">Досвід сотень перевірок</div>
+                <div class="calc-feature">Визнання професійної спільноти</div>
+                <div class="calc-feature">Об'єктивність результатів</div>
             </div>
             <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
             <div class="calc-note">тільки для поліграфологів</div>
@@ -324,7 +324,7 @@
                 video.play().catch(function(error) {
                     console.log('Відео не може бути автоматично запущене:', error);
                 });
-            }, 2000);
+            }, 2500); // +0,5 секунди
 
             video.onended = function() {
                 textContainer.classList.add('visible');
@@ -343,7 +343,7 @@
                     if (calcBlock) {
                         calcBlock.classList.add('visible');
                     }
-                }, 3500);
+                }, 3000); // послідовно, рівномірно
             };
         });
     </script>
