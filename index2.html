@@ -17,19 +17,19 @@
     <meta name="msapplication-config" content="/images/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
     <style>
-    h1 {
-        font-size: 24px;
-    }
+        h1 {
+            font-size: 24px;
+        }
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh; /* змінено: min-height замість height */
             margin: 0;
-            background-color: #ffffff; /* Фон сторінки білий */
-            overflow: hidden; /* Прибираємо скролінг */
+            background-color: #ffffff;
+            /* overflow: hidden; — ВИДАЛЕНО: на мобільному контент має скролитися */
         }
         .container {
             position: relative;
@@ -42,17 +42,17 @@
         }
       
         #logoVideo {
-            width: 100%; /* Встановлюємо ширину відео */
-            height: auto; /* Встановлюємо висоту відео */
-            object-fit: contain; /* Зберігаємо співвідношення сторін відео */
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
         #textContainer {
             font-size: 24px;
             font-weight: bold;
             color: #444444;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out; /* Плавний перехід для тексту */
-            margin-top: 20px; /* Відступ від відео для тексту */
+            transition: opacity 0.5s ease-in-out;
+            margin-top: 20px;
             text-align: center;
             max-width: 640px;
         }
@@ -60,19 +60,19 @@
             font-size: 16px;
             color: #0079c5;
             opacity: 0;
-            transition: opacity 1s ease-in-out; /* Плавний перехід для тексту */
+            transition: opacity 1s ease-in-out;
             margin-top: 10px;
             text-align: center;
             max-width: 640px;
-            font-style:italic;
+            font-style: italic;
             font-weight: 100;
             font-family: "Sofia Sans", sans-serif;
             font-optical-sizing: auto;
         }
         #email {
             opacity: 0;
-            transition: opacity 0.5s ease-in-out; /* Плавний перехід для тексту */
-            color:blue;
+            transition: opacity 0.5s ease-in-out;
+            color: blue;
             text-align: center;
         }
         
@@ -88,116 +88,135 @@
             opacity: 1;
         }
 
-        /* === БЛОК КАЛЬКУЛЯТОРА (Прототип 3) === */
+        /* === НОВИЙ БЛОК КАЛЬКУЛЯТОРА (Преміальна картка) === */
         #calcBlock {
-            margin-top: 40px;
-            margin-bottom: 20px;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 0 20px;
             opacity: 0;
             transition: opacity 1s ease-in-out;
             max-width: 640px;
             width: 100%;
+            box-sizing: border-box;
         }
         #calcBlock.visible {
             opacity: 1;
         }
-        .calc-deco-line {
-            width: 60px;
-            height: 2px;
-            background: #0079c5;
-            margin: 0 auto;
+        .calc-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 36px 32px;
+            box-shadow: 0 4px 24px rgba(0, 121, 197, 0.08), 0 1px 4px rgba(0,0,0,0.04);
+            text-align: center;
+            border: 1px solid rgba(0, 121, 197, 0.1);
         }
-        .calc-deco-line.top {
-            margin-bottom: 25px;
-        }
-        .calc-deco-line.bottom {
-            margin-top: 30px;
-        }
-        .calc-label {
-            font-size: 13px;
+        .calc-badge {
+            display: inline-block;
+            font-size: 11px;
             color: #0079c5;
-            letter-spacing: 3px;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
-            margin-bottom: 15px;
             font-weight: 600;
+            margin-bottom: 16px;
             font-family: "Sofia Sans", sans-serif;
+            background: rgba(0, 121, 197, 0.08);
+            padding: 6px 14px;
+            border-radius: 20px;
         }
         .calc-title {
             font-family: "Sofia Sans", sans-serif;
-            font-size: 24px;
-            font-weight: 400;
-            color: #333;
-            margin: 0 0 15px 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: #222;
+            margin: 0 0 10px 0;
             line-height: 1.3;
         }
-        .calc-quote {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.7;
-            margin: 0 auto 25px auto;
-            max-width: 540px;
-            font-style: italic;
-            font-weight: 300;
+        .calc-desc {
             font-family: "Sofia Sans", sans-serif;
-        }
-        .calc-meta {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 25px;
-            font-family: "Sofia Sans", sans-serif;
-        }
-        .calc-link {
-            color: #0079c5;
-            text-decoration: none;
             font-size: 15px;
-            font-weight: 500;
-            border-bottom: 1px solid #0079c5;
-            padding-bottom: 2px;
-            transition: opacity 0.3s;
-            font-family: "Sofia Sans", sans-serif;
+            color: #666;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+            font-weight: 400;
         }
-        .calc-link:hover {
-            opacity: 0.7;
+        .calc-features {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        .calc-feature {
+            font-family: "Sofia Sans", sans-serif;
+            font-size: 13px;
+            color: #444;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .calc-feature::before {
+            content: "✓";
+            color: #0079c5;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .calc-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: #0079c5;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: "Sofia Sans", sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .calc-btn:hover {
+            background: #005fa3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 121, 197, 0.3);
         }
 
         /* Медіа-запити для мобільних пристроїв */
         @media (max-width: 768px) {
             .container {
-                width: 80vw; /* Використовувати 80% від ширини вьюпорта */
+                width: 80vw;
             }
             #textContainer {
-                font-size: 20px; /* Зменшення розміру шрифту для мобільних пристроїв */
-                padding: 0 10px; /* Відступи всередині контенту для кращого вигляду на мобільних пристроях */
+                font-size: 20px;
+                padding: 0 10px;
             }
             #sloganContainer {
                 font-size: 16px;
                 padding: 0 10px;
-                font-style:italic;
+                font-style: italic;
                 font-weight: 100;
                 font-family: "Sofia Sans", sans-serif;
                 font-optical-sizing: auto;
             }
-            #calcBlock {
-                padding: 30px 15px;
+            .calc-card {
+                padding: 28px 20px;
             }
             .calc-title {
                 font-size: 20px;
             }
-            .calc-quote {
-                font-size: 15px;
-                padding: 0 10px;
+            .calc-features {
+                gap: 12px;
+                flex-direction: column;
+                align-items: center;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                width: 95vw; /* Використовувати 95% від ширини вьюпорта */
+                width: 95vw;
             }
             #textContainer {
-                font-size: 18px; /* Ще більше зменшення розміру шрифту для дуже малих пристроїв */
-                padding: 0 10px; /* Відступи всередині контенту для кращого вигляду на мобільних пристроях */
+                font-size: 18px;
+                padding: 0 10px;
             }
             #sloganContainer {
                 font-size: 14px;
@@ -207,22 +226,20 @@
                 font-family: "Sofia Sans", sans-serif;
                 font-optical-sizing: auto;
             }
-            #calcBlock {
-                padding: 25px 10px;
-                margin-top: 30px;
+            .calc-card {
+                padding: 24px 16px;
+                border-radius: 12px;
             }
             .calc-title {
                 font-size: 18px;
             }
-            .calc-quote {
+            .calc-desc {
                 font-size: 14px;
             }
-            .calc-label {
-                font-size: 12px;
-                letter-spacing: 2px;
-            }
-            .calc-link {
-                font-size: 14px;
+            .calc-btn {
+                width: 100%;
+                padding: 14px 20px;
+                box-sizing: border-box;
             }
         }
         
@@ -231,77 +248,64 @@
         }
         .email:before {
             content: "plgrph";
-            color:#0079C5;
+            color: #0079C5;
         }
         .email:after {
             content: "@protonmail.com";
-            color:#0079C5;
+            color: #0079C5;
         }
     </style>
   
-  
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-YGBY8WF4E6');
-</script>
-  
-  
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-YGBY8WF4E6');
+    </script>
 </head>
 <body>
     <div class="container">
-        <video id="logoVideo" muted autoplay preload="auto">
-            <source src="images/logo.webm" type="video/webm"> <!-- Переміщено в папку images -->
+        <!-- Додано: playsinline, webkit-playsinline, poster, mp4-fallback -->
+        <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto" poster="images/logo-poster.jpg">
+            <source src="images/logo.webm" type="video/webm">
+            <source src="images/logo.mp4" type="video/mp4">
             Ваш браузер не підтримує відео тег.
         </video>
         <div id="textContainer">
             <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1><br>
-<!-- <span style="color: #007bff;">СЕРГІЯ КОРЖОВА</span></h1>  --> 
         </div>
         <div id="sloganContainer">
             <h2>Найскладніші ситуації. Найвища точність.<br> 
-Найдорожче - істина!</h2>
+            Найдорожче - істина!</h2>
         </div>
-    </div><br>
-  <br>
+    </div>
+    <br><br>
 
-    <!-- === БЛОК КАЛЬКУЛЯТОРА (Прототип 3: Лідер думок) === -->
+    <!-- === НОВИЙ БЛОК КАЛЬКУЛЯТОРА === -->
     <div id="calcBlock">
-        <div class="calc-deco-line top"></div>
-        
-        <div class="calc-label">Стандарт галузі</div>
-        
-        <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
-        
-        <p class="calc-quote">
-            «Коли твої інструменти стають інструментами колег — це означає, 
-            що твій підхід працює.»
-        </p>
-        
-        <div class="calc-meta">
-            Розробка PLGRPH · використовується поліграфологами України та інших країн
+        <div class="calc-card">
+            <div class="calc-badge">Власна розробка</div>
+            <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
+            <p class="calc-desc">
+                Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
+            </p>
+            <div class="calc-features">
+                <div class="calc-feature">Практичний досвід</div>
+                <div class="calc-feature">Міжнародне використання</div>
+                <div class="calc-feature">Відкритий доступ</div>
+            </div>
+            <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
         </div>
-        
-        <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-link">
-            Детальніше про калькулятор →
-        </a>
-        
-        <div class="calc-deco-line bottom"></div>
     </div>
 
-<div id="footer" class="container">
-    <div id="email" class="text-block">
-        <!-- <a href="https://t.me/plgrph_ua" class="link" target="_blank">Telegram</a> -->
-        <a href="mailto:plgrph@protonmail.com" class="link" target="_blank">Email</a>
-       <!-- <a href="https://www.linkedin.com/in/korzhov-sv/" class="link" target="_blank">LinkedIn</a>  -->
-    </div>
-    <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
-</div> 
-  
+    <div id="footer" class="container">
+        <div id="email" class="text-block">
+            <a href="mailto:plgrph@protonmail.com" class="link" target="_blank">Email</a>
+        </div>
+        <div class="center font-monospace fs-6" style="margin-top:50px;">© 2021-2026</div>
+    </div> 
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -311,29 +315,22 @@
             var email = document.getElementById('email');
             var calcBlock = document.getElementById('calcBlock');
 
-            setTimeout(function() {
-                video.play().catch(function(error) {
-                    console.log('Відео не може бути автоматично запущене:', error);
-                });
-            }, 2000); // 1000 мілісекунд затримки (1 секунда)
+            // Autoplay тепер обробляється атрибутами відео — це надійніше для мобільних
+            // Якщо відео не стартує автоматично, покажеться poster
 
             video.onended = function() {
-                // Показати h1 одразу після завершення відео
                 textContainer.classList.add('visible');
                 
-                // Показати h2 через 1 секунди після h1
                 setTimeout(function() {
                     sloganContainer.classList.add('visible');
-                }, 1000); // 1000 мілісекунд затримки (1 секунда)
+                }, 1000);
                 
-                // Показати емейл через 1 секунду після h1
                 setTimeout(function() {
                     if (email) {
                         email.classList.add('visible');
                     }
-                }, 2000); // 1000 мілісекунд затримки (1 секунда)
+                }, 2000);
 
-                // Показати блок калькулятора через 3.5 секунди після завершення відео
                 setTimeout(function() {
                     if (calcBlock) {
                         calcBlock.classList.add('visible');
