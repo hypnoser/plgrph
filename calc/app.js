@@ -360,6 +360,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (forgotLink) {
     forgotLink.addEventListener('click', function(e) {
       e.preventDefault();
+      if (passInput) passInput.value = '';
+      if (authError) authError.style.display = 'none';
       resetQuizState();
       showAuthStep('auth-step-q1');
     });
@@ -368,6 +370,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (backToLoginLink) {
     backToLoginLink.addEventListener('click', function(e) {
       e.preventDefault();
+      if (passInput) passInput.value = '';
+      if (authError) authError.style.display = 'none';
       resetQuizState();
       showAuthStep('auth-step-login');
     });
