@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- ВЕРСІЯ В ОПИСІ ВКЛАДКИ БРАУЗЕРА -->
-  <title>Polygraph Suite v6.2</title>
+  <title>Polygraph Suite v6.3</title>
   
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
@@ -68,14 +68,10 @@
         </div>
         <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
         <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
-        <div class="auth-quiz-question">1. Який пристрій використовується для реєстрації фізіологічних реакцій під час дослідження?</div>
-        <div class="auth-quiz-options">
-          <button class="auth-quiz-option" data-q="1" data-correct="true">Поліграф</button>
-          <button class="auth-quiz-option" data-q="1" data-correct="false">Рентген-апарат</button>
-          <button class="auth-quiz-option" data-q="1" data-correct="false">УЗД-сканер</button>
-        </div>
+        <div class="auth-quiz-question" id="quiz-q-text-1"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-1"></div>
         <div class="auth-quiz-attempts" id="quiz-attempts-q1">Спроба 1 з 3</div>
-        <div class="auth-error-msg" id="quiz-error-q1" style="display: none;">❌ Неправильно. Залишилось спроб: 2</div>
+        <div class="auth-error-msg" id="quiz-error-q1" style="display: none;"></div>
         <a href="#" class="auth-forgot-link" id="quiz-back-to-login" style="margin-top: 14px;">← Повернутися до входу</a>
       </div>
 
@@ -88,14 +84,10 @@
         </div>
         <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
         <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
-        <div class="auth-quiz-question">2. Що вимірює канал EDA на поліграфі?</div>
-        <div class="auth-quiz-options">
-          <button class="auth-quiz-option" data-q="2" data-correct="true">Електродермальну активність (потовиділення)</button>
-          <button class="auth-quiz-option" data-q="2" data-correct="false">Температуру тіла</button>
-          <button class="auth-quiz-option" data-q="2" data-correct="false">Рівень цукру в крові</button>
-        </div>
+        <div class="auth-quiz-question" id="quiz-q-text-2"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-2"></div>
         <div class="auth-quiz-attempts" id="quiz-attempts-q2">Спроба 1 з 3</div>
-        <div class="auth-error-msg" id="quiz-error-q2" style="display: none;">❌ Неправильно. Залишилось спроб: 2</div>
+        <div class="auth-error-msg" id="quiz-error-q2" style="display: none;"></div>
       </div>
 
       <!-- КРОК 4: Квіз Питання 3 -->
@@ -107,14 +99,10 @@
         </div>
         <h2 style="font-size: 20px; margin-bottom: 4px;">Відновлення доступу</h2>
         <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Відповідайте на питання з поліграфології</p>
-        <div class="auth-quiz-question">3. Який тест перевіряє, чи знає людина деталі події, які вона не повинна знати?</div>
-        <div class="auth-quiz-options">
-          <button class="auth-quiz-option" data-q="3" data-correct="true">CIT (Concealed Information Test)</button>
-          <button class="auth-quiz-option" data-q="3" data-correct="false">Тест на IQ</button>
-          <button class="auth-quiz-option" data-q="3" data-correct="false">Тест Роршаха</button>
-        </div>
+        <div class="auth-quiz-question" id="quiz-q-text-3"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-3"></div>
         <div class="auth-quiz-attempts" id="quiz-attempts-q3">Спроба 1 з 3</div>
-        <div class="auth-error-msg" id="quiz-error-q3" style="display: none;">❌ Неправильно. Залишилось спроб: 2</div>
+        <div class="auth-error-msg" id="quiz-error-q3" style="display: none;"></div>
       </div>
 
       <!-- КРОК 5: Успіх -->
@@ -150,7 +138,7 @@
     <header class="app-header">
       <img src="images/logo.png" alt="PLGRPH" class="app-logo">
       <!-- ВЕРСІЯ У ШАПЦІ ПРОГРАМИ -->
-      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v6.2</span></h1>
+      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v6.3</span></h1>
     </header>
     
     <!-- ЄДИНЕ МЕНЮ ТА П.І.Б. ДЛЯ ВСІХ ВКЛАДОК -->
