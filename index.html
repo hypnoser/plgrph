@@ -146,7 +146,7 @@
             width: 100%;
         }
 
-        /* === КОНТАКТИ (Email + Telegram) === */
+        /* === КОНТАКТИ (Telegram + Email) === */
         #contacts {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
@@ -428,7 +428,7 @@
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // === JS-збірка контактів (Email + Telegram) ===
+            // === JS-збірка контактів (Telegram + Email) ===
             var user = "plgrph";
             var domain = "protonmail.com";
             var email = user + "@" + domain;
@@ -436,9 +436,9 @@
             var contactsContainer = document.getElementById('contacts');
             if (contactsContainer) {
                 contactsContainer.innerHTML = 
-                    '<a href="mailto:' + email + '" class="contact-link">' + email + '</a>' +
+                    '<a href="' + telegramUrl + '" target="_blank" class="contact-link">Telegram</a>' +
                     '<span class="contact-sep">|</span>' +
-                    '<a href="' + telegramUrl + '" target="_blank" class="contact-link">Telegram</a>';
+                    '<a href="mailto:' + email + '" class="contact-link">' + email + '</a>';
             }
 
             var video = document.getElementById('logoVideo');
