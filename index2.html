@@ -59,12 +59,12 @@
             opacity: 1;
         }
 
-        /* === СЛОГАН === */
+        /* === СЛОГАН (виправлено вирівнювання і розмір) === */
         #sloganContainer {
             margin-top: 14px;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center; /* ЦЕНТРУВАННЯ рядків */
             max-width: 640px;
             width: 100%;
             padding: 0 20px;
@@ -73,10 +73,10 @@
         .slogan-line {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 10px;
             font-family: "Sofia Sans", sans-serif;
-            font-size: 20px;
+            font-size: 22px; /* ЗБІЛЬШЕНО з 20px */
             color: #0079c5;
             font-style: italic;
             font-weight: 300;
@@ -101,8 +101,8 @@
             clip-path: inset(0 0% 0 0);
         }
         .slogan-check {
-            width: 22px;
-            height: 22px;
+            width: 24px; /* трохи більша галочка під крупніший шрифт */
+            height: 24px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -127,10 +127,9 @@
         /* === РОЗДІЛЮВАЛЬНА ЛІНІЯ === */
         .divider-wrap {
             width: 100%;
-            max-width: 640px;
             padding: 0 20px;
             box-sizing: border-box;
-            margin: 18px 0 6px 0;
+            margin: 20px 0 8px 0;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -173,11 +172,9 @@
         #calcBlock {
             margin-top: 24px;
             margin-bottom: 30px;
-            padding: 0 20px;
+            width: 100%;
             opacity: 0;
             transition: opacity 1s ease-in-out;
-            max-width: 640px;
-            width: 100%;
             box-sizing: border-box;
         }
         #calcBlock.visible {
@@ -279,13 +276,13 @@
                 padding: 0 10px;
             }
             .slogan-line {
-                font-size: 18px;
-                gap: 10px;
+                font-size: 20px; /* ЗБІЛЬШЕНО з 18px */
+                gap: 12px;
                 margin-bottom: 8px;
             }
             .slogan-check {
-                width: 20px;
-                height: 20px;
+                width: 22px;
+                height: 22px;
             }
             .calc-card {
                 padding: 28px 20px;
@@ -309,13 +306,13 @@
                 padding: 0 10px;
             }
             .slogan-line {
-                font-size: 16px;
+                font-size: 18px; /* ЗБІЛЬШЕНО з 16px */
                 margin-bottom: 6px;
-                gap: 8px;
+                gap: 10px;
             }
             .slogan-check {
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
             }
             .calc-card {
                 padding: 24px 16px;
@@ -349,6 +346,7 @@
     </script>
 </head>
 <body>
+    <!-- === ВЕРХНІЙ БЛОК === -->
     <div class="container">
         <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto" poster="images/logo-poster.jpg">
             <source src="images/logo.webm" type="video/webm">
@@ -361,7 +359,7 @@
         <div id="sloganContainer">
             <div class="slogan-line">
                 <span class="slogan-check">
-                    <svg width="22" height="22" viewBox="0 0 20 20">
+                    <svg width="24" height="24" viewBox="0 0 20 20">
                         <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </span>
@@ -369,7 +367,7 @@
             </div>
             <div class="slogan-line">
                 <span class="slogan-check">
-                    <svg width="22" height="22" viewBox="0 0 20 20">
+                    <svg width="24" height="24" viewBox="0 0 20 20">
                         <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </span>
@@ -377,7 +375,7 @@
             </div>
             <div class="slogan-line">
                 <span class="slogan-check">
-                    <svg width="22" height="22" viewBox="0 0 20 20">
+                    <svg width="24" height="24" viewBox="0 0 20 20">
                         <path class="check-path" d="M3 10 L8 15 L17 5" fill="none" stroke="#0079c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </span>
@@ -386,39 +384,39 @@
         </div>
     </div>
 
-    <!-- === РОЗДІЛЮВАЛЬНА ЛІНІЯ === -->
-    <div class="divider-wrap" id="dividerWrap">
-        <div class="divider-line"></div>
-    </div>
+    <!-- === СЕРЕДНІЙ БЛОК (лінія + калькулятор) — той самий контейнер === -->
+    <div class="container">
+        <div class="divider-wrap" id="dividerWrap">
+            <div class="divider-line"></div>
+        </div>
 
-    <!-- === БЛОК КАЛЬКУЛЯТОРА === -->
-    <div id="calcBlock">
-        <div class="calc-card">
-            <div class="calc-badge">Власна розробка</div>
-            <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
-            <p class="calc-desc">
-                Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
-            </p>
-            <div class="calc-features">
-                <div class="calc-feature">Досвід сотень перевірок</div>
-                <div class="calc-feature">Визнання професійної спільноти</div>
-                <div class="calc-feature">Об'єктивність результатів</div>
+        <div id="calcBlock">
+            <div class="calc-card">
+                <div class="calc-badge">Власна розробка</div>
+                <h3 class="calc-title">Поліграфологічний онлайн-калькулятор</h3>
+                <p class="calc-desc">
+                    Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
+                </p>
+                <div class="calc-features">
+                    <div class="calc-feature">Досвід сотень перевірок</div>
+                    <div class="calc-feature">Визнання професійної спільноти</div>
+                    <div class="calc-feature">Об'єктивність результатів</div>
+                </div>
+                <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
+                <div class="calc-note">тільки для поліграфологів</div>
             </div>
-            <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
-            <div class="calc-note">тільки для поліграфологів</div>
         </div>
     </div>
 
+    <!-- === ФУТЕР === -->
     <div id="footer" class="container">
-        <div id="email" class="text-block">
-            <!-- Email збирається через JS -->
-        </div>
+        <div id="email" class="text-block"></div>
         <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
     </div> 
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // === JS-збірка email (обфускація) ===
+            // JS-збірка email
             var user = "plgrph";
             var domain = "protonmail.com";
             var email = user + "@" + domain;
@@ -442,22 +440,18 @@
             video.onended = function() {
                 textContainer.classList.add('visible');
                 
-                // Слоган: 3 рядки
                 setTimeout(function() { sloganLines[0].classList.add('visible'); }, 1000);
                 setTimeout(function() { sloganLines[1].classList.add('visible'); }, 2000);
                 setTimeout(function() { sloganLines[2].classList.add('visible'); }, 3000);
                 
-                // Лінія — одразу після повного слогану
                 setTimeout(function() {
                     if (dividerWrap) dividerWrap.classList.add('visible');
                 }, 4200);
                 
-                // Блок калькулятора після лінії
                 setTimeout(function() {
                     if (calcBlock) calcBlock.classList.add('visible');
                 }, 5800);
                 
-                // Email — фінал
                 setTimeout(function() {
                     if (emailContainer) emailContainer.classList.add('visible');
                 }, 7200);
