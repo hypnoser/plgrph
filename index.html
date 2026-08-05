@@ -149,6 +149,7 @@
             width: 100%;
             height: auto;
             object-fit: contain;
+            background: transparent;
         }
         #textContainer {
             font-size: 24px;
@@ -533,6 +534,7 @@
   
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // === JS-збірка контактів (Telegram + Email) ===
             var user = "plgrph";
             var domain = "protonmail.com";
             var email = user + "@" + domain;
@@ -552,7 +554,10 @@
             var calcBlock = document.getElementById('calcBlock');
 
             setTimeout(function() {
-                video.play().catch(function(error) {
+                video.play().then(function() {
+                    // Прибираємо poster після початку відтворення — плавний перехід, без миготіння
+                    video.removeAttribute('poster');
+                }).catch(function(error) {
                     console.log('Відео не може бути автоматично запущене:', error);
                 });
             }, 2500);
