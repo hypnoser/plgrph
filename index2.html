@@ -26,10 +26,9 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            min-height: 100vh; /* змінено: min-height замість height */
+            min-height: 100vh;
             margin: 0;
             background-color: #ffffff;
-            /* overflow: hidden; — ВИДАЛЕНО: на мобільному контент має скролитися */
         }
         .container {
             position: relative;
@@ -79,16 +78,14 @@
         #textContainer.visible {
             opacity: 1;
         }
-        
         #sloganContainer.visible {
             opacity: 1;
         }
-        
         #email.visible {
             opacity: 1;
         }
 
-        /* === НОВИЙ БЛОК КАЛЬКУЛЯТОРА (Преміальна картка) === */
+        /* === БЛОК КАЛЬКУЛЯТОРА === */
         #calcBlock {
             margin-top: 30px;
             margin-bottom: 30px;
@@ -179,8 +176,16 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 121, 197, 0.3);
         }
+        .calc-note {
+            font-family: "Sofia Sans", sans-serif;
+            font-size: 12px;
+            color: #999;
+            margin-top: 14px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
 
-        /* Медіа-запити для мобільних пристроїв */
+        /* Медіа-запити */
         @media (max-width: 768px) {
             .container {
                 width: 80vw;
@@ -267,7 +272,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Додано: playsinline, webkit-playsinline, poster, mp4-fallback -->
         <video id="logoVideo" muted autoplay playsinline webkit-playsinline preload="auto" poster="images/logo-poster.jpg">
             <source src="images/logo.webm" type="video/webm">
             <source src="images/logo.mp4" type="video/mp4">
@@ -283,7 +287,7 @@
     </div>
     <br><br>
 
-    <!-- === НОВИЙ БЛОК КАЛЬКУЛЯТОРА === -->
+    <!-- === БЛОК КАЛЬКУЛЯТОРА === -->
     <div id="calcBlock">
         <div class="calc-card">
             <div class="calc-badge">Власна розробка</div>
@@ -297,6 +301,7 @@
                 <div class="calc-feature">Відкритий доступ</div>
             </div>
             <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
+            <div class="calc-note">тільки для поліграфологів</div>
         </div>
     </div>
 
@@ -304,7 +309,7 @@
         <div id="email" class="text-block">
             <a href="mailto:plgrph@protonmail.com" class="link" target="_blank">Email</a>
         </div>
-        <div class="center font-monospace fs-6" style="margin-top:50px;">© 2021-2026</div>
+        <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
     </div> 
   
     <script>
@@ -315,8 +320,11 @@
             var email = document.getElementById('email');
             var calcBlock = document.getElementById('calcBlock');
 
-            // Autoplay тепер обробляється атрибутами відео — це надійніше для мобільних
-            // Якщо відео не стартує автоматично, покажеться poster
+            setTimeout(function() {
+                video.play().catch(function(error) {
+                    console.log('Відео не може бути автоматично запущене:', error);
+                });
+            }, 2000);
 
             video.onended = function() {
                 textContainer.classList.add('visible');
