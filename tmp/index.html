@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <!-- === SEO CORE === -->
     <title>PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації</title>
     <meta name="description" content="PLGRPH — професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, складні ситуації будь-якої складності. Власний онлайн-калькулятор для поліграфологів.">
@@ -12,7 +12,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://plgrph.pp.ua/">
     <link rel="alternate" hreflang="uk" href="https://plgrph.pp.ua/">
-
+    
     <!-- === OPEN GRAPH === -->
     <meta property="og:locale" content="uk_UA">
     <meta property="og:type" content="website">
@@ -24,35 +24,35 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/jpeg">
-
+    
     <!-- === TWITTER CARDS === -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації">
     <meta name="twitter:description" content="Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.">
     <meta name="twitter:image" content="https://plgrph.pp.ua/images/og-image.jpg">
-
+    
     <!-- === FAVICONS === -->
     <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
     <link rel="manifest" href="/images/site.webmanifest">
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="css/styles.css">
-
+    
     <!-- === PRECONNECT === -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-
+    
     <!-- === FONTS === -->
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-
+    
     <!-- === MS TILE === -->
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-config" content="/images/browserconfig.xml">
     <meta name="theme-color" content="#0079c5">
-
+    
     <!-- === SCHEMA.ORG JSON-LD === -->
     <script type="application/ld+json">
     {
@@ -124,7 +124,7 @@
       ]
     }
     </script>
-
+    
     <style>
         /* === CRITICAL CSS ONLY === */
         body {
@@ -153,14 +153,9 @@
             display: block;
         }
         #textContainer {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
             margin-top: 20px;
             text-align: center;
             max-width: 640px;
-        }
-        #textContainer.visible {
-            opacity: 1;
         }
         #textContainer h1 {
             font-family: "Sofia Sans", sans-serif;
@@ -173,10 +168,10 @@
             line-height: 1.3;
         }
     </style>
-
+    
     <link rel="preload" href="/css/styles.css" as="style" onload="this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/css/styles.css"></noscript>
-
+  
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
     <script>
@@ -185,7 +180,6 @@
         gtag('js', new Date());
         gtag('config', 'G-YGBY8WF4E6');
     </script>
-<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -269,7 +263,7 @@
         <div id="contacts" class="text-block"></div>
         <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
     </div> 
-
+  
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var user = "plgrph";
@@ -283,38 +277,6 @@
                     '<span class="contact-sep">|</span>' +
                     '<a href="mailto:' + email + '" class="contact-link">' + email + '</a>';
             }
-
-            var video = document.getElementById('logoVideo');
-            var textContainer = document.getElementById('textContainer');
-            var audienceBlock = document.getElementById('audienceBlock');
-            var dividerWrap = document.getElementById('dividerWrap');
-            var calcBlock = document.getElementById('calcBlock');
-
-            setTimeout(function() {
-                video.play().catch(function(error) {
-                    console.log('Відео не може бути автоматично запущене:', error);
-                });
-            }, 2500);
-
-            video.onended = function() {
-                textContainer.classList.add('visible');
-
-                setTimeout(function() {
-                    if (audienceBlock) audienceBlock.classList.add('visible');
-                }, 1000);
-
-                setTimeout(function() {
-                    if (dividerWrap) dividerWrap.classList.add('visible');
-                }, 2500);
-
-                setTimeout(function() {
-                    if (calcBlock) calcBlock.classList.add('visible');
-                }, 4000);
-
-                setTimeout(function() {
-                    if (contactsContainer) contactsContainer.classList.add('visible');
-                }, 5500);
-            };
         });
     </script>
 </body>
