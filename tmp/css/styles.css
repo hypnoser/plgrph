@@ -262,6 +262,48 @@
     user-select: none;
 }
 
+/* === FOOTER (з попереднього styles.css) === */
+#email {
+    border-top: 1px solid #d1d1d1;
+    padding-top: 30px;
+}
+
+.toast {
+    border: 1px solid lightgrey;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 10px 5px 5px #ebebeb;
+    background-color: #f8f8f8;
+}
+
+.toast:hover {
+    background-color: #ebebeb;
+}
+
+#footer {
+    text-align: center;
+}
+
+#footer.container {
+    left: 0%;
+    top: auto;
+    right: 0%;
+    bottom: 0%;
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    flex-direction: column;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.text-block {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
 /* === МЕДІА-ЗАПИТИ === */
 @media (max-width: 768px) {
     .container {
@@ -299,6 +341,9 @@
     }
     .contact-link {
         font-size: 14px;
+    }
+    .text-block {
+        gap: 30px;
     }
 }
 
@@ -351,6 +396,12 @@
     }
     .contact-sep {
         margin: 0 8px;
+    }
+    .text-block {
+        gap: 20px;
+    }
+    #footer.container {
+        padding-bottom: 30px;
     }
 }
 
