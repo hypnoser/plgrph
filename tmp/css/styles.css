@@ -6,33 +6,19 @@
     padding: 0 20px;
     box-sizing: border-box;
     margin: 20px 0 8px 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-.divider-wrap.visible {
-    opacity: 1;
 }
 .divider-line {
-    width: 0;
+    width: 100%;
     height: 1px;
     background: rgba(0, 121, 197, 0.35);
-    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.divider-wrap.visible .divider-line {
-    width: 100%;
 }
 
 /* === БЛОК АУДИТОРІЙ === */
 #audienceBlock {
     margin-top: 24px;
     width: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
     box-sizing: border-box;
     padding: 0 20px;
-}
-#audienceBlock.visible {
-    opacity: 1;
 }
 .audience-card {
     background: #ffffff;
@@ -104,12 +90,7 @@
     margin-top: 24px;
     margin-bottom: 30px;
     width: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
     box-sizing: border-box;
-}
-#calcBlock.visible {
-    opacity: 1;
 }
 .calc-card {
     background: #ffffff;
@@ -236,12 +217,7 @@
 
 /* === КОНТАКТИ === */
 #contacts {
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
     text-align: center;
-}
-#contacts.visible {
-    opacity: 1;
 }
 .contact-link {
     color: #0079c5;
