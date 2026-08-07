@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- === SECURITY HEADERS (meta equiv for servers without direct header control) === -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self' https://www.google-analytics.com; frame-ancestors 'none'; base-uri 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
     <!-- === SEO CORE === -->
     <title>PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації</title>
     <meta name="description" content="PLGRPH — професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, складні ситуації будь-якої складності. Власний онлайн-калькулятор для поліграфологів.">
@@ -176,6 +182,23 @@
             margin: 12px 0 0 0;
             letter-spacing: 0.3px;
         }
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #0079c5;
+            color: #fff;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-family: "Sofia Sans", sans-serif;
+            font-size: 14px;
+            z-index: 100;
+            border-radius: 0 0 8px 0;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
     </style>
     
     <link rel="preload" href="/css/styles.css" as="style" onload="this.rel='stylesheet'">
@@ -191,83 +214,88 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <video id="logoVideo" width="640" height="360" poster="images/logo-poster.jpg" muted autoplay playsinline webkit-playsinline preload="metadata" fetchpriority="high" aria-label="Анімований логотип PLGRPH">
-            <source src="images/logo.webm" type="video/webm">
-            <source src="images/logo.mp4" type="video/mp4">
-            PLGRPH — професійний поліграфолог. Перегляньте відео-логотип.
-        </video>
-        <img src="images/logo-poster.jpg" alt="PLGRPH логотип" width="1" height="1" loading="lazy" decoding="async" style="position:absolute;opacity:0;">
-        <div id="textContainer">
-            <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1>
-            <p class="site-tagline">Ви вже достатньо думали. Час знати!</p>
-        </div>
+    <a href="#main-content" class="skip-link">Перейти до контенту</a>
+    
+    <main id="main-content">
+        <div class="container">
+            <video id="logoVideo" width="640" height="360" poster="images/logo-poster.jpg" muted autoplay playsinline webkit-playsinline preload="metadata" fetchpriority="high" aria-label="Анімований логотип PLGRPH">
+                <source src="images/logo.webm" type="video/webm">
+                <source src="images/logo.mp4" type="video/mp4">
+                <track kind="captions" src="" label="Українська" srclang="uk">
+                PLGRPH — професійний поліграфолог. Перегляньте відео-логотип.
+            </video>
+            <img src="images/logo-poster.jpg" alt="PLGRPH логотип" width="1" height="1" loading="lazy" decoding="async" style="position:absolute;opacity:0;">
+            <div id="textContainer">
+                <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1>
+                <p class="site-tagline">Ви вже достатньо думали. Час знати!</p>
+            </div>
 
-        <div id="audienceBlock">
-            <div class="audience-card">
-                <div class="audience-badge">Послуги</div>
-                <h2 class="audience-title">Для кого працюємо</h2>
-                <div class="audience-grid">
-                    <div class="audience-col">
-                        <h3 class="audience-col-head">Для замовників</h3>
-                        <div class="audience-item">Об'єктивний аналіз ситуації</div>
-                        <div class="audience-item">Достовірні результати</div>
-                        <div class="audience-item">Повна конфіденційність</div>
-                    </div>
-                    <div class="audience-col">
-                        <h3 class="audience-col-head">Для поліграфологів</h3>
-                        <div class="audience-item">Методологічна підтримка</div>
-                        <div class="audience-item">Менторинг</div>
-                        <div class="audience-item">Допомога початківцям</div>
+            <div id="audienceBlock">
+                <div class="audience-card">
+                    <div class="audience-badge">Послуги</div>
+                    <h2 class="audience-title">Для кого працюємо</h2>
+                    <div class="audience-grid">
+                        <div class="audience-col">
+                            <h3 class="audience-col-head">Для замовників</h3>
+                            <div class="audience-item">Об'єктивний аналіз ситуації</div>
+                            <div class="audience-item">Достовірні результати</div>
+                            <div class="audience-item">Повна конфіденційність</div>
+                        </div>
+                        <div class="audience-col">
+                            <h3 class="audience-col-head">Для поліграфологів</h3>
+                            <div class="audience-item">Методологічна підтримка</div>
+                            <div class="audience-item">Менторинг</div>
+                            <div class="audience-item">Допомога початківцям</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="divider-wrap" id="dividerWrap">
-            <div class="divider-line"></div>
+        <div class="container">
+            <div class="divider-wrap" id="dividerWrap">
+                <div class="divider-line"></div>
+            </div>
+
+            <div id="calcBlock">
+                <div class="calc-card">
+                    <div class="calc-badge">Власна розробка</div>
+                    <h2 class="calc-title">Поліграфологічний онлайн-калькулятор</h2>
+                    <p class="calc-desc">
+                        Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
+                    </p>
+                    <div class="calc-features">
+                        <div class="calc-feature">Науково обґрунтована методологія</div>
+                        <div class="calc-feature">Валідізовано на практиці</div>
+                        <div class="calc-feature">Використання в оборонній сфері</div>
+                    </div>
+                    <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
+                    <div class="calc-note">тільки для поліграфологів</div>
+                </div>
+            </div>
         </div>
 
-        <div id="calcBlock">
-            <div class="calc-card">
-                <div class="calc-badge">Власна розробка</div>
-                <h2 class="calc-title">Поліграфологічний онлайн-калькулятор</h2>
-                <p class="calc-desc">
-                    Інструмент для професійної оцінки поліграм, яким користуються експерти в Україні та за кордоном.
+        <div class="container about-section">
+            <div class="about-card">
+                <h2 class="about-title">Про PLGRPH</h2>
+                <p class="about-text">
+                    PLGRPH — це професійний центр оцінки достовірності інформації, який працює з 2013 року. 
+                    Ми спеціалізуємося на поліграфологічних перевірках будь-якої складності: від перевірки персоналу 
+                    до розслідування інцидентів. Наша команда використовує сучасне обладнання та науково обґрунтовані 
+                    методології, що дозволяє отримувати об'єктивні та достовірні результати.
                 </p>
-                <div class="calc-features">
-                    <div class="calc-feature">Науково обґрунтована методологія</div>
-                    <div class="calc-feature">Валідізовано на практиці</div>
-                    <div class="calc-feature">Використання в оборонній сфері</div>
-                </div>
-                <a href="https://plgrph.pp.ua/calc/" target="_blank" class="calc-btn">Спробувати калькулятор →</a>
-                <div class="calc-note">тільки для поліграфологів</div>
+                <p class="about-text">
+                    Окрім роботи з замовниками, ми підтримуємо спільноту поліграфологів України: надаємо методологічну 
+                    підтримку, менторинг та допомогу початківцям. Наш власний онлайн-калькулятор для аналізу поліграм 
+                    використовується експертами як в цивільній, так і в оборонній сфері.
+                </p>
+                <p class="about-text">
+                    Повна конфіденційність — фундаментальний принцип нашої роботи. Кожна перевірка проводиться 
+                    з дотриманням етичних стандартів та гарантує максимальну точність результатів.
+                </p>
             </div>
         </div>
-    </div>
-
-    <div class="container about-section">
-        <div class="about-card">
-            <h2 class="about-title">Про PLGRPH</h2>
-            <p class="about-text">
-                PLGRPH — це професійний центр оцінки достовірності інформації, який працює з 2013 року. 
-                Ми спеціалізуємося на поліграфологічних перевірках будь-якої складності: від перевірки персоналу 
-                до розслідування інцидентів. Наша команда використовує сучасне обладнання та науково обґрунтовані 
-                методології, що дозволяє отримувати об'єктивні та достовірні результати.
-            </p>
-            <p class="about-text">
-                Окрім роботи з замовниками, ми підтримуємо спільноту поліграфологів України: надаємо методологічну 
-                підтримку, менторинг та допомогу початківцям. Наш власний онлайн-калькулятор для аналізу поліграм 
-                використовується експертами як в цивільній, так і в оборонній сфері.
-            </p>
-            <p class="about-text">
-                Повна конфіденційність — фундаментальний принцип нашої роботи. Кожна перевірка проводиться 
-                з дотриманням етичних стандартів та гарантує максимальну точність результатів.
-            </p>
-        </div>
-    </div>
+    </main>
 
     <div id="footer" class="container">
         <div id="contacts" class="text-block"></div>
@@ -277,7 +305,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var user = "plgrph";
-            var domain = "protonmail.com";
+n            var domain = "protonmail.com";
             var email = user + "@" + domain;
             var telegramUrl = "https://t.me/plgrph_ukr";
             var contactsContainer = document.getElementById('contacts');
