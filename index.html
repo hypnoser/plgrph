@@ -1,15 +1,17 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- === SECURITY HEADERS (meta equiv for servers without direct header control) === -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self' https://www.google-analytics.com; frame-ancestors 'none'; base-uri 'self';">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
+
+    <!--
+    === ПРИМІТКА ЩОДО БЕЗПЕКИ НА GITHUB PAGES ===
+    GitHub Pages не підтримує кастомні HTTP-заголовки сервера (CSP, HSTS, XFO, COOP).
+    Meta http-equiv для цих заголовків ігнорується браузерами (див. специфікацію HTML).
+    Рекомендація: використовуйте Cloudflare як reverse proxy перед GitHub Pages
+    для налаштування повноцінних заголовків безпеки на рівні сервера.
+    -->
+
     <!-- === SEO CORE === -->
     <title>PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації</title>
     <meta name="description" content="PLGRPH — професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, складні ситуації будь-якої складності. Власний онлайн-калькулятор для поліграфологів.">
@@ -18,7 +20,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://plgrph.pp.ua/">
     <link rel="alternate" hreflang="uk" href="https://plgrph.pp.ua/">
-    
+
     <!-- === OPEN GRAPH === -->
     <meta property="og:locale" content="uk_UA">
     <meta property="og:type" content="website">
@@ -30,13 +32,13 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/jpeg">
-    
+
     <!-- === TWITTER CARDS === -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PLGRPH | ПОЛІГРАФОЛОГ | Центр оцінки достовірності інформації">
     <meta name="twitter:description" content="Професійний центр оцінки достовірності інформації. Поліграфологічні перевірки, детектор брехні, власний онлайн-калькулятор для поліграфологів.">
     <meta name="twitter:image" content="https://plgrph.pp.ua/images/og-image.jpg">
-    
+
     <!-- === FAVICONS === -->
     <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
@@ -44,21 +46,21 @@
     <link rel="manifest" href="/images/site.webmanifest">
     <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/css/styles.css">
-    
+
     <!-- === PRECONNECT === -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    
+
     <!-- === FONTS === -->
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
-    
+
     <!-- === MS TILE === -->
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-config" content="/images/browserconfig.xml">
     <meta name="theme-color" content="#0079c5">
-    
+
     <!-- === SCHEMA.ORG JSON-LD === -->
     <script type="application/ld+json">
     {
@@ -130,7 +132,7 @@
       ]
     }
     </script>
-    
+
     <style>
         /* === CRITICAL CSS ONLY === */
         body {
@@ -200,10 +202,10 @@
             top: 0;
         }
     </style>
-    
+
     <link rel="preload" href="/css/styles.css" as="style" onload="this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/css/styles.css"></noscript>
-  
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YGBY8WF4E6"></script>
     <script>
@@ -215,16 +217,14 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">Перейти до контенту</a>
-    
+
     <main id="main-content">
         <div class="container">
             <video id="logoVideo" width="640" height="360" poster="images/logo-poster.jpg" muted autoplay playsinline webkit-playsinline preload="metadata" fetchpriority="high" aria-label="Анімований логотип PLGRPH">
                 <source src="images/logo.webm" type="video/webm">
                 <source src="images/logo.mp4" type="video/mp4">
-                <track kind="captions" src="" label="Українська" srclang="uk">
                 PLGRPH — професійний поліграфолог. Перегляньте відео-логотип.
             </video>
-            <img src="images/logo-poster.jpg" alt="PLGRPH логотип" width="1" height="1" loading="lazy" decoding="async" style="position:absolute;opacity:0;">
             <div id="textContainer">
                 <h1>ЦЕНТР ОЦІНКИ ДОСТОВІРНОСТІ ІНФОРМАЦІЇ</h1>
                 <p class="site-tagline">Ви вже достатньо думали. Час знати!</p>
@@ -301,11 +301,11 @@
         <div id="contacts" class="text-block"></div>
         <div class="center font-monospace fs-6" style="margin-top:50px;">© 2013-2026</div>
     </div> 
-  
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var user = "plgrph";
-n            var domain = "protonmail.com";
+            var domain = "protonmail.com";
             var email = user + "@" + domain;
             var telegramUrl = "https://t.me/plgrph_ukr";
             var contactsContainer = document.getElementById('contacts');
