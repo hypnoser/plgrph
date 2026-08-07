@@ -208,19 +208,19 @@
     text-align: left;
 }
 .about-badge {
-    display: inline-block;
+    display: block;
+    width: fit-content;
+    margin: 0 auto 16px;
     font-size: 11px;
     color: #005a94;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     font-weight: 600;
-    margin-bottom: 0 auto 16px;
     font-family: "Sofia Sans", sans-serif;
     background: rgba(0, 121, 197, 0.08);
     padding: 6px 14px;
     border-radius: 20px;
     text-align: center;
-    width: fit-content;
 }
 .about-title {
     font-family: "Sofia Sans", sans-serif;
