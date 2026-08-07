@@ -43,9 +43,7 @@
     background: #ffffff;
     border-radius: 16px;
     padding: 36px 32px;
-    box-shadow: 0 4px 24px rgba(0, 121, 197, 0.08), 0 1px 4px rgba(0,0,0,0.04);
     text-align: center;
-    border: 1px solid rgba(0, 121, 197, 0.1);
 }
 .audience-badge {
     display: inline-block;
@@ -115,9 +113,7 @@
     background: #ffffff;
     border-radius: 16px;
     padding: 36px 32px;
-    box-shadow: 0 4px 24px rgba(0, 121, 197, 0.08), 0 1px 4px rgba(0,0,0,0.04);
     text-align: center;
-    border: 1px solid rgba(0, 121, 197, 0.1);
 }
 .calc-badge {
     display: inline-block;
@@ -209,9 +205,21 @@
     background: #ffffff;
     border-radius: 16px;
     padding: 36px 32px;
-    box-shadow: 0 4px 24px rgba(0, 121, 197, 0.08), 0 1px 4px rgba(0,0,0,0.04);
     text-align: left;
-    border: 1px solid rgba(0, 121, 197, 0.1);
+}
+.about-badge {
+    display: inline-block;
+    font-size: 11px;
+    color: #005a94;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 16px;
+    font-family: "Sofia Sans", sans-serif;
+    background: rgba(0, 121, 197, 0.08);
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-align: center;
 }
 .about-title {
     font-family: "Sofia Sans", sans-serif;
@@ -328,7 +336,7 @@
     }
     .calc-features {
         gap: 12px;
-               flex-direction: column;
+        flex-direction: column;
         align-items: center;
     }
     .about-card {
