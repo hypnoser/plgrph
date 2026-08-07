@@ -1,5 +1,24 @@
 /* === NON-CRITICAL STYLES === */
- 
+
+/* === SKIP LINK === */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #0079c5;
+    color: #fff;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-family: "Sofia Sans", sans-serif;
+    font-size: 14px;
+    z-index: 100;
+    border-radius: 0 0 8px 0;
+    transition: top 0.3s;
+}
+.skip-link:focus {
+    top: 0;
+}
+
 /* === РОЗДІЛЮВАЛЬНА ЛІНІЯ === */
 .divider-wrap {
     width: 100%;
@@ -31,7 +50,7 @@
 .audience-badge {
     display: inline-block;
     font-size: 11px;
-    color: #0079c5;
+    color: #005a94;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     font-weight: 600;
@@ -103,7 +122,7 @@
 .calc-badge {
     display: inline-block;
     font-size: 11px;
-    color: #0079c5;
+    color: #005a94;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     font-weight: 600;
@@ -172,7 +191,7 @@
 .calc-note {
     font-family: "Sofia Sans", sans-serif;
     font-size: 12px;
-    color: #999;
+    color: #666;
     margin-top: 14px;
     font-weight: 400;
     letter-spacing: 0.3px;
