@@ -246,6 +246,9 @@
 /* === КОНТАКТИ === */
 #contacts {
     text-align: center;
+    border-top: 1px solid rgba(0, 121, 197, 0.35);
+    padding-top: 30px;
+    margin-top: 20px;
 }
 .contact-link {
     color: #0079c5;
