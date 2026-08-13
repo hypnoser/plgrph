@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- ВЕРСІЯ В ОПИСІ ВКЛАДКИ БРАУЗЕРА -->
-  <title>Polygraph Suite v6.3</title>
+  <title>Polygraph Suite v7.1</title>
   
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
@@ -138,7 +138,7 @@
     <header class="app-header">
       <img src="images/logo.png" alt="PLGRPH" class="app-logo">
       <!-- ВЕРСІЯ У ШАПЦІ ПРОГРАМИ -->
-      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v6.3</span></h1>
+      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v7.1</span></h1>
     </header>
     
     <!-- ЄДИНЕ МЕНЮ ТА П.І.Б. ДЛЯ ВСІХ ВКЛАДОК -->
@@ -146,8 +146,8 @@
       <div class="ess-toolbar" id="global-toolbar">
         <button class="ess-toolbar-btn" id="g-save" title="Зберегти">💾</button>
         <div class="ess-toolbar-sep"></div>
-        <button class="ess-toolbar-btn" id="g-open" title="Відкрити (.json)">📂</button>
-        <button class="ess-toolbar-btn" id="g-save-json" title="Зберегти (.json)">📥</button>
+        <button class="ess-toolbar-btn" id="g-open" title="Відкрити (.json або .zip)">📂</button>
+        <button class="ess-toolbar-btn" id="g-save-json" title="Зберегти (.json або .zip)">📥</button>
         <div class="ess-toolbar-sep"></div>
         <button class="ess-toolbar-btn" id="g-markdown" title="Експорт у Markdown (.md)">📝</button>
         <button class="ess-toolbar-btn" id="g-print" title="Друк / PDF">🖨️</button>
@@ -173,6 +173,7 @@
     <div class="suite-tabs-container">
       <button class="suite-tab-btn active" data-target="tab-ess">ESS-M</button>
       <button class="suite-tab-btn" data-target="tab-cit">CIT</button>
+      <button class="suite-tab-btn" data-target="tab-notes">📝 Нотатки</button>
     </div>
 
     <!-- КОНТЕЙНЕРИ МЕТОДИК -->
@@ -183,13 +184,22 @@
     <div id="tab-cit" class="suite-tab-content" style="display: none;">
       <main id="cit-app"></main>
     </div>
+
+    <!-- НОВА ВКЛАДКА НОТАТКИ -->
+    <div id="tab-notes" class="suite-tab-content" style="display: none;">
+      <main id="notes-app"></main>
+    </div>
     
-    <input type="file" id="file-import" accept=".json" style="display: none;">
+    <!-- file-import: підтримує .json і .zip -->
+    <input type="file" id="file-import" accept=".json,.zip" style="display: none;">
   </div>
 
-  <!-- СКРИПТИ -->
+  <!-- СКРИПТИ: порядок важливий -->
+  <script src="jszip.min.js"></script>
+  <script src="snarkdown.js"></script>
   <script src="ess.js"></script>
   <script src="cit.js"></script>
+  <script src="notes.js"></script>
   <script src="app.js"></script>
 
 </body>
