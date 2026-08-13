@@ -133,13 +133,14 @@ window.APP_API = (function () {
         catch (e) { alert('Помилка читання data.json у ZIP. Файл пошкоджений.'); return; }
 
         if (parsed.tests && !parsed.ess) parsed.ess = parsed.tests;
+        // ВИПРАВЛЕННЯ: очищаємо imagesMeta — реальні метадані створяться після reload у restoreImagesFromZip
         var cleanState = {
           respondentName: parsed.respondentName || '',
           examDate: parsed.examDate || '',
           ess: parsed.ess || [],
           cit: parsed.cit || [],
           notes: parsed.notes || '',
-          imagesMeta: parsed.imagesMeta || []
+          imagesMeta: []
         };
         localStorage.setItem('polygraph_suite_data', JSON.stringify(cleanState));
 
@@ -166,14 +167,9 @@ window.APP_API = (function () {
             imagesForRestore.push({ name: item.name, dataUrl: dataUrl });
             pending--;
             if (pending === 0) {
-              // Зберігаємо зображення в IndexedDB після reload через sessionStorage
-              // (IndexedDB скидається на reload, тому передаємо через sessionStorage як base64)
-              // Оскільки об'єм може бути великим, зберігаємо напряму перед reload
-              // через тимчасовий localStorage-ключ (буде видалено після відновлення)
               try {
                 sessionStorage.setItem('polygraph_zip_images', JSON.stringify(imagesForRestore));
               } catch (e) {
-                // Якщо sessionStorage переповнений — попереджаємо, але продовжуємо
                 console.warn('Не вдалось зберегти зображення в sessionStorage:', e);
               }
               alert('Дані та ' + imagesForRestore.length + ' зображень успішно завантажено! Сторінку буде оновлено.');
@@ -420,7 +416,8 @@ window.APP_API = (function () {
     },
 
     performSave: performSave,
-    loadData: loadData
+    loadData: loadData,
+    restoreZipImagesIfNeeded: restoreZipImagesIfNeeded
   };
 })();
 
@@ -624,28 +621,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  /* Відновлення зображень після ZIP-імпорту (виклик тут, бо NOTES_API вже ініціалізований) */
-  (function restoreZipImages() {
-    var raw = sessionStorage.getItem('polygraph_zip_images');
-    if (!raw || !window.NOTES_API) return;
-    sessionStorage.removeItem('polygraph_zip_images');
-    try {
-      var images = JSON.parse(raw);
-      if (images && images.length > 0) {
-        window.NOTES_API.restoreImagesFromZip(images, function () {
-          // Оновлюємо imagesMeta в localStorage
-          var stored = localStorage.getItem('polygraph_suite_data');
-          if (stored) {
-            try {
-              var parsed = JSON.parse(stored);
-              var notesState = window.NOTES_API.collectState();
-              parsed.imagesMeta = notesState.imagesMeta;
-              localStorage.setItem('polygraph_suite_data', JSON.stringify(parsed));
-            } catch (e) {}
-          }
-        });
-      }
-    } catch (e) { console.warn('Помилка відновлення зображень з ZIP:', e); }
-  })();
+  // ВИДАЛЕНО: дублюючий IIFE restoreZipImages, який викликав race condition
+  // restoreZipImagesIfNeeded тепер викликається єдиний раз з APP_API.init() вище
 
 });
