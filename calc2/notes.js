@@ -535,6 +535,9 @@ window.NOTES_API = (function () {
 
     // Відновлює зображення з ZIP (масив {name, dataUrl})
     restoreImagesFromZip: function (imagesArray, callback) {
+      // ВИПРАВЛЕННЯ: гарантовано очищаємо старі метадані перед відновленням,
+      // щоб уникнути дублікатів при повторному виклику або race condition.
+      state.imagesMeta = [];
       var pending = imagesArray.length;
       if (pending === 0) { if (callback) callback(); return; }
       imagesArray.forEach(function (item) {
