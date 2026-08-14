@@ -300,6 +300,31 @@ window.APP_API = (function () {
         a.click();
         URL.revokeObjectURL(url);
       });
+
+      // ── Автозбереження ────────────────────────────────────
+      // 1. Періодичний інтервал: раз на 30 сек, лише якщо є незбережені зміни
+      setInterval(function () {
+        if (isUnsaved) performSave();
+      }, 30000);
+
+      // 2. Втрата видимості вкладки (перемкнули вкладку браузера, згорнули, вимкнули екран)
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden' && isUnsaved) performSave();
+      });
+
+      // 3. Закриття/перезавантаження сторінки — останній рубіж
+      window.addEventListener('beforeunload', function () {
+        if (isUnsaved) performSave();
+      });
+
+      // 4. Вихід фокусу з поля введення після зміни даних (клік в інше місце)
+      document.addEventListener('focusout', function (e) {
+        var tag = e.target.tagName;
+        var insideAuth = e.target.closest && e.target.closest('#auth-overlay');
+        if ((tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') && !insideAuth && isUnsaved) {
+          performSave();
+        }
+      });
     },
 
     collectGlobalState: collectGlobalState,
@@ -491,6 +516,8 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.classList.add('active');
       var targetEl = document.getElementById(btn.getAttribute('data-target'));
       if (targetEl) { targetEl.style.display = 'block'; targetEl.classList.add('active'); }
+      // Автозбереження при перемиканні вкладок
+      if (window.APP_API) window.APP_API.performSave();
     });
   });
 });
