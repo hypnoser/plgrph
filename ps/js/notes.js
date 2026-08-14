@@ -50,7 +50,7 @@ window.NOTES_API = (function () {
   }
 
   function dbGetAllImages(ids, callback) {
-    if (!ids || ids.length === 0) { callback(null, []); return; }
+    if (!ids || ids.length === 0) { setTimeout(function() { callback(null, []); }, 0); return; }
     openDB(function(err, database) {
       if (err) { callback(err, []); return; }
       var results = [], pending = ids.length;
@@ -141,14 +141,17 @@ window.NOTES_API = (function () {
   }
 
   function processImageFiles(files) {
+    var reserved = 0; // скільки слотів вже "заброньовано" в межах цього виклику (до завершення асинхронного запису)
     Array.from(files).forEach(function(file) {
       if (!file.type.startsWith('image/')) { showToast('«' + file.name + '» ' + S.notes_toast_not_image, 'warn'); return; }
       if (file.size > MAX_FILE_SIZE) { showToast('«' + file.name + '» ' + S.notes_toast_too_big, 'warn'); return; }
-      if (state.imagesMeta.length >= MAX_FILES) { showToast(S.notes_toast_limit + ' ' + MAX_FILES + '.', 'warn'); return; }
+      if (state.imagesMeta.length + reserved >= MAX_FILES) { showToast(S.notes_toast_limit + ' ' + MAX_FILES + '.', 'warn'); return; }
+      reserved++;
       var reader = new FileReader();
       reader.onload = function(evt) {
         var id = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
         dbSaveImage({ id: id, dataUrl: evt.target.result }, function(err) {
+          reserved--;
           if (err) { showToast(S.notes_toast_save_error + ': ' + err, 'error'); return; }
           state.imagesMeta.push({ id: id, name: file.name, size: file.size, type: file.type, added: new Date().toISOString() });
           renderThumbnails();

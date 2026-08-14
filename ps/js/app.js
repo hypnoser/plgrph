@@ -51,25 +51,41 @@ window.APP_API = (function () {
   }
 
   function loadData() {
+    var raw;
     try {
-      var raw = localStorage.getItem('polygraph_suite_data');
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        if (parsed.tests && !parsed.ess) parsed.ess = parsed.tests;
-        if (parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName;
-        if (parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate;
-
-        if (window.ESS_API) window.ESS_API.restoreState(parsed.ess || []);
-        if (window.CIT_API) window.CIT_API.restoreState(parsed.cit || []);
-        if (window.NOTES_API) window.NOTES_API.restoreState({ text: parsed.notes || '', imagesMeta: parsed.imagesMeta || [] });
-      } else {
-        if (window.ESS_API) window.ESS_API.restoreState([]);
-        if (window.CIT_API) window.CIT_API.restoreState([]);
-        if (window.NOTES_API) window.NOTES_API.restoreState({ text: '', imagesMeta: [] });
-      }
+      raw = localStorage.getItem('polygraph_suite_data');
     } catch (err) {
-      console.error('loadData Error:', err);
+      console.error('loadData Error (localStorage):', err);
+      raw = null;
     }
+
+    var parsed = null;
+    if (raw) {
+      try {
+        parsed = JSON.parse(raw);
+        if (parsed.tests && !parsed.ess) parsed.ess = parsed.tests;
+      } catch (err) {
+        console.error('loadData Error (JSON parse):', err);
+        parsed = null;
+      }
+    }
+
+    if (parsed) {
+      try { if (parsed.respondentName !== undefined && nameInp) nameInp.value = parsed.respondentName; }
+      catch (err) { console.error('loadData Error (respondentName):', err); }
+      try { if (parsed.examDate !== undefined && dateInp) dateInp.value = parsed.examDate; }
+      catch (err) { console.error('loadData Error (examDate):', err); }
+    }
+
+    // Кожен модуль відновлюється незалежно: збій одного не блокує решту
+    try { if (window.ESS_API) window.ESS_API.restoreState(parsed ? (parsed.ess || []) : []); }
+    catch (err) { console.error('loadData Error (ESS_API):', err); }
+
+    try { if (window.CIT_API) window.CIT_API.restoreState(parsed ? (parsed.cit || []) : []); }
+    catch (err) { console.error('loadData Error (CIT_API):', err); }
+
+    try { if (window.NOTES_API) window.NOTES_API.restoreState({ text: parsed ? (parsed.notes || '') : '', imagesMeta: parsed ? (parsed.imagesMeta || []) : [] }); }
+    catch (err) { console.error('loadData Error (NOTES_API):', err); }
   }
 
   function handleJsonLoad(parsed) {
@@ -263,18 +279,20 @@ window.APP_API = (function () {
       });
 
       var btnHelp = document.getElementById('g-help');
-      if (btnHelp) btnHelp.addEventListener('click', function () { window.open('info.html', '_blank'); });
+      if (btnHelp) btnHelp.addEventListener('click', function () { performSave(); window.location.href = 'info.html'; });
 
       var btnMarkdown = document.getElementById('g-markdown');
       if (btnMarkdown) btnMarkdown.addEventListener('click', function () {
         var respName = (nameInp && nameInp.value.trim()) ? nameInp.value.trim() : S.md_unknown;
         var dateVal = (dateInp && dateInp.value) ? dateInp.value : new Date().toISOString().slice(0, 10);
         var safeResp = respName !== S.md_unknown ? respName.replace(/[^a-zа-яієїґ0-9]/gi, '_') + '-' : '';
+        // YAML double-quoted scalar escaping: захищає frontmatter від "/newline/спецсимволів в імені
+        var yamlSafeResp = '"' + respName.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, ' ') + '"';
 
         var md = '---\n';
         md += 'tags:\n  - polygraph_report\n  - suite\n';
         md += 'date: ' + dateVal + '\n';
-        md += 'respondent: ' + respName + '\n';
+        md += 'respondent: ' + yamlSafeResp + '\n';
         md += '---\n\n';
         md += '# ' + S.md_report_title + '\n\n';
         md += '**' + S.md_respondent + ':** ' + respName + '\n';
