@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q7JS2JHVG7');
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polygraph Suite v8.1</title>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Auth quiz styles */
+    .auth-step { display: none; }
+    .auth-step.active { display: block; animation: authFadeIn 0.35s ease; }
+    @keyframes authFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .auth-forgot-link { color: #3a7cfd; font-size: 13px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 14px; transition: opacity 0.2s; }
+    .auth-forgot-link:hover { text-decoration: underline; opacity: 0.85; }
+    .auth-quiz-progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+    .auth-quiz-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; transition: all 0.3s ease; }
+    .auth-quiz-dot.active { background: #3a7cfd; width: 24px; border-radius: 4px; }
+    .auth-quiz-dot.correct { background: #2e7d32; }
+    .auth-quiz-question { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 16px; line-height: 1.5; text-align: left; }
+    .auth-quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .auth-quiz-option { display: block; width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; background: #fff; font-size: 14px; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s ease; font-family: inherit; }
+    .auth-quiz-option:hover:not(:disabled) { border-color: #3a7cfd; background: #f8fafc; }
+    .auth-quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
+    .auth-quiz-option.correct { border-color: #2e7d32; background: #f0fdf4; color: #166534; }
+    .auth-quiz-option.wrong { border-color: #d32f2f; background: #fef2f2; color: #991b1b; }
+    .auth-quiz-attempts { font-size: 12px; color: #64748b; margin-top: 10px; }
+    .auth-quiz-attempts.danger { color: #d32f2f; font-weight: 700; }
+    .auth-quiz-unlock-btn { width: 100%; margin-top: 16px; padding: 12px; background: #2e7d32; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .auth-quiz-unlock-btn:hover { background: #1b5e20; }
+
+    /* Language switcher */
+    .lang-switcher { display: flex; gap: 4px; margin-left: auto; }
+    .lang-switcher a { padding: 4px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; text-decoration: none; color: #999; background: transparent; transition: all 0.15s; }
+    .lang-switcher a:hover { background: rgba(58,124,253,0.08); color: #3a7cfd; }
+    .lang-switcher a.active { color: #fff; background: #3a7cfd; cursor: default; pointer-events: none; }
+    .auth-lang-switcher { display: flex; gap: 4px; justify-content: center; margin-bottom: 18px; }
+    .auth-lang-switcher a { padding: 4px 12px; font-size: 12px; font-weight: 700; border-radius: 4px; text-decoration: none; color: #999; border: 1px solid #e2e8f0; transition: all 0.15s; }
+    .auth-lang-switcher a:hover { background: #f8fafc; color: #3a7cfd; }
+    .auth-lang-switcher a.active { color: #fff; background: #3a7cfd; border-color: #3a7cfd; cursor: default; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-modal" id="auth-modal-box">
+
+      <div id="auth-step-login" class="auth-step active">
+        <div class="auth-lang-switcher">
+          <a href="../index.html">UA</a>
+          <a href="index.html" class="active">EN</a>
+          <a href="../es/index.html">ES</a>
+        </div>
+        <img src="../images/logo.png" alt="PLGRPH Logo" class="auth-logo">
+        <h2>Polygraph Suite</h2>
+        <p>Enter the password to access the workspace.</p>
+        <div class="auth-input-group">
+          <input type="password" id="auth-password" placeholder="******" autocomplete="off">
+          <button id="auth-submit-btn">Log In</button>
+        </div>
+        <div id="auth-error" class="auth-error-msg" style="display: none;">
+          ❌ Incorrect password. Please try again.
+        </div>
+        <a href="#" id="auth-forgot-link" class="auth-forgot-link">🔑 Forgot password?</a>
+        <div style="margin-top: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 14px;">
+          <a href="info.html" style="color: #3a7cfd; text-decoration: none; font-weight: 600;">📖 About</a>
+          <a href="mailto:plgrph@protonmail.com" style="color: #757575; text-decoration: none; font-weight: 600;">✉️ Email</a>
+          <a href="https://t.me/plgrph_ukr" style="color: #757575; text-decoration: none; font-weight: 600;">📱 Telegram</a>
+        </div>
+      </div>
+
+      <div id="auth-step-q1" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot active"></div>
+          <div class="auth-quiz-dot"></div>
+          <div class="auth-quiz-dot"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Access Recovery</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Answer questions about polygraph examination</p>
+        <div class="auth-quiz-question" id="quiz-q-text-1"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-1"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q1">Attempt 1 of 3</div>
+        <div class="auth-error-msg" id="quiz-error-q1" style="display: none;"></div>
+        <a href="#" class="auth-forgot-link" id="quiz-back-to-login" style="margin-top: 14px;">← Back to login</a>
+      </div>
+
+      <div id="auth-step-q2" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot active"></div>
+          <div class="auth-quiz-dot"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Access Recovery</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Answer questions about polygraph examination</p>
+        <div class="auth-quiz-question" id="quiz-q-text-2"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-2"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q2">Attempt 1 of 3</div>
+        <div class="auth-error-msg" id="quiz-error-q2" style="display: none;"></div>
+      </div>
+
+      <div id="auth-step-q3" class="auth-step">
+        <div class="auth-quiz-progress">
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot correct"></div>
+          <div class="auth-quiz-dot active"></div>
+        </div>
+        <h2 style="font-size: 20px; margin-bottom: 4px;">Access Recovery</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 18px;">Answer questions about polygraph examination</p>
+        <div class="auth-quiz-question" id="quiz-q-text-3"></div>
+        <div class="auth-quiz-options" id="quiz-q-options-3"></div>
+        <div class="auth-quiz-attempts" id="quiz-attempts-q3">Attempt 1 of 3</div>
+        <div class="auth-error-msg" id="quiz-error-q3" style="display: none;"></div>
+      </div>
+
+      <div id="auth-step-success" class="auth-step">
+        <div style="font-size: 48px; margin-bottom: 8px;">✅</div>
+        <h2 style="color: #2e7d32; font-size: 22px; margin-bottom: 6px;">Access Restored</h2>
+        <p style="font-size: 14px; color: #666; margin-bottom: 16px;">You have successfully passed the quiz</p>
+        <div style="background: #f0fdf4; border: 2px solid #2e7d32; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px;">Your login password:</div>
+          <code style="font-size: 24px; font-weight: 800; color: #2e7d32; letter-spacing: 3px; font-family: monospace;">plgrph</code>
+        </div>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Remember or write it down. You will need it again after the browser cache is cleared.</p>
+        <button id="auth-quiz-unlock-btn" class="auth-quiz-unlock-btn">🚀 Enter the System</button>
+      </div>
+
+      <div id="auth-step-blocked" class="auth-step">
+        <div style="font-size: 48px; margin-bottom: 8px;">🚫</div>
+        <h2 style="color: #d32f2f; font-size: 22px; margin-bottom: 6px;">Access Blocked</h2>
+        <p style="font-size: 14px; color: #666; margin-bottom: 16px;">Maximum number of attempts exceeded</p>
+        <div style="color: #d32f2f; font-size: 15px; font-weight: 700; margin-top: 16px; line-height: 1.5;">
+          You answered incorrectly three times.<br>Access to the system is temporarily blocked.
+        </div>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 16px;">Please contact the administrator or try again later.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="main-app-container" style="display: none;">
+
+    <header class="app-header">
+      <img src="../images/logo.png" alt="PLGRPH" class="app-logo">
+      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v8.1</span></h1>
+      <div class="lang-switcher">
+        <a href="../index.html">UA</a>
+        <a href="index.html" class="active">EN</a>
+        <a href="../es/index.html">ES</a>
+      </div>
+    </header>
+
+    <div class="suite-toolbar-area">
+      <div class="ess-toolbar" id="global-toolbar">
+        <button class="ess-toolbar-btn" id="g-save" title="Save">💾</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-open" title="Open (.json or .zip)">📂</button>
+        <button class="ess-toolbar-btn" id="g-save-json" title="Save (.json or .zip)">📥</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-markdown" title="Export to Markdown (.md)">📝</button>
+        <button class="ess-toolbar-btn" id="g-print" title="Print / PDF">🖨️</button>
+        <button class="ess-toolbar-btn danger-btn" id="g-clear" title="Clear all">🗑️</button>
+        <div class="ess-toolbar-sep"></div>
+        <button class="ess-toolbar-btn" id="g-help" title="Help">❓</button>
+        <div class="ess-save-status" id="g-status">🟢 Data Saved</div>
+      </div>
+
+      <div class="ess-respondent-area">
+        <div class="ess-name-wrapper">
+          <span class="ess-respondent-label">Examinee Name:</span>
+          <input type="text" id="global-resp-name" placeholder="Enter full name..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ess-date-wrapper">
+          <span class="ess-respondent-label">📅 Date:</span>
+          <input type="date" id="global-exam-date" class="ess-date-input">
+        </div>
+      </div>
+    </div>
+
+    <div class="suite-tabs-container">
+      <button class="suite-tab-btn active" data-target="tab-ess">ESS-M</button>
+      <button class="suite-tab-btn" data-target="tab-cit">CIT</button>
+      <button class="suite-tab-btn" data-target="tab-notes">📝 Notes</button>
+    </div>
+
+    <div id="tab-ess" class="suite-tab-content active"><main id="app"></main></div>
+    <div id="tab-cit" class="suite-tab-content" style="display: none;"><main id="cit-app"></main></div>
+    <div id="tab-notes" class="suite-tab-content" style="display: none;"><main id="notes-app"></main></div>
+
+    <input type="file" id="file-import" accept=".json,.zip" style="display: none;">
+  </div>
+
+  <script src="../lang/en.js"></script>
+  <script src="../js/jszip.min.js"></script>
+  <script src="../js/snarkdown.js"></script>
+  <script src="../js/ess.js"></script>
+  <script src="../js/cit.js"></script>
+  <script src="../js/notes.js"></script>
+  <script src="../js/app.js"></script>
+
+</body>
+</html>
