@@ -60,6 +60,7 @@ window.CIT_API = (function() {
     var decEl     = block.querySelector('.val-decision');
     var probEl    = block.querySelector('.val-prob');
     var conclusionEl = block.querySelector('.cit-conclusion-text');
+    var matrixWrapper = block.querySelector('.cit-matrix-wrapper');
 
     if (valCountEl) valCountEl.textContent = validCount;
     if (valScoreEl) valScoreEl.textContent = totalScore;
@@ -68,6 +69,7 @@ window.CIT_API = (function() {
       if (decEl) { decEl.textContent = S.cit_no; decEl.className = 'cit-dash-value val-decision val-no'; }
       if (probEl) { probEl.textContent = '-'; probEl.style.color = '#222'; }
       if (conclusionEl) conclusionEl.innerHTML = '<b>' + S.cit_no + '</b> — ' + S.cit_conc_no;
+      if (matrixWrapper) matrixWrapper.innerHTML = '<div style="color:#666;font-size:11px;">' + S.cit_matrix_placeholder + '</div>';
     } else {
       var isRI = totalScore >= validCount;
       if (decEl) {
@@ -78,6 +80,38 @@ window.CIT_API = (function() {
       var currentPr = (totalScore < cumulativePr.length) ? cumulativePr[totalScore] : 0;
       var probDisplay = formatPr(currentPr);
       if (probEl) { probEl.textContent = probDisplay; probEl.style.color = isRI ? '#ff0000' : '#2e7d32'; }
+
+      if (matrixWrapper) {
+        var baseTests = validTestsParams;
+        var startRow = Math.max(3, validCount - 2);
+        var endRow = Math.max(startRow + 4, validCount + 2);
+        var maxPossibleScore = endRow * 2;
+
+        var tableHtml = '<div class="cit-matrix-title">' + S.cit_matrix_title + '</div>';
+        tableHtml += '<table class="cit-matrix-table has-data"><thead><tr><th style="font-weight:normal;">' + S.cit_matrix_axis + '</th>';
+        for (var s = 0; s <= maxPossibleScore; s++) tableHtml += '<th style="font-weight:normal;">' + s + '</th>';
+        tableHtml += '</tr></thead><tbody>';
+
+        for (var r = startRow; r <= endRow; r++) {
+          var rowTests = [];
+          for (var i = 0; i < r; i++) rowTests.push(i < baseTests.length ? baseTests[i] : baseTests[baseTests.length - 1]);
+          var rowPr = calculateDynamicPr(rowTests);
+
+          tableHtml += '<tr><th style="font-weight:normal;">' + r + '</th>';
+          for (var sc = 0; sc <= maxPossibleScore; sc++) {
+            var pVal = (sc < rowPr.length) ? rowPr[sc] : 0;
+            var pStr = formatPr(pVal);
+            if (sc > r * 2) pStr = "";
+            if (sc < 3 && pStr === "> 99%") pStr = ">.99";
+            var activeClass = (r === validCount && sc === totalScore) ? ('cit-cell-active ' + (isRI ? 'res-ri' : 'res-nri')) : 'cit-cell-dimmed';
+            tableHtml += '<td class="' + activeClass + '">' + pStr + '</td>';
+          }
+          tableHtml += '</tr>';
+        }
+        tableHtml += '</tbody></table>';
+        matrixWrapper.innerHTML = tableHtml;
+      }
+
       if (conclusionEl) {
         conclusionEl.innerHTML = S.cit_conc_score_prefix + ' <b>' + totalScore + '</b> / <b>' + validCount + '</b> ' + S.cit_conc_tests_suffix + '. <b>' +
           (isRI ? S.cit_ri : S.cit_nri) + '</b> — ' + (isRI ? S.cit_conc_ri : S.cit_conc_nri) + ' <b>' + probDisplay + '</b>.';
@@ -183,6 +217,7 @@ window.CIT_API = (function() {
             '<div class="cit-dash-box"><div class="cit-dash-label">' + S.cit_dash_decision + '</div><div class="cit-dash-value val-decision val-no">-</div></div>' +
             '<div class="cit-dash-box"><div class="cit-dash-label">' + S.cit_prob + '</div><div class="cit-dash-value val-prob">-</div></div>' +
           '</div>' +
+          '<div class="cit-matrix-wrapper"></div>' +
           '<div class="cit-conclusion-box"><b>' + S.cit_conclusion_label + '</b> <span class="cit-conclusion-text"></span></div>' +
         '</div>' +
       '</div>';
@@ -354,10 +389,19 @@ window.CIT_API = (function() {
         '.val-nri{background-color:#2e7d32!important;color:#fff!important;}',
         '.val-no{background-color:#757575!important;color:#fff!important;}',
         '.cit-conclusion-box{padding:8px 10px;background:rgba(128,128,128,.04);border:1px solid #ddd;border-radius:4px;font-size:12px;line-height:1.4;color:#333;}',
+        '.cit-matrix-wrapper{background:#fff;border:1px solid #ccc;border-radius:4px;padding:8px;overflow-x:auto;margin-bottom:10px;width:100%;box-sizing:border-box;}',
+        '.cit-matrix-title{font-size:11px;font-weight:bold;margin-bottom:8px;color:#333;text-align:center;border-bottom:1px solid #eee;padding-bottom:4px;}',
+        '.cit-matrix-table{width:100%;border-collapse:collapse;font-size:10.5px;text-align:center;}',
+        '.cit-matrix-table th,.cit-matrix-table td{border:1px solid #ccc;padding:4px 2px;}',
+        '.cit-matrix-table th{background:rgba(128,128,128,.15);color:#222;font-weight:normal;}',
+        '.cit-cell-dimmed{opacity:.3;background:#fafafa;}',
+        '.cit-cell-active{background-color:#3a7cfd!important;color:#fff!important;font-weight:900!important;transform:scale(1.05);box-shadow:0 2px 6px rgba(0,0,0,.2);position:relative;z-index:5;border:1px solid #fff;}',
+        '.cit-cell-active.res-ri{background-color:#ff0000!important;color:#fff!important;}',
+        '.cit-cell-active.res-nri{background-color:#2e7d32!important;color:#fff!important;}',
         '.cit-add-block-btn{width:100%;padding:10px;font-size:14px;font-weight:bold;border:none;background:#3a7cfd;color:#fff;border-radius:6px;cursor:pointer;margin-top:15px;}',
         '.cit-add-block-btn:hover{background:#2563eb;}',
         '@media(max-width:768px){.cit-rows{grid-template-columns:1fr;}.cit-dashboard{grid-template-columns:1fr 1fr;}}',
-        '@media print{.cit-add-block-btn,.btn-del-block,.btn-del-row,.cit-btn-add-row,.cit-btn-edit,.btn-clear-block{display:none!important;}.cit-block{border:none!important;box-shadow:none!important;}}'
+        '@media print{.cit-add-block-btn,.btn-del-block,.btn-del-row,.cit-btn-add-row,.cit-btn-edit,.btn-clear-block{display:none!important;}.cit-block{border:none!important;box-shadow:none!important;}.cit-cell-active{transform:none!important;box-shadow:none!important;border:2px solid #000!important;color:#000!important;background:transparent!important;}.cit-cell-dimmed{opacity:1!important;color:#666!important;}}'
       ].join('');
       document.head.appendChild(citStyles);
 
