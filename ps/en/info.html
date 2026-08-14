@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help | Polygraph Suite v8.1</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --primary: #3a7cfd;
+      --primary-dark: #2a68e0;
+      --danger: #d32f2f;
+      --success: #2e7d32;
+      --warning: #f57c00;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); line-height: 1.7; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 40px 50px; border-radius: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); min-height: 100vh; }
+    @media (max-width: 768px) { .container { padding: 24px 20px; } }
+    h1 { color: #0f172a; border-bottom: 3px solid var(--primary); padding-bottom: 18px; margin-bottom: 32px; text-align: center; font-size: 1.9em; font-weight: 800; letter-spacing: -0.5px; }
+    h2 { color: var(--primary); margin-top: 44px; margin-bottom: 16px; font-size: 1.35em; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { color: #334155; margin-top: 28px; margin-bottom: 12px; font-size: 1.1em; font-weight: 700; }
+    h4 { color: #475569; margin-top: 18px; margin-bottom: 8px; font-size: 1em; font-weight: 600; }
+    p { margin-bottom: 14px; font-size: 15px; }
+    ul, ol { margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; font-size: 15px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', Monaco, monospace; font-size: 0.9em; color: #334155; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; vertical-align: middle; margin-left: 6px; }
+    .badge-screening { background: #dbeafe; color: #1e40af; }
+    .badge-diagnostic { background: #fef3c7; color: #92400e; }
+    .badge-cit { background: #fce7f3; color: #9d174d; }
+    .badge-notes { background: #f0fdf4; color: #166534; }
+    .alert-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 22px; margin: 24px 0; border-radius: 0 6px 6px 0; font-size: 15px; }
+    .security-box { background: #f0fdf4; border: 2px solid #10b981; padding: 22px 24px; margin: 28px 0; border-radius: 8px; }
+    .security-box h2 { margin-top: 0; color: #065f46; border-bottom: 1px solid #a7f3d0; }
+    .security-box p, .security-box li { color: #065f46; }
+    .security-box strong { color: #064e3b; }
+    .warning-box { background: #fff7ed; border-left: 4px solid var(--warning); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .danger-box { background: #fef2f2; border-left: 4px solid var(--danger); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .new-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .step-list { list-style: none; padding-left: 0; counter-reset: step-counter; }
+    .step-list > li { position: relative; padding-left: 44px; margin-bottom: 14px; min-height: 32px; }
+    .step-list > li::before { counter-increment: step-counter; content: counter(step-counter); position: absolute; left: 0; top: 2px; width: 28px; height: 28px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+    @media (max-width: 650px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+    .col-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+    .col-card h4 { margin-top: 0; color: var(--primary); }
+    .col-card.green h4 { color: #065f46; }
+    .decision-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .decision-table th, .decision-table td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+    .decision-table th { background: #f1f5f9; font-weight: 700; color: #334155; }
+    .decision-table td:first-child { font-weight: 700; white-space: nowrap; }
+    .footer { text-align: center; margin-top: 60px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 24px; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; }
+    .back-link:hover { text-decoration: underline; }
+    .lang-switcher-info { display: flex; gap: 4px; justify-content: flex-end; margin-bottom: 8px; }
+    .lang-switcher-info a { padding: 4px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; text-decoration: none; color: #999; border: 1px solid var(--border); transition: all 0.15s; }
+    .lang-switcher-info a:hover { background: #f8fafc; color: var(--primary); }
+    .lang-switcher-info a.active { color: #fff; background: var(--primary); border-color: var(--primary); cursor: default; pointer-events: none; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <a href="index.html" class="back-link">← Back to calculator</a>
+    <div class="lang-switcher-info">
+      <a href="../info.html">UA</a>
+      <a href="info.html" class="active">EN</a>
+      <a href="../es/info.html">ES</a>
+    </div>
+  </div>
+  <h1>Help: Polygraph Suite v8.1</h1>
+
+  <div class="alert-box">
+    <strong>Polygraph Suite</strong> is a comprehensive digital tool for polygraph examiners, designed for mathematical polygram scoring, building statistical matrices, and generating automated reports in accordance with validated methodologies.
+  </div>
+
+  <div class="new-box">
+    <strong>🆕 What's new in v8.1:</strong> Added full multi-language support — separate Ukrainian, English, and Spanish versions (language switcher at the top of the page). Clarified pneumograph channel names (thoracic / abdominal).
+  </div>
+
+  <!-- ═══ SECTION 1: ESS-M ═══ -->
+  <h2>1. Empirical Scoring System — Multinomial (ESS-M) Methodology</h2>
+  <p><strong>Empirical Scoring System — Multinomial (ESS-M)</strong> is an update of the original ESS, published in 2017 by Raymond Nelson. ESS-M applies a Bayesian classifier with a multinomial distribution to analyze Comparison Question Test (CQT) data.</p>
+
+  <h3>1.1. Theoretical Basis</h3>
+  <ul>
+    <li><strong>Empirical foundation:</strong> ESS is a modification of the federal 3-position scoring system, developed based on research at the University of Utah and Johns Hopkins University.</li>
+    <li><strong>Bayesian analysis:</strong> ESS-M uses a Bayesian decision-making model that combines test data with a prior probability and a likelihood function to compute posterior odds.</li>
+    <li><strong>Multinomial distribution:</strong> The likelihood function is based on the analytic theory of polygraph testing and describes the probabilities for all possible combinations of sensor scores.</li>
+  </ul>
+
+  <h3>1.2. Scoring Principles</h3>
+  <ul>
+    <li><strong>3-position scale:</strong> <code>+1</code> (larger reaction to the relevant question), <code>-1</code> (larger reaction to the comparison question), <code>0</code> (no difference). Rule — <em>"bigger-is-better"</em>.</li>
+    <li><strong>EDA:</strong> Extended scale: <code>+2</code>, <code>-2</code>, or <code>0</code>.</li>
+    <li><strong>Primary features:</strong> EDA, Cardio, PPG, Pneumograph (Upper + Lower).</li>
+    <li><strong>Time constraints:</strong> Only timely reactions are scored (no later than 5 sec. after the stimulus).</li>
+  </ul>
+
+  <h3>1.3. Decision Rules</h3>
+  <h4>Diagnostic Tests</h4>
+  <p class="badge badge-diagnostic">DI / NDI / INC</p>
+  <table class="decision-table">
+    <thead><tr><th>Stage</th><th>Condition</th><th>Conclusion</th></tr></thead>
+    <tbody>
+      <tr><td>Stage 1</td><td>Grand Total ≤ –3 OR any Subtotal ≤ –7</td><td><strong>DI</strong></td></tr>
+      <tr><td>Stage 2</td><td>Grand Total ≥ +3</td><td><strong>NDI</strong></td></tr>
+      <tr><td>Other</td><td>—</td><td><strong>INC</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h4>Screening Tests</h4>
+  <p class="badge badge-screening">SR / NSR / INC</p>
+  <table class="decision-table">
+    <thead><tr><th>Stage</th><th>Condition</th><th>Conclusion</th></tr></thead>
+    <tbody>
+      <tr><td>Stage 1</td><td>Any Subtotal ≤ –3</td><td><strong>SR</strong></td></tr>
+      <tr><td>Stage 2</td><td>Every Subtotal ≥ +1</td><td><strong>NSR</strong></td></tr>
+      <tr><td>Other</td><td>—</td><td><strong>INC</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="warning-box">
+    <strong>Artifacts:</strong> If ≥25% of data within a test is lost, it is automatically classified as <strong>NO</strong> (No Opinion).
+  </div>
+
+  <h3>1.4. Step-by-Step Instructions: ESS-M</h3>
+  <ol class="step-list">
+    <li>Enter the examinee's full name and date in the top panel.</li>
+    <li>Go to the <strong>ESS-M</strong> tab → click "+ Add ESS-M Calculation".</li>
+    <li>Select the <strong>Test Format</strong> (DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah).</li>
+    <li>If needed, change the type: <strong>Screening / Diagnostic</strong>.</li>
+    <li>Click <strong>📝 Questions</strong> and enter the texts of relevant questions R1–R4.</li>
+    <li>Enter scores: Breathing Thoracic/Abdominal (–1, 0, +1), EDA (–2, 0, +2), Cardio/PPG (–1, 0, +1). Symbol <code>A</code> or <code>∅</code> marks an artifact. Press <code>–</code> for quick negative value entry.</li>
+    <li>The system automatically calculates subtotals, Grand Total, status, and the probability estimate (Pr).</li>
+    <li>Review the <strong>"State Dynamics"</strong> block to assess the trend between presentations.</li>
+  </ol>
+
+  <!-- ═══ SECTION 2: CIT ═══ -->
+  <h2>2. Concealed Information Test (CIT) Methodology</h2>
+  <p><strong>CIT</strong> (Guilty Knowledge Test) was proposed by David Lykken in 1959. It is the only psychophysiological method properly substantiated by scientific research and the orienting response (OR) theory.</p>
+
+  <h3>2.1. Theoretical Basis</h3>
+  <ul>
+    <li><strong>Stimulus structure:</strong> A series of multiple-choice questions, each containing one relevant alternative (Key) and several neutral alternatives (Foils).</li>
+    <li><strong>Orienting response:</strong> Significant stimuli evoke enhanced OR. Systematically stronger reaction to the Key → indicates awareness.</li>
+    <li><strong>Probabilistic protection:</strong> The probability of a random positive result is mathematically controlled.</li>
+  </ul>
+
+  <h3>2.2. Lykken Scoring System</h3>
+  <ul>
+    <li><strong>2 points</strong> — largest reaction to the Key.</li>
+    <li><strong>1 point</strong> — second-largest reaction to the Key.</li>
+    <li><strong>0 points</strong> — Key is not among the two largest reactions.</li>
+  </ul>
+  <table class="decision-table">
+    <thead><tr><th>Category</th><th>Condition</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>RI</strong></td><td>Score ≥ number of valid tests</td><td>Recognition detected.</td></tr>
+      <tr><td><strong>NRI</strong></td><td>Score &lt; number of valid tests</td><td>No signs of recognition.</td></tr>
+      <tr><td><strong>NO</strong></td><td>Valid tests &lt; 3</td><td>Insufficient data.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ═══ SECTION 3: NOTES (NEW) ═══ -->
+  <h2>3. "Notes" Tab <span class="badge badge-notes">NEW v8.1</span></h2>
+  <p>The <strong>"📝 Notes"</strong> tab is the examiner's workspace for recording unstructured information: observations during testing, behavioral markers, conclusions, and examination context. Notes are tied to a specific examination (examinee), not to an individual test.</p>
+
+  <h3>3.1. Markdown Editor</h3>
+  <p>The editor supports two modes, switched via buttons at the top of the tab:</p>
+  <div class="two-col">
+    <div class="col-card">
+      <h4>✏️ Edit Mode</h4>
+      <p>A plain text field. Write in Markdown format — the syntax is converted to formatted text when you switch to preview mode.</p>
+    </div>
+    <div class="col-card">
+      <h4>👁 Preview Mode</h4>
+      <p>Markdown is compiled into readable HTML: headings, bold/italic, lists, quotes, code blocks. Supported syntax below.</p>
+    </div>
+  </div>
+
+  <h4>Supported Markdown Syntax</h4>
+  <table class="decision-table">
+    <thead><tr><th>Syntax</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td><code># Heading</code></td><td>H1 heading</td></tr>
+      <tr><td><code>## Subheading</code></td><td>H2 heading</td></tr>
+      <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
+      <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+      <tr><td><code>`inline code`</code></td><td>inline code</td></tr>
+      <tr><td><code>``` ... ```</code></td><td>Code block</td></tr>
+      <tr><td><code>- item</code></td><td>Unordered list</td></tr>
+      <tr><td><code>1. item</code></td><td>Numbered list</td></tr>
+      <tr><td><code>&gt; quote</code></td><td>Quote</td></tr>
+      <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2. Attaching Images</h3>
+  <p>Below the editor is the <strong>"Attached Images"</strong> section. Images are stored in the browser's IndexedDB — a separate storage that is not limited by the localStorage quota.</p>
+  <ul>
+    <li><strong>Adding:</strong> "＋ Add Image" button or drag files into the Drag &amp; Drop zone.</li>
+    <li><strong>Formats:</strong> JPG, PNG, WEBP, GIF, BMP — any image.</li>
+    <li><strong>Limit:</strong> Up to 20 images of 5 MB each.</li>
+    <li><strong>Viewing:</strong> Click on a thumbnail → full-screen lightbox.</li>
+    <li><strong>Deleting:</strong> "×" button on the thumbnail on hover.</li>
+  </ul>
+  <div class="warning-box">
+    <strong>Note:</strong> Images are stored in the browser's IndexedDB. Clearing the browser cache will delete them along with the calculations. Back up regularly using the "📥 Save" button.
+  </div>
+
+  <h3>3.3. Where Notes Are Stored</h3>
+  <p>Note text is stored as a string in <code>localStorage</code> in the <code>notes</code> field along with all other session data. Images are stored in <code>IndexedDB</code>, while <code>localStorage</code> only holds their metadata (name, size, date).</p>
+
+  <!-- ═══ SECTION 4: SECURITY ═══ -->
+  <div class="security-box">
+    <h2>4. Privacy, Security, and Data Storage</h2>
+    <p><strong>"Zero-Server" architecture:</strong> The application has no server infrastructure. All operations are performed exclusively in the browser on the user's device. No data is transmitted over the network.</p>
+
+    <h4>Save and Export Formats</h4>
+    <p>The <strong>"📥 Save"</strong> button now supports two formats depending on whether images are attached:</p>
+
+    <table class="decision-table" style="background: #fff;">
+      <thead><tr><th>Situation</th><th>Action</th><th>Format</th></tr></thead>
+      <tbody>
+        <tr><td>No images</td><td>Automatic</td><td><code>.json</code> — lightweight, full session state</td></tr>
+        <tr><td>Images present</td><td>Choice dialog</td><td><code>.zip</code> = <code>data.json</code> + <code>images/</code> folder</td></tr>
+        <tr><td>Images present, want JSON only</td><td>Choose "Cancel" in the dialog</td><td><code>.json</code> without images</td></tr>
+      </tbody>
+    </table>
+
+    <h4>File Naming</h4>
+    <p>The file automatically gets a name in the format: <code>polygraph-suite-Smith_John-2026-08-13.json</code> or <code>.zip</code>.</p>
+
+    <h4>Import</h4>
+    <ul>
+      <li><strong>Open .json:</strong> "📂" button or Drag &amp; Drop — restores calculations and notes. If the file was saved without images, they will not be restored.</li>
+      <li><strong>Open .zip:</strong> "📂" button or Drag &amp; Drop — restores calculations, notes, <strong>and</strong> images (from the <code>images/</code> folder inside the archive).</li>
+    </ul>
+
+    <h4>Offline Use</h4>
+    <p>The application is fully autonomous after the first load. All libraries (JSZip, Markdown parser) are included in the distribution as local files — no CDN is used.</p>
+
+    <div class="danger-box" style="margin-top: 16px; margin-bottom: 0;">
+      <strong>Note:</strong> In "Private Browsing" mode (Incognito), localStorage and IndexedDB may be cleared when the window is closed. Export your session regularly.
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 5: INTERFACE ═══ -->
+  <h2>5. Interface Overview</h2>
+
+  <h3>5.1. Global Toolbar</h3>
+  <ul>
+    <li><strong>💾 Save</strong> — forces a save to localStorage.</li>
+    <li><strong>📂 Open</strong> — imports <code>.json</code> or <code>.zip</code> from disk or Drag &amp; Drop.</li>
+    <li><strong>📥 Save</strong> — exports <code>.json</code> (without images) or <code>.zip</code> (with images).</li>
+    <li><strong>📝 Export</strong> — generates a Markdown report, including notes.</li>
+    <li><strong>🖨️ Print / PDF</strong> — optimized printing (hidden controls, preserved colors).</li>
+    <li><strong>🗑️ Clear All</strong> — deletes localStorage, IndexedDB (images), and reloads the page.</li>
+    <li><strong>❓ Help</strong> — this page.</li>
+  </ul>
+
+  <h3>5.2. Tabs</h3>
+  <div class="three-col">
+    <div class="col-card">
+      <h4>ESS-M</h4>
+      <p>Comparison Question Tests (CQT). Formats: DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah.</p>
+    </div>
+    <div class="col-card">
+      <h4>CIT</h4>
+      <p>Concealed Information Test. Dynamic Lykken probability matrix.</p>
+    </div>
+    <div class="col-card green">
+      <h4>📝 Notes <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NEW</span></h4>
+      <p>Markdown editor and attached images for the current examination.</p>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 6: REFERENCES ═══ -->
+  <h2>6. Methodological Sources and References</h2>
+  <ul>
+    <li>Nelson, R. (2017). Multinomial reference distributions for the Empirical Scoring System. <em>Polygraph and Forensic Credibility Assessment</em>, 46(2), 81–115.</li>
+    <li>Nelson, R. (2016). Scientific (analytic) theory of polygraph testing. <em>APA Magazine</em>, 49(5), 69–82.</li>
+    <li>Krapohl, D. J. (2010). <em>Reference Guide for the Empirical Scoring System — Multinomial (ESS-M)</em>. Lafayette Instrument Company.</li>
+    <li>Lykken, D. T. (1959). The GSR in the detection of guilt. <em>Journal of Applied Psychology</em>, 43(6), 385–388.</li>
+    <li>Lykken, D. T. (1960). The validity of the guilty knowledge technique. <em>Journal of Applied Psychology</em>, 44(4), 258–262.</li>
+    <li>Verschuere, B., Ben-Shakhar, G., &amp; Meijer, E. (2011). <em>Memory Detection: Theory and Application of the Concealed Information Test</em>. Cambridge University Press.</li>
+    <li>Meijer, E. H., et al. (2016). Deception detection with behavioral, autonomic, and neural measures. <em>Psychophysiology</em>, 53(5), 592–599.</li>
+  </ul>
+
+  <div class="footer">
+    Polygraph Suite v8.1 | Developed for professional polygraph assessment<br>
+    All methodological provisions are based on official publications and reference tables of ESS-M and CIT.
+  </div>
+</div>
+</body>
+</html>
