@@ -1139,6 +1139,86 @@ window.ESS_API = (function() {
           }
       });
       return md;
+    },
+
+    // ── Супервізія ────────────────────────────────────────────
+    // Генерує ту саму структуру таблиці (chart-групи, R1(R4)...R4(R8), 5 сенсорів),
+    // що й основна ESS-таблиця, але кожна клітинка містить три піделементи:
+    // поле супервізора (активне), значення поліграфолога (нередаговане), дельта-мітка.
+    // testData — один елемент масиву, який повертає collectState().
+    getSupervisionTableHtml: function(testData, svScores) {
+      if (!testData) return '';
+      svScores = svScores || {};
+
+      var rows = [{ id: 'pneumo-v', label: S.ess_row_pneumo_v }, { id: 'pneumo-n', label: S.ess_row_pneumo_n }, { id: 'eda', label: S.ess_row_eda }, { id: 'cardio', label: S.ess_row_cardio }, { id: 'ppg', label: S.ess_row_ppg }];
+      var formatVal = testData.format || S.ess_format_default;
+      if (!formatConfig[formatVal]) formatVal = S.ess_format_default;
+      var allowedCols = formatConfig[formatVal].cols;
+      var chartToggles = testData.chartToggles || { 4: true, 5: true };
+      var questions = testData.questions || {};
+      var values = testData.values || {};
+
+      function isChartActive(c) {
+        if (c === 4) return chartToggles[4] !== false;
+        if (c === 5) return chartToggles[5] !== false;
+        return true;
+      }
+
+      var html = '<div class="sv-table-responsive"><table class="sv-table">' +
+        '<thead><tr>' +
+          '<th scope="col" class="sv-th-label">' + S.ess_th_channel + '</th>';
+      for (var qc = 1; qc <= 4; qc++) {
+        var qKey = 'R' + qc;
+        var qDisabled = qc > allowedCols ? ' sv-col-disabled' : '';
+        html += '<th scope="col" class="sv-th-question' + qDisabled + '" title="' + escapeHtml(questions[qKey] || '') + '">R' + qc + ' (R' + (qc + 3) + ')</th>';
+      }
+      html += '</tr></thead><tbody>';
+
+      for (var c = 1; c <= 5; c++) {
+        if (!isChartActive(c)) continue;
+        html += '<tr class="sv-chart-row"><td colspan="5">Chart #' + c + '</td></tr>';
+        for (var r = 0; r < rows.length; r++) {
+          html += '<tr><th scope="row" class="sv-row-label">' + rows[r].label + '</th>';
+          for (var col = 1; col <= 4; col++) {
+            if (col > allowedCols) { html += '<td class="sv-col-disabled"></td>'; continue; }
+            var valKey = c + '_' + col + '_' + rows[r].id;
+            var polyVal = values[valKey];
+            var polyDisplay = (polyVal === undefined || polyVal === '') ? '—' : escapeHtml(polyVal);
+            var svKey = c + '_' + col + '_' + rows[r].id;
+            var svVal = svScores[svKey];
+            var svDisplay = (svVal !== undefined) ? escapeHtml(svVal) : '';
+            var isEda = rows[r].id === 'eda';
+            var titleText = isEda ? S.ess_eda_hint : S.ess_std_hint;
+
+            var deltaHtml = '<span class="sv-delta"></span>';
+            if (svVal !== undefined && svVal !== '' && polyVal !== undefined && polyVal !== '') {
+              var svNum = (svVal === 'А' || svVal === 'A') ? null : (svVal === '∅' ? 0 : parseFloat(svVal));
+              var polyNum = (polyVal === 'А' || polyVal === 'A') ? null : (polyVal === '∅' ? 0 : parseFloat(polyVal));
+              if (svNum !== null && polyNum !== null && !isNaN(svNum) && !isNaN(polyNum)) {
+                var d = svNum - polyNum;
+                var dCls = d === 0 ? 'sv-delta-match' : (Math.abs(d) >= 2 ? 'sv-delta-high' : 'sv-delta-low');
+                var dText = d === 0 ? '=' : (d > 0 ? '+' + d : String(d));
+                deltaHtml = '<span class="sv-delta ' + dCls + '">' + dText + '</span>';
+              } else if (svVal === polyVal) {
+                deltaHtml = '<span class="sv-delta sv-delta-match">=</span>';
+              } else {
+                deltaHtml = '<span class="sv-delta sv-delta-high">≠</span>';
+              }
+            }
+
+            html += '<td>' +
+              '<div class="sv-cell">' +
+                '<input type="text" class="sv-score-input" data-key="' + svKey + '" value="' + svDisplay + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="' + titleText + '">' +
+                '<span class="sv-poly-val">' + polyDisplay + '</span>' +
+                deltaHtml +
+              '</div>' +
+            '</td>';
+          }
+          html += '</tr>';
+        }
+      }
+      html += '</tbody></table></div>';
+      return html;
     }
   };
 })();

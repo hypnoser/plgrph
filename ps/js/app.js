@@ -36,7 +36,8 @@ window.APP_API = (function () {
       ess: window.ESS_API ? window.ESS_API.collectState() : [],
       cit: window.CIT_API ? window.CIT_API.collectState() : [],
       notes: notesState.text || '',
-      imagesMeta: notesState.imagesMeta || []
+      imagesMeta: notesState.imagesMeta || [],
+      sv: window.SUPERVISION_API ? window.SUPERVISION_API.collectState() : []
     };
   }
 
@@ -86,6 +87,9 @@ window.APP_API = (function () {
 
     try { if (window.NOTES_API) window.NOTES_API.restoreState({ text: parsed ? (parsed.notes || '') : '', imagesMeta: parsed ? (parsed.imagesMeta || []) : [] }); }
     catch (err) { console.error('loadData Error (NOTES_API):', err); }
+
+    try { if (window.SUPERVISION_API) window.SUPERVISION_API.restoreState(parsed ? (parsed.sv || []) : []); }
+    catch (err) { console.error('loadData Error (SUPERVISION_API):', err); }
   }
 
   function handleJsonLoad(parsed) {
@@ -515,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.ESS_API) window.ESS_API.init();
     if (window.CIT_API) window.CIT_API.init();
     if (window.NOTES_API) window.NOTES_API.init();
+    if (window.SUPERVISION_API) window.SUPERVISION_API.init();
     if (window.APP_API) {
       window.APP_API.init();
       window.APP_API.loadData();
@@ -534,6 +539,10 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.classList.add('active');
       var targetEl = document.getElementById(btn.getAttribute('data-target'));
       if (targetEl) { targetEl.style.display = 'block'; targetEl.classList.add('active'); }
+      // При переході на вкладку супервізії — оновити список тестів свіжими даними ESS
+      if (btn.getAttribute('data-target') === 'tab-supervision' && window.SUPERVISION_API) {
+        window.SUPERVISION_API.refresh();
+      }
       // Автозбереження при перемиканні вкладок
       if (window.APP_API) window.APP_API.performSave();
     });
