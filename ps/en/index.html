@@ -21,6 +21,12 @@
     .auth-step.active { display: block; animation: authFadeIn 0.35s ease; }
     @keyframes authFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .auth-forgot-link { color: #3a7cfd; font-size: 13px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 14px; transition: opacity 0.2s; }
+    .auth-divider { display: flex; align-items: center; text-align: center; margin: 20px 0 16px; color: #b0b8c4; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #e2e8f0; }
+    .auth-divider span { padding: 0 12px; }
+    .auth-no-password-text { font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 14px; text-align: center; }
+    .auth-quiz-cta { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; box-sizing: border-box; padding: 11px 16px; border: 2px solid #3a7cfd; border-radius: 8px; color: #3a7cfd; background: rgba(58,124,253,0.06); font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; }
+    .auth-quiz-cta:hover { background: #3a7cfd; color: #fff; }
     .auth-forgot-link:hover { text-decoration: underline; opacity: 0.85; }
     .auth-quiz-progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
     .auth-quiz-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; transition: all 0.3s ease; }
@@ -70,7 +76,9 @@
         <div id="auth-error" class="auth-error-msg" style="display: none;">
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg> Incorrect password. Please try again.
         </div>
-        <a href="#" id="auth-forgot-link" class="auth-forgot-link"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 20 3M17 6l3 3M15 8l2 2"/></svg> Forgot password?</a>
+        <div class="auth-divider"><span>or</span></div>
+        <p class="auth-no-password-text">No password? Prove you're a polygraph professional — answer 3 professional questions, and the system will give you a login password.</p>
+        <a href="#" id="auth-forgot-link" class="auth-quiz-cta"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 20 3M17 6l3 3M15 8l2 2"/></svg> Answer 3 questions to get a password</a>
         <div style="margin-top: 25px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; font-size: 14px;">
           <a href="info.html" style="color: #3a7cfd; text-decoration: none; font-weight: 600; display:inline-flex; align-items:center; gap:5px;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> About</a>
           <a href="mailto:plgrph@protonmail.com" style="color: #757575; text-decoration: none; font-weight: 600; display:inline-flex; align-items:center; gap:5px;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg> Email</a>
@@ -184,7 +192,7 @@
         </div>
         <div class="ess-date-wrapper">
           <span class="ess-respondent-label"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Date:</span>
-          <input type="date" id="global-exam-date" class="ess-date-input">
+          <input type="date" id="global-exam-date" class="ess-date-input" lang="en">
         </div>
       </div>
     </div>
