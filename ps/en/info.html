@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q7JS2JHVG7');
-</script>
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q7JS2JHVG7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Help | Polygraph Suite v8.1</title>
+  <title>Help | Polygraph Suite v8.4</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -73,6 +72,14 @@
     .lang-switcher-info a:hover { background: #f8fafc; color: var(--primary); }
     .lang-switcher-info a.active { color: #fff; background: var(--primary); border-color: var(--primary); cursor: default; pointer-events: none; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ic { width: 16px; height: 16px; vertical-align: -3px; flex-shrink: 0; }
+    .ic-sm { width: 13px; height: 13px; vertical-align: -2px; flex-shrink: 0; }
+    .ic-lg { width: 40px; height: 40px; flex-shrink: 0; }
+    .kofi-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-muted); background: #fff; text-decoration: none; transition: all .15s; }
+    .kofi-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .kofi-btn .ic { width: 17px; height: 17px; }
+    .donate-block { text-align: center; margin-top: 24px; }
+    .donate-note { font-size: 11px; color: #aaa; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -85,14 +92,14 @@
       <a href="../es/info.html">ES</a>
     </div>
   </div>
-  <h1>Help: Polygraph Suite v8.1</h1>
+  <h1>Help: Polygraph Suite v8.4</h1>
 
   <div class="alert-box">
     <strong>Polygraph Suite</strong> is a comprehensive digital tool for polygraph examiners, designed for mathematical polygram scoring, building statistical matrices, and generating automated reports in accordance with validated methodologies.
   </div>
 
   <div class="new-box">
-    <strong>🆕 What's new in v8.1:</strong> Added full multi-language support — separate Ukrainian, English, and Spanish versions (language switcher at the top of the page). Clarified pneumograph channel names (thoracic / abdominal).
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> What's new in v8.4:</strong> Added full multi-language support — separate Ukrainian, English, and Spanish versions (language switcher at the top of the page). Clarified pneumograph channel names (thoracic / abdominal). Replaced emoji with uniform icons for consistent rendering across all browsers.
   </div>
 
   <!-- ═══ SECTION 1: ESS-M ═══ -->
@@ -147,7 +154,7 @@
     <li>Go to the <strong>ESS-M</strong> tab → click "+ Add ESS-M Calculation".</li>
     <li>Select the <strong>Test Format</strong> (DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah).</li>
     <li>If needed, change the type: <strong>Screening / Diagnostic</strong>.</li>
-    <li>Click <strong>📝 Questions</strong> and enter the texts of relevant questions R1–R4.</li>
+    <li>Click <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Questions</strong> and enter the texts of relevant questions R1–R4.</li>
     <li>Enter scores: Breathing Thoracic/Abdominal (–1, 0, +1), EDA (–2, 0, +2), Cardio/PPG (–1, 0, +1). Symbol <code>A</code> or <code>∅</code> marks an artifact. Press <code>–</code> for quick negative value entry.</li>
     <li>The system automatically calculates subtotals, Grand Total, status, and the probability estimate (Pr).</li>
     <li>Review the <strong>"State Dynamics"</strong> block to assess the trend between presentations.</li>
@@ -181,17 +188,17 @@
 
   <!-- ═══ SECTION 3: NOTES (NEW) ═══ -->
   <h2>3. "Notes" Tab <span class="badge badge-notes">NEW v8.1</span></h2>
-  <p>The <strong>"📝 Notes"</strong> tab is the examiner's workspace for recording unstructured information: observations during testing, behavioral markers, conclusions, and examination context. Notes are tied to a specific examination (examinee), not to an individual test.</p>
+  <p>The <strong>"<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Notes"</strong> tab is the examiner's workspace for recording unstructured information: observations during testing, behavioral markers, conclusions, and examination context. Notes are tied to a specific examination (examinee), not to an individual test.</p>
 
   <h3>3.1. Markdown Editor</h3>
   <p>The editor supports two modes, switched via buttons at the top of the tab:</p>
   <div class="two-col">
     <div class="col-card">
-      <h4>✏️ Edit Mode</h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit Mode</h4>
       <p>A plain text field. Write in Markdown format — the syntax is converted to formatted text when you switch to preview mode.</p>
     </div>
     <div class="col-card">
-      <h4>👁 Preview Mode</h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Preview Mode</h4>
       <p>Markdown is compiled into readable HTML: headings, bold/italic, lists, quotes, code blocks. Supported syntax below.</p>
     </div>
   </div>
@@ -216,14 +223,14 @@
   <h3>3.2. Attaching Images</h3>
   <p>Below the editor is the <strong>"Attached Images"</strong> section. Images are stored in the browser's IndexedDB — a separate storage that is not limited by the localStorage quota.</p>
   <ul>
-    <li><strong>Adding:</strong> "＋ Add Image" button or drag files into the Drag &amp; Drop zone.</li>
+    <li><strong>Adding:</strong> "Add Image" button or drag files into the Drag &amp; Drop zone.</li>
     <li><strong>Formats:</strong> JPG, PNG, WEBP, GIF, BMP — any image.</li>
     <li><strong>Limit:</strong> Up to 20 images of 5 MB each.</li>
     <li><strong>Viewing:</strong> Click on a thumbnail → full-screen lightbox.</li>
     <li><strong>Deleting:</strong> "×" button on the thumbnail on hover.</li>
   </ul>
   <div class="warning-box">
-    <strong>Note:</strong> Images are stored in the browser's IndexedDB. Clearing the browser cache will delete them along with the calculations. Back up regularly using the "📥 Save" button.
+    <strong>Note:</strong> Images are stored in the browser's IndexedDB. Clearing the browser cache will delete them along with the calculations. Back up regularly using the "<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Save" button.
   </div>
 
   <h3>3.3. Where Notes Are Stored</h3>
@@ -235,7 +242,7 @@
     <p><strong>"Zero-Server" architecture:</strong> The application has no server infrastructure. All operations are performed exclusively in the browser on the user's device. No data is transmitted over the network.</p>
 
     <h4>Save and Export Formats</h4>
-    <p>The <strong>"📥 Save"</strong> button now supports two formats depending on whether images are attached:</p>
+    <p>The <strong>"<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Save"</strong> button now supports two formats depending on whether images are attached:</p>
 
     <table class="decision-table" style="background: #fff;">
       <thead><tr><th>Situation</th><th>Action</th><th>Format</th></tr></thead>
@@ -251,8 +258,8 @@
 
     <h4>Import</h4>
     <ul>
-      <li><strong>Open .json:</strong> "📂" button or Drag &amp; Drop — restores calculations and notes. If the file was saved without images, they will not be restored.</li>
-      <li><strong>Open .zip:</strong> "📂" button or Drag &amp; Drop — restores calculations, notes, <strong>and</strong> images (from the <code>images/</code> folder inside the archive).</li>
+      <li><strong>Open .json:</strong> "<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>" button or Drag &amp; Drop — restores calculations and notes. If the file was saved without images, they will not be restored.</li>
+      <li><strong>Open .zip:</strong> "<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>" button or Drag &amp; Drop — restores calculations, notes, <strong>and</strong> images (from the <code>images/</code> folder inside the archive).</li>
     </ul>
 
     <h4>Offline Use</h4>
@@ -268,13 +275,13 @@
 
   <h3>5.1. Global Toolbar</h3>
   <ul>
-    <li><strong>💾 Save</strong> — forces a save to localStorage.</li>
-    <li><strong>📂 Open</strong> — imports <code>.json</code> or <code>.zip</code> from disk or Drag &amp; Drop.</li>
-    <li><strong>📥 Save</strong> — exports <code>.json</code> (without images) or <code>.zip</code> (with images).</li>
-    <li><strong>📝 Export</strong> — generates a Markdown report, including notes.</li>
-    <li><strong>🖨️ Print / PDF</strong> — optimized printing (hidden controls, preserved colors).</li>
-    <li><strong>🗑️ Clear All</strong> — deletes localStorage, IndexedDB (images), and reloads the page.</li>
-    <li><strong>❓ Help</strong> — this page.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Save</strong> — forces a save to localStorage.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg> Open</strong> — imports <code>.json</code> or <code>.zip</code> from disk or Drag &amp; Drop.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Save</strong> — exports <code>.json</code> (without images) or <code>.zip</code> (with images).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Export</strong> — generates a Markdown report, including notes.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg> Print / PDF</strong> — optimized printing (hidden controls, preserved colors).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg> Clear All</strong> — deletes localStorage, IndexedDB (images), and reloads the page.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg> Help</strong> — this page.</li>
   </ul>
 
   <h3>5.2. Tabs</h3>
@@ -288,7 +295,7 @@
       <p>Concealed Information Test. Dynamic Lykken probability matrix.</p>
     </div>
     <div class="col-card green">
-      <h4>📝 Notes <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NEW</span></h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Notes <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NEW</span></h4>
       <p>Markdown editor and attached images for the current examination.</p>
     </div>
   </div>
@@ -305,8 +312,13 @@
     <li>Meijer, E. H., et al. (2016). Deception detection with behavioral, autonomic, and neural measures. <em>Psychophysiology</em>, 53(5), 592–599.</li>
   </ul>
 
+  <div class="donate-block">
+    <a href="https://ko-fi.com/H8F7252W9L" target="_blank" class="kofi-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg> Support the project</a>
+    <div class="donate-note">This service is free. Support helps keep it running.</div>
+  </div>
+
   <div class="footer">
-    Polygraph Suite v8.1 | Developed for professional polygraph assessment<br>
+    Polygraph Suite v8.4 | Developed for professional polygraph assessment<br>
     All methodological provisions are based on official publications and reference tables of ESS-M and CIT.
   </div>
 </div>

@@ -104,7 +104,7 @@ window.NOTES_API = (function () {
           '<div id="notes-lightbox-inner">' +
             '<img id="notes-lightbox-img" src="" alt="">' +
             '<div id="notes-lightbox-caption"></div>' +
-            '<button id="notes-lightbox-close">✕</button>' +
+            '<button id="notes-lightbox-close"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
           '</div>';
         document.body.appendChild(lightbox);
         document.getElementById('notes-lightbox-bg').addEventListener('click', closeLightbox);
@@ -220,7 +220,8 @@ window.NOTES_API = (function () {
       '.notes-thumb{position:relative;border-radius:6px;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .2s;}',
       '.notes-thumb:hover{box-shadow:0 2px 10px rgba(0,0,0,.12);}',
       '.notes-thumb img{width:100%;height:100%;object-fit:cover;display:block;}',
-      '.notes-thumb-placeholder{font-size:36px;opacity:.3;}',
+      '.notes-thumb-placeholder{opacity:.3;display:flex;align-items:center;justify-content:center;}',
+      '.notes-thumb-placeholder svg{width:36px;height:36px;}',
       '.notes-thumb-caption{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
       '.notes-thumb-del{position:absolute;top:3px;right:3px;width:18px;height:18px;font-size:12px;line-height:1;font-weight:900;border-radius:50%;background:rgba(255,0,0,.8);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}',
       '.notes-thumb:hover .notes-thumb-del{opacity:1;}',
@@ -370,7 +371,7 @@ window.NOTES_API = (function () {
           } else {
             var ph = document.createElement('div');
             ph.className = 'notes-thumb-placeholder';
-            ph.textContent = '🖼';
+            ph.innerHTML = '<svg class="ic-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>';
             thumb.appendChild(ph);
           }
           var caption = document.createElement('div');

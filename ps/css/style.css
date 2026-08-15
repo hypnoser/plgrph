@@ -256,3 +256,18 @@ td.col-disabled input.score-input { display: none !important; }
 @media print {
   .ess-block { page-break-inside: avoid !important; break-inside: avoid !important; }
 }
+
+/* ==========================================================================
+   INLINE SVG ІКОНКИ (v8.4) — однаковий вигляд у всіх браузерах
+   ========================================================================== */
+.ic { width: 16px; height: 16px; vertical-align: -3px; flex-shrink: 0; }
+.ic-sm { width: 13px; height: 13px; vertical-align: -2px; flex-shrink: 0; }
+.ic-lg { width: 40px; height: 40px; flex-shrink: 0; }
+.ic-dot { width: 9px; height: 9px; vertical-align: 0; flex-shrink: 0; }
+.ess-toolbar-btn .ic { width: 19px; height: 19px; vertical-align: -4px; }
+.ess-save-status { display: inline-flex; align-items: center; gap: 6px; }
+.kofi-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; color: #666; background: #fff; text-decoration: none; transition: all .15s; }
+.kofi-btn:hover { border-color: #3a7cfd; color: #3a7cfd; }
+.kofi-btn .ic { width: 17px; height: 17px; }
+.donate-block { text-align: center; margin-top: 18px; }
+.donate-note { font-size: 11px; color: #aaa; margin-top: 8px; }

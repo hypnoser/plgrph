@@ -2,17 +2,16 @@
 <html lang="uk">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q7JS2JHVG7');
-</script>
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q7JS2JHVG7');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Довідка | Polygraph Suite v8.1</title>
+  <title>Довідка | Polygraph Suite v8.4</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -73,6 +72,14 @@
     .lang-switcher-info a:hover { background: #f8fafc; color: var(--primary); }
     .lang-switcher-info a.active { color: #fff; background: var(--primary); border-color: var(--primary); cursor: default; pointer-events: none; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ic { width: 16px; height: 16px; vertical-align: -3px; flex-shrink: 0; }
+    .ic-sm { width: 13px; height: 13px; vertical-align: -2px; flex-shrink: 0; }
+    .ic-lg { width: 40px; height: 40px; flex-shrink: 0; }
+    .kofi-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-muted); background: #fff; text-decoration: none; transition: all .15s; }
+    .kofi-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .kofi-btn .ic { width: 17px; height: 17px; }
+    .donate-block { text-align: center; margin-top: 24px; }
+    .donate-note { font-size: 11px; color: #aaa; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -85,14 +92,14 @@
       <a href="es/info.html">ES</a>
     </div>
   </div>
-  <h1>Довідка: Polygraph Suite v8.1</h1>
+  <h1>Довідка: Polygraph Suite v8.4</h1>
 
   <div class="alert-box">
     <strong>Polygraph Suite</strong> — комплексний цифровий інструмент для поліграфологів, призначений для математичного обрахунку поліграм, побудови статистичних матриць та генерації автоматизованих звітів у відповідності до валідованих методик.
   </div>
 
   <div class="new-box">
-    <strong>🆕 Що нового у v8.1:</strong> Додано повноцінну мультимовність — окремі версії українською, англійською та іспанською мовами (перемикач вгорі сторінки). Уточнено назви каналів пневмографії (торакальний / абдомінальний).
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Що нового у v8.4:</strong> Додано повноцінну мультимовність — окремі версії українською, англійською та іспанською мовами (перемикач вгорі сторінки). Уточнено назви каналів пневмографії (торакальний / абдомінальний). Замінено емодзі на однотипні іконки для коректного відображення в усіх браузерах.
   </div>
 
   <!-- ═══ РОЗДІЛ 1: ESS-M ═══ -->
@@ -147,7 +154,7 @@
     <li>Перейдіть на вкладку <strong>ESS-M</strong> → натисніть «+ Додати обрахунок ESS-M».</li>
     <li>Оберіть <strong>Формат тесту</strong> (DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah).</li>
     <li>За потреби змініть тип: <strong>Скринінговий / Діагностичний</strong>.</li>
-    <li>Натисніть <strong>📝 Питання</strong> та введіть тексти релевантних питань R1–R4.</li>
+    <li>Натисніть <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Питання</strong> та введіть тексти релевантних питань R1–R4.</li>
     <li>Введіть бали: Дихання торакальне/абдомінальне (–1, 0, +1), ЕДА (–2, 0, +2), Кардіо/ФПГ (–1, 0, +1). Символ <code>А</code> або <code>∅</code> — артефакт. Клавіша <code>–</code> — швидкий ввід від'ємного значення.</li>
     <li>Система автоматично розраховує subtotals, Grand Total, статус і ймовірнісну оцінку (Pr).</li>
     <li>Аналізуйте блок <strong>«Динаміка стану»</strong> для оцінки тренду між презентаціями.</li>
@@ -181,17 +188,17 @@
 
   <!-- ═══ РОЗДІЛ 3: НОТАТКИ (НОВИЙ) ═══ -->
   <h2>3. Вкладка «Нотатки» <span class="badge badge-notes">NEW v8.1</span></h2>
-  <p>Вкладка <strong>«📝 Нотатки»</strong> — це робочий простір поліграфолога для фіксації неструктурованої інформації: спостережень під час тестування, поведінкових маркерів, висновків, контексту дослідження. Нотатки прив'язані до конкретного дослідження (респондента), а не до окремого тесту.</p>
+  <p>Вкладка <strong>«<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Нотатки»</strong> — це робочий простір поліграфолога для фіксації неструктурованої інформації: спостережень під час тестування, поведінкових маркерів, висновків, контексту дослідження. Нотатки прив'язані до конкретного дослідження (респондента), а не до окремого тесту.</p>
 
   <h3>3.1. Markdown-редактор</h3>
   <p>Редактор підтримує два режими, що перемикаються кнопками у верхній частині вкладки:</p>
   <div class="two-col">
     <div class="col-card">
-      <h4>✏️ Режим редагування</h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Режим редагування</h4>
       <p>Звичайне текстове поле. Пишіть у форматі Markdown — синтаксис перетворюється на форматований текст при переключенні в режим перегляду.</p>
     </div>
     <div class="col-card">
-      <h4>👁 Режим перегляду</h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Режим перегляду</h4>
       <p>Markdown компілюється у читабельний HTML: заголовки, жирний/курсив, списки, цитати, блоки коду. Підтримуваний синтаксис — нижче.</p>
     </div>
   </div>
@@ -216,14 +223,14 @@
   <h3>3.2. Прикріплення зображень</h3>
   <p>Нижче редактора розташована секція <strong>«Прикріплені зображення»</strong>. Зображення зберігаються в IndexedDB браузера — окремому сховищі, що не обмежене квотою localStorage.</p>
   <ul>
-    <li><strong>Додавання:</strong> Кнопка «＋ Додати зображення» або перетягування файлів у зону Drag &amp; Drop.</li>
+    <li><strong>Додавання:</strong> Кнопка «Додати зображення» або перетягування файлів у зону Drag &amp; Drop.</li>
     <li><strong>Формати:</strong> JPG, PNG, WEBP, GIF, BMP — будь-яке зображення.</li>
     <li><strong>Ліміт:</strong> До 20 зображень по 5 МБ кожне.</li>
     <li><strong>Перегляд:</strong> Клік по мініатюрі → повноекранний lightbox.</li>
     <li><strong>Видалення:</strong> Кнопка «×» на мініатюрі при наведенні.</li>
   </ul>
   <div class="warning-box">
-    <strong>Увага:</strong> Зображення зберігаються в IndexedDB браузера. Очищення кешу браузера видалить їх разом із розрахунками. Регулярно робіть резервну копію через кнопку «📥 Зберегти».
+    <strong>Увага:</strong> Зображення зберігаються в IndexedDB браузера. Очищення кешу браузера видалить їх разом із розрахунками. Регулярно робіть резервну копію через кнопку «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Зберегти».
   </div>
 
   <h3>3.3. Де зберігаються нотатки</h3>
@@ -235,7 +242,7 @@
     <p><strong>Архітектура «Zero-Server»:</strong> Додаток не має серверної інфраструктури. Всі операції виконуються виключно в браузері на пристрої користувача. Жодні дані не передаються в мережу.</p>
 
     <h4>Формати збереження та експорту</h4>
-    <p>Кнопка <strong>«📥 Зберегти»</strong> тепер підтримує два формати залежно від наявності прикріплених зображень:</p>
+    <p>Кнопка <strong>«<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Зберегти»</strong> тепер підтримує два формати залежно від наявності прикріплених зображень:</p>
 
     <table class="decision-table" style="background: #fff;">
       <thead><tr><th>Ситуація</th><th>Дія</th><th>Формат</th></tr></thead>
@@ -251,8 +258,8 @@
 
     <h4>Імпорт</h4>
     <ul>
-      <li><strong>Відкрити .json:</strong> Кнопка «📂» або Drag &amp; Drop — відновлює розрахунки та нотатки. Якщо файл був збережений без зображень — вони не відновляться.</li>
-      <li><strong>Відкрити .zip:</strong> Кнопка «📂» або Drag &amp; Drop — відновлює розрахунки, нотатки <strong>і</strong> зображення (з папки <code>images/</code> всередині архіву).</li>
+      <li><strong>Відкрити .json:</strong> Кнопка «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>» або Drag &amp; Drop — відновлює розрахунки та нотатки. Якщо файл був збережений без зображень — вони не відновляться.</li>
+      <li><strong>Відкрити .zip:</strong> Кнопка «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>» або Drag &amp; Drop — відновлює розрахунки, нотатки <strong>і</strong> зображення (з папки <code>images/</code> всередині архіву).</li>
     </ul>
 
     <h4>Офлайн-використання</h4>
@@ -268,13 +275,13 @@
 
   <h3>5.1. Глобальна панель інструментів</h3>
   <ul>
-    <li><strong>💾 Зберегти</strong> — примусове збереження у localStorage.</li>
-    <li><strong>📂 Відкрити</strong> — імпорт <code>.json</code> або <code>.zip</code> з диска або Drag &amp; Drop.</li>
-    <li><strong>📥 Зберегти</strong> — експорт <code>.json</code> (без зображень) або <code>.zip</code> (з зображеннями).</li>
-    <li><strong>📝 Експорт</strong> — генерація Markdown-звіту, включно з нотатками.</li>
-    <li><strong>🖨️ Друк / PDF</strong> — оптимізований друк (приховані елементи керування, збережені кольори).</li>
-    <li><strong>🗑️ Очистити все</strong> — видаляє localStorage, IndexedDB (зображення) і перезавантажує сторінку.</li>
-    <li><strong>❓ Довідка</strong> — ця сторінка.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Зберегти</strong> — примусове збереження у localStorage.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg> Відкрити</strong> — імпорт <code>.json</code> або <code>.zip</code> з диска або Drag &amp; Drop.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Зберегти</strong> — експорт <code>.json</code> (без зображень) або <code>.zip</code> (з зображеннями).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Експорт</strong> — генерація Markdown-звіту, включно з нотатками.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg> Друк / PDF</strong> — оптимізований друк (приховані елементи керування, збережені кольори).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg> Очистити все</strong> — видаляє localStorage, IndexedDB (зображення) і перезавантажує сторінку.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg> Довідка</strong> — ця сторінка.</li>
   </ul>
 
   <h3>5.2. Вкладки</h3>
@@ -288,7 +295,7 @@
       <p>Тест на приховану інформацію. Динамічна ймовірнісна матриця Ліккена.</p>
     </div>
     <div class="col-card green">
-      <h4>📝 Нотатки <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NEW</span></h4>
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Нотатки <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NEW</span></h4>
       <p>Markdown-редактор та прикріплені зображення для поточного дослідження.</p>
     </div>
   </div>
@@ -305,8 +312,13 @@
     <li>Meijer, E. H., et al. (2016). Deception detection with behavioral, autonomic, and neural measures. <em>Psychophysiology</em>, 53(5), 592–599.</li>
   </ul>
 
+  <div class="donate-block">
+    <a href="https://ko-fi.com/H8F7252W9L" target="_blank" class="kofi-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg> Підтримати проєкт</a>
+    <div class="donate-note">Сервіс безкоштовний. Підтримка допомагає його розвивати.</div>
+  </div>
+
   <div class="footer">
-    Polygraph Suite v8.1 | Розроблено для професійного поліграфного оцінювання<br>
+    Polygraph Suite v8.4 | Розроблено для професійного поліграфного оцінювання<br>
     Всі методологічні положення базуються на офіційних публікаціях та референтних таблицях ESS-M та CIT.
   </div>
 </div>

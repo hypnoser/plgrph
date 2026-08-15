@@ -258,11 +258,11 @@ window.ESS_API = (function() {
     }
 
     if (highArtifacts) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ ' + S.ess_artifacts_critical + ':</b> ' + Math.round(testArtPercent*100) + '% ' + S.ess_artifacts_lost_no + '</span>');
+      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_critical + ':</b> ' + Math.round(testArtPercent*100) + '% ' + S.ess_artifacts_lost_no + '</span>');
     } else if (hasAnyNO) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ ' + S.ess_artifacts_critical + ':</b> ' + S.ess_artifacts_spot_no + '</span>');
+      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_critical + ':</b> ' + S.ess_artifacts_spot_no + '</span>');
     } else if (chartDataArray.some(function(d) { return d.hasArtifact; })) {
-      interpLines.push('<span style="color:#ff0000;"><b>⚠️ ' + S.ess_artifacts_present_label + ':</b> ' + S.ess_artifacts_present_desc + '</span>');
+      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_present_label + ':</b> ' + S.ess_artifacts_present_desc + '</span>');
     }
 
     textDiv.innerHTML = "<ul>" + interpLines.map(function(line) { return '<li>' + line + '</li>'; }).join('') + "</ul>";
@@ -509,10 +509,10 @@ window.ESS_API = (function() {
               spanPneumo.textContent = "∅";
               spanPneumo.parentElement.classList.add("bg-artifact");
           } else if (pneumo.partialArt) {
-              spanPneumo.textContent = pneumo.val + " ⚠";
+              spanPneumo.innerHTML = pneumo.val + ' <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
               spanPneumo.parentElement.classList.add("bg-local-artifact");
           } else if (pneumo.conflict) {
-              spanPneumo.innerHTML = '0 <span style="color:#d8832b; font-size:14px; font-weight:bold; cursor:help;" title="' + S.ess_conflict_title + '">&#9888;</span>';
+              spanPneumo.innerHTML = '0 <span style="color:#d8832b; cursor:help;" title="' + S.ess_conflict_title + '"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>';
           } else {
               spanPneumo.textContent = pneumo.val;
           }
@@ -640,7 +640,7 @@ window.ESS_API = (function() {
         grandInfo.cls = "bg-no";
     } else if (hasAnyNO) {
         if (grandInfo.status === "SR") {
-            grandInfo.prob += " (⚠️ NO)";
+            grandInfo.prob += ' (' + S.ess_no_present_suffix + ')';
         } else {
             grandInfo.status = "NO";
             grandInfo.prob = S.ess_blocked_no;
@@ -750,7 +750,7 @@ window.ESS_API = (function() {
 
     tableHtml += '<tr><td rowspan="2" class="total-label">' + S.ess_subtotals_label + '<br>' +
           '<label class="contam-toggle-wrapper" style="display: ' + (typeVal === 'screening' ? 'inline-flex' : 'none') + '; align-items:center; justify-content:flex-end; gap:2px; font-size:9px; margin-top:4px; cursor:pointer; color:#666;">' +
-            '<input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> 🔒 ' + S.ess_contam_label +
+            '<input type="checkbox" class="contam-toggle" checked style="margin:0; width:10px; height:10px; cursor:pointer;"> <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> ' + S.ess_contam_label +
           '</label></td>';
     for (var tc = 1; tc <= 4; tc++) tableHtml += '<td colspan="2" class="status-cell bg-na" data-calc-cell="status" data-col="' + tc + '">-</td>';
     tableHtml += '<td rowspan="2" class="calc-cell" style="background:rgba(0,0,0,0.03); color:#666;">' + S.ess_chart_sum_label + '</td></tr><tr>';

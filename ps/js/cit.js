@@ -147,10 +147,10 @@ window.CIT_API = (function() {
     var scoreValue = testData.score != null ? String(testData.score) : '';
 
     r.innerHTML =
-      '<button class="cit-btn-edit" title="' + S.cit_edit_title + '">⚙</button>' +
+      '<button class="cit-btn-edit" title="' + S.cit_edit_title + '"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-3-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.1-2.9H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.1-3l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 2.9 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.6 2.9 2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/></svg></button>' +
       '<div class="cit-test-info">' +
         '<div style="font-size:11.5px;color:#555;"><b>№<span class="t-num">' + (index + 1) + '</span></b> <span class="cit-theme-text">' + themeText + '</span></div>' +
-        '<div style="font-size:13.5px;font-weight:bold;color:#ff0000;margin-top:2px;">🔑 <span class="cit-key-text">' + escapeHtml(keyText) + '</span></div>' +
+        '<div style="font-size:13.5px;font-weight:bold;color:#ff0000;margin-top:2px;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 20 3M17 6l3 3M15 8l2 2"/></svg> <span class="cit-key-text">' + escapeHtml(keyText) + '</span></div>' +
       '</div>' +
       '<input type="text" class="cit-score" placeholder="-" maxlength="1" value="' + escapeHtml(scoreValue) + '" title="0, 1, 2, А">' +
       '<button class="ess-delete-btn btn-del-row" style="width:28px;height:28px;font-size:18px;margin-left:4px;">×</button>';
