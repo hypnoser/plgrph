@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayuda | Polygraph Suite v8.5</title>
+  <title>Ayuda | Polygraph Suite v8.6</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -93,14 +93,14 @@
       <a href="info.html" class="active">ES</a>
     </div>
   </div>
-  <h1>Ayuda: Polygraph Suite v8.5</h1>
+  <h1>Ayuda: Polygraph Suite v8.6</h1>
 
   <div class="alert-box">
     <strong>Polygraph Suite</strong> es una herramienta digital integral para poligrafistas, diseñada para el cálculo matemático de poligramas, la construcción de matrices estadísticas y la generación de informes automatizados conforme a metodologías validadas.
   </div>
 
   <div class="new-box">
-    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Novedades de la v8.5:</strong> Se añadió la pestaña «Supervisión» para la revisión de puntuaciones ESS-M por un segundo evaluador, con marcas de discrepancia por canal.
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Novedades de la v8.6:</strong> Se rediseñó el cómputo de artefactos — ahora se cuenta por preguntas perdidas en lugar de canales; la pérdida de datos ya no sustituye la decisión SR/NSR por NO. Se amplió el guardado automático.
   </div>
 
   <!-- ═══ SECCIÓN 1: ESS-M ═══ -->
@@ -146,7 +146,7 @@
   </table>
 
   <div class="warning-box">
-    <strong>Artefactos:</strong> Si se pierde ≥25% de los datos dentro de una prueba, esta se clasifica automáticamente como <strong>NO</strong> (Sin Opinión).
+    <strong>Artefactos:</strong> Una marca <code>A</code> o <code>∅</code> significa que el segmento se excluye del análisis (no se puntúa como «respuesta cero») — coherente con la lógica de Lafayette OSS-3, donde un artefacto deja sin determinar si la respuesta observada fue causada por el estímulo. Una pregunta se considera perdida solo si <em>todos</em> sus canales están afectados por artefactos; si al menos un canal está limpio, la pregunta sigue siendo utilizable. Si se pierde <strong>1/3 o más</strong> de las preguntas presentadas, aparece una advertencia con recomendación de examen adicional en el bloque «Dinámica del Estado». La pérdida de datos <strong>no</strong> afecta la clasificación SR/NSR/INC — la decisión se determina únicamente por las matemáticas del ESS-M.
   </div>
 
   <h3>1.4. Instrucciones Paso a Paso: ESS-M</h3>
@@ -353,7 +353,7 @@
   </div>
 
   <div class="footer">
-    Polygraph Suite v8.5 | Desarrollado para la evaluación poligráfica profesional<br>
+    Polygraph Suite v8.6 | Desarrollado para la evaluación poligráfica profesional<br>
     Todas las disposiciones metodológicas se basan en publicaciones oficiales y tablas de referencia del ESS-M y CIT.
   </div>
 </div>

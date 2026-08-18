@@ -156,6 +156,8 @@ window.NOTES_API = (function () {
           state.imagesMeta.push({ id: id, name: file.name, size: file.size, type: file.type, added: new Date().toISOString() });
           renderThumbnails();
           triggerUnsaved();
+          // Явне збереження одразу після додавання зображення
+          if (window.APP_API) window.APP_API.performSave();
         });
       };
       reader.readAsDataURL(file);
@@ -389,6 +391,8 @@ window.NOTES_API = (function () {
                 state.imagesMeta = state.imagesMeta.filter(function(m) { return m.id !== meta.id; });
                 renderThumbnails();
                 triggerUnsaved();
+                // Явне збереження одразу після видалення зображення
+                if (window.APP_API) window.APP_API.performSave();
               });
             }
           });

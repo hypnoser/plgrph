@@ -60,7 +60,7 @@ window.ESS_API = (function() {
     return v === "∅" || v === "а" || v === "a";
   };
 
-  var updateDynamicsChart = function(wrapper, chartDataArray, ce, highArtifacts, testArtPercent, hasAnyNO) {
+  var updateDynamicsChart = function(wrapper, chartDataArray, ce, highArtifacts, spotLossRatio, spotsLost, spotsPresented) {
     var svg = ce.dynamicsSvg;
     var textDiv = ce.dynamicsText;
 
@@ -257,12 +257,21 @@ window.ESS_API = (function() {
       interpLines.push('<b>' + S.ess_dominant_label + ':</b> ' + S.ess_dominant_none);
     }
 
+    var warnIcon = '<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+
     if (highArtifacts) {
-      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_critical + ':</b> ' + Math.round(testArtPercent*100) + '% ' + S.ess_artifacts_lost_no + '</span>');
-    } else if (hasAnyNO) {
-      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_critical + ':</b> ' + S.ess_artifacts_spot_no + '</span>');
+      // Втрачено ≥1/3 пред'явлених питань — рекомендація додаткового дослідження.
+      // На класифікацію SR/NSR/INC це НЕ впливає.
+      interpLines.push('<span style="color:#d32f2f;">' + warnIcon + ' <b>' + S.ess_artifacts_critical + ':</b> ' +
+        S.ess_spots_lost_msg.replace('{lost}', spotsLost).replace('{total}', spotsPresented).replace('{pct}', Math.round(spotLossRatio * 100)) +
+        ' <b>' + S.ess_retest_recommended + '</b></span>');
+    } else if (spotsLost > 0) {
+      // Є повністю втрачені питання, але менше порогу — просто інформуємо
+      interpLines.push('<span style="color:#f57c00;">' + warnIcon + ' <b>' + S.ess_artifacts_present_label + ':</b> ' +
+        S.ess_spots_lost_msg.replace('{lost}', spotsLost).replace('{total}', spotsPresented).replace('{pct}', Math.round(spotLossRatio * 100)) + '</span>');
     } else if (chartDataArray.some(function(d) { return d.hasArtifact; })) {
-      interpLines.push('<span style="color:#ff0000;"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> <b>' + S.ess_artifacts_present_label + ':</b> ' + S.ess_artifacts_present_desc + '</span>');
+      // Локальні артефакти по окремих каналах — питання лишаються придатними
+      interpLines.push('<span style="color:#f57c00;">' + warnIcon + ' <b>' + S.ess_artifacts_present_label + ':</b> ' + S.ess_artifacts_present_desc + '</span>');
     }
 
     textDiv.innerHTML = "<ul>" + interpLines.map(function(line) { return '<li>' + line + '</li>'; }).join('') + "</ul>";
@@ -429,8 +438,9 @@ window.ESS_API = (function() {
     var chartToggle5 = ce.chartToggles.find(function(t) { return t.getAttribute('data-chart') === '5'; });
     var activeCharts = { 1: true, 2: true, 3: true, 4: chartToggle4 ? chartToggle4.checked : true, 5: chartToggle5 ? chartToggle5.checked : true };
 
-    var spotWeightTotal = { 1: 0, 2: 0, 3: 0, 4: 0 };
-    var spotWeightLost = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    // Облік втрат по спотах (питаннях), а не по каналах
+    var spotsPresented = 0; // скільки спотів реально пред'явлено (мають дані)
+    var spotsLost = 0;      // скільки спотів повністю втрачено (всі канали артефактні)
 
     for (var ch = 1; ch <= 5; ch++) {
       var cStr = ch.toString();
@@ -533,13 +543,20 @@ window.ESS_API = (function() {
         setVisualArt('ppg', ppgInfo.art);
 
         if (activeCharts[c] && colHasCurrentData) {
-            var expWeight = usePPGCol[col] ? 5 : 4;
-            spotWeightTotal[col] += expWeight;
+            // Облік ведеться по СПОТАХ (питання в презентації), а не по каналах.
+            // Спот вважається втраченим, лише якщо ВСІ його задіяні канали артефактні —
+            // це відповідає логіці Lafayette OSS-3: артефакт = сегмент виключено з аналізу,
+            // а не «нульова реакція». Часткові артефакти дають 0 по каналу, спот лишається придатним.
+            spotsPresented++;
 
-            if (pneumo.fullArt) spotWeightLost[col] += 1;
-            if (edaInfo.art) spotWeightLost[col] += 2;
-            if (carInfo.art) spotWeightLost[col] += 1;
-            if (usePPGCol[col] && ppgInfo.art) spotWeightLost[col] += 1;
+            var pneumoLost = pneumo.fullArt;
+            var edaLost = edaInfo.art;
+            var carLost = carInfo.art;
+            var ppgLost = usePPGCol[col] ? ppgInfo.art : true; // якщо ФПГ не задіяний — не блокує визнання спота втраченим
+
+            if (pneumoLost && edaLost && carLost && ppgLost) {
+                spotsLost++;
+            }
 
             if (pneumo.fullArt || edaInfo.art || carInfo.art || (usePPGCol[col] && ppgInfo.art)) chartHasArt = true;
 
@@ -568,30 +585,19 @@ window.ESS_API = (function() {
 
     wrapper._cachedDynamics = dynamicsValues;
 
-    var testWeightTotal = 0;
-    var testWeightLost = 0;
     var spotInfos = {}; var hasAnySR = false; var minSpotVal = Infinity; var activeSpotVals = [];
-    var hasAnyNO = false;
 
     for (var sCol = 1; sCol <= 4; sCol++) {
       if (sCol > allowedCols) continue;
       if (!colHasData[sCol]) { spotInfos[sCol] = { status: "N/A", prob: "-", cls: "bg-na" }; continue; }
 
-      testWeightTotal += spotWeightTotal[sCol];
-      testWeightLost += spotWeightLost[sCol];
-
       var sVal = subtotals[sCol]; activeSpotVals.push(sVal);
       if (sVal < minSpotVal) minSpotVal = sVal;
 
+      // Класифікація спота визначається виключно математикою ESS-M.
+      // Втрати даних більше НЕ підміняють висновок на NO — вони йдуть
+      // окремим попередженням у блоці «Динаміка стану».
       var sInfo = getSpotInfo(sVal, currentTestType);
-      var spotArtPercent = spotWeightTotal[sCol] > 0 ? spotWeightLost[sCol] / spotWeightTotal[sCol] : 0;
-
-      if (spotArtPercent >= 0.25) {
-          sInfo.status = "NO";
-          sInfo.prob = S.ess_lost_25;
-          sInfo.cls = "bg-no";
-          hasAnyNO = true;
-      }
 
       spotInfos[sCol] = sInfo;
       if (sInfo.status === "SR") hasAnySR = true;
@@ -623,30 +629,10 @@ window.ESS_API = (function() {
 
     var grandInfo = getGrandProb(grandTotal, activeSpotVals, currentTestType, minSpotVal, hasAnySR);
 
-    if (currentTestType === "screening" && !hasAnySR) {
-        if (hasAnyNO && grandInfo.status !== "NO") {
-             grandInfo.status = "NO";
-             grandInfo.prob = "Spot Rule (NO)";
-             grandInfo.cls = "bg-no";
-        }
-    }
-
-    var testArtPercent = testWeightTotal > 0 ? testWeightLost / testWeightTotal : 0;
-    var highArtifacts = testArtPercent >= 0.25;
-
-    if (highArtifacts && allowedCols > 0) {
-        grandInfo.status = "NO";
-        grandInfo.prob = S.ess_lost_25_test;
-        grandInfo.cls = "bg-no";
-    } else if (hasAnyNO) {
-        if (grandInfo.status === "SR") {
-            grandInfo.prob += ' (' + S.ess_no_present_suffix + ')';
-        } else {
-            grandInfo.status = "NO";
-            grandInfo.prob = S.ess_blocked_no;
-            grandInfo.cls = "bg-no";
-        }
-    }
+    // Частка втрачених спотів (питань) — використовується ЛИШЕ для попередження
+    // в блоці «Динаміка стану», на класифікацію SR/NSR/INC не впливає.
+    var spotLossRatio = spotsPresented > 0 ? spotsLost / spotsPresented : 0;
+    var highArtifacts = spotLossRatio >= (1 / 3);
 
     if (allowedCols === 0) {
         grandInfo = { status: "N/A", prob: S.ess_select_format, cls: "bg-na" };
@@ -668,7 +654,7 @@ window.ESS_API = (function() {
       ce.scaleMarker.style.left = activeSpotVals.length > 0 ? percentage + "%" : "50%";
     }
 
-    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, testArtPercent, hasAnyNO);
+    updateDynamicsChart(wrapper, dynamicsValues, ce, highArtifacts, spotLossRatio, spotsLost, spotsPresented);
   };
 
   var createTestTable = function(savedData) {
@@ -794,7 +780,10 @@ window.ESS_API = (function() {
         var th = wrapper.querySelector('.ess-th-question[data-th-col="' + qKey.replace('R','') + '"]');
         if (th) th.title = escapeHtml(inp.value ? qKey + ": " + inp.value : '');
       });
-      closeModal(); triggerUnsaved();
+      closeModal();
+      triggerUnsaved();
+      // Явне збереження одразу після підтвердження питань
+      if (window.APP_API) window.APP_API.performSave();
     });
 
     wrapper._cachedElements = {

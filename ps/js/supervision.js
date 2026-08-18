@@ -207,6 +207,10 @@ window.SUPERVISION_API = (function () {
         updateCellVisual(inp, key, test, scores);
         renderSummary(test, scores);
       });
+      inp.addEventListener('blur', function () {
+        // Збереження після завершення вводу в клітинку (не на кожен символ)
+        if (window.APP_API) window.APP_API.performSave();
+      });
       inp.addEventListener('keydown', function (e) {
         if (e.key === '-' || e.code === 'Minus' || e.code === 'NumpadSubtract') {
           e.preventDefault();

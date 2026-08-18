@@ -322,6 +322,8 @@ window.CIT_API = (function() {
       calcBlock(block);
       triggerUnsaved();
       closeFn();
+      // Явне збереження одразу після підтвердження питань
+      if (window.APP_API) window.APP_API.performSave();
     });
   }
 
