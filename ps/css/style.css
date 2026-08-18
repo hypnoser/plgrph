@@ -272,3 +272,20 @@ td.col-disabled input.score-input { display: none !important; }
 .donate-block { text-align: center; margin-top: 18px; }
 .donate-note { font-size: 11px; color: #aaa; margin-top: 8px; }
 .offline-note { font-size: 12px; color: #94a3b8; text-align: center; margin: 16px 0 0; line-height: 1.5; }
+
+/* ==========================================================================
+   ПРИЛИПАЮЧИЙ ЗАГОЛОВОК ТАБЛИЦІ ESS-M (v8.7)
+   Заголовок липне до верху вікна, поки видно тіло цієї таблиці, і йде геть
+   разом з нею — position: sticky прив'язаний до .ess-table-responsive
+   (кожної таблиці окремо), тому для наступного тесту працює так само.
+   ========================================================================== */
+.ess-table-responsive { position: relative; }
+.ess-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+}
+@media print {
+  .ess-table thead th { position: static !important; box-shadow: none !important; }
+}
