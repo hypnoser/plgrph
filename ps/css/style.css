@@ -72,7 +72,7 @@ body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont,
 .ess-test-title-area input[type="text"] { flex-grow: 1; min-width: 150px; border: none; border-bottom: 1px solid transparent; background: transparent; font-size: 13px; font-weight: 700; color: inherit; padding: 2px 4px; outline: none; line-height: 1.2; }
 .ess-test-title-area input[type="text"]:focus { border-bottom-color: #3a7cfd; background-color: rgba(128,128,128,0.06); border-radius: 3px 3px 0 0; }
 
-.ess-table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px; border-radius: 4px; }
+.ess-table-responsive { width: 100%; margin-bottom: 8px; border-radius: 4px; }
 .ess-table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; }
 .ess-table th, .ess-table td { border: 1px solid #ccc; padding: 2px; text-align: center; vertical-align: middle; height: 22px; line-height: 1.1; transition: background-color 0.2s; }
 .ess-table th { background-color: rgba(128,128,128,0.15); font-weight: 800; font-size: 12px; color: #222; padding: 4px 2px; }
@@ -215,6 +215,13 @@ td.col-disabled input.score-input { display: none !important; }
   .cit-layout { grid-template-columns: 1fr; }
 }
 
+/* Окремий поріг саме під ширину ESS-таблиці (min-width: 700px + запаси
+   контейнера), а не довільні 650px — щоб не лишати проміжок ширин, де
+   таблиця вже не влазить, а горизонтальна прокрутка ще не увімкнена. */
+@media (max-width: 720px) {
+  .ess-table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
 @media print {
   @page { margin: 1cm; }
   body, html { background: #fff; padding: 0; margin: 0; display: block !important; height: auto !important; }
@@ -285,6 +292,12 @@ td.col-disabled input.score-input { display: none !important; }
   top: 0;
   z-index: 5;
   box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+}
+@media (max-width: 720px) {
+  /* На вузьких екранах ess-table-responsive повертає overflow-x: auto (для
+     горизонтальної прокрутки), а sticky всередині overflow-контейнера не
+     липне до вікна — тому явно вимикаємо, щоб не лишати мовчазну поведінку. */
+  .ess-table thead th { position: static; box-shadow: none; }
 }
 @media print {
   .ess-table thead th { position: static !important; box-shadow: none !important; }
