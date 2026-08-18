@@ -293,7 +293,7 @@ td.col-disabled input.score-input { display: none !important; }
   position: sticky;
   top: 0;
   z-index: 5;
-  box-shadow: 0 2px 0 #999, 0 1px 0 #999, -1px 0 0 #999, 1px 0 0 #999;
+  box-shadow: 0 2px 0 #777, 0 -1px 0 #777, -1px 0 0 #777, 1px 0 0 #777;
 }
 @media (max-width: 720px) {
   /* На вузьких екранах ess-table-responsive повертає overflow-x: auto (для
