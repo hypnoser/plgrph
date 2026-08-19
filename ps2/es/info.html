@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q7JS2JHVG7');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayuda | Polygraph Suite v8.7</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --primary: #3a7cfd;
+      --primary-dark: #2a68e0;
+      --danger: #d32f2f;
+      --success: #2e7d32;
+      --warning: #f57c00;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); line-height: 1.7; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 40px 50px; border-radius: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); min-height: 100vh; }
+    @media (max-width: 768px) { .container { padding: 24px 20px; } }
+    h1 { color: #0f172a; border-bottom: 3px solid var(--primary); padding-bottom: 18px; margin-bottom: 32px; text-align: center; font-size: 1.9em; font-weight: 800; letter-spacing: -0.5px; }
+    h2 { color: var(--primary); margin-top: 44px; margin-bottom: 16px; font-size: 1.35em; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { color: #334155; margin-top: 28px; margin-bottom: 12px; font-size: 1.1em; font-weight: 700; }
+    h4 { color: #475569; margin-top: 18px; margin-bottom: 8px; font-size: 1em; font-weight: 600; }
+    p { margin-bottom: 14px; font-size: 15px; }
+    ul, ol { margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; font-size: 15px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', Monaco, monospace; font-size: 0.9em; color: #334155; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; vertical-align: middle; margin-left: 6px; }
+    .badge-screening { background: #dbeafe; color: #1e40af; }
+    .badge-diagnostic { background: #fef3c7; color: #92400e; }
+    .badge-cit { background: #fce7f3; color: #9d174d; }
+    .badge-notes { background: #f0fdf4; color: #166534; }
+    .alert-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px 22px; margin: 24px 0; border-radius: 0 6px 6px 0; font-size: 15px; }
+    .security-box { background: #f0fdf4; border: 2px solid #10b981; padding: 22px 24px; margin: 28px 0; border-radius: 8px; }
+    .security-box h2 { margin-top: 0; color: #065f46; border-bottom: 1px solid #a7f3d0; }
+    .security-box p, .security-box li { color: #065f46; }
+    .security-box strong { color: #064e3b; }
+    .warning-box { background: #fff7ed; border-left: 4px solid var(--warning); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .danger-box { background: #fef2f2; border-left: 4px solid var(--danger); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .new-box { background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .step-list { list-style: none; padding-left: 0; counter-reset: step-counter; }
+    .step-list > li { position: relative; padding-left: 44px; margin-bottom: 14px; min-height: 32px; }
+    .step-list > li::before { counter-increment: step-counter; content: counter(step-counter); position: absolute; left: 0; top: 2px; width: 28px; height: 28px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 650px) { .two-col, .three-col, .four-col { grid-template-columns: 1fr; } }
+    .col-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+    .col-card h4 { margin-top: 0; color: var(--primary); }
+    .col-card.green h4 { color: #065f46; }
+    .decision-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .decision-table th, .decision-table td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+    .decision-table th { background: #f1f5f9; font-weight: 700; color: #334155; }
+    .decision-table td:first-child { font-weight: 700; white-space: nowrap; }
+    .footer { text-align: center; margin-top: 60px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 24px; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 14px; }
+    .back-link:hover { text-decoration: underline; }
+    .lang-switcher-info { display: flex; gap: 4px; justify-content: flex-end; margin-bottom: 8px; }
+    .lang-switcher-info a { padding: 4px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; text-decoration: none; color: #999; border: 1px solid var(--border); transition: all 0.15s; }
+    .lang-switcher-info a:hover { background: #f8fafc; color: var(--primary); }
+    .lang-switcher-info a.active { color: #fff; background: var(--primary); border-color: var(--primary); cursor: default; pointer-events: none; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ic { width: 16px; height: 16px; vertical-align: -3px; flex-shrink: 0; }
+    .ic-sm { width: 13px; height: 13px; vertical-align: -2px; flex-shrink: 0; }
+    .ic-lg { width: 40px; height: 40px; flex-shrink: 0; }
+    .kofi-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-muted); background: #fff; text-decoration: none; transition: all .15s; }
+    .kofi-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .kofi-btn .ic { width: 17px; height: 17px; }
+    .donate-block { text-align: center; margin-top: 24px; }
+    .donate-note { font-size: 11px; color: #aaa; margin-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <a href="index.html" class="back-link">← Volver a la calculadora</a>
+    <div class="lang-switcher-info">
+      <a href="../info.html">UA</a>
+      <a href="../en/info.html">EN</a>
+      <a href="info.html" class="active">ES</a>
+    </div>
+  </div>
+  <h1>Ayuda: Polygraph Suite v8.7</h1>
+
+  <div class="alert-box">
+    <strong>Polygraph Suite</strong> es una herramienta digital integral para poligrafistas, diseñada para el cálculo matemático de poligramas, la construcción de matrices estadísticas y la generación de informes automatizados conforme a metodologías validadas.
+  </div>
+
+  <div class="new-box">
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Novedades de la v8.7:</strong> El encabezado de la tabla ESS-M ahora se adhiere a la parte superior de la pantalla al desplazarse — los nombres de las preguntas permanecen visibles mientras introduce las puntuaciones.
+  </div>
+
+  <!-- ═══ SECCIÓN 1: ESS-M ═══ -->
+  <h2>1. Metodología Empirical Scoring System — Multinomial (ESS-M)</h2>
+  <p><strong>Empirical Scoring System — Multinomial (ESS-M)</strong> es una actualización del ESS original, publicada en 2017 por Raymond Nelson. El ESS-M aplica un clasificador bayesiano con una distribución multinomial para analizar datos de pruebas de preguntas de comparación (CQT).</p>
+
+  <h3>1.1. Fundamentos Teóricos</h3>
+  <ul>
+    <li><strong>Base empírica:</strong> El ESS es una modificación del sistema federal de puntuación de 3 posiciones, desarrollado a partir de investigaciones de la Universidad de Utah y la Universidad Johns Hopkins.</li>
+    <li><strong>Análisis bayesiano:</strong> El ESS-M utiliza un modelo de decisión bayesiano que combina los datos de la prueba con una probabilidad a priori y una función de verosimilitud para calcular las probabilidades posteriores.</li>
+    <li><strong>Distribución multinomial:</strong> La función de verosimilitud se basa en la teoría analítica de las pruebas poligráficas y describe las probabilidades de todas las combinaciones posibles de puntuaciones de los sensores.</li>
+  </ul>
+
+  <h3>1.2. Principios de Puntuación</h3>
+  <ul>
+    <li><strong>Escala de 3 posiciones:</strong> <code>+1</code> (reacción mayor a la pregunta relevante), <code>-1</code> (reacción mayor a la pregunta de comparación), <code>0</code> (sin diferencia). Regla — <em>«bigger-is-better»</em>.</li>
+    <li><strong>EDA:</strong> Escala extendida: <code>+2</code>, <code>-2</code> o <code>0</code>.</li>
+    <li><strong>Características principales:</strong> EDA, Cardio, FPG, Neumografía (Superior + Inferior).</li>
+    <li><strong>Restricciones de tiempo:</strong> Solo se puntúan las reacciones oportunas (no más de 5 seg. después del estímulo).</li>
+  </ul>
+
+  <h3>1.3. Reglas de Decisión</h3>
+  <h4>Pruebas Diagnósticas</h4>
+  <p class="badge badge-diagnostic">DI / NDI / INC</p>
+  <table class="decision-table">
+    <thead><tr><th>Etapa</th><th>Condición</th><th>Conclusión</th></tr></thead>
+    <tbody>
+      <tr><td>Etapa 1</td><td>Total General ≤ –3 O algún Subtotal ≤ –7</td><td><strong>DI</strong></td></tr>
+      <tr><td>Etapa 2</td><td>Total General ≥ +3</td><td><strong>NDI</strong></td></tr>
+      <tr><td>Otro</td><td>—</td><td><strong>INC</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h4>Pruebas Exploratorias</h4>
+  <p class="badge badge-screening">SR / NSR / INC</p>
+  <table class="decision-table">
+    <thead><tr><th>Etapa</th><th>Condición</th><th>Conclusión</th></tr></thead>
+    <tbody>
+      <tr><td>Etapa 1</td><td>Algún Subtotal ≤ –3</td><td><strong>SR</strong></td></tr>
+      <tr><td>Etapa 2</td><td>Todos los Subtotales ≥ +1</td><td><strong>NSR</strong></td></tr>
+      <tr><td>Otro</td><td>—</td><td><strong>INC</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="warning-box">
+    <strong>Artefactos:</strong> Una marca <code>A</code> o <code>∅</code> significa que el segmento se excluye del análisis (no se puntúa como «respuesta cero») — coherente con la lógica de Lafayette OSS-3, donde un artefacto deja sin determinar si la respuesta observada fue causada por el estímulo. Una pregunta se considera perdida solo si <em>todos</em> sus canales están afectados por artefactos; si al menos un canal está limpio, la pregunta sigue siendo utilizable. Si se pierde <strong>1/3 o más</strong> de las preguntas presentadas, aparece una advertencia con recomendación de examen adicional en el bloque «Dinámica del Estado». La pérdida de datos <strong>no</strong> afecta la clasificación SR/NSR/INC — la decisión se determina únicamente por las matemáticas del ESS-M.
+  </div>
+
+  <h3>1.4. Instrucciones Paso a Paso: ESS-M</h3>
+  <ol class="step-list">
+    <li>Introduzca el nombre completo del examinado y la fecha en el panel superior.</li>
+    <li>Vaya a la pestaña <strong>ESS-M</strong> → haga clic en «+ Añadir Cálculo ESS-M».</li>
+    <li>Seleccione el <strong>Formato de Prueba</strong> (DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah).</li>
+    <li>Si es necesario, cambie el tipo: <strong>Exploratorio / Diagnóstico</strong>.</li>
+    <li>Haga clic en <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Preguntas</strong> e introduzca los textos de las preguntas relevantes R1–R4.</li>
+    <li>Introduzca las puntuaciones: Respiración Torácica/Abdominal (–1, 0, +1), EDA (–2, 0, +2), Cardio/FPG (–1, 0, +1). El símbolo <code>A</code> o <code>∅</code> indica un artefacto. Pulse <code>–</code> para introducir rápidamente un valor negativo.</li>
+    <li>El sistema calcula automáticamente los subtotales, el Total General, el estado y la estimación de probabilidad (Pr).</li>
+    <li>Analice el bloque <strong>«Dinámica del Estado»</strong> para evaluar la tendencia entre presentaciones.</li>
+  </ol>
+
+  <!-- ═══ SECCIÓN 2: CIT ═══ -->
+  <h2>2. Metodología Concealed Information Test (CIT)</h2>
+  <p>El <strong>CIT</strong> (Guilty Knowledge Test) fue propuesto por David Lykken en 1959. Es el único método psicofisiológico debidamente fundamentado por la investigación científica y la teoría de la respuesta de orientación (OR).</p>
+
+  <h3>2.1. Fundamentos Teóricos</h3>
+  <ul>
+    <li><strong>Estructura de estímulos:</strong> Una serie de preguntas de opción múltiple, cada una con una alternativa relevante (Clave) y varias alternativas neutrales (Distractores).</li>
+    <li><strong>Respuesta de orientación:</strong> Los estímulos significativos provocan una OR reforzada. Una reacción sistemáticamente más fuerte ante la Clave → indica conocimiento.</li>
+    <li><strong>Protección probabilística:</strong> La probabilidad de un resultado positivo aleatorio se controla matemáticamente.</li>
+  </ul>
+
+  <h3>2.2. Sistema de Puntuación de Lykken</h3>
+  <ul>
+    <li><strong>2 puntos</strong> — la reacción más grande ante la Clave.</li>
+    <li><strong>1 punto</strong> — la segunda reacción más grande ante la Clave.</li>
+    <li><strong>0 puntos</strong> — la Clave no está entre las dos reacciones más grandes.</li>
+  </ul>
+  <table class="decision-table">
+    <thead><tr><th>Categoría</th><th>Condición</th><th>Interpretación</th></tr></thead>
+    <tbody>
+      <tr><td><strong>RI</strong></td><td>Puntuación ≥ número de pruebas válidas</td><td>Reconocimiento detectado.</td></tr>
+      <tr><td><strong>NRI</strong></td><td>Puntuación &lt; número de pruebas válidas</td><td>No hay signos de reconocimiento.</td></tr>
+      <tr><td><strong>NO</strong></td><td>Pruebas válidas &lt; 3</td><td>Datos insuficientes.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ═══ SECCIÓN 3: NOTAS (NUEVO) ═══ -->
+  <h2>3. Pestaña «Notas» <span class="badge badge-notes">NUEVO v8.1</span></h2>
+  <p>La pestaña <strong>«<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Notas»</strong> es el espacio de trabajo del poligrafista para registrar información no estructurada: observaciones durante la prueba, marcadores conductuales, conclusiones y contexto del examen. Las notas están vinculadas a un examen específico (examinado), no a una prueba individual.</p>
+
+  <h3>3.1. Editor Markdown</h3>
+  <p>El editor admite dos modos, alternables mediante botones en la parte superior de la pestaña:</p>
+  <div class="two-col">
+    <div class="col-card">
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Modo de Edición</h4>
+      <p>Un campo de texto simple. Escriba en formato Markdown — la sintaxis se convierte en texto formateado al cambiar al modo de vista previa.</p>
+    </div>
+    <div class="col-card">
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Modo de Vista Previa</h4>
+      <p>El Markdown se compila en HTML legible: encabezados, negrita/cursiva, listas, citas, bloques de código. Sintaxis admitida a continuación.</p>
+    </div>
+  </div>
+
+  <h4>Sintaxis Markdown Admitida</h4>
+  <table class="decision-table">
+    <thead><tr><th>Sintaxis</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td><code># Encabezado</code></td><td>Encabezado H1</td></tr>
+      <tr><td><code>## Subencabezado</code></td><td>Encabezado H2</td></tr>
+      <tr><td><code>**negrita**</code></td><td><strong>negrita</strong></td></tr>
+      <tr><td><code>*cursiva*</code></td><td><em>cursiva</em></td></tr>
+      <tr><td><code>`código en línea`</code></td><td>código en línea</td></tr>
+      <tr><td><code>``` ... ```</code></td><td>Bloque de código</td></tr>
+      <tr><td><code>- ítem</code></td><td>Lista no ordenada</td></tr>
+      <tr><td><code>1. ítem</code></td><td>Lista numerada</td></tr>
+      <tr><td><code>&gt; cita</code></td><td>Cita</td></tr>
+      <tr><td><code>---</code></td><td>Línea horizontal</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2. Adjuntar Imágenes</h3>
+  <p>Debajo del editor se encuentra la sección <strong>«Imágenes Adjuntas»</strong>. Las imágenes se almacenan en el IndexedDB del navegador — un almacenamiento independiente no limitado por la cuota de localStorage.</p>
+  <ul>
+    <li><strong>Añadir:</strong> Botón «Añadir Imagen» o arrastre archivos a la zona de Arrastrar y Soltar.</li>
+    <li><strong>Formatos:</strong> JPG, PNG, WEBP, GIF, BMP — cualquier imagen.</li>
+    <li><strong>Límite:</strong> Hasta 20 imágenes de 5 MB cada una.</li>
+    <li><strong>Vista previa:</strong> Clic en una miniatura → lightbox a pantalla completa.</li>
+    <li><strong>Eliminación:</strong> Botón «×» en la miniatura al pasar el cursor.</li>
+  </ul>
+  <div class="warning-box">
+    <strong>Atención:</strong> Las imágenes se almacenan en el IndexedDB del navegador. Borrar la caché del navegador las eliminará junto con los cálculos. Realice copias de seguridad regularmente con el botón «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Guardar».
+  </div>
+
+  <h3>3.3. Dónde se Almacenan las Notas</h3>
+  <p>El texto de las notas se almacena como una cadena en <code>localStorage</code>, en el campo <code>notes</code>, junto con el resto de los datos de la sesión. Las imágenes se almacenan en <code>IndexedDB</code>, mientras que en <code>localStorage</code> solo se guardan sus metadatos (nombre, tamaño, fecha).</p>
+
+  <!-- ═══ SECCIÓN 4: SUPERVISIÓN ═══ -->
+  <h2>4. Pestaña «Supervisión» <span class="badge badge-notes">NUEVO v8.5</span></h2>
+  <p>La pestaña <strong>«Supervisión»</strong> está diseñada para un segundo especialista (un supervisor) que revisa las pruebas ESS-M ya completadas por el examinador. La pestaña se ubica por separado a la derecha y funciona con el mismo archivo <code>.json</code> de la sesión — el examinador completa las pruebas normalmente y guarda el archivo, y el supervisor lo abre en su propio dispositivo para realizar la revisión.</p>
+
+  <h3>4.1. Cómo funciona</h3>
+  <ol class="step-list">
+    <li>El examinador completa una o varias pruebas ESS-M y guarda la sesión (<code>.json</code> o <code>.zip</code>).</li>
+    <li>El supervisor abre el mismo archivo en su dispositivo mediante el botón «Abrir».</li>
+    <li>La lista desplegable de la pestaña «Supervisión» muestra solo las pruebas que el examinador realmente ha completado.</li>
+    <li>Para la prueba seleccionada aparece una tabla con la misma estructura que ESS-M (gráficos, R1–R4, canales), pero cada celda contiene tres elementos: el campo de entrada del supervisor, el valor no editable del examinador y una marca de discrepancia.</li>
+    <li>El supervisor introduce su propia puntuación con el mismo formato que ESS-M (–1/0/+1 para la mayoría de los canales, –2/0/+2 para EDA, símbolos <code>A</code>/<code>∅</code> para artefactos).</li>
+  </ol>
+
+  <h3>4.2. Marcas de discrepancia</h3>
+  <table class="decision-table">
+    <thead><tr><th>Marca</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td><code>=</code></td><td>Las puntuaciones del supervisor y del examinador coinciden.</td></tr>
+      <tr><td>±1</td><td>Una discrepancia de un punto — generalmente dentro de la variabilidad normal entre evaluadores.</td></tr>
+      <tr><td>±2 o más</td><td>Una discrepancia significativa — resaltada en rojo, merece atención especial en ese canal.</td></tr>
+      <tr><td><code>≠</code></td><td>Un evaluador marcó la celda como artefacto mientras que el otro introdujo un número.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3. Panel de resumen</h3>
+  <p>Encima de la tabla se muestran tres métricas agregadas para la prueba seleccionada: cuántas celdas ha completado el supervisor, el porcentaje de coincidencia con las puntuaciones del examinador y la discrepancia total. Las métricas se actualizan de inmediato al escribir, sin necesidad de recargar la página.</p>
+
+  <h3>4.4. Dónde se almacenan los datos de supervisión</h3>
+  <p>Las puntuaciones del supervisor se almacenan por separado para cada prueba en el campo <code>sv</code> del archivo de la sesión, junto a <code>ess</code>, <code>cit</code> y <code>notes</code>. Cambiar entre pruebas en la lista desplegable no borra los datos introducidos.</p>
+
+  <!-- ═══ SECCIÓN 5: SEGURIDAD ═══ -->
+  <div class="security-box">
+    <h2>5. Privacidad, Seguridad y Almacenamiento de Datos</h2>
+    <p><strong>Arquitectura «Zero-Server»:</strong> La aplicación no tiene infraestructura de servidor. Todas las operaciones se realizan exclusivamente en el navegador, en el dispositivo del usuario. No se transmite ningún dato a través de la red.</p>
+
+    <h4>Formatos de Guardado y Exportación</h4>
+    <p>El botón <strong>«<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Guardar»</strong> ahora admite dos formatos según si hay imágenes adjuntas:</p>
+
+    <table class="decision-table" style="background: #fff;">
+      <thead><tr><th>Situación</th><th>Acción</th><th>Formato</th></tr></thead>
+      <tbody>
+        <tr><td>Sin imágenes</td><td>Automático</td><td><code>.json</code> — ligero, estado completo de la sesión</td></tr>
+        <tr><td>Con imágenes</td><td>Diálogo de elección</td><td><code>.zip</code> = <code>data.json</code> + carpeta <code>images/</code></td></tr>
+        <tr><td>Con imágenes, solo desea JSON</td><td>Elija «Cancelar» en el diálogo</td><td><code>.json</code> sin imágenes</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Nomenclatura de Archivos</h4>
+    <p>El archivo recibe automáticamente un nombre con el formato: <code>polygraph-suite-Perez_Juan-2026-08-13.json</code> o <code>.zip</code>.</p>
+
+    <h4>Importación</h4>
+    <ul>
+      <li><strong>Abrir .json:</strong> Botón «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>» o Arrastrar y Soltar — restaura los cálculos y las notas. Si el archivo se guardó sin imágenes, estas no se restaurarán.</li>
+      <li><strong>Abrir .zip:</strong> Botón «<svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg>» o Arrastrar y Soltar — restaura los cálculos, las notas <strong>y</strong> las imágenes (desde la carpeta <code>images/</code> dentro del archivo).</li>
+    </ul>
+
+    <h4>Uso sin Conexión</h4>
+    <p>La aplicación es completamente autónoma tras la primera carga. Todas las bibliotecas (JSZip, analizador de Markdown) se incluyen en la distribución como archivos locales — no se utiliza ningún CDN.</p>
+
+    <div class="danger-box" style="margin-top: 16px; margin-bottom: 0;">
+      <strong>Atención:</strong> En el modo de «Navegación Privada» (Incógnito), localStorage e IndexedDB pueden borrarse al cerrar la ventana. Exporte su sesión regularmente.
+    </div>
+  </div>
+
+  <!-- ═══ SECCIÓN 5: INTERFAZ ═══ -->
+  <h2>6. Descripción de la Interfaz</h2>
+
+  <h3>6.1. Barra de Herramientas Global</h3>
+  <ul>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Guardar</strong> — fuerza el guardado en localStorage.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg> Abrir</strong> — importa <code>.json</code> o <code>.zip</code> desde el disco o mediante Arrastrar y Soltar.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg> Guardar</strong> — exporta <code>.json</code> (sin imágenes) o <code>.zip</code> (con imágenes).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg> Exportar</strong> — genera un informe en Markdown, incluidas las notas.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg> Imprimir / PDF</strong> — impresión optimizada (controles ocultos, colores conservados).</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg> Borrar Todo</strong> — elimina localStorage, IndexedDB (imágenes) y recarga la página.</li>
+    <li><strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg> Ayuda</strong> — esta página.</li>
+  </ul>
+
+  <h3>6.2. Pestañas</h3>
+  <div class="four-col">
+    <div class="col-card">
+      <h4>ESS-M</h4>
+      <p>Pruebas de preguntas de comparación (CQT). Formatos: DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah.</p>
+    </div>
+    <div class="col-card">
+      <h4>CIT</h4>
+      <p>Prueba de información oculta. Matriz de probabilidad dinámica de Lykken.</p>
+    </div>
+    <div class="col-card green">
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Notas</h4>
+      <p>Editor Markdown e imágenes adjuntas para el examen actual.</p>
+    </div>
+    <div class="col-card green">
+      <h4><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6.5v5c0 5 3.4 8.7 8 9.5 4.6-.8 8-4.5 8-9.5v-5z"/><path d="m9.5 12 2 2 3.5-4"/></svg> Supervisión <span style="font-size:10px; background:#dcfce7; color:#166534; padding:1px 5px; border-radius:3px;">NUEVO</span></h4>
+      <p>Revisión de puntuaciones ESS-M por un segundo evaluador con marcas de discrepancia.</p>
+    </div>
+  </div>
+
+  <!-- ═══ SECCIÓN 6: REFERENCIAS ═══ -->
+  <h2>7. Fuentes Metodológicas y Referencias</h2>
+  <ul>
+    <li>Nelson, R. (2017). Multinomial reference distributions for the Empirical Scoring System. <em>Polygraph and Forensic Credibility Assessment</em>, 46(2), 81–115.</li>
+    <li>Nelson, R. (2016). Scientific (analytic) theory of polygraph testing. <em>APA Magazine</em>, 49(5), 69–82.</li>
+    <li>Krapohl, D. J. (2010). <em>Reference Guide for the Empirical Scoring System — Multinomial (ESS-M)</em>. Lafayette Instrument Company.</li>
+    <li>Lykken, D. T. (1959). The GSR in the detection of guilt. <em>Journal of Applied Psychology</em>, 43(6), 385–388.</li>
+    <li>Lykken, D. T. (1960). The validity of the guilty knowledge technique. <em>Journal of Applied Psychology</em>, 44(4), 258–262.</li>
+    <li>Verschuere, B., Ben-Shakhar, G., &amp; Meijer, E. (2011). <em>Memory Detection: Theory and Application of the Concealed Information Test</em>. Cambridge University Press.</li>
+    <li>Meijer, E. H., et al. (2016). Deception detection with behavioral, autonomic, and neural measures. <em>Psychophysiology</em>, 53(5), 592–599.</li>
+  </ul>
+
+  <div class="new-box">
+    <h2 style="margin-top:0; border-bottom:none; padding-bottom:0;">Versión sin Conexión</h2>
+    <p>Polygraph Suite funciona en el navegador y no necesita conexión con un servidor para los cálculos, pero la primera carga de la página y sus componentes (fuentes, scripts) sí requieren acceso a internet. Si trabaja en lugares sin conectividad estable — exámenes de campo, instalaciones de acceso restringido, zonas sin cobertura — y desea una calculadora que se abra por completo sin internet, existe una versión autónoma del sitio en forma de archivos que puede ejecutar directamente desde su dispositivo.</p>
+    <p>Para obtener esta versión, envíe una solicitud a <a href="mailto:plgrph@protonmail.com" style="color:#3a7cfd; font-weight:600; text-decoration:none;">plgrph@protonmail.com</a> o por <a href="https://t.me/plgrph_ukr" style="color:#3a7cfd; font-weight:600; text-decoration:none;">Telegram</a> — indique para cuántos dispositivos necesita la versión.</p>
+  </div>
+
+  <div class="donate-block">
+    <a href="https://ko-fi.com/H8F7252W9L" target="_blank" class="kofi-btn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg> Apoyar el proyecto</a>
+    <div class="donate-note">Este servicio es gratuito. Tu apoyo ayuda a mantenerlo.</div>
+  </div>
+
+  <div class="footer">
+    Polygraph Suite v8.7 | Desarrollado para la evaluación poligráfica profesional<br>
+    Todas las disposiciones metodológicas se basan en publicaciones oficiales y tablas de referencia del ESS-M y CIT.
+  </div>
+</div>
+</body>
+</html>
