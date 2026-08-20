@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayuda | Polygraph Suite v8.12</title>
+  <title>Ayuda | Polygraph Suite v9.1</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -95,14 +95,14 @@
       <a href="info.html" class="active">ES</a>
     </div>
   </div>
-  <h1>Ayuda: Polygraph Suite v8.12</h1>
+  <h1>Ayuda: Polygraph Suite v9.1</h1>
 
   <div class="alert-box">
     <strong>Polygraph Suite</strong> es una herramienta digital integral para poligrafistas, diseñada para el cálculo matemático de poligramas, la construcción de matrices estadísticas y la generación de informes automatizados conforme a metodologías validadas.
   </div>
 
   <div class="new-box">
-    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Novedades de la v8.12:</strong> Se eliminó el icono adicional antes del título de la pestaña «R&I».
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Novedades de la v9.1:</strong> Pestaña «R&I»: el número de presentaciones ahora está fijado en 4 (se eliminó la lista desplegable); la presentación 4 se puede ocultar temporalmente con una casilla sin perder datos (igual que en «Supervisión»); se añadieron los botones «Preguntas» (registrar el texto de R1–R5) y «Borrar Datos», siguiendo el patrón de ESS-M; se eliminó el aviso sobre el número fijo de preguntas; se corrigió el salto de línea de «Загальний ранг» / «Grand rank total» / «Rango total general» en la celda de totales.
   </div>
 
   <!-- ═══ SECCIÓN 1: ESS-M ═══ -->
@@ -280,7 +280,7 @@
   </div>
 
   <h3>5.2. Procedimiento de Clasificación</h3>
-  <p>El número de preguntas relevantes es fijo — <strong>5</strong>, y el número de presentaciones varía de <strong>3 a 5</strong>. Para cada uno de los tres canales fisiológicos (P — respiración, E — actividad electrodérmica, C — actividad cardiovascular), se identifican por separado hasta tres reacciones más pronunciadas dentro de cada presentación:</p>
+  <p>El número de preguntas relevantes es fijo — <strong>5</strong>, y el número de presentaciones es fijo — <strong>4</strong>. Para cada uno de los tres canales fisiológicos (P — respiración, E — actividad electrodérmica, C — actividad cardiovascular), se identifican por separado hasta tres reacciones más pronunciadas dentro de cada presentación:</p>
   <ul>
     <li>A la reacción más pronunciada se le asigna el rango <strong>3</strong>, a la segunda más pronunciada — <strong>2</strong>, a la tercera — <strong>1</strong>.</li>
     <li>Si dos reacciones muestran la misma intensidad, ambas reciben el mismo rango.</li>
@@ -288,6 +288,7 @@
     <li>Si no se observa una diferencia notable en la reactividad, el canal no se puntúa (la celda queda en blanco).</li>
   </ul>
   <p>Los rangos de los canales se suman para cada pregunta relevante (SUBTOTALS), y a través de varias presentaciones se suman en un «Rango Total General». En el gráfico de significancia, siempre exactamente tres preguntas con el rango total más alto se resaltan en color (rojo — el más alto, naranja — el segundo, amarillo — el tercero), el resto en gris — incluso cuando varias preguntas comparten la misma puntuación. Las preguntas con rango cero siempre permanecen en gris.</p>
+  <p>El botón <strong>«Preguntas»</strong> abre un formulario para registrar el texto de las preguntas relevantes R1–R5 (solo como referencia, no afecta la puntuación); el texto guardado aparece como una sugerencia al pasar el cursor sobre el encabezado de la columna y sobre la barra del gráfico. El botón <strong>«Borrar Datos»</strong> borra únicamente los rangos introducidos en la tabla — el título de la prueba y el texto de las preguntas se conservan. La presentación 4 se puede ocultar temporalmente con una casilla en su encabezado (igual que los interruptores de gráficos en ESS-M) — los datos ocultos no se eliminan y vuelven a contarse al mostrarse de nuevo; mientras una presentación está oculta, queda excluida del «Rango Total General».</p>
 
   <h3>5.3. Fuentes</h3>
   <ul>
@@ -393,7 +394,7 @@
   </div>
 
   <div class="footer">
-    Polygraph Suite v8.12 | Desarrollado para la evaluación poligráfica profesional<br>
+    Polygraph Suite v9.1 | Desarrollado para la evaluación poligráfica profesional<br>
     Todas las disposiciones metodológicas se basan en publicaciones oficiales y tablas de referencia del ESS-M y CIT.
   </div>
 </div>

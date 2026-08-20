@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Help | Polygraph Suite v8.12</title>
+  <title>Help | Polygraph Suite v9.1</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -95,14 +95,14 @@
       <a href="../es/info.html">ES</a>
     </div>
   </div>
-  <h1>Help: Polygraph Suite v8.12</h1>
+  <h1>Help: Polygraph Suite v9.1</h1>
 
   <div class="alert-box">
     <strong>Polygraph Suite</strong> is a comprehensive digital tool for polygraph examiners, designed for mathematical polygram scoring, building statistical matrices, and generating automated reports in accordance with validated methodologies.
   </div>
 
   <div class="new-box">
-    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> What's new in v8.12:</strong> Removed the extra icon before the "R&I" tab title.
+    <strong><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> What's new in v9.1:</strong> "R&I" tab: the number of presentations is now fixed at 4 (dropdown removed); presentation 4 can be temporarily hidden with a checkbox without losing data (same pattern as "Supervision"); added "Questions" (record the R1–R5 wording) and "Clear Data" buttons, matching ESS-M; removed the fixed-question-count label; fixed the text wrapping of "Загальний ранг" / "Grand rank total" / "Rango total general" in the totals cell.
   </div>
 
   <!-- ═══ SECTION 1: ESS-M ═══ -->
@@ -280,7 +280,7 @@
   </div>
 
   <h3>5.2. Ranking Procedure</h3>
-  <p>The number of relevant questions is fixed at <strong>5</strong>, and the number of presentations ranges from <strong>3 to 5</strong>. For each of the three physiological channels (P — respiration, E — electrodermal activity, C — cardiovascular activity), up to three most pronounced reactions are identified separately within each presentation:</p>
+  <p>The number of relevant questions is fixed at <strong>5</strong>, and the number of presentations is fixed at <strong>4</strong>. For each of the three physiological channels (P — respiration, E — electrodermal activity, C — cardiovascular activity), up to three most pronounced reactions are identified separately within each presentation:</p>
   <ul>
     <li>The most pronounced reaction is assigned rank <strong>3</strong>, the second most pronounced — <strong>2</strong>, the third — <strong>1</strong>.</li>
     <li>If two reactions show equal intensity, both receive the same rank.</li>
@@ -288,6 +288,7 @@
     <li>If no noticeable difference in reactivity is observed, the channel is not scored (the cell remains blank).</li>
   </ul>
   <p>Ranks across channels are summed for each relevant question (SUBTOTALS), and across multiple presentations they are added into a "Grand Rank Total." On the significance chart, exactly three questions with the highest grand total are always highlighted in color (red — highest, orange — second, yellow — third), the rest in gray — even when several questions share the same score. Questions with a zero rank always stay gray.</p>
+  <p>The <strong>"Questions"</strong> button opens a form to record the wording of relevant questions R1–R5 (for reference only, it does not affect scoring); the saved text appears as a tooltip on the column header and on the chart bar. The <strong>"Clear Data"</strong> button clears only the ranks entered in the table — the test title and question texts are preserved. Presentation 4 can be temporarily hidden with a checkbox in its header (same pattern as the chart toggles in ESS-M) — hidden data is not deleted and is counted again once shown; while a presentation is hidden it is excluded from the "Grand Rank Total."</p>
 
   <h3>5.3. Sources</h3>
   <ul>
@@ -393,7 +394,7 @@
   </div>
 
   <div class="footer">
-    Polygraph Suite v8.12 | Developed for professional polygraph assessment<br>
+    Polygraph Suite v9.1 | Developed for professional polygraph assessment<br>
     All methodological provisions are based on official publications and reference tables of ESS-M and CIT.
   </div>
 </div>

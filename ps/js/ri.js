@@ -9,20 +9,22 @@
 // яке(і) релевантне(і) питання найзначущіші для подальшого уточнюючого дослідження.
 //
 // Архітектура: масив незалежних тестів (за зразком ESS_API) — кожен тест має власну
-// назву, кількість пред'явлень (3-5), таблицю рангів і графік значущості питань.
+// назву, фіксовану таблицю рангів (4 пред'явлення, 4-те можна приховати без втрати
+// даних — за зразком chart-toggle в ESS-M), редаговані тексти питань (модалка, як в
+// ESS-M) і графік значущості питань.
 
 window.RI_API = (function () {
   'use strict';
   var S = window.STRINGS;
 
-  var QUESTIONS = 5; // фіксовано за методикою FROSS
-  var MIN_PRES = 3, MAX_PRES = 5;
+  var QUESTIONS = 5; // фіксовано за методикою FROSS (внутрішня константа, не показується в UI)
+  var PRESENTATIONS = 4; // фіксовано за рішенням користувача
   var CHANNELS = [
     { id: 'p', label: 'P' },
     { id: 'e', label: 'E' },
     { id: 'c', label: 'C' }
   ];
-  var BAR_COLORS = ['#e24b4a', '#eda100', '#f0c419']; // топ-1, топ-2, топ-3 за унікальним значенням
+  var BAR_COLORS = ['#e24b4a', '#eda100', '#f0c419']; // топ-1, топ-2, топ-3 за позицією
   var BAR_COLOR_DEFAULT = '#b4b2a9';
 
   var appRoot, testsContainer, addBtnBottom;
@@ -31,6 +33,13 @@ window.RI_API = (function () {
   var triggerUnsaved = function () { if (window.APP_API) window.APP_API.markUnsaved(); };
   var performSave = function () { if (window.APP_API) window.APP_API.performSave(); };
 
+  var escapeHtml = function (str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/[&<>"']/g, function (m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  };
+
   function sanitizeRank(val) {
     val = val.trim();
     if (val === '' || val === '0' || val === '1' || val === '2' || val === '3') return val;
@@ -38,6 +47,12 @@ window.RI_API = (function () {
   }
 
   function key(presIdx, chId, qIdx) { return presIdx + '_' + chId + '_' + qIdx; }
+
+  function isPresActive(wrapper, presIdx) {
+    if (presIdx !== PRESENTATIONS - 1) return true; // 0..2 завжди активні, лише останнє (idx 3) можна приховати
+    var toggle = wrapper.querySelector('.ri-pres-toggle');
+    return toggle ? toggle.checked : true;
+  }
 
   // ── Підрахунок SUBTOTALS/Grand Total для одного тесту (працює з живим DOM) ──
   function computeSubtotals(wrapper, presIdx) {
@@ -52,9 +67,11 @@ window.RI_API = (function () {
     return totals;
   }
 
-  function computeGrandTotals(wrapper, numPresentations) {
+  // Grand Total враховує лише активні (не приховані) пред'явлення.
+  function computeGrandTotals(wrapper) {
     var grand = [0, 0, 0, 0, 0];
-    for (var p = 0; p < numPresentations; p++) {
+    for (var p = 0; p < PRESENTATIONS; p++) {
+      if (!isPresActive(wrapper, p)) continue;
       computeSubtotals(wrapper, p).forEach(function (v, i) { grand[i] += v; });
     }
     return grand;
@@ -72,6 +89,7 @@ window.RI_API = (function () {
     var maxV = Math.max.apply(null, grand);
     var hasAny = grand.some(function (v) { return v > 0; });
 
+    var questions = wrapper._riQuestions || {};
     var indexed = grand.map(function (v, i) { return { q: i + 1, val: v }; });
     indexed.sort(function (a, b) { return b.val - a.val; });
 
@@ -86,7 +104,9 @@ window.RI_API = (function () {
     indexed.forEach(function (item, pos) {
       var h = maxV > 0 ? Math.round((item.val / maxV) * 90) + 10 : 10;
       var color = item.val === 0 ? BAR_COLOR_DEFAULT : colorForPosition(pos);
-      html += '<div class="ri-bar-col">' +
+      var qText = questions['R' + item.q] || '';
+      var titleAttr = qText ? ' title="R' + item.q + ': ' + escapeHtml(qText) + '"' : '';
+      html += '<div class="ri-bar-col"' + titleAttr + '>' +
         '<span class="ri-bar-val">' + item.val + '</span>' +
         '<div class="ri-bar" style="height:' + h + 'px;background:' + color + '"></div>' +
         '<span class="ri-bar-label">R' + item.q + '</span>' +
@@ -115,21 +135,28 @@ window.RI_API = (function () {
     el.innerHTML = text;
   }
 
-  // ── Рендер таблиці рангів для одного тесту ─────────────────
-  function renderTable(wrapper, numPresentations, savedScores) {
+  // ── Рендер таблиці рангів для одного тесту (будується один раз) ─────────────
+  function renderTable(wrapper, savedScores) {
     var tableWrap = wrapper.querySelector('.ri-table-wrap');
     var scores = wrapper._riScores || savedScores || {};
     wrapper._riScores = scores;
 
     var html = '<div class="ri-table-responsive"><table class="ri-table"><thead><tr>' +
       '<th scope="col" class="ri-th-label">FROSS</th>';
-    for (var q = 1; q <= QUESTIONS; q++) html += '<th scope="col">R' + q + '</th>';
+    for (var q = 1; q <= QUESTIONS; q++) html += '<th scope="col" class="ri-th-question" data-th-col="' + q + '">R' + q + '</th>';
     html += '</tr></thead><tbody>';
 
-    for (var p = 0; p < numPresentations; p++) {
-      html += '<tr class="ri-pres-row"><td colspan="' + (QUESTIONS + 1) + '">' + S.ri_presentation + ' №' + (p + 1) + '</td></tr>';
+    for (var p = 0; p < PRESENTATIONS; p++) {
+      var isLast = (p === PRESENTATIONS - 1);
+      html += '<tr class="ri-pres-row" data-pres-group="' + p + '"><td colspan="' + (QUESTIONS + 1) + '">';
+      if (isLast) {
+        html += '<label class="chart-toggle-label ri-pres-toggle-label"><input type="checkbox" class="ri-pres-toggle" checked> ' + S.ri_presentation + ' №' + (p + 1) + '</label>';
+      } else {
+        html += S.ri_presentation + ' №' + (p + 1);
+      }
+      html += '</td></tr>';
       CHANNELS.forEach(function (ch) {
-        html += '<tr><th scope="row" class="ri-row-label">' + ch.label + '</th>';
+        html += '<tr data-pres-group="' + p + '"><th scope="row" class="ri-row-label">' + ch.label + '</th>';
         for (var q = 0; q < QUESTIONS; q++) {
           var k = key(p, ch.id, q);
           var v = scores[k] || '';
@@ -137,20 +164,22 @@ window.RI_API = (function () {
         }
         html += '</tr>';
       });
-      html += '<tr class="ri-sub-row" data-pres="' + p + '"><th scope="row" class="ri-row-label">SUBTOTALS</th>';
+      html += '<tr class="ri-sub-row" data-pres-group="' + p + '" data-pres="' + p + '"><th scope="row" class="ri-row-label">SUBTOTALS</th>';
       for (var sc = 0; sc < QUESTIONS; sc++) html += '<td></td>';
       html += '</tr>';
     }
 
-    html += '<tr class="ri-grand-row"><th scope="row" class="ri-row-label">' + S.ri_grand_total + '</th>';
+    html += '<tr class="ri-grand-row"><th scope="row" class="ri-row-label ri-grand-row-label">' + S.ri_grand_total_l1 + '<br>' + S.ri_grand_total_l2 + '</th>';
     for (var g = 0; g < QUESTIONS; g++) html += '<td></td>';
     html += '</tr>';
 
     html += '</tbody></table></div>';
     tableWrap.innerHTML = html;
 
+    applyQuestionTitles(wrapper);
+
     // Заповнюємо SUBTOTALS/Grand Total і навішуємо обробники
-    updateAll(wrapper, numPresentations);
+    updateAll(wrapper);
 
     tableWrap.querySelectorAll('.ri-rank-input').forEach(function (inp) {
       inp.addEventListener('input', function (e) {
@@ -160,15 +189,47 @@ window.RI_API = (function () {
         try { e.target.setSelectionRange(caretPos, caretPos); } catch (err) {}
         scores[inp.getAttribute('data-key')] = clean;
         triggerUnsaved();
-        updateAll(wrapper, numPresentations);
+        updateAll(wrapper);
       });
       inp.addEventListener('blur', performSave);
+    });
+
+    var presToggle = tableWrap.querySelector('.ri-pres-toggle');
+    if (presToggle) {
+      presToggle.addEventListener('change', function () {
+        applyPresVisibility(wrapper);
+        triggerUnsaved();
+        updateAll(wrapper);
+        performSave();
+      });
+    }
+    applyPresVisibility(wrapper);
+  }
+
+  // Приховує/показує рядки 4-го пред'явлення (дані лишаються в scores, лише DOM ховається).
+  function applyPresVisibility(wrapper) {
+    var lastIdx = PRESENTATIONS - 1;
+    var active = isPresActive(wrapper, lastIdx);
+    wrapper.querySelectorAll('[data-pres-group="' + lastIdx + '"]').forEach(function (row) {
+      // Сам рядок-заголовок з чекбоксом лишається видимим завжди — ховаються лише рядки з даними.
+      if (row.classList.contains('ri-pres-row')) return;
+      row.style.display = active ? '' : 'none';
+    });
+  }
+
+  // Підставляє текст питання як title у заголовки колонок таблиці.
+  function applyQuestionTitles(wrapper) {
+    var questions = wrapper._riQuestions || {};
+    wrapper.querySelectorAll('.ri-th-question').forEach(function (th) {
+      var col = th.getAttribute('data-th-col');
+      var qText = questions['R' + col] || '';
+      th.title = qText ? ('R' + col + ': ' + qText) : '';
     });
   }
 
   // ── Point-update: перераховує SUBTOTALS/Grand Total/графік/висновок без перебудови DOM ──
-  function updateAll(wrapper, numPresentations) {
-    for (var p = 0; p < numPresentations; p++) {
+  function updateAll(wrapper) {
+    for (var p = 0; p < PRESENTATIONS; p++) {
       var sub = computeSubtotals(wrapper, p);
       var row = wrapper.querySelector('.ri-sub-row[data-pres="' + p + '"]');
       if (row) {
@@ -176,7 +237,7 @@ window.RI_API = (function () {
         sub.forEach(function (v, i) { if (cells[i]) cells[i].textContent = v || ''; });
       }
     }
-    var grand = computeGrandTotals(wrapper, numPresentations);
+    var grand = computeGrandTotals(wrapper);
     var maxVal = Math.max.apply(null, grand);
     var hasAny = grand.some(function (v) { return v > 0; });
     var grandRow = wrapper.querySelector('.ri-grand-row');
@@ -195,31 +256,25 @@ window.RI_API = (function () {
   // ── Створення одного тестового блоку ───────────────────────
   function createTest(data) {
     testCounter++;
+    var uid = Math.random().toString(36).substr(2, 9);
     var wrapper = document.createElement('div');
     wrapper.className = 'ri-test-wrapper';
 
-    var numPresentations = (data && data.numPresentations >= MIN_PRES && data.numPresentations <= MAX_PRES) ? data.numPresentations : 4;
     var titleVal = data && data.title ? data.title : '';
     var savedScores = data && data.scores ? data.scores : {};
+    var savedQuestions = (data && data.questions) ? data.questions : {};
+    var hideP4 = !!(data && data.hideP4);
+
+    wrapper._riQuestions = savedQuestions;
 
     wrapper.innerHTML =
       '<div class="ri-test-top-bar">' +
-        '<div class="ri-test-title-area">' +
-          '<span class="ri-test-num-label">' + S.test_num + testCounter + ':</span>' +
-          '<input type="text" class="ri-title-input" placeholder="' + S.ri_test_title_placeholder + '" value="' + titleVal + '">' +
-        '</div>' +
-        '<button class="ri-delete-btn" title="' + S.ess_delete_test_title + '">×</button>' +
-      '</div>' +
-      '<div class="ri-toolbar">' +
-        '<div class="ri-toolbar-group">' +
-          '<label>' + S.ri_questions_label + '</label><span style="font-size:13px;font-weight:700;">' + QUESTIONS + '</span><span class="ri-hint">(' + S.ri_questions_fixed_hint + ')</span>' +
-        '</div>' +
-        '<div class="ri-toolbar-group">' +
-          '<label>' + S.ri_presentations_label + '</label>' +
-          '<select class="ri-pres-select">' +
-            [3, 4, 5].map(function (n) { return '<option value="' + n + '"' + (n === numPresentations ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
-          '</select>' +
-          '<span class="ri-hint">(' + MIN_PRES + '-' + MAX_PRES + ')</span>' +
+        '<span class="ri-test-num-label">' + S.test_num + testCounter + ':</span>' +
+        '<input type="text" class="ri-title-input" placeholder="' + S.ri_test_title_placeholder + '" value="' + escapeHtml(titleVal) + '">' +
+        '<div class="ri-top-bar-right">' +
+          '<button class="ess-btn ri-questions-btn" title="' + S.btn_questions_title + '">' + S.btn_questions + '</button>' +
+          '<button class="ess-btn ess-clear-btn ri-clear-btn" title="' + S.ri_clear_table_title + '">' + S.btn_clear_data + '</button>' +
+          '<button class="ess-btn ess-delete-btn ri-delete-btn" title="' + S.ess_delete_test_title + '">×</button>' +
         '</div>' +
       '</div>' +
       '<div class="ri-table-wrap"></div>' +
@@ -227,20 +282,26 @@ window.RI_API = (function () {
         '<div class="ri-chart-title">' + S.ri_chart_title + '</div>' +
         '<div class="ri-chart"></div>' +
       '</div>' +
-      '<div class="ri-conclusion-box"><span class="ri-conclusion"></span></div>';
+      '<div class="ri-conclusion-box"><span class="ri-conclusion"></span></div>' +
+      '<div class="ess-modal-overlay ri-modal-overlay"><div class="ess-modal"><div class="ess-modal-header"><h3>' + S.ess_questions_modal_title + testCounter + '</h3><button class="ess-modal-close">&times;</button></div>' +
+        '<div class="ess-modal-body">' +
+          '<label>R1: <input type="text" class="ri-question-input" data-q="R1" value="' + escapeHtml(savedQuestions.R1 || '') + '" autocomplete="off"></label>' +
+          '<label>R2: <input type="text" class="ri-question-input" data-q="R2" value="' + escapeHtml(savedQuestions.R2 || '') + '" autocomplete="off"></label>' +
+          '<label>R3: <input type="text" class="ri-question-input" data-q="R3" value="' + escapeHtml(savedQuestions.R3 || '') + '" autocomplete="off"></label>' +
+          '<label>R4: <input type="text" class="ri-question-input" data-q="R4" value="' + escapeHtml(savedQuestions.R4 || '') + '" autocomplete="off"></label>' +
+          '<label>R5: <input type="text" class="ri-question-input" data-q="R5" value="' + escapeHtml(savedQuestions.R5 || '') + '" autocomplete="off"></label>' +
+        '</div><div class="ess-modal-footer"><button class="ess-btn ess-modal-save">' + S.modal_save + '</button><button class="ess-btn ess-modal-cancel">' + S.modal_cancel + '</button></div></div></div>';
 
-    wrapper._riNumPresentations = numPresentations;
-    renderTable(wrapper, numPresentations, savedScores);
+    renderTable(wrapper, savedScores);
+
+    // Застосовуємо збережений стан галочки приховування 4-го пред'явлення (після рендеру таблиці).
+    if (hideP4) {
+      var pt = wrapper.querySelector('.ri-pres-toggle');
+      if (pt) { pt.checked = false; applyPresVisibility(wrapper); updateAll(wrapper); }
+    }
 
     wrapper.querySelector('.ri-title-input').addEventListener('input', triggerUnsaved);
     wrapper.querySelector('.ri-title-input').addEventListener('blur', performSave);
-
-    wrapper.querySelector('.ri-pres-select').addEventListener('change', function (e) {
-      wrapper._riNumPresentations = parseInt(e.target.value, 10);
-      triggerUnsaved();
-      renderTable(wrapper, wrapper._riNumPresentations, wrapper._riScores);
-      performSave();
-    });
 
     wrapper.querySelector('.ri-delete-btn').addEventListener('click', function () {
       if (confirm(S.ess_confirm_delete_test)) {
@@ -248,6 +309,38 @@ window.RI_API = (function () {
         triggerUnsaved();
         performSave();
       }
+    });
+
+    // ── Кнопка очищення даних: чистить лише ранги (не назву тесту, не тексти питань) ──
+    wrapper.querySelector('.ri-clear-btn').addEventListener('click', function () {
+      if (confirm(S.ri_confirm_clear_table)) {
+        wrapper.querySelectorAll('.ri-rank-input').forEach(function (i) { i.value = ''; });
+        wrapper._riScores = {};
+        triggerUnsaved();
+        updateAll(wrapper);
+        performSave();
+      }
+    });
+
+    // ── Модалка «Питання»: за зразком ESS-M ──
+    var modalOverlay = wrapper.querySelector('.ri-modal-overlay');
+    wrapper.querySelector('.ri-questions-btn').addEventListener('click', function () { modalOverlay.classList.add('active'); });
+    var closeModal = function () { modalOverlay.classList.remove('active'); };
+    wrapper.querySelector('.ess-modal-close').addEventListener('click', closeModal);
+    wrapper.querySelector('.ess-modal-cancel').addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function (e) { if (e.target === modalOverlay) closeModal(); });
+
+    wrapper.querySelector('.ess-modal-save').addEventListener('click', function () {
+      var q = {};
+      wrapper.querySelectorAll('.ri-question-input').forEach(function (inp) {
+        q[inp.getAttribute('data-q')] = inp.value;
+      });
+      wrapper._riQuestions = q;
+      applyQuestionTitles(wrapper);
+      renderChart(wrapper, computeGrandTotals(wrapper));
+      closeModal();
+      triggerUnsaved();
+      performSave();
     });
 
     testsContainer.appendChild(wrapper);
@@ -262,25 +355,23 @@ window.RI_API = (function () {
     style.textContent = [
       '.ri-module-container{max-width:880px;margin:0 auto;width:100%;padding-bottom:20px;}',
       '.ri-test-wrapper{margin-bottom:15px;border:1px solid #ccc;padding:8px 12px;border-radius:6px;background-color:#fff;width:100%;}',
-      '.ri-test-top-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}',
-      '.ri-test-title-area{display:flex;align-items:baseline;width:100%;margin-bottom:6px;font-size:13px;font-weight:700;flex-wrap:wrap;}',
-      '.ri-test-num-label{font-size:12px;color:#666;margin-right:6px;}',
-      '.ri-title-input{flex-grow:1;min-width:150px;border:none;border-bottom:1px solid transparent;background:transparent;font-size:13px;font-weight:700;color:inherit;padding:2px 4px;outline:none;line-height:1.2;}',
+      '.ri-test-top-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;border-bottom:1px dashed #ccc;padding-bottom:10px;flex-wrap:wrap;}',
+      '.ri-test-num-label{font-size:12px;color:#666;flex-shrink:0;}',
+      '.ri-title-input{flex:1;min-width:150px;border:none;border-bottom:1px solid transparent;background:transparent;font-size:15px;font-weight:700;color:#222;padding:2px 4px;outline:none;line-height:1.2;}',
       '.ri-title-input:focus{border-bottom-color:#3a7cfd;background-color:rgba(128,128,128,.06);border-radius:3px 3px 0 0;}',
-      '.ri-delete-btn{font-size:16px;font-weight:bold;color:#ff0000;background:rgba(255,0,0,.1);border:1px solid #ff0000;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;}',
+      '.ri-top-bar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;}',
+      '.ri-delete-btn{font-size:16px;font-weight:bold;color:#ff0000;background:rgba(255,0,0,.1);border:1px solid #ff0000;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;margin:0;}',
       '.ri-delete-btn:hover{background-color:#ff0000;color:#fff;}',
-      '.ri-toolbar{display:flex;align-items:center;gap:16px;margin-bottom:10px;flex-wrap:wrap;}',
-      '.ri-toolbar-group{display:flex;align-items:center;gap:6px;}',
-      '.ri-toolbar label{font-size:12px;font-weight:600;color:#555;}',
-      '.ri-toolbar select{min-width:50px;font-size:12px;padding:2px 4px;}',
-      '.ri-hint{font-size:10.5px;color:#999;}',
       '.ri-table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px;background:#fff;border:1px solid #ccc;margin-bottom:10px;position:relative;}',
       '.ri-table{width:100%;min-width:480px;border-collapse:collapse;table-layout:fixed;}',
       '.ri-table th,.ri-table td{border:1px solid #888;padding:2px;text-align:center;vertical-align:middle;height:24px;}',
       '.ri-table thead th{position:sticky;top:0;z-index:5;background:#e0e0e0;font-weight:800;font-size:12px;color:#222;padding:4px 2px;border-bottom-color:transparent;box-shadow:inset 0 -1px 0 #888;}',
       '.ri-th-label{width:16%;}',
       '.ri-row-label{text-align:left;padding-left:8px;font-weight:normal;font-size:11px;white-space:nowrap;background:rgba(128,128,128,.04);}',
+      '.ri-grand-row-label{white-space:normal;line-height:1.2;padding-top:4px;padding-bottom:4px;}',
       '.ri-pres-row td{text-align:left;font-weight:600;font-size:11px;background:rgba(58,124,253,.06);color:#3a7cfd;padding:4px 8px;}',
+      '.ri-pres-toggle-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}',
+      '.ri-pres-toggle-label input{cursor:pointer;margin:0;width:12px;height:12px;}',
       '.ri-sub-row td{font-weight:600;background:rgba(128,128,128,.08);font-size:12px;}',
       '.ri-grand-row td,.ri-grand-row th{font-weight:800;background:rgba(58,124,253,.1);font-size:15px;color:#222;}',
       '.ri-rank-input{width:24px;height:22px;text-align:center;padding:0;font-size:12px;font-weight:700;border:1px solid #bbb;border-radius:3px;outline:none;font-family:inherit;}',
@@ -298,7 +389,7 @@ window.RI_API = (function () {
       '.ri-add-btn{color:#fff;background-color:#3a7cfd;display:block;width:100%;margin-top:15px;padding:8px 0;font-size:13px;text-align:center;border:none;border-radius:5px;cursor:pointer;font-weight:bold;transition:background .2s;}',
       '.ri-add-btn:hover{background-color:#2a68e0;}',
       '@media (max-width:720px){.ri-table-responsive{overflow-x:auto;}.ri-table thead th{position:static;box-shadow:none;}}',
-      '@media print{.ri-toolbar,.ri-delete-btn,.ri-add-btn{display:none!important;}.ri-table thead th{position:static!important;box-shadow:none!important;}}'
+      '@media print{.ri-top-bar-right,.ri-delete-btn,.ri-add-btn{display:none!important;}.ri-table thead th{position:static!important;box-shadow:none!important;}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -331,10 +422,12 @@ window.RI_API = (function () {
     collectState: function () {
       return Array.from(testsContainer.querySelectorAll('.ri-test-wrapper')).map(function (wrapper) {
         var titleInput = wrapper.querySelector('.ri-title-input');
+        var presToggle = wrapper.querySelector('.ri-pres-toggle');
         return {
           title: titleInput ? titleInput.value : '',
-          numPresentations: wrapper._riNumPresentations || 4,
-          scores: wrapper._riScores || {}
+          scores: wrapper._riScores || {},
+          questions: wrapper._riQuestions || {},
+          hideP4: presToggle ? !presToggle.checked : false
         };
       });
     },
