@@ -37,7 +37,8 @@ window.APP_API = (function () {
       cit: window.CIT_API ? window.CIT_API.collectState() : [],
       notes: notesState.text || '',
       imagesMeta: notesState.imagesMeta || [],
-      sv: window.SUPERVISION_API ? window.SUPERVISION_API.collectState() : []
+      sv: window.SUPERVISION_API ? window.SUPERVISION_API.collectState() : [],
+      ri: window.RI_API ? window.RI_API.collectState() : []
     };
   }
 
@@ -90,6 +91,9 @@ window.APP_API = (function () {
 
     try { if (window.SUPERVISION_API) window.SUPERVISION_API.restoreState(parsed ? (parsed.sv || []) : []); }
     catch (err) { console.error('loadData Error (SUPERVISION_API):', err); }
+
+    try { if (window.RI_API) window.RI_API.restoreState(parsed ? (parsed.ri || []) : []); }
+    catch (err) { console.error('loadData Error (RI_API):', err); }
   }
 
   function handleJsonLoad(parsed) {
@@ -520,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.CIT_API) window.CIT_API.init();
     if (window.NOTES_API) window.NOTES_API.init();
     if (window.SUPERVISION_API) window.SUPERVISION_API.init();
+    if (window.RI_API) window.RI_API.init();
     if (window.APP_API) {
       window.APP_API.init();
       window.APP_API.loadData();
