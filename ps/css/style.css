@@ -17,8 +17,7 @@ body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont,
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
 .app-header { max-width: 880px; margin: 0 auto 15px auto; width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 15px; padding: 0 8px; }
-.app-logo { height: 42px; object-fit: contain; mix-blend-mode: multiply; }
-.app-title { margin: 0; font-size: 26px; font-weight: 800; color: #222; border-left: 2px solid #ccc; padding-left: 15px; letter-spacing: -0.5px; line-height: 1.1; }
+.app-title { margin: 0; font-size: 26px; font-weight: 400; color: #222; letter-spacing: -0.5px; line-height: 1.1; }
 .lang-switcher { margin-left: auto; display: flex; gap: 5px; }
 .lang-btn { padding: 4px 8px; font-size: 12px; font-weight: bold; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; color: #555; transition: all 0.2s; }
 .lang-btn.active { background: #3a7cfd; color: #fff; border-color: #3a7cfd; }
@@ -206,7 +205,6 @@ td.col-disabled input.score-input { display: none !important; }
 
 @media (max-width: 650px) {
   .app-header { flex-direction: column; text-align: center; gap: 12px; }
-  .app-title { border-left: none; border-top: 2px solid #ccc; padding-left: 0; padding-top: 12px; }
   .ess-toolbar { justify-content: flex-start; gap: 3px; padding: 6px 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .ess-toolbar::-webkit-scrollbar { display: none; }
   .ess-toolbar-btn, .ess-toolbar-sep, .ess-save-status { flex-shrink: 0; }
