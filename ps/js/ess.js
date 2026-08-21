@@ -683,10 +683,12 @@ window.ESS_API = (function() {
             '<input type="radio" id="diag_' + uid + '" name="tt_' + uid + '" value="diagnostic" ' + (typeVal === 'diagnostic' ? 'checked' : '') + ' />' +
             '<label for="diag_' + uid + '">' + S.type_diag + '</label>' +
           '</div>' +
+        '</div>' +
+        '<div class="ess-top-bar-right">' +
           '<button class="ess-btn ess-questions-btn" title="' + S.btn_questions_title + '">' + S.btn_questions + '</button>' +
           '<button class="ess-btn ess-clear-btn" title="' + S.ess_clear_table_title + '">' + S.btn_clear_data + '</button>' +
+          '<button class="ess-delete-btn" title="' + S.ess_delete_test_title + '">×</button>' +
         '</div>' +
-        '<button class="ess-delete-btn" title="' + S.ess_delete_test_title + '">×</button>' +
       '</div>' +
       '<div class="ess-test-title-area">' +
         '<span class="ess-test-num-label">' + S.test_num + 'X:</span>' +

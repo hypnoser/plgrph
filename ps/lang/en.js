@@ -146,7 +146,6 @@ window.STRINGS = {
   ri_add_btn: "+ Add Calculation",
   ri_chart_title: "Question Significance",
   ri_chart_empty: "Enter scores to see the significance chart.",
-  ri_presentation: "Presentation",
   ri_grand_total_l1: "Grand rank",
   ri_grand_total_l2: "total",
   ri_clear_table_title: "Clear the scores in this table",

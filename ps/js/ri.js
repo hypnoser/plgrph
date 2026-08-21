@@ -40,6 +40,18 @@ window.RI_API = (function () {
     });
   };
 
+  // За зразком ESS-M: номер тесту визначається виключно позицією в DOM,
+  // не власним testCounter — тому після видалення тесту нумерація лишається суцільною.
+  var updateTestNumbers = function () {
+    testsContainer.querySelectorAll('.ri-test-wrapper').forEach(function (w, idx) {
+      var num = idx + 1;
+      var label = w.querySelector('.ri-test-num-label');
+      if (label) label.textContent = S.test_num + num + ':';
+      var h3 = w.querySelector('.ri-modal-overlay .ess-modal-header h3');
+      if (h3) h3.textContent = S.ess_questions_modal_title + num;
+    });
+  };
+
   function sanitizeRank(val) {
     val = val.trim();
     if (val === '' || val === '0' || val === '1' || val === '2' || val === '3') return val;
@@ -150,9 +162,9 @@ window.RI_API = (function () {
       var isLast = (p === PRESENTATIONS - 1);
       html += '<tr class="ri-pres-row" data-pres-group="' + p + '"><td colspan="' + (QUESTIONS + 1) + '">';
       if (isLast) {
-        html += '<label class="chart-toggle-label ri-pres-toggle-label"><input type="checkbox" class="ri-pres-toggle" checked> ' + S.ri_presentation + ' №' + (p + 1) + '</label>';
+        html += '<label class="chart-toggle-label ri-pres-toggle-label"><input type="checkbox" class="ri-pres-toggle" checked> Chart №' + (p + 1) + '</label>';
       } else {
-        html += S.ri_presentation + ' №' + (p + 1);
+        html += 'Chart №' + (p + 1);
       }
       html += '</td></tr>';
       CHANNELS.forEach(function (ch) {
@@ -272,7 +284,7 @@ window.RI_API = (function () {
         '<span class="ri-test-num-label">' + S.test_num + testCounter + ':</span>' +
         '<input type="text" class="ri-title-input" placeholder="' + S.ri_test_title_placeholder + '" value="' + escapeHtml(titleVal) + '">' +
         '<div class="ri-top-bar-right">' +
-          '<button class="ess-btn ri-questions-btn" title="' + S.btn_questions_title + '">' + S.btn_questions + '</button>' +
+          '<button class="ess-btn ess-questions-btn ri-questions-btn" title="' + S.btn_questions_title + '">' + S.btn_questions + '</button>' +
           '<button class="ess-btn ess-clear-btn ri-clear-btn" title="' + S.ri_clear_table_title + '">' + S.btn_clear_data + '</button>' +
           '<button class="ess-btn ess-delete-btn ri-delete-btn" title="' + S.ess_delete_test_title + '">×</button>' +
         '</div>' +
@@ -306,6 +318,7 @@ window.RI_API = (function () {
     wrapper.querySelector('.ri-delete-btn').addEventListener('click', function () {
       if (confirm(S.ess_confirm_delete_test)) {
         wrapper.remove();
+        updateTestNumbers();
         triggerUnsaved();
         performSave();
       }
@@ -344,6 +357,7 @@ window.RI_API = (function () {
     });
 
     testsContainer.appendChild(wrapper);
+    updateTestNumbers();
     return wrapper;
   }
 
@@ -356,20 +370,20 @@ window.RI_API = (function () {
       '.ri-module-container{max-width:880px;margin:0 auto;width:100%;padding-bottom:20px;}',
       '.ri-test-wrapper{margin-bottom:15px;border:1px solid #ccc;padding:8px 12px;border-radius:6px;background-color:#fff;width:100%;}',
       '.ri-test-top-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;border-bottom:1px dashed #ccc;padding-bottom:10px;flex-wrap:wrap;}',
-      '.ri-test-num-label{font-size:12px;color:#666;flex-shrink:0;}',
-      '.ri-title-input{flex:1;min-width:150px;border:none;border-bottom:1px solid transparent;background:transparent;font-size:15px;font-weight:700;color:#222;padding:2px 4px;outline:none;line-height:1.2;}',
+      '.ri-test-num-label{font-size:12px;font-weight:700;color:#666;flex-shrink:0;}',
+      '.ri-title-input{flex:1;min-width:150px;border:none;border-bottom:1px solid transparent;background:transparent;font-size:15px;font-weight:400;color:#222;padding:2px 4px;outline:none;line-height:1.2;}',
       '.ri-title-input:focus{border-bottom-color:#3a7cfd;background-color:rgba(128,128,128,.06);border-radius:3px 3px 0 0;}',
       '.ri-top-bar-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;}',
       '.ri-delete-btn{font-size:16px;font-weight:bold;color:#ff0000;background:rgba(255,0,0,.1);border:1px solid #ff0000;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;margin:0;}',
       '.ri-delete-btn:hover{background-color:#ff0000;color:#fff;}',
-      '.ri-table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px;background:#fff;border:1px solid #ccc;margin-bottom:10px;position:relative;}',
+      '.ri-table-responsive{width:100%;border-radius:6px;background:#fff;border:1px solid #ccc;margin-bottom:10px;position:relative;}',
       '.ri-table{width:100%;min-width:480px;border-collapse:collapse;table-layout:fixed;}',
       '.ri-table th,.ri-table td{border:1px solid #888;padding:2px;text-align:center;vertical-align:middle;height:24px;}',
       '.ri-table thead th{position:sticky;top:0;z-index:5;background:#e0e0e0;font-weight:800;font-size:12px;color:#222;padding:4px 2px;border-bottom-color:transparent;box-shadow:inset 0 -1px 0 #888;}',
       '.ri-th-label{width:16%;}',
       '.ri-row-label{text-align:left;padding-left:8px;font-weight:normal;font-size:11px;white-space:nowrap;background:rgba(128,128,128,.04);}',
       '.ri-grand-row-label{white-space:normal;line-height:1.2;padding-top:4px;padding-bottom:4px;}',
-      '.ri-pres-row td{text-align:left;font-weight:600;font-size:11px;background:rgba(58,124,253,.06);color:#3a7cfd;padding:4px 8px;}',
+      '.ri-pres-row td{text-align:center;font-weight:600;font-size:11px;background:rgba(58,124,253,.06);color:#3a7cfd;padding:4px 8px;}',
       '.ri-pres-toggle-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}',
       '.ri-pres-toggle-label input{cursor:pointer;margin:0;width:12px;height:12px;}',
       '.ri-sub-row td{font-weight:600;background:rgba(128,128,128,.08);font-size:12px;}',

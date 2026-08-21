@@ -49,6 +49,7 @@ body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont,
 .ess-test-wrapper { margin-bottom: 15px; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; background-color: #fff; width: 100%; }
 .ess-test-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; }
 .ess-top-bar-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ess-top-bar-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
 .ess-format-select { padding: 3px 6px; font-size: 11px; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; height: 24px; color: #333; outline: none; transition: all 0.3s ease; }
 .format-attention { border-color: #3a7cfd !important; color: #3a7cfd !important; box-shadow: 0 0 0 3px rgba(58,124,253,0.15) !important; animation: pulse-border 2s infinite; }
 @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(58,124,253,0.4); } 70% { box-shadow: 0 0 0 6px rgba(58,124,253,0); } 100% { box-shadow: 0 0 0 0 rgba(58,124,253,0); } }
@@ -210,7 +211,6 @@ td.col-disabled input.score-input { display: none !important; }
   .ess-toolbar::-webkit-scrollbar { display: none; }
   .ess-toolbar-btn, .ess-toolbar-sep, .ess-save-status { flex-shrink: 0; }
   .ess-test-top-bar { flex-direction: column; align-items: flex-start; }
-  .ess-delete-btn { align-self: flex-end; margin-top: -26px; }
   .dyn-mode-toggle { justify-content: center; width: 100%; }
   .cit-layout { grid-template-columns: 1fr; }
 }
