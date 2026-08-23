@@ -11,7 +11,7 @@ module.exports = function (eleventyConfig) {
   // поза src/. Копіюється в _site/ps/ незмінним, логіку/код НЕ чіпаємо.
   eleventyConfig.addPassthroughCopy({ ps: "ps" });
 
-  // ---- Колекції ----
+  // ---- Колекції ---- 
   // Блог/статті: усі markdown-файли з src/blog/, крім index
   eleventyConfig.addCollection("blogPosts", (collectionApi) => {
     return collectionApi
