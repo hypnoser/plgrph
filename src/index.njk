@@ -37,7 +37,7 @@ extraHead: |
     <h1>Об'єктивна оцінка ситуацій, де потрібна ясність</h1>
     <p class="hero__lead">
       Поліграфологічні перевірки для бізнесу, HR та юридичного сектору.
-      Проводимо тест за перевіреною методикою і чесно пояснюємо, що вона може, а що — ні.
+      Тестування проводиться за затвердженою методикою, з чітким розумінням її меж і можливостей.
     </p>
     <div class="hero__actions">
       <a href="/perevirky/" class="btn btn--primary">Дізнатись про перевірки</a>
@@ -112,12 +112,13 @@ extraHead: |
 <section class="author-promo">
   <div class="author-promo__inner">
     <div class="author-promo__badge">Про засновника</div>
-    <h2>Сергій Коржов, засновник PLGRPH</h2>
+    <h2>Кожна перевірка — з ім'ям і відповідальністю за нею</h2>
     <p>
-      Практикує поліграфологію з 2013 року. Досвід роботи в IT-компанії, на виробничому
-      підприємстві та у фінансово-банківському секторі. Кожна стаття на цьому сайті
-      підписана реальним ім'ям — з повною відповідальністю за викладену методологію.
+      Дослідження з використанням поліграфа проводяться з 2013 року — у роботі з IT-компаніями,
+      виробничими підприємствами та фінансово-банківським сектором. Кожна стаття на цьому сайті
+      підписана реальним ім'ям автора, з повною відповідальністю за викладену методологію.
     </p>
+    <p class="author-promo__signature">Сергій Коржов, засновник PLGRPH</p>
     <a href="/pro-avtora/" class="author-promo__link">Читати повну біографію та кваліфікацію →</a>
   </div>
 </section>
@@ -301,25 +302,31 @@ extraHead: |
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
+    align-items: start;
   }
 
   .stat {
     text-align: center;
+    display: flex;
+    flex-direction: column;
   }
 
   .stat__number {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: "Manrope", sans-serif;
     font-weight: 800;
     font-size: 30px;
+    line-height: 1;
     color: #fff;
+    height: 38px;
     margin-bottom: 6px;
   }
 
-  .stat__number--icon {
-    display: flex;
-    justify-content: center;
-    color: #fff;
+  .stat__number--icon svg {
+    width: 26px;
+    height: 26px;
   }
 
   .stat__label {
@@ -430,7 +437,16 @@ extraHead: |
     margin-bottom: 20px;
   }
 
+  .author-promo__signature {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0;
+  }
+
   .author-promo__link {
+    display: inline-block;
+    margin-top: 16px;
     color: var(--primary);
     font-weight: 700;
     text-decoration: none;
