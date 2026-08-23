@@ -158,6 +158,32 @@ extraHead: |
   </div>
 </section>
 
+<section class="faq-teaser">
+  <div class="faq-teaser__inner">
+    <div class="section-head">
+      <span class="section-head__eyebrow">Питання і відповіді</span>
+      <h2>Найпоширеніші запитання</h2>
+    </div>
+    <div class="faq-teaser__list">
+      <details class="faq-item">
+        <summary>Наскільки точний поліграф?</summary>
+        <p>Точність поліграфологічного дослідження залежить від кваліфікації поліграфолога, якості підготовки тесту та дотримання методології. Метод має відомі межі застосування — результат розглядається як частина ширшої оцінки ситуації, а не як самодостатній доказ.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Чи можна відмовитися від перевірки на поліграфі?</summary>
+        <p>Так. Проходження перевірки на поліграфі — добровільне: правова підстава — стаття 28 Конституції України, згідно з якою жодна людина без добровільної згоди не може бути піддана медичним, науковим чи іншим дослідженням. Без письмової згоди респондента тестування не проводиться.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Чи конфіденційні результати перевірки на поліграфі?</summary>
+        <p>Так. Повна конфіденційність — базовий принцип роботи: результати передаються виключно замовнику перевірки й не розголошуються третім особам.</p>
+      </details>
+    </div>
+    <div class="faq-teaser__cta">
+      <a href="/faq/" class="btn btn--ghost">Усі запитання →</a>
+    </div>
+  </div>
+</section>
+
 <section class="calculator-promo">
   <div class="calculator-promo__inner">
     <div class="calculator-promo__text">
@@ -485,6 +511,66 @@ extraHead: |
   .testimonials__inner {
     max-width: 680px;
     margin: 0 auto;
+  }
+
+  .faq-teaser {
+    padding: 56px 24px;
+  }
+
+  .faq-teaser__inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .faq-teaser__list {
+    margin-bottom: 28px;
+  }
+
+  .faq-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::after {
+    content: "+";
+    font-size: 20px;
+    color: var(--primary);
+    font-weight: 400;
+    margin-left: 12px;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] summary::after {
+    content: "−";
+  }
+
+  .faq-item p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .faq-teaser__cta {
+    text-align: center;
   }
 
   .calculator-promo {
