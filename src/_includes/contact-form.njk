@@ -1,0 +1,96 @@
+{#
+  Спільна форма заявки для /perevirky/ та /dlya-fahivtsiv/.
+  Formspree endpoint — TODO: замінити YOUR_FORM_ID на реальний form ID
+  власника (https://formspree.io/forms/), коли буде створено/надано.
+#}
+<section class="contact-form-section">
+  <div class="contact-form-section__inner">
+    <h2>{{ formTitle | default("Залишити заявку") }}</h2>
+    <p class="contact-form-section__lead">
+      {{ formLead | default("Опишіть коротко ситуацію — відповімо протягом одного робочого дня.") }}
+    </p>
+
+    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form">
+      <div class="contact-form__row">
+        <label for="cf-name">Ім'я</label>
+        <input type="text" id="cf-name" name="name" required>
+      </div>
+      <div class="contact-form__row">
+        <label for="cf-contact">Телефон або email</label>
+        <input type="text" id="cf-contact" name="contact" required>
+      </div>
+      <div class="contact-form__row">
+        <label for="cf-message">Коротко про запит</label>
+        <textarea id="cf-message" name="message" rows="4" required></textarea>
+      </div>
+      <input type="hidden" name="_subject" value="Заявка з plgrph.com">
+      <button type="submit" class="btn btn--primary contact-form__submit">Надіслати заявку</button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact-form-section {
+    padding: 48px 24px 64px;
+    background: #fff;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-form-section__inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .contact-form-section h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .contact-form-section__lead {
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .contact-form__row {
+    margin-bottom: 16px;
+  }
+
+  .contact-form__row label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .contact-form__row input,
+  .contact-form__row textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .contact-form__row input:focus,
+  .contact-form__row textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  .contact-form__row textarea {
+    resize: vertical;
+  }
+
+  .contact-form__submit {
+    width: 100%;
+    border: none;
+    font-size: 15px;
+  }
+</style>
