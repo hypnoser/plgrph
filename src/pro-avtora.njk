@@ -62,13 +62,9 @@ extraHead: |
 </section>
 
 <section class="author-linkedin">
-  <div class="author-linkedin__inner">
-    <div class="badge-base LI-profile-badge" data-locale="uk_UA" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="korzhov-sv" data-version="v1">
-      <a class="badge-base__link LI-simple-link" href="https://ua.linkedin.com/in/korzhov-sv?trk=profile-badge">Сергій Коржов</a>
-    </div>
-  </div>
+  <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+  <div class="badge-base LI-profile-badge" data-locale="uk_UA" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="korzhov-sv" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ua.linkedin.com/in/korzhov-sv?trk=profile-badge">Сергій Коржов</a></div>
 </section>
-<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 
 <section class="author-timeline">
   <div class="author-timeline__inner">
@@ -165,17 +161,6 @@ extraHead: |
 
   .author-linkedin {
     padding: 0 24px 48px;
-  }
-
-  .author-linkedin__inner {
-    max-width: 680px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-  }
-
-  .author-linkedin__inner .badge-base__link {
-    display: none;
   }
 
   .author-timeline {
