@@ -132,7 +132,7 @@ extraHead: |
 
     {% if collections.blogPosts and collections.blogPosts.length > 0 %}
       <div class="blog-preview__grid">
-        {% for post in collections.blogPosts | reverse | slice(0, 3) %}
+        {% for post in collections.blogPosts | limit(3) %}
           <a href="{{ post.url }}" class="blog-card">
             <span class="blog-card__date">{{ post.date | dateUk }}</span>
             <h3>{{ post.data.title }}</h3>
@@ -451,6 +451,7 @@ extraHead: |
 
   .blog-preview {
     padding: 64px 24px;
+    border-bottom: 1px solid var(--border);
   }
 
   .blog-preview__inner {
@@ -515,6 +516,9 @@ extraHead: |
 
   .faq-teaser {
     padding: 56px 24px;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
 
   .faq-teaser__inner {

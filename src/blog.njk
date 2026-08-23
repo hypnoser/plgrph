@@ -1,10 +1,149 @@
 ---
 layout: base.njk
 title: Блог | PLGRPH
-description: Статті про поліграфологію, методологію, застосування в бізнесі.
+description: Статті про поліграфологію — методологію, застосування в бізнесі, практику.
 permalink: /blog/
 ---
-<section>
-  <h1>Блог</h1>
-  <p>Каркас сторінки — наповнення на кроці 11.</p>
+
+<section class="blog-hero">
+  <div class="blog-hero__inner">
+    <span class="blog-hero__eyebrow">Блог</span>
+    <h1>Про методологію, межі методу й практику</h1>
+    <p class="blog-hero__lead">
+      Статті про поліграфологію — три теми, що чергуються: механіка методу,
+      застосування в бізнесі, методологічна коректність.
+    </p>
+  </div>
 </section>
+
+<section class="blog-list-section">
+  <div class="blog-list-section__inner">
+
+    {% if collections.blogPosts and collections.blogPosts.length > 0 %}
+      <div class="blog-list">
+        {% for post in collections.blogPosts %}
+          <a href="{{ post.url }}" class="blog-list-card">
+            <span class="blog-list-card__date">{{ post.date | dateUk }}</span>
+            <h2>{{ post.data.title }}</h2>
+            {% if post.data.description %}
+              <p>{{ post.data.description }}</p>
+            {% endif %}
+            <span class="blog-list-card__link">Читати →</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="blog-empty">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 6H32V34H8V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M14 14H26M14 20H26M14 26H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>Розділ у розробці — перші статті про механіку методу, застосування в бізнесі та методологічну коректність з'являться найближчим часом.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  .blog-hero {
+    padding: 56px 24px 40px;
+    background: linear-gradient(180deg, #EFF5FD 0%, var(--bg) 100%);
+    text-align: center;
+  }
+
+  .blog-hero__inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .blog-hero__eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  .blog-hero h1 {
+    font-size: 30px;
+    margin-bottom: 14px;
+  }
+
+  .blog-hero__lead {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+
+  .blog-list-section {
+    padding: 48px 24px 64px;
+  }
+
+  .blog-list-section__inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .blog-list-card {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+  }
+
+  .blog-list-card:hover {
+    border-color: var(--primary);
+  }
+
+  .blog-list-card__date {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .blog-list-card h2 {
+    font-size: 19px;
+    color: var(--text);
+    margin: 8px 0 8px;
+  }
+
+  .blog-list-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .blog-list-card__link {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .blog-empty {
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .blog-empty svg {
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .blog-hero h1 { font-size: 24px; }
+  }
+</style>

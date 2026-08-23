@@ -1,0 +1,158 @@
+---
+layout: base.njk
+eleventyComputed:
+  extraHead: >-
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": {{ title | dump | safe }},
+      "description": {{ description | dump | safe }},
+      "datePublished": {{ date | isoDate | dump | safe }},
+      "author": {
+        "@type": "Person",
+        "name": "Сергій Коржов",
+        "url": "https://plgrph.com/pro-specialista/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PLGRPH",
+        "url": "https://plgrph.com/"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://plgrph.com{{ page.url }}"
+      }
+    }
+    </script>
+---
+
+<article class="post">
+  <div class="post__inner">
+
+    <nav class="post__breadcrumbs" aria-label="Хлібні крихти">
+      <a href="/blog/">Блог</a>
+      <span aria-hidden="true">→</span>
+      <span>{{ title }}</span>
+    </nav>
+
+    <header class="post__header">
+      <h1>{{ title }}</h1>
+      <div class="post__meta">
+        <span>{{ date | dateUk }}</span>
+        <span aria-hidden="true">·</span>
+        <span>Сергій Коржов</span>
+      </div>
+    </header>
+
+    <div class="post__content">
+      {{ content | safe }}
+    </div>
+
+    <footer class="post__footer">
+      <a href="/blog/" class="btn btn--ghost">← Усі статті</a>
+    </footer>
+
+  </div>
+</article>
+
+<style>
+  .post {
+    padding: 48px 24px 64px;
+    background: #fff;
+  }
+
+  .post__inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .post__breadcrumbs {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .post__breadcrumbs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .post__breadcrumbs a:hover {
+    color: var(--primary);
+  }
+
+  .post__breadcrumbs span[aria-hidden] {
+    margin: 0 6px;
+  }
+
+  .post__header {
+    margin-bottom: 32px;
+  }
+
+  .post__header h1 {
+    font-size: 30px;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .post__meta {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .post__meta span[aria-hidden] {
+    margin: 0 8px;
+  }
+
+  .post__content {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .post__content p {
+    margin-bottom: 20px;
+  }
+
+  .post__content h2 {
+    font-size: 22px;
+    margin: 36px 0 16px;
+  }
+
+  .post__content h3 {
+    font-size: 18px;
+    margin: 28px 0 12px;
+  }
+
+  .post__content ul,
+  .post__content ol {
+    margin: 0 0 20px 24px;
+  }
+
+  .post__content li {
+    margin-bottom: 8px;
+  }
+
+  .post__content a {
+    color: var(--primary);
+  }
+
+  .post__content blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 16px;
+    margin: 24px 0;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .post__footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .post__header h1 { font-size: 24px; }
+  }
+</style>

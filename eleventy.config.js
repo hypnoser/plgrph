@@ -70,6 +70,14 @@ module.exports = function (eleventyConfig) {
     return JSON.stringify(value ?? "").replace(/</g, "\\u003c");
   });
 
+  // Власний фільтр замість вбудованого Nunjucks `slice` — той має іншу
+  // семантику (розбиття на підмасиви) і ламає прості випадки "перші N
+  // елементів масиву об'єктів". limit(arr, n) повертає перші n елементів.
+  eleventyConfig.addFilter("limit", (arr, n) => {
+    if (!Array.isArray(arr)) return arr;
+    return arr.slice(0, n);
+  });
+
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 
   return {
