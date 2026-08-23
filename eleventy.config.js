@@ -7,6 +7,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets/images");
   eleventyConfig.addPassthroughCopy({ "src/assets/favicon": "/" });
 
+  // /ps/ (Polygraph Suite) — окремий діючий продукт, живе в корені репозиторію
+  // поза src/. Копіюється в _site/ps/ незмінним, логіку/код НЕ чіпаємо.
+  eleventyConfig.addPassthroughCopy({ ps: "ps" });
+
   // ---- Колекції ----
   // Блог/статті: усі markdown-файли з src/blog/, крім index
   eleventyConfig.addCollection("blogPosts", (collectionApi) => {
