@@ -25,6 +25,18 @@ eleventyComputed:
       }
     }
     </script>
+  breadcrumbSchema: >-
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Головна", "item": "https://plgrph.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Блог", "item": "https://plgrph.com/blog/" },
+        { "@type": "ListItem", "position": 3, "name": {{ title | dump | safe }}, "item": "https://plgrph.com{{ page.url }}" }
+      ]
+    }
+    </script>
 ---
 
 <article class="post">

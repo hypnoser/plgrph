@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="{{ robotsMeta | default('index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1') }}">
 <title>{{ title }}</title>
 <meta name="description" content="{{ description }}">
 <link rel="canonical" href="https://plgrph.com{{ page.url }}">
@@ -156,6 +157,26 @@
 </style>
 
 {# Схема.org та інші meta будуть додані на кроках 6+ по кожному типу сторінки #}
+{# BreadcrumbList Schema.org — автоматично з page.url для сторінок 1-го рівня.
+   Сторінки з глибшою вкладеністю (статті блогу) задають власний breadcrumbSchema
+   у frontmatter через eleventyComputed (див. post.njk). #}
+{% if page.url != "/" and not breadcrumbSchema %}
+  {% set segment = page.url | replace("/", "") %}
+  {% if pageTitles[segment] %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Головна", "item": "https://plgrph.com/" },
+    { "@type": "ListItem", "position": 2, "name": {{ pageTitles[segment] | dump | safe }}, "item": "https://plgrph.com{{ page.url }}" }
+  ]
+}
+</script>
+  {% endif %}
+{% endif %}
+{{ breadcrumbSchema | safe if breadcrumbSchema }}
+
 {{ extraHead | safe if extraHead }}
 </head>
 <body>

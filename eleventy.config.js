@@ -66,6 +66,18 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addGlobalData("currentYear", () => new Date().getFullYear());
 
+  // Мапа URL-сегментів на людські назви — використовується для BreadcrumbList
+  // schema та видимих хлібних крихт. Додавайте новий запис при створенні
+  // нової top-level сторінки.
+  eleventyConfig.addGlobalData("pageTitles", () => ({
+    "perevirky": "Перевірки",
+    "dlya-fahivtsiv": "Для фахівців",
+    "pro-specialista": "Про спеціаліста",
+    "faq": "Питання і відповіді",
+    "blog": "Блог",
+    "kontakty": "Контакти",
+  }));
+
   eleventyConfig.addFilter("dump", (value) => {
     return JSON.stringify(value ?? "").replace(/</g, "\\u003c");
   });

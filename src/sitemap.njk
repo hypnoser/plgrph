@@ -9,7 +9,9 @@ eleventyAllCollections: true
 {%- if not page.data.eleventyExcludeFromCollections %}
   <url>
     <loc>https://plgrph.com{{ page.url }}</loc>
-    <lastmod>{{ page.date | isoDate }}</lastmod>
+{%- if page.data.date %}
+    <lastmod>{{ page.data.date | isoDate }}</lastmod>
+{%- endif %}
   </url>
 {%- endif %}
 {%- endfor %}
