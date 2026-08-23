@@ -1,0 +1,96 @@
+{# 
+  Maintenance overlay — HTML/CSS, не JS-підміна контенту.
+  Реальна сторінка під низом лишається у DOM і доступна пошуковим ботам.
+  Дисміс — прихована 48x48px click-зона top-right, per-browser через localStorage.
+  Увімкнення: maintenanceOverlay: true у frontmatter конкретної сторінки (напр. src/index.njk).
+#}
+<div id="maintenance-overlay" class="maintenance-overlay">
+  <div class="maintenance-wrap">
+    <div class="maintenance-logo">
+      <img src="/assets/images/logo-transparent.png" alt="PLGRPH" width="240" height="48">
+    </div>
+    <div class="maintenance-divider"></div>
+    <h1>Сайт на реконструкції</h1>
+    <p>Ми оновлюємо PLGRPH. Скоро повернемось.</p>
+  </div>
+</div>
+
+<div id="maintenance-dismiss-zone" class="maintenance-dismiss-zone" aria-hidden="true"></div>
+
+<style>
+  .maintenance-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .maintenance-wrap {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .maintenance-logo {
+    margin-bottom: 28px;
+  }
+
+  .maintenance-logo img {
+    height: 48px;
+    width: auto;
+  }
+
+  .maintenance-divider {
+    width: 48px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin: 0 auto 28px;
+  }
+
+  .maintenance-overlay h1 {
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .maintenance-overlay p {
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+
+  .maintenance-dismiss-zone {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 48px;
+    height: 48px;
+    z-index: 10000;
+    cursor: default;
+  }
+
+  body.maintenance-dismissed .maintenance-overlay {
+    display: none;
+  }
+</style>
+
+<script>
+  (function () {
+    var STORAGE_KEY = "plgrph_maintenance_dismissed";
+    if (localStorage.getItem(STORAGE_KEY) === "1") {
+      document.body.classList.add("maintenance-dismissed");
+    }
+    var zone = document.getElementById("maintenance-dismiss-zone");
+    if (zone) {
+      zone.addEventListener("click", function () {
+        localStorage.setItem(STORAGE_KEY, "1");
+        document.body.classList.add("maintenance-dismissed");
+      });
+    }
+  })();
+</script>
