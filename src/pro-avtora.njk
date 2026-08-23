@@ -23,16 +23,13 @@ extraHead: |
 
 <section class="author-hero">
   <div class="author-hero__inner">
-    <div class="author-hero__photo" aria-hidden="true">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="28" cy="20" r="10" stroke="currentColor" stroke-width="2.4"/>
-        <path d="M8 50C8 38 16 32 28 32C40 32 48 38 48 50" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-      </svg>
+    <div class="author-hero__photo">
+      <img src="/assets/images/sergiy-korzhov.jpg" alt="Сергій Коржов" width="96" height="96">
     </div>
     <div class="author-hero__text">
-      <span class="author-hero__eyebrow">Поліграфолог</span>
+      <span class="author-hero__eyebrow">Про спеціаліста</span>
       <h1>Сергій Коржов</h1>
-      <p class="author-hero__role">Засновник PLGRPH</p>
+      <p class="author-hero__role">Поліграфолог, клінічний психолог, керівник групи PLGRPH</p>
     </div>
   </div>
 </section>
@@ -53,6 +50,16 @@ extraHead: |
       одночасно, що на практиці означає постійне перемикання між зовсім різними типами
       завдань і високу пропускну спроможність без втрати якості кожного окремого дослідження.
       З 2019 року веду власну приватну практику — цей напрямок залишається основним і сьогодні.
+      У межах PLGRPH також керую групою поліграфологів, яким надаю методологічну підтримку
+      та менторинг.
+    </p>
+    <p>
+      Кваліфікація клінічного психолога додає до поліграфологічної практики розуміння
+      психології респондента, а не лише його фізіологічних реакцій. Це дозволяє під час
+      перевірки враховувати психологічний стан людини — тривожність, стрес, індивідуальні
+      особливості реагування — і проводити не тільки психофізіологічну, а й психологічну
+      діагностику. На практиці це підвищує точність інтерпретації результатів і додає
+      впевненості в остаточному висновку.
     </p>
     <p>
       Кожна стаття на цьому сайті підписана моїм реальним ім'ям — з повною відповідальністю
@@ -135,10 +142,14 @@ extraHead: |
     border-radius: 50%;
     background: #fff;
     border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
+    overflow: hidden;
+  }
+
+  .author-hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .author-hero__eyebrow {
