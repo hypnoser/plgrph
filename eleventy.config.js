@@ -2,7 +2,6 @@ const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
 
 module.exports = function (eleventyConfig) {
   // ---- Passthrough (статичні файли копіюються as-is) ----
-  eleventyConfig.addPassthroughCopy("src/assets/css");
   eleventyConfig.addPassthroughCopy("src/assets/fonts");
   eleventyConfig.addPassthroughCopy("src/assets/images");
   eleventyConfig.addPassthroughCopy("src/assets/favicon");
@@ -25,6 +24,19 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addCollection("certificates", (collectionApi) => {
     return collectionApi
       .getFilteredByGlob("src/certificates/*.md")
+      .sort((a, b) => {
+        const orderA = a.data.order ?? 999;
+        const orderB = b.data.order ?? 999;
+        return orderA - orderB;
+      });
+  });
+
+  // Відгуки для блоку "Відгуки" на головній — власник додає файли
+  // в src/testimonials/, кожен окремим markdown-файлом. Порядок — за order
+  // у frontmatter (менше число = вище), потім за датою файлу.
+  eleventyConfig.addCollection("testimonials", (collectionApi) => {
+    return collectionApi
+      .getFilteredByGlob("src/testimonials/*.md")
       .sort((a, b) => {
         const orderA = a.data.order ?? 999;
         const orderB = b.data.order ?? 999;
