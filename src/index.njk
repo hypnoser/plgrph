@@ -33,7 +33,7 @@ extraHead: |
 
 <section class="hero">
   <div class="hero__inner">
-    <span class="hero__eyebrow">Центр оцінки достовірності інформації · з 2013 року</span>
+    <span class="hero__eyebrow">Центр оцінки достовірності інформації · 14 років практики</span>
     <h1>Об'єктивна оцінка ситуацій, де потрібна ясність</h1>
     <p class="hero__lead">
       Поліграфологічні перевірки для бізнесу, HR та юридичного сектору.
@@ -49,8 +49,8 @@ extraHead: |
 <section class="stats">
   <div class="stats__inner">
     <div class="stat">
-      <span class="stat__number">2013</span>
-      <span class="stat__label">рік заснування</span>
+      <span class="stat__number">14</span>
+      <span class="stat__label">років практики — проводимо дослідження з 2013 року</span>
     </div>
     <div class="stat">
       <span class="stat__number">4</span>
@@ -67,8 +67,8 @@ extraHead: |
       <span class="stat__label">перевірки по всьому світу — українською, російською або з перекладачем</span>
     </div>
     <div class="stat">
-      <span class="stat__number">PS</span>
-      <span class="stat__label">Polygraph Suite — власний калькулятор для поліграфологів</span>
+      <span class="stat__number stat__number--accent">PS</span>
+      <span class="stat__label">Polygraph Suite — розроблено калькулятор для поліграфологів</span>
     </div>
   </div>
 </section>
@@ -111,14 +111,16 @@ extraHead: |
 
 <section class="author-promo">
   <div class="author-promo__inner">
-    <div class="author-promo__badge">Про засновника</div>
+    <div class="author-promo__badge">Про спеціаліста</div>
     <h2>Кожна перевірка — з ім'ям і відповідальністю за нею</h2>
     <p>
-      Дослідження з використанням поліграфа проводяться з 2013 року — у роботі з IT-компаніями,
-      виробничими підприємствами та фінансово-банківським сектором. Кожна стаття на цьому сайті
-      підписана реальним ім'ям автора, з повною відповідальністю за викладену методологію.
+      З 2013 року дослідження з використанням поліграфа — моя основна професійна діяльність.
+      За понад десять років практики я працював у галузях, де ціна помилки вимірюється
+      конкретними втратами: виробництво, банківський сектор, авіаційна індустрія, IT.
+      Ця різноманітність практики формує здатність швидко розбиратися в контексті будь-якої
+      нової справи, а не покладатися на єдиний завчений сценарій.
     </p>
-    <p class="author-promo__signature">Сергій Коржов, засновник PLGRPH</p>
+    <p class="author-promo__signature">Сергій Коржов, поліграфолог, клінічний психолог</p>
     <a href="/pro-specialista/" class="author-promo__link">Читати повну біографію та кваліфікацію →</a>
   </div>
 </section>
@@ -136,6 +138,7 @@ extraHead: |
           <a href="{{ post.url }}" class="blog-card">
             <span class="blog-card__date">{{ post.date | dateUk }}</span>
             <h3>{{ post.data.title }}</h3>
+            <span class="blog-card__link">Читати повністю →</span>
           </a>
         {% endfor %}
       </div>
@@ -161,6 +164,9 @@ extraHead: |
           <blockquote class="testimonial-card">
             <div class="testimonial-card__text">{{ item.templateContent | safe }}</div>
             <cite class="testimonial-card__author">{{ item.data.author }}</cite>
+            {% if item.data.date %}
+              <span class="testimonial-card__date">{{ item.data.date | dateUk }}</span>
+            {% endif %}
           </blockquote>
         {% endfor %}
       </div>
@@ -334,6 +340,10 @@ extraHead: |
     margin-bottom: 6px;
   }
 
+  .stat__number--accent {
+    color: var(--accent);
+  }
+
   .stat__number--icon svg {
     width: 26px;
     height: 26px;
@@ -493,9 +503,27 @@ extraHead: |
     color: var(--text-secondary);
   }
 
+  .blog-card__date::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 6px;
+  }
+
   .blog-card h3 {
     font-size: 16px;
     margin-top: 8px;
+  }
+
+  .blog-card__link {
+    display: block;
+    margin-top: 12px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
   }
 
   .blog-preview__empty {
@@ -537,6 +565,7 @@ extraHead: |
   .testimonial-card {
     background: #fff;
     border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
     border-radius: 12px;
     padding: 24px;
   }
@@ -554,12 +583,12 @@ extraHead: |
 
   .testimonial-card__text p::before {
     content: "\201C";
-    color: var(--primary);
+    color: var(--accent);
   }
 
   .testimonial-card__text p::after {
     content: "\201D";
-    color: var(--primary);
+    color: var(--accent);
   }
 
   .testimonial-card__author {
@@ -568,6 +597,13 @@ extraHead: |
     font-size: 13px;
     color: var(--text-secondary);
     font-weight: 600;
+  }
+
+  .testimonial-card__date {
+    display: block;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
   }
 
   .faq-teaser {
@@ -646,8 +682,8 @@ extraHead: |
 
   .calculator-promo__badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: var(--accent);
+    color: var(--text);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;

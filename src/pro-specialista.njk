@@ -404,6 +404,16 @@ extraHead: |
     color: var(--primary);
   }
 
+  .timeline__year::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+  }
+
   .timeline__label {
     font-size: 14px;
     color: var(--text);
