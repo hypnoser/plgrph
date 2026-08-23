@@ -173,12 +173,11 @@ extraHead: |
     width: 100%;
   }
 
-  .author-linkedin__inner .badge-base {
+  .author-linkedin__inner,
+  .author-linkedin__inner .badge-base,
+  .author-linkedin__inner iframe[src*="linkedin"] {
     width: 100% !important;
-  }
-
-  .author-linkedin__inner iframe {
-    width: 100% !important;
+    max-width: 680px !important;
   }
 
   .author-linkedin__inner .badge-base__link {
