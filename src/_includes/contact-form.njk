@@ -1,7 +1,7 @@
 {#
-  Спільна форма заявки для /perevirky/ та /dlya-fahivtsiv/.
-  Formspree endpoint — TODO: замінити YOUR_FORM_ID на реальний form ID
-  власника (https://formspree.io/forms/), коли буде створено/надано.
+  Спільна форма заявки для /perevirky/, /dlya-fahivtsiv/, /faq/, /kontakty/.
+  Formspree endpoint: https://formspree.io/f/mzepqdvp (Basic HTML інтеграція —
+  після відправлення користувач переходить на сторінку-подяку Formspree).
 #}
 <section class="contact-form-section">
   <div class="contact-form-section__inner">
@@ -10,7 +10,7 @@
       {{ formLead | default("Опишіть коротко ситуацію — відповімо протягом одного робочого дня.") }}
     </p>
 
-    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form">
+    <form action="https://formspree.io/f/mzepqdvp" method="POST" class="contact-form">
       <div class="contact-form__row">
         <label for="cf-name">Ім'я</label>
         <input type="text" id="cf-name" name="name" required>
