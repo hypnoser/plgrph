@@ -55,8 +55,8 @@
   a { color: var(--primary); }
 </style>
 
-{# --- Schema.org та інші meta будуть додані на кроках 6+ по кожному типу сторінки --- #}
-{% block head %}{% endblock %}
+{# Схема.org та інші meta будуть додані на кроках 6+ по кожному типу сторінки #}
+{{ extraHead | safe if extraHead }}
 </head>
 <body>
 
