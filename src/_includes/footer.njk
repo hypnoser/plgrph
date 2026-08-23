@@ -1,3 +1,84 @@
 <footer class="site-footer">
-  <p>&copy; 2013-{{ currentYear }} PLGRPH</p>
+  <div class="site-footer__inner">
+    <div class="site-footer__col">
+      <img src="/assets/images/logo-white.png" alt="PLGRPH" width="120" height="24" class="site-footer__logo">
+      <p class="site-footer__tagline">Центр оцінки достовірності інформації</p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Навігація у футері">
+      <a href="/perevirky/">Перевірки</a>
+      <a href="/dlya-fahivtsiv/">Для фахівців</a>
+      <a href="/blog/">Блог</a>
+      <a href="/pro-avtora/">Про автора</a>
+      <a href="/kontakty/">Контакти</a>
+    </nav>
+  </div>
+
+  <div class="site-footer__bottom">
+    <p>&copy; 2013-{{ currentYear }} PLGRPH</p>
+  </div>
 </footer>
+
+<style>
+  .site-footer {
+    margin-top: 64px;
+    background: #1A1D21;
+  }
+
+  .site-footer__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 24px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .site-footer__logo {
+    height: 24px;
+    width: auto;
+    display: block;
+    margin-bottom: 8px;
+    opacity: 0.95;
+  }
+
+  .site-footer__tagline {
+    font-size: 14px;
+    color: #9AA3AD;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .site-footer__nav a {
+    color: #C3C9D0;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .site-footer__nav a:hover {
+    color: #ffffff;
+  }
+
+  .site-footer__bottom {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 16px 24px 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .site-footer__bottom p {
+    font-size: 13px;
+    color: #848C95;
+  }
+
+  @media (max-width: 600px) {
+    .site-footer__inner {
+      flex-direction: column;
+    }
+  }
+</style>

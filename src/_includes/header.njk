@@ -1,7 +1,149 @@
-{# Навігація буде повністю наповнена на кроці 5 — зараз мінімальний каркас #}
+{# 
+  Header — без sticky (прокручується разом з контентом).
+  Мобільна навігація — hamburger, мінімалістична (лише іконка, без анімацій відкриття).
+  page.url з Eleventy використовується для підсвітки активного пункту меню.
+#}
 <header class="site-header">
-  <a href="/" class="site-header__logo">
-    <img src="/assets/images/logo-transparent.png" alt="PLGRPH" width="140" height="28">
-  </a>
-  {# nav буде додано на кроці 5 #}
+  <div class="site-header__inner">
+    <a href="/" class="site-header__logo">
+      <img src="/assets/images/logo-transparent.png" alt="PLGRPH" width="140" height="28">
+    </a>
+
+    <nav class="site-nav" aria-label="Основна навігація">
+      <ul class="site-nav__list">
+        <li><a href="/perevirky/" class="{% if page.url == '/perevirky/' %}is-active{% endif %}">Перевірки</a></li>
+        <li><a href="/dlya-fahivtsiv/" class="{% if page.url == '/dlya-fahivtsiv/' %}is-active{% endif %}">Для фахівців</a></li>
+        <li><a href="/blog/" class="{% if page.url == '/blog/' or '/blog/' in page.url %}is-active{% endif %}">Блог</a></li>
+        <li><a href="/pro-avtora/" class="{% if page.url == '/pro-avtora/' %}is-active{% endif %}">Про автора</a></li>
+        <li><a href="/kontakty/" class="{% if page.url == '/kontakty/' %}is-active{% endif %}">Контакти</a></li>
+      </ul>
+    </nav>
+
+    <button type="button" class="site-header__burger" id="burger-toggle" aria-label="Відкрити меню" aria-expanded="false" aria-controls="mobile-nav">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 5H20M2 11H20M2 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Мобільна навігація" hidden>
+    <ul class="mobile-nav__list">
+      <li><a href="/perevirky/">Перевірки</a></li>
+      <li><a href="/dlya-fahivtsiv/">Для фахівців</a></li>
+      <li><a href="/blog/">Блог</a></li>
+      <li><a href="/pro-avtora/">Про автора</a></li>
+      <li><a href="/kontakty/">Контакти</a></li>
+    </ul>
+  </nav>
 </header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .site-header__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-header__logo img {
+    height: 28px;
+    width: auto;
+    display: block;
+  }
+
+  /* --- Desktop nav --- */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .site-nav__list {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+  }
+
+  .site-nav__list a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+  }
+
+  .site-nav__list a:hover,
+  .site-nav__list a.is-active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  /* --- Burger button (hidden on desktop) --- */
+  .site-header__burger {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* --- Mobile nav panel --- */
+  .mobile-nav {
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .mobile-nav__list {
+    list-style: none;
+    padding: 8px 24px 16px;
+  }
+
+  .mobile-nav__list li {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-nav__list li:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+  }
+
+  .mobile-nav__list a {
+    display: block;
+    padding: 14px 0;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 860px) {
+    .site-nav { display: none; }
+    .site-header__burger { display: flex; align-items: center; justify-content: center; }
+  }
+
+  @media (min-width: 861px) {
+    .mobile-nav { display: none !important; }
+  }
+</style>
+
+<script>
+  (function () {
+    var toggle = document.getElementById("burger-toggle");
+    var nav = document.getElementById("mobile-nav");
+    if (!toggle || !nav) return;
+    toggle.addEventListener("click", function () {
+      var isOpen = !nav.hidden;
+      nav.hidden = isOpen;
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+  })();
+</script>
