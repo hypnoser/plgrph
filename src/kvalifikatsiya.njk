@@ -1,0 +1,334 @@
+---
+layout: base.njk
+title: Кваліфікація — сертифікати та дипломи | PLGRPH
+description: Сертифікати та дипломи Сергія Коржова з поліграфології та психології.
+permalink: /kvalifikatsiya/
+---
+
+<section class="qual-hero">
+  <div class="qual-hero__inner">
+    <span class="qual-hero__eyebrow">Кваліфікація</span>
+    <h1>Сертифікати та дипломи</h1>
+    <p class="qual-hero__lead">
+      Документи, що підтверджують кваліфікацію в поліграфології та клінічній психології.
+    </p>
+  </div>
+</section>
+
+<section class="qual-grid-section">
+  <div class="qual-grid-section__inner">
+
+    {% if collections.certificates and collections.certificates.length > 0 %}
+      <div class="qual-grid">
+        {% for cert in collections.certificates %}
+          <button
+            type="button"
+            class="qual-card"
+            data-lightbox-trigger
+            data-index="{{ loop.index0 }}"
+          >
+            <span class="qual-card__image">
+              <img src="{{ cert.data.image }}" alt="{{ cert.data.title }}" loading="lazy">
+            </span>
+            <span class="qual-card__body">
+              <span class="qual-card__title">{{ cert.data.title }}</span>
+              <span class="qual-card__meta">{{ cert.data.issuer }}{% if cert.data.year %} — {{ cert.data.year }}{% endif %}</span>
+            </span>
+          </button>
+        {% endfor %}
+      </div>
+
+      {# --- Лайтбокс: розмітка одна на сторінку, дані підвантажуються JS-масивом нижче --- #}
+      <div id="qual-lightbox" class="qual-lightbox" hidden>
+        <button type="button" class="qual-lightbox__close" data-lightbox-close aria-label="Закрити">✕</button>
+        <button type="button" class="qual-lightbox__nav qual-lightbox__nav--prev" data-lightbox-prev aria-label="Попередній">‹</button>
+        <button type="button" class="qual-lightbox__nav qual-lightbox__nav--next" data-lightbox-next aria-label="Наступний">›</button>
+        <div class="qual-lightbox__content">
+          <img id="qual-lightbox-img" src="" alt="">
+          <p id="qual-lightbox-caption" class="qual-lightbox__caption"></p>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var certs = [
+            {% for cert in collections.certificates %}
+            {
+              src: {{ cert.data.image | dump | safe }},
+              title: {{ cert.data.title | dump | safe }},
+              issuer: {{ cert.data.issuer | dump | safe }},
+              year: {{ cert.data.year | dump | safe }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+          ];
+
+          var lightbox = document.getElementById("qual-lightbox");
+          var imgEl = document.getElementById("qual-lightbox-img");
+          var captionEl = document.getElementById("qual-lightbox-caption");
+          var currentIndex = 0;
+
+          function renderSlide(index) {
+            var c = certs[index];
+            if (!c) return;
+            imgEl.src = c.src;
+            imgEl.alt = c.title;
+            captionEl.textContent = c.title + (c.issuer ? " — " + c.issuer : "") + (c.year ? " (" + c.year + ")" : "");
+            currentIndex = index;
+          }
+
+          function openLightbox(index) {
+            renderSlide(index);
+            lightbox.hidden = false;
+            document.body.style.overflow = "hidden";
+          }
+
+          function closeLightbox() {
+            lightbox.hidden = true;
+            document.body.style.overflow = "";
+          }
+
+          document.querySelectorAll("[data-lightbox-trigger]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              openLightbox(parseInt(btn.getAttribute("data-index"), 10));
+            });
+          });
+
+          lightbox.querySelector("[data-lightbox-close]").addEventListener("click", closeLightbox);
+          lightbox.querySelector("[data-lightbox-prev]").addEventListener("click", function () {
+            renderSlide((currentIndex - 1 + certs.length) % certs.length);
+          });
+          lightbox.querySelector("[data-lightbox-next]").addEventListener("click", function () {
+            renderSlide((currentIndex + 1) % certs.length);
+          });
+
+          lightbox.addEventListener("click", function (e) {
+            if (e.target === lightbox) closeLightbox();
+          });
+
+          document.addEventListener("keydown", function (e) {
+            if (lightbox.hidden) return;
+            if (e.key === "Escape") closeLightbox();
+            if (e.key === "ArrowLeft") renderSlide((currentIndex - 1 + certs.length) % certs.length);
+            if (e.key === "ArrowRight") renderSlide((currentIndex + 1) % certs.length);
+          });
+        })();
+      </script>
+
+    {% else %}
+      <div class="qual-empty">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="4" width="24" height="32" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M14 14H26M14 20H26M14 26H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>Розділ у розробці — сертифікати та дипломи будуть додані найближчим часом.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  .qual-hero {
+    padding: 56px 24px 40px;
+    background: linear-gradient(180deg, #EFF5FD 0%, var(--bg) 100%);
+    text-align: center;
+  }
+
+  .qual-hero__inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .qual-hero__eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  .qual-hero h1 {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .qual-hero__lead {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+
+  .qual-grid-section {
+    padding: 48px 24px 64px;
+  }
+
+  .qual-grid-section__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .qual-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .qual-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    display: block;
+    width: 100%;
+  }
+
+  .qual-card:hover {
+    border-color: var(--primary);
+  }
+
+  .qual-card__image {
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .qual-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .qual-card__body {
+    display: block;
+    padding: 16px;
+  }
+
+  .qual-card__title {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .qual-card__meta {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .qual-empty {
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .qual-empty svg {
+    margin-bottom: 12px;
+  }
+
+  /* --- Lightbox --- */
+  .qual-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 29, 33, 0.92);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .qual-lightbox__content {
+    max-width: 800px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .qual-lightbox__content img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .qual-lightbox__caption {
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .qual-lightbox__close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .qual-lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qual-lightbox__nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .qual-lightbox__nav--prev {
+    left: 20px;
+  }
+
+  .qual-lightbox__nav--next {
+    right: 20px;
+  }
+
+  @media (max-width: 860px) {
+    .qual-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .qual-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .qual-lightbox__nav {
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+    }
+  }
+</style>

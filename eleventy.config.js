@@ -19,6 +19,19 @@ module.exports = function (eleventyConfig) {
       .sort((a, b) => b.date - a.date);
   });
 
+  // Сертифікати/дипломи для сторінки /kvalifikatsiya/ — власник додає файли
+  // в src/certificates/, кожен окремим markdown-файлом. Порядок — за order
+  // у frontmatter (менше число = вище на сторінці), потім за датою файлу.
+  eleventyConfig.addCollection("certificates", (collectionApi) => {
+    return collectionApi
+      .getFilteredByGlob("src/certificates/*.md")
+      .sort((a, b) => {
+        const orderA = a.data.order ?? 999;
+        const orderB = b.data.order ?? 999;
+        return orderA - orderB;
+      });
+  });
+
   // ---- Фільтри ----
   eleventyConfig.addFilter("dateUk", (dateObj) => {
     return new Date(dateObj).toLocaleDateString("uk-UA", {
@@ -52,6 +65,10 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addGlobalData("currentYear", () => new Date().getFullYear());
+
+  eleventyConfig.addFilter("dump", (value) => {
+    return JSON.stringify(value ?? "").replace(/</g, "\\u003c");
+  });
 
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 
