@@ -64,14 +64,18 @@ localStorage (ключ `plgrph_maintenance_dismissed`).
 з frontmatter кожної сторінки (не видаляти сам include-файл — знадобиться
 для майбутніх технічних робіт).
 
-## Шрифти — довантажити вручну перед першим білдом
+## Шрифти
 
-WOFF2-файли не включені в репозиторій (додаються локально). Потрібні:
-- `src/assets/fonts/inter-var.woff2` — Inter Variable
-- `src/assets/fonts/manrope-var.woff2` — Manrope Variable
+- **Inter Variable** — вже включено в репозиторій (`src/assets/fonts/inter-var.woff2`), готовий до використання.
+- **Manrope Variable** — ще НЕ включено. Офіційний проєкт шрифту перейшов з GitHub на власний сайт,
+  тому автоматичне завантаження було недоступне в середовищі, де готувався цей каркас. Довантажте
+  вручну одним із способів:
+  - Google Fonts: https://fonts.google.com/specimen/Manrope → "Download family" → взяти variable-файл,
+    або скористатися google-webfonts-helper для отримання прямого .woff2
+  - Офіційний сайт шрифту (пошук "Manrope font Mikhail Sharanda")
 
-Джерело — Google Fonts (google-webfonts-helper або офіційні репозиторії
-шрифтів), варіативні (variable) версії для мінімізації кількості файлів.
+  Покладіть отриманий файл як `src/assets/fonts/manrope-var.woff2` — шлях і `@font-face` в
+  `src/_layouts/base.njk` вже налаштовані під цю назву, додаткових змін коду не потрібно.
 
 ## Команди
 
