@@ -49,6 +49,21 @@ eleventyComputed:
       {{ content | safe }}
     </div>
 
+    {% set relatedPosts = collections.blogPosts | excludeSelf(page.url) | limit(3) %}
+    {% if relatedPosts.length > 0 %}
+      <section class="post__related">
+        <h2>Читайте також</h2>
+        <div class="post__related-grid">
+          {% for related in relatedPosts %}
+            <a href="{{ related.url }}" class="post__related-card">
+              <span class="post__related-date">{{ related.date | dateUk }}</span>
+              <h3>{{ related.data.title }}</h3>
+            </a>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
     <footer class="post__footer">
       <a href="/blog/" class="btn btn--ghost">← Усі статті</a>
     </footer>
@@ -146,6 +161,49 @@ eleventyComputed:
     font-style: italic;
   }
 
+  .post__related {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .post__related h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .post__related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .post__related-card {
+    display: block;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+  }
+
+  .post__related-card:hover {
+    border-color: var(--primary);
+  }
+
+  .post__related-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .post__related-card h3 {
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 6px;
+  }
+
   .post__footer {
     margin-top: 48px;
     padding-top: 24px;
@@ -154,5 +212,6 @@ eleventyComputed:
 
   @media (max-width: 600px) {
     .post__header h1 { font-size: 24px; }
+    .post__related-grid { grid-template-columns: 1fr; }
   }
 </style>

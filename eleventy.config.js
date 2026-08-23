@@ -78,6 +78,12 @@ module.exports = function (eleventyConfig) {
     return arr.slice(0, n);
   });
 
+  // Виключає поточну сторінку зі списку колекції (для блоку "Читайте також")
+  eleventyConfig.addFilter("excludeSelf", (arr, currentUrl) => {
+    if (!Array.isArray(arr)) return arr;
+    return arr.filter((item) => item.url !== currentUrl);
+  });
+
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 
   return {
