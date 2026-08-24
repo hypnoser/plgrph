@@ -9,6 +9,7 @@ eleventyComputed:
       "headline": {{ title | dump | safe }},
       "description": {{ description | dump | safe }},
       "datePublished": {{ date | isoDate | dump | safe }},
+      "image": "https://plgrph.com{{ ogImage | default('/assets/images/og-image.jpg') }}",
       "author": {
         "@type": "Person",
         "name": "Сергій Коржов",

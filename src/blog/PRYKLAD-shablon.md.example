@@ -3,6 +3,8 @@ layout: post.njk
 title: Назва статті
 description: Короткий опис статті для списку блогу та SEO (1-2 речення).
 date: 2026-01-01
+ogImage: /assets/images/blog/nazva-statti-cover.jpg
+keywords: поліграф, точність, методологія
 ---
 
 Перший абзац статті — тут одразу дайте самодостатню відповідь на тему
