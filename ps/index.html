@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polygraph Suite v9.5</title>
+  <title>Polygraph Suite v9.6</title>
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%233a7cfd'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
@@ -162,7 +162,7 @@
   <div id="main-app-container" style="display: none;">
 
     <header class="app-header">
-      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v9.5</span></h1>
+      <h1 class="app-title">Polygraph Suite <span style="font-size: 11px; background: #f57c00; color: white; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">v9.6</span></h1>
       <div class="lang-switcher">
         <a href="index.html" class="active">UA</a>
         <a href="en/index.html">EN</a>
@@ -176,6 +176,7 @@
         <div class="ess-toolbar-sep"></div>
         <button class="ess-toolbar-btn" id="g-open" title="Відкрити (.json або .zip)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-7l-2-3H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/></svg></button>
         <button class="ess-toolbar-btn" id="g-save-json" title="Зберегти (.json або .zip)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg></button>
+        <button class="ess-toolbar-btn" id="g-save-encrypted"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9M7.5 8.5l4.5 4.5 4.5-4.5M4 21h16"/></svg><svg class="ic-lock-badge" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="10" width="12" height="10" rx="2" fill="#f5b301" stroke="#8a6300" stroke-width="1.3"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="#8a6300" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="14.5" r="1.4" fill="#8a6300"/></svg></button>
         <div class="ess-toolbar-sep"></div>
         <button class="ess-toolbar-btn" id="g-markdown" title="Експорт у Markdown (.md)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></button>
         <button class="ess-toolbar-btn" id="g-print" title="Друк / PDF"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg></button>
@@ -211,8 +212,35 @@
     <div id="tab-notes" class="suite-tab-content" style="display: none;"><main id="notes-app"></main></div>
     <div id="tab-supervision" class="suite-tab-content" style="display: none;"><main id="supervision-app"></main></div>
 
-    <input type="file" id="file-import" accept=".json,.zip" style="display: none;">
+    <input type="file" id="file-import" accept=".json,.zip,.pgse" style="display: none;">
+
+    <!-- Модалка встановлення пароля для захищеного експорту (.pgse). Текст локалізується з app.js через S.pgse_* -->
+    <div class="ess-modal-overlay" id="pgse-export-modal-overlay">
+      <div class="ess-modal">
+        <div class="ess-modal-header"><h3 id="pgse-export-title"></h3><button class="ess-modal-close" id="pgse-export-close">&times;</button></div>
+        <div class="ess-modal-body">
+          <label id="pgse-export-pass1-label"><input type="password" id="pgse-export-pass1" autocomplete="new-password"></label>
+          <label id="pgse-export-pass2-label"><input type="password" id="pgse-export-pass2" autocomplete="new-password"></label>
+          <p class="pgse-modal-hint" id="pgse-export-hint"></p>
+          <p class="pgse-modal-error" id="pgse-export-error" style="display: none;"></p>
+        </div>
+        <div class="ess-modal-footer"><button class="ess-modal-save" id="pgse-export-confirm"></button><button class="ess-modal-cancel" id="pgse-export-cancel"></button></div>
+      </div>
+    </div>
+
+    <!-- Модалка вводу пароля для розшифрування імпортованого .pgse. Текст локалізується з app.js через S.pgse_* -->
+    <div class="ess-modal-overlay" id="pgse-import-modal-overlay">
+      <div class="ess-modal">
+        <div class="ess-modal-header"><h3 id="pgse-import-title"></h3><button class="ess-modal-close" id="pgse-import-close">&times;</button></div>
+        <div class="ess-modal-body">
+          <label id="pgse-import-pass-label"><input type="password" id="pgse-import-pass" autocomplete="current-password"></label>
+          <p class="pgse-modal-error" id="pgse-import-error" style="display: none;"></p>
+        </div>
+        <div class="ess-modal-footer"><button class="ess-modal-save" id="pgse-import-confirm"></button><button class="ess-modal-cancel" id="pgse-import-cancel"></button></div>
+      </div>
+    </div>
   </div>
+
 
   <script src="lang/uk.js"></script>
   <script src="js/jszip.min.js"></script>

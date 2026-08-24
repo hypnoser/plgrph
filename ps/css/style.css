@@ -3,8 +3,8 @@
    ========================================================================== */
 * { box-sizing: border-box; }
 body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; color: #222; display: flex; flex-direction: column; min-height: 100vh; }
-.auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f5f5f5; z-index: 9999; display: flex; justify-content: center; overflow-y: auto; padding: 24px 0; }
-.auth-modal { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; margin: auto; }
+.auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f5f5f5; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 24px 0; }
+.auth-modal { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
 .auth-logo { max-width: 200px; height: auto; mix-blend-mode: multiply; margin-bottom: 20px; object-fit: contain; }
 .auth-modal h2 { margin: 0 0 10px 0; color: #222; font-size: 24px; }
 .auth-modal p { color: #666; margin: 0 0 25px 0; font-size: 14px; }
@@ -156,6 +156,10 @@ td.col-disabled input.score-input { display: none !important; }
 .ess-modal-body input[type="text"] { width: 100%; padding: 6px 8px; margin-top: 4px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
 .ess-modal-body input[type="text"]:focus { outline: none; border-color: #3a7cfd; box-shadow: 0 0 0 2px rgba(58,124,253,0.15); }
 .ess-modal-body input[type="text"]:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
+.ess-modal-body input[type="password"] { width: 100%; padding: 6px 8px; margin-top: 4px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
+.ess-modal-body input[type="password"]:focus { outline: none; border-color: #3a7cfd; box-shadow: 0 0 0 2px rgba(58,124,253,0.15); }
+.pgse-modal-hint { font-size: 11.5px; color: #777; line-height: 1.4; margin: 10px 0 0 0; }
+.pgse-modal-error { font-size: 12px; color: #c62828; background: rgba(198,40,40,0.08); border: 1px solid rgba(198,40,40,0.25); border-radius: 4px; padding: 6px 8px; margin: 10px 0 0 0; }
 .ess-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 10px; border-top: 1px solid #eee; }
 .ess-modal-save { background: #2e7d32; color: #fff; padding: 5px 14px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
 .ess-modal-save:hover { opacity: 0.9; }
@@ -270,6 +274,7 @@ td.col-disabled input.score-input { display: none !important; }
 .ic-lg { width: 40px; height: 40px; flex-shrink: 0; }
 .ic-dot { width: 9px; height: 9px; vertical-align: 0; flex-shrink: 0; }
 .ess-toolbar-btn .ic { width: 19px; height: 19px; vertical-align: -4px; }
+.ess-toolbar-btn .ic-lock-badge { position: absolute; bottom: 3px; right: 2px; width: 11px; height: 11px; }
 .ess-save-status { display: inline-flex; align-items: center; gap: 6px; }
 .kofi-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; color: #666; background: #fff; text-decoration: none; transition: all .15s; }
 .kofi-btn:hover { border-color: #3a7cfd; color: #3a7cfd; }

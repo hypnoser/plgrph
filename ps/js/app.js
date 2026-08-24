@@ -28,6 +28,88 @@ window.APP_API = (function () {
     return map[ext] || 'image/jpeg';
   }
 
+  // ── Шифрування захищеного експорту (AES-256-GCM, ключ з пароля через PBKDF2) ──
+  // Формат файлу .pgse: JSON-обгортка { pgseVersion, kdf: {salt, iterations}, iv, ciphertext } —
+  // усі бінарні поля в base64. Ключ ніколи не зберігається, лише похідний від пароля щоразу заново.
+  var PGSE_KDF_ITERATIONS = 150000;
+
+  function uint8ToBase64(uint8) {
+    var binary = '';
+    for (var i = 0; i < uint8.length; i++) binary += String.fromCharCode(uint8[i]);
+    return btoa(binary);
+  }
+
+  function base64ToUint8(base64) {
+    var binary = atob(base64);
+    var arr = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+    return arr;
+  }
+
+  function deriveAesKey(password, saltUint8) {
+    var enc = new TextEncoder();
+    return window.crypto.subtle.importKey('raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey'])
+      .then(function (baseKey) {
+        return window.crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt: saltUint8, iterations: PGSE_KDF_ITERATIONS, hash: 'SHA-256' },
+          baseKey,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      });
+  }
+
+  // plaintextBytes: Uint8Array вихідного файлу (.json або .zip, уже готового як бінарний вміст)
+  // Повертає Promise<string> — JSON-рядок формату .pgse, готовий для збереження як файл.
+  function encryptToPgse(password, plaintextBytes) {
+    var salt = window.crypto.getRandomValues(new Uint8Array(16));
+    var iv = window.crypto.getRandomValues(new Uint8Array(12));
+    return deriveAesKey(password, salt).then(function (key) {
+      return window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, plaintextBytes);
+    }).then(function (ciphertextBuf) {
+      var wrapper = {
+        pgseVersion: 1,
+        kdf: { salt: uint8ToBase64(salt), iterations: PGSE_KDF_ITERATIONS },
+        iv: uint8ToBase64(iv),
+        ciphertext: uint8ToBase64(new Uint8Array(ciphertextBuf))
+      };
+      return JSON.stringify(wrapper);
+    });
+  }
+
+  // pgseText: вміст .pgse файлу як текст. Повертає Promise<Uint8Array> розшифрованого вмісту
+  // (сам вихідний .json або .zip у байтах) або відхиляє проміс при невірному паролі/пошкодженні.
+  function decryptFromPgse(password, pgseText) {
+    var wrapper;
+    try { wrapper = JSON.parse(pgseText); }
+    catch (e) { return Promise.reject(new Error('bad_format')); }
+    if (!wrapper || wrapper.pgseVersion !== 1 || !wrapper.kdf || !wrapper.iv || !wrapper.ciphertext) {
+      return Promise.reject(new Error('bad_format'));
+    }
+    var salt = base64ToUint8(wrapper.kdf.salt);
+    var iv = base64ToUint8(wrapper.iv);
+    var ciphertext = base64ToUint8(wrapper.ciphertext);
+    return deriveAesKey(password, salt).then(function (key) {
+      // AES-GCM сам перевіряє цілісність/автентичність — невірний пароль призводить
+      // до помилки decrypt (OperationError), яку ловимо як "невірний пароль".
+      return window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ciphertext);
+    }).then(function (plainBuf) {
+      return new Uint8Array(plainBuf);
+    }).catch(function () {
+      return Promise.reject(new Error('wrong_password'));
+    });
+  }
+
+  // Розпізнає .pgse за вмістом (не лише розширенням): валідний JSON з pgseVersion:1.
+  // Дозволяє коректно обробити файл навіть якщо користувач перейменував розширення.
+  function looksLikePgse(text) {
+    try {
+      var obj = JSON.parse(text);
+      return !!(obj && obj.pgseVersion === 1 && obj.kdf && obj.iv && obj.ciphertext);
+    } catch (e) { return false; }
+  }
+
   function collectGlobalState() {
     var notesState = window.NOTES_API ? window.NOTES_API.collectState() : { text: '', imagesMeta: [] };
     return {
@@ -169,6 +251,40 @@ window.APP_API = (function () {
     } catch (e) {}
   }
 
+  // Формує вміст експорту (JSON-текст або ZIP-байти, залежно від наявності зображень)
+  // без запуску завантаження файлу — спільна логіка для звичайного й захищеного експорту.
+  // callback(err, { bytes: Uint8Array, ext: 'json'|'zip' })
+  function buildExportPayload(state, callback) {
+    if (window.NOTES_API && window.NOTES_API.hasImages()) {
+      if (!checkJSZip()) { callback(new Error('jszip_missing')); return; }
+      window.NOTES_API.getAllImageData(function (err, images) {
+        var zip = new JSZip();
+        zip.file('data.json', JSON.stringify(state, null, 2));
+        var imgFolder = zip.folder('images');
+        images.forEach(function (img) {
+          try {
+            var uint8 = dataUrlToUint8(img.dataUrl);
+            imgFolder.file(img.name, uint8, { binary: true });
+          } catch (e) {}
+        });
+        zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } }).then(function (bytes) {
+          callback(null, { bytes: bytes, ext: 'zip' });
+        });
+      });
+    } else {
+      var enc = new TextEncoder();
+      callback(null, { bytes: enc.encode(JSON.stringify(state, null, 2)), ext: 'json' });
+    }
+  }
+
+  function downloadBlob(bytes, mimeType, filename) {
+    var blob = new Blob([bytes], { type: mimeType });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function exportJson(state, safeResp, dateStr) {
     var filename = 'polygraph-suite-' + safeResp + dateStr + '.json';
     var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -209,6 +325,30 @@ window.APP_API = (function () {
       if (nameInp) nameInp.addEventListener('input', this.markUnsaved.bind(this));
       if (dateInp) dateInp.addEventListener('change', this.markUnsaved.bind(this));
 
+      // Локалізація статичного тексту модалок захищеного експорту/імпорту (.pgse)
+      var pgseSaveBtn = document.getElementById('g-save-encrypted');
+      if (pgseSaveBtn) pgseSaveBtn.title = S.pgse_export_btn_title;
+      var elExportTitle = document.getElementById('pgse-export-title');
+      if (elExportTitle) elExportTitle.textContent = S.pgse_export_modal_title;
+      var elExportPass1Label = document.getElementById('pgse-export-pass1-label');
+      if (elExportPass1Label) elExportPass1Label.insertBefore(document.createTextNode(S.pgse_export_pass1_label + ' '), elExportPass1Label.firstChild);
+      var elExportPass2Label = document.getElementById('pgse-export-pass2-label');
+      if (elExportPass2Label) elExportPass2Label.insertBefore(document.createTextNode(S.pgse_export_pass2_label + ' '), elExportPass2Label.firstChild);
+      var elExportHint = document.getElementById('pgse-export-hint');
+      if (elExportHint) elExportHint.textContent = S.pgse_export_hint;
+      var elExportConfirmBtn = document.getElementById('pgse-export-confirm');
+      if (elExportConfirmBtn) elExportConfirmBtn.textContent = S.pgse_export_confirm_btn;
+      var elExportCancelBtn = document.getElementById('pgse-export-cancel');
+      if (elExportCancelBtn) elExportCancelBtn.textContent = S.modal_cancel;
+      var elImportTitle = document.getElementById('pgse-import-title');
+      if (elImportTitle) elImportTitle.textContent = S.pgse_import_modal_title;
+      var elImportPassLabel = document.getElementById('pgse-import-pass-label');
+      if (elImportPassLabel) elImportPassLabel.insertBefore(document.createTextNode(S.pgse_import_pass_label + ' '), elImportPassLabel.firstChild);
+      var elImportConfirmBtn = document.getElementById('pgse-import-confirm');
+      if (elImportConfirmBtn) elImportConfirmBtn.textContent = S.pgse_import_confirm_btn;
+      var elImportCancelBtn = document.getElementById('pgse-import-cancel');
+      if (elImportCancelBtn) elImportCancelBtn.textContent = S.modal_cancel;
+
       var btnSave = document.getElementById('g-save');
       if (btnSave) btnSave.addEventListener('click', function () { performSave(); });
 
@@ -228,6 +368,136 @@ window.APP_API = (function () {
         }
       });
 
+      // ── Захищений експорт (.pgse): та сама логіка вибору json/zip, але результат шифрується паролем ──
+      var pgseExportOverlay = document.getElementById('pgse-export-modal-overlay');
+      var pgseExportPass1 = document.getElementById('pgse-export-pass1');
+      var pgseExportPass2 = document.getElementById('pgse-export-pass2');
+      var pgseExportError = document.getElementById('pgse-export-error');
+      var pgseExportSafeResp, pgseExportDateStr, pgseExportState;
+
+      var btnSaveEncrypted = document.getElementById('g-save-encrypted');
+      if (btnSaveEncrypted && pgseExportOverlay) {
+        btnSaveEncrypted.addEventListener('click', function () {
+          performSave();
+          pgseExportState = collectGlobalState();
+          var resp = nameInp ? nameInp.value.trim() : '';
+          pgseExportSafeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_') + '-' : '';
+          pgseExportDateStr = (dateInp && dateInp.value) ? dateInp.value : new Date().toISOString().slice(0, 10);
+          pgseExportPass1.value = ''; pgseExportPass2.value = '';
+          pgseExportError.style.display = 'none';
+          pgseExportOverlay.classList.add('active');
+          pgseExportPass1.focus();
+        });
+      }
+
+      var closePgseExportModal = function () { if (pgseExportOverlay) pgseExportOverlay.classList.remove('active'); };
+      var pgseExportClose = document.getElementById('pgse-export-close');
+      var pgseExportCancel = document.getElementById('pgse-export-cancel');
+      if (pgseExportClose) pgseExportClose.addEventListener('click', closePgseExportModal);
+      if (pgseExportCancel) pgseExportCancel.addEventListener('click', closePgseExportModal);
+      if (pgseExportOverlay) pgseExportOverlay.addEventListener('click', function (e) { if (e.target === pgseExportOverlay) closePgseExportModal(); });
+
+      var pgseExportConfirm = document.getElementById('pgse-export-confirm');
+      if (pgseExportConfirm) pgseExportConfirm.addEventListener('click', function () {
+        var p1 = pgseExportPass1.value, p2 = pgseExportPass2.value;
+        pgseExportError.style.display = 'none';
+        if (!p1) { pgseExportError.textContent = S.pgse_err_empty; pgseExportError.style.display = 'block'; return; }
+        if (p1 !== p2) { pgseExportError.textContent = S.pgse_err_mismatch; pgseExportError.style.display = 'block'; return; }
+
+        pgseExportConfirm.disabled = true;
+        buildExportPayload(pgseExportState, function (err, payload) {
+          if (err) { pgseExportConfirm.disabled = false; pgseExportError.textContent = S.err_jszip_missing; pgseExportError.style.display = 'block'; return; }
+          encryptToPgse(p1, payload.bytes).then(function (pgseText) {
+            var filename = 'polygraph-suite-' + pgseExportSafeResp + pgseExportDateStr + '.pgse';
+            downloadBlob(new TextEncoder().encode(pgseText), 'application/json', filename);
+            pgseExportConfirm.disabled = false;
+            closePgseExportModal();
+          }).catch(function () {
+            pgseExportConfirm.disabled = false;
+            pgseExportError.textContent = S.pgse_err_encrypt_failed;
+            pgseExportError.style.display = 'block';
+          });
+        });
+      });
+
+      // ── Розпізнавання й маршрутизація імпортованого файлу: .pgse (за розширенням АБО за вмістом,
+      // якщо файл перейменували), звичайний .json, звичайний .zip ──
+      var pgseImportOverlay = document.getElementById('pgse-import-modal-overlay');
+      var pgseImportPass = document.getElementById('pgse-import-pass');
+      var pgseImportError = document.getElementById('pgse-import-error');
+      var pgseImportConfirm = document.getElementById('pgse-import-confirm');
+      var pgsePendingText = null; // текст .pgse-файлу, що очікує розшифрування
+
+      var closePgseImportModal = function () {
+        if (pgseImportOverlay) pgseImportOverlay.classList.remove('active');
+        pgsePendingText = null;
+        if (pgseImportPass) pgseImportPass.value = '';
+      };
+
+      function openPgseImportModal(pgseText) {
+        pgsePendingText = pgseText;
+        if (pgseImportError) pgseImportError.style.display = 'none';
+        if (pgseImportPass) pgseImportPass.value = '';
+        if (pgseImportOverlay) { pgseImportOverlay.classList.add('active'); pgseImportPass.focus(); }
+      }
+
+      var pgseImportClose = document.getElementById('pgse-import-close');
+      var pgseImportCancel = document.getElementById('pgse-import-cancel');
+      if (pgseImportClose) pgseImportClose.addEventListener('click', closePgseImportModal);
+      if (pgseImportCancel) pgseImportCancel.addEventListener('click', closePgseImportModal);
+      if (pgseImportOverlay) pgseImportOverlay.addEventListener('click', function (e) { if (e.target === pgseImportOverlay) closePgseImportModal(); });
+
+      if (pgseImportConfirm) pgseImportConfirm.addEventListener('click', function () {
+        var pass = pgseImportPass.value;
+        if (pgseImportError) pgseImportError.style.display = 'none';
+        if (!pass || !pgsePendingText) return;
+        pgseImportConfirm.disabled = true;
+        decryptFromPgse(pass, pgsePendingText).then(function (plainBytes) {
+          pgseImportConfirm.disabled = false;
+          // Розшифрований вміст — це або JSON-текст, або бінарний ZIP; розрізняємо за сигнатурою ZIP (PK).
+          var isZip = plainBytes.length > 2 && plainBytes[0] === 0x50 && plainBytes[1] === 0x4B;
+          closePgseImportModal();
+          if (isZip) {
+            handleZipLoad(new Blob([plainBytes]));
+          } else {
+            try { handleJsonLoad(JSON.parse(new TextDecoder().decode(plainBytes))); }
+            catch (err) { alert(S.err_json_read); }
+          }
+        }).catch(function (err) {
+          pgseImportConfirm.disabled = false;
+          if (pgseImportError) {
+            pgseImportError.textContent = (err && err.message === 'bad_format') ? S.pgse_err_bad_format : S.pgse_err_wrong_password;
+            pgseImportError.style.display = 'block';
+          }
+        });
+      });
+
+      function routeImportedFile(file) {
+        var name = file.name.toLowerCase();
+        if (name.endsWith('.pgse')) {
+          var pgseReader = new FileReader();
+          pgseReader.onload = function (evt) { openPgseImportModal(evt.target.result); };
+          pgseReader.onerror = function () { alert(S.err_json_read); };
+          pgseReader.readAsText(file);
+          return;
+        }
+        if (name.endsWith('.zip')) { handleZipLoad(file); return; }
+        if (name.endsWith('.json')) {
+          var reader = new FileReader();
+          reader.onload = function (evt) {
+            var text = evt.target.result;
+            // Підстраховка: якщо вміст .json-файлу насправді є .pgse (перейменований вручну) —
+            // все одно розпізнаємо його як захищений, а не валимось з помилкою парсингу.
+            if (looksLikePgse(text)) { openPgseImportModal(text); return; }
+            try { handleJsonLoad(JSON.parse(text)); }
+            catch (err) { alert(S.err_json_read); }
+          };
+          reader.readAsText(file);
+          return;
+        }
+        alert(S.err_unsupported_format);
+      }
+
       var fileInput = document.getElementById('file-import');
       if (fileInput) {
         var btnOpen = document.getElementById('g-open');
@@ -235,19 +505,7 @@ window.APP_API = (function () {
         fileInput.addEventListener('change', function (e) {
           var file = e.target.files[0];
           if (!file) return;
-          var name = file.name.toLowerCase();
-          if (name.endsWith('.json')) {
-            var reader = new FileReader();
-            reader.onload = function (evt) {
-              try { handleJsonLoad(JSON.parse(evt.target.result)); }
-              catch (err) { alert(S.err_json_read); }
-            };
-            reader.readAsText(file);
-          } else if (name.endsWith('.zip')) {
-            handleZipLoad(file);
-          } else {
-            alert(S.err_unsupported_format);
-          }
+          routeImportedFile(file);
           fileInput.value = '';
         });
       }
@@ -259,19 +517,7 @@ window.APP_API = (function () {
         document.body.style.backgroundColor = '#f5f5f5';
         var file = e.dataTransfer.files && e.dataTransfer.files[0];
         if (!file) return;
-        var name = file.name.toLowerCase();
-        if (name.endsWith('.json')) {
-          var reader = new FileReader();
-          reader.onload = function (evt) {
-            try { handleJsonLoad(JSON.parse(evt.target.result)); }
-            catch (err) { alert(S.err_json_read); }
-          };
-          reader.readAsText(file);
-        } else if (name.endsWith('.zip')) {
-          handleZipLoad(file);
-        } else {
-          alert(S.err_unsupported_format);
-        }
+        routeImportedFile(file);
       });
 
       var btnPrint = document.getElementById('g-print');
