@@ -134,7 +134,7 @@ extraHead: |
 
     {% if collections.blogPosts and collections.blogPosts.length > 0 %}
       <div class="blog-preview__grid">
-        {% for post in collections.blogPosts | limit(3) %}
+        {% for post in collections.blogPosts | limit(6) %}
           <a href="{{ post.url }}" class="blog-card">
             <span class="blog-card__date">{{ post.date | dateUk }}</span>
             <h3>{{ post.data.title }}</h3>
