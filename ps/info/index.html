@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ==========================================================================
+     ПЛЕЙСХОЛДЕР URL: ця сторінка розрахована на розміщення за адресою
+     https://plgrph.com/ps/info/ (українська версія, коренева, як і решта сайту UA).
+     Мовні версії — https://plgrph.com/ps/info/en/ та https://plgrph.com/ps/info/es/,
+     за тим самим принципом побудови шляхів, що вже реалізований у калькуляторі
+     (plgrph.com/ps/, /ps/en/, /ps/es/) та в /ps/info.html, /ps/en/info.html.
+     Якщо фактичний шлях відрізнятиметься — замінити в canonical, hreflang, OG,
+     JSON-LD та посиланнях перемикача мов нижче.
+     ========================================================================== -->
+
+<title>Polygraph Suite — безкоштовний калькулятор ESS-M, CIT, FROSS | PLGRPH</title>
+<meta name="description" content="Безкоштовний офлайн-калькулятор ESS-M, CIT, FROSS для поліграфологів. Zero-Server: дані не залишають браузер. UA/EN/ES, онлайн і офлайн-версії.">
+<link rel="canonical" href="https://plgrph.com/ps/info/">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="uk" href="https://plgrph.com/ps/info/">
+<link rel="alternate" hreflang="en" href="https://plgrph.com/ps/info/en/">
+<link rel="alternate" hreflang="es" href="https://plgrph.com/ps/info/es/">
+<link rel="alternate" hreflang="x-default" href="https://plgrph.com/ps/info/">
+
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#0C5DC7">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Polygraph Suite — безкоштовний калькулятор для поліграфологів">
+<meta property="og:description" content="Zero-Server калькулятор ESS-M, CIT та FROSS. Дані не залишають браузер користувача. Безкоштовно, онлайн і офлайн, UA/EN/ES.">
+<meta property="og:image" content="https://plgrph.com/assets/images/og-image.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://plgrph.com/ps/info/">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="PLGRPH">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Polygraph Suite — безкоштовний калькулятор для поліграфологів">
+<meta name="twitter:description" content="ESS-M, CIT, FROSS. Дані не залишають браузер. Безкоштовно, онлайн і офлайн, UA/EN/ES.">
+<meta name="twitter:image" content="https://plgrph.com/assets/images/og-image.jpg">
+
+<!-- Self-hosted fonts, ідентичні plgrph.com -->
+<style>
+@font-face {
+  font-family: 'Manrope';
+  src: url('/assets/fonts/manrope-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+</style>
+<!-- ПРИМІТКА: шляхи до .woff2 вище — плейсхолдери за конвенцією self-hosted шрифтів
+     сайту (Manrope для заголовків, Inter для тексту). Якщо фактичні шляхи на
+     plgrph.com інші — замінити тут на реальні, або (рекомендовано) прибрати цей
+     блок @font-face повністю й підключити спільний css/fonts.css сайту, якщо
+     сторінка публікується всередині того самого 11ty-білда — див. інструкцію
+     для розробника наприкінці файлу. -->
+
+<!-- JSON-LD: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Polygraph Suite",
+  "applicationCategory": "UtilitiesApplication",
+  "applicationSubCategory": "Forensic Psychophysiology Software",
+  "operatingSystem": "Windows, macOS, Linux, будь-яка ОС із сучасним браузером",
+  "url": "https://plgrph.com/ps/",
+  "description": "Безкоштовний мультимовний (українська, англійська, іспанська) веб-калькулятор для поліграфологів. Реалізує методики ESS-M, CIT та R&I/FROSS. Архітектура Zero-Server: усі дані обробляються й зберігаються виключно локально в браузері користувача, без передачі на сервер. Доступний онлайн і у вигляді автономної офлайн-збірки для будь-якої операційної системи.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "inLanguage": ["uk", "en", "es"],
+  "softwareVersion": "9.7",
+  "publisher": {
+    "@type": "Organization",
+    "name": "PLGRPH",
+    "url": "https://plgrph.com/"
+  }
+}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Чи безпечно зберігати результати поліграфа в Polygraph Suite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Так, за архітектурою застосунку. Polygraph Suite не має серверної частини: усі введені дані (імена респондентів, бали, нотатки, зображення, документи) обробляються і зберігаються виключно в локальному сховищі браузера (localStorage та IndexedDB) на пристрої користувача. Дані не передаються в мережу і не потрапляють на жодний сервер розробника чи третіх осіб. Відповідальність за фізичну безпеку пристрою лежить на самому користувачі, як і за будь-яке інше локальне програмне забезпечення."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Яка різниця між ESS та ESS-M?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ESS-M (Empirical Scoring System — Multinomial) — це оновлена версія класичної Empirical Scoring System, опублікована Реймондом Нельсоном у 2017 році. На відміну від початкової ESS, ESS-M використовує баєсівський класифікатор із поліноміальним розподілом ймовірностей замість простіших статистичних припущень попередньої версії."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чи можна користуватися Polygraph Suite офлайн, без інтернету?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Так, двома способами. По-перше, веб-версія після першого завантаження сторінки працює без повторних звернень до мережі під час розрахунків — усі бібліотеки локальні. По-друге, для роботи в місцях без стабільного зв'язку (виїзні дослідження, режимні об'єкти) доступна автономна офлайн-збірка застосунку у вигляді файлів, яку надсилають за індивідуальним запитом користувача через email або Telegram; ця збірка відкривається прямо з пристрою без інтернету і працює на Windows, macOS та Linux."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Скільки коштує Polygraph Suite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Polygraph Suite безкоштовний. Це стосується веб-версії, офлайн-збірки, усіх трьох методик підрахунку (ESS-M, CIT, R&I/FROSS) та допоміжних інструментів — нотаток, супервізії, захищеного експорту з паролем. Окремого платного тарифу немає; проєкт підтримується добровільними внесками."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чи можна передати результати колезі або керівнику для перевірки?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Так. Сесію можна експортувати у файл (.json або .zip) і передати іншому фахівцю. Отримувач відкриває той самий безкоштовний веб-застосунок за посиланням і імпортує файл — усі дані, нотатки й вкладення відновлюються повністю в його копії застосунку."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Що таке FROSS і навіщо він потрібен?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "FROSS (Field Rank Order Scoring System), також відомий як «Велика трійка» (High Three) — допоміжний, вторинний ранговий метод аналізу релевантних питань у вкладці R&I. Він не визначає підсумковий вердикт SR/NSR/NO — це рішення поліграфолог ухвалює глобально. FROSS вказує, яке з релевантних питань найзначущіше для подальшого уточнюючого дослідження."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чи потрібна реєстрація або обліковий запис?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ні. Оскільки застосунок не має серверної частини, реєстрація технічно неможлива й непотрібна — достатньо відкрити сторінку в браузері. Доступ до самого калькулятора захищений паролем, який видається після короткої перевірки професійних знань."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Як працює захищений експорт із паролем (.pgse)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Весь вміст сесії шифрується алгоритмом AES-256-GCM, ключ похідний від пароля користувача через PBKDF2-SHA256 зі 150 000 ітерацій. Шифрування відбувається повністю на клієнті через вбудований Web Crypto API, без сторонніх бібліотек. Без правильного пароля, який передається окремим каналом, вміст файлу не піддається розшифруванню."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чи можна використовувати Polygraph Suite для командної роботи в агенції?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Так, хоча централізованого серверного акаунта для команди немає. Обмін файлами сесій і вкладка «Супервізія» дозволяють кільком фахівцям обмінюватися результатами того самого респондента та контролювати якість роботи — без окремого платного тарифу."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чим Polygraph Suite відрізняється від ручного підрахунку в Excel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Швидкістю, відсутністю арифметичних помилок при підсумовуванні балів, автоматичною побудовою візуалізацій (графік значущості FROSS, позначки розбіжностей у супервізії) і єдиним стандартизованим підходом до застосування методики між фахівцями та сесіями."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Чи можна роздрукувати або зберегти результат як PDF для замовника?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Так. Вбудована функція друку формує чистий структурований вивід без службових елементів інтерфейсу, який через стандартний діалог друку браузера можна зберегти як PDF. Замовнику не потрібно відкривати сам застосунок."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "На яких операційних системах працює офлайн-версія?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Офлайн-збірка — це набір локальних файлів того самого застосунку, що відкриваються в браузері безпосередньо з пристрою. Оскільки застосунок не залежить від операційної системи, а лише від браузера, офлайн-версія однаково працює на Windows, macOS і Linux."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "PLGRPH", "item": "https://plgrph.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Для фахівців", "item": "https://plgrph.com/dlya-fahivtsiv/" },
+    { "@type": "ListItem", "position": 3, "name": "Polygraph Suite: про застосунок", "item": "https://plgrph.com/ps/info/" }
+  ]
+}
+</script>
+
+<!-- JSON-LD: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PLGRPH",
+  "url": "https://plgrph.com/",
+  "logo": "https://plgrph.com/assets/images/logo-transparent.png",
+  "sameAs": [
+    "https://t.me/plgrph_ukr",
+    "https://www.linkedin.com/company/plgrph/",
+    "https://www.facebook.com/plgrph"
+  ]
+}
+</script>
+<!-- ПРИМІТКА: LinkedIn і Facebook у sameAs — ПЛЕЙСХОЛДЕРИ, акаунти ще не створені. ЗАМІНИТИ на реальні посилання або прибрати з масиву до моменту створення. Telegram @plgrph_ukr — реальний. -->
+
+<style>
+  /* ==========================================================================
+     ДИЗАЙН-СИСТЕМА — синхронізовано з фактичною палітрою редизайну plgrph.com:
+     блакитний #0C5DC7 (WCAG AA) / темний #0A4FA8 / бурштиновий акцент #D98E2F
+     (--accent-dark: #A8641A для тексту на світлому фоні, WCAG-безпечний)
+     фон #F7F9FB / текст #1A1D21 / другорядний #5B6470 / бордери #E3E7EC
+     Шрифти: Manrope (заголовки) + Inter (текст), self-hosted, без Google Fonts CDN.
+     ========================================================================== */
+  :root {
+    --blue: #0C5DC7;
+    --blue-dark: #0A4FA8;
+    --amber: #D98E2F;
+    --amber-dark: #A8641A; /* WCAG-безпечний бурштиновий текст на світлому фоні (4.66 контраст) */
+    --bg: #F7F9FB;
+    --text: #1A1D21;
+    --text-secondary: #5B6470;
+    --card-bg: #fff;
+    --border: #E3E7EC;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --max-width: 760px;       /* звужено для кращого сприйняття довгого тексту */
+    --max-width-wide: 960px;  /* для карток/сіток/hero */
+    --font-head: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .wrap-wide {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-head);
+    line-height: 1.22;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: 1.9rem; margin: 0 0 14px; }
+  h2 { font-size: 1.4rem; margin: 0 0 18px; }
+  h3 { font-size: 1.1rem; margin: 0 0 8px; }
+  h4 { font-size: 0.98rem; margin: 0 0 6px; }
+
+  p { margin: 0 0 14px; font-size: 0.98rem; }
+  ul, ol { margin: 0 0 14px; padding-left: 20px; }
+  li { margin-bottom: 5px; font-size: 0.98rem; }
+
+  /* ===== HEADER ===== */
+  header.site-header {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand img {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+  .brand-text {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text);
+  }
+  nav.top-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  nav.top-nav a {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  .lang-switch {
+    display: flex;
+    gap: 4px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .lang-switch a {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+  .lang-switch a.active {
+    background: var(--blue);
+    color: #fff;
+  }
+  .lang-switch a:hover { text-decoration: none; }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 44px 0 32px;
+    text-align: center;
+  }
+  .hero .wrap-wide { max-width: 720px; }
+  .hero-eyebrow {
+    display: inline-block;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .hero h1 { font-size: 1.85rem; }
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    max-width: 600px;
+    margin: 0 auto 24px;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+  .hero-badge {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .cta-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-head);
+  }
+  .btn:hover { text-decoration: none; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary { background: var(--card-bg); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* ===== SECTIONS ===== */
+  section { padding: 38px 0; }
+  section.alt-bg {
+    background: var(--card-bg);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .section-intro {
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin-bottom: 22px;
+    font-size: 0.96rem;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+  }
+
+  /* ===== FEATURE GRID (Zero-Server) ===== */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .feature-grid .card h4 {
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feature-grid .card p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    margin-bottom: 0;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .dot-amber { background: var(--amber); }
+
+  /* ===== METHOD CARDS ===== */
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .method-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+    display: flex;
+    flex-direction: column;
+  }
+  .method-tag {
+    display: inline-block;
+    background: rgba(12,93,199,0.08);
+    color: var(--blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    width: fit-content;
+    text-transform: uppercase;
+  }
+  .method-card h3 { margin-bottom: 6px; }
+  .method-card p { color: var(--text-secondary); font-size: 0.88rem; }
+  .method-card ul { color: var(--text-secondary); font-size: 0.84rem; margin-top: auto; }
+
+  .table-scroll { overflow-x: auto; margin-bottom: 8px; }
+  table.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 0.85rem;
+    min-width: 520px;
+  }
+  table.compare-table th, table.compare-table td {
+    border: 1px solid var(--border);
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.compare-table th { background: #F7F9FB; font-weight: 700; color: var(--text); }
+  table.compare-table td { color: var(--text-secondary); }
+
+  .sources-block {
+    border-left: 3px solid var(--amber);
+    padding: 2px 0 2px 16px;
+    margin: 18px 0;
+  }
+  .sources-block ul { margin-bottom: 0; }
+  .sources-block li { font-size: 0.83rem; color: var(--text-secondary); }
+
+  /* ===== AUDIENCE ===== */
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+  }
+  .audience-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+  }
+  .audience-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+    font-family: var(--font-head);
+  }
+  .audience-card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ===== ROADMAP / STEPPER ===== */
+  .roadmap-note {
+    background: #FBF3E7;
+    border: 1px solid #EFD8AF;
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    margin-bottom: 24px;
+  }
+  .roadmap {
+    position: relative;
+    margin-left: 4px;
+    padding-left: 30px;
+    border-left: 2px solid var(--border);
+  }
+  .roadmap-step { position: relative; padding-bottom: 30px; }
+  .roadmap-step:last-child { padding-bottom: 4px; }
+  .roadmap-step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -41px;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: var(--amber);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.78rem;
+    font-family: var(--font-head);
+  }
+  .roadmap-step h4 { margin-bottom: 5px; }
+  .roadmap-step p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ===== CAROUSEL ===== */
+  .carousel-wrap { margin: 20px 0; }
+  .carousel-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+  }
+  .carousel-tab {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .carousel-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+    border-radius: var(--radius-lg);
+  }
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .carousel-slide .shot-placeholder {
+    background: repeating-linear-gradient(45deg, #EEF1F5, #EEF1F5 10px, #F7F9FB 10px, #F7F9FB 20px);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .carousel-slide h4 { margin-bottom: 5px; }
+  .carousel-slide p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0; }
+
+  /* ===== SECURITY LIST ===== */
+  .security-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .security-item:last-child { border-bottom: none; }
+  .security-item .dot { margin-top: 7px; }
+  .security-item h4 { margin-bottom: 3px; }
+  .security-item p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ===== OFFLINE BLOCK ===== */
+  .offline-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    margin-top: 20px;
+  }
+  .offline-modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .offline-mode-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+  }
+  .offline-mode-card h4 {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--blue);
+  }
+  .offline-mode-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0; }
+  .os-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .os-badge {
+    background: #F7F9FB;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+  .offline-cta {
+    background: #EEF4FC;
+    border: 1px solid #CFE0F5;
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+  .offline-cta strong { color: var(--text); }
+
+  /* ===== FAQ ===== */
+  details.faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2px 16px;
+    margin-bottom: 8px;
+  }
+  details.faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-head);
+    font-size: 0.94rem;
+    padding: 12px 0;
+    list-style: none;
+    position: relative;
+    padding-right: 22px;
+  }
+  details.faq-item summary::-webkit-details-marker { display: none; }
+  details.faq-item summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 10px;
+    font-size: 1.2rem;
+    color: var(--amber-dark);
+  }
+  details.faq-item[open] summary::after { content: '−'; }
+  details.faq-item .faq-answer {
+    color: var(--text-secondary);
+    padding-bottom: 14px;
+    font-size: 0.88rem;
+  }
+
+  /* ===== COMPARISON w/ manual ===== */
+  .compare-manual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 560px) {
+    .compare-manual-grid { grid-template-columns: 1fr; }
+  }
+  .compare-manual-col {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+  }
+  .compare-manual-col.highlight {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 1px var(--blue);
+  }
+  .compare-manual-col h4 { margin-bottom: 10px; }
+  .compare-manual-col ul { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 0; }
+
+  /* ===== CTA FINAL ===== */
+  .cta-final { text-align: center; padding: 48px 0; }
+  .cta-final h2 { max-width: 560px; margin-left: auto; margin-right: auto; }
+  .cta-final p.section-intro { margin-left: auto; margin-right: auto; text-align: center; }
+
+  /* ===== FOOTER ===== */
+  footer.site-footer {
+    background: #0F1216;
+    color: #A9B2BD;
+    padding: 28px 0;
+    font-size: 0.82rem;
+  }
+  footer.site-footer a { color: #A9B2BD; }
+  footer.site-footer .footer-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  footer.site-footer .footer-links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .lang-note {
+    background: #FBF3E7;
+    border: 1px solid #EFD8AF;
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 18px;
+  }
+
+  code {
+    background: #EEF1F5;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+    body { font-size: 15px; }
+    p, li { font-size: 0.92rem; }
+    .hero { padding: 32px 0 24px; }
+    section { padding: 28px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="https://plgrph.com/">
+      <img src="https://plgrph.com/assets/images/logo-transparent.png" alt="PLGRPH — логотип">
+    </a>
+    <nav class="top-nav">
+      <a href="#methodology">Методики</a>
+      <a href="#scenarios">Сценарії</a>
+      <a href="#offline">Онлайн/офлайн</a>
+      <a href="#faq">FAQ</a>
+      <div class="lang-switch">
+        <a href="https://plgrph.com/ps/info/" class="active">UA</a>
+        <a href="https://plgrph.com/ps/info/en/">EN</a>
+        <a href="https://plgrph.com/ps/info/es/">ES</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<article>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap-wide">
+      <span class="hero-eyebrow">Безкоштовний інструмент для поліграфологів</span>
+      <h1>Polygraph Suite: калькулятор ESS-M, CIT та FROSS, що ніколи не залишає ваш пристрій</h1>
+      <p class="hero-sub">
+        Мультимовний (українська, англійська, іспанська) калькулятор для розрахунку результатів
+        психофізіологічних досліджень за трьома валідованими науковими методиками — онлайн і
+        офлайн, без реєстрації, без передачі даних у мережу.
+      </p>
+      <div class="hero-badges">
+        <span class="hero-badge">Безкоштовно</span>
+        <span class="hero-badge">Архітектура Zero-Server</span>
+        <span class="hero-badge">Онлайн і офлайн</span>
+        <span class="hero-badge">UA · EN · ES</span>
+        <span class="hero-badge">Windows · macOS · Linux</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/">Спробувати калькулятор</a>
+        <a class="btn btn-secondary" href="#methodology">Дізнатися про методики</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ВСТУП ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Що таке Polygraph Suite</h2>
+      <p>
+        Polygraph Suite — це безкоштовний калькулятор для поліграфологів, призначений для
+        розрахунку результатів психофізіологічних досліджень (ПФД) за трьома валідованими
+        науковими методиками: <strong>ESS-M</strong>, <strong>CIT</strong> та
+        <strong>R&amp;I (FROSS)</strong>. Застосунок доступний трьома мовами — українською,
+        англійською та іспанською — і призначений для практикуючих фахівців.
+      </p>
+      <p>
+        Застосунок розроблено командою <a href="https://plgrph.com/">PLGRPH</a> — того самого
+        центру оцінки достовірності інформації, що проводить поліграфологічні перевірки з
+        2013 року й надає <a href="https://plgrph.com/dlya-fahivtsiv/">методологічну підтримку
+        фахівцям</a>.
+      </p>
+      <p>
+        Спробувати калькулятор можна безпосередньо за посиланням
+        <a href="https://plgrph.com/ps/">plgrph.com/ps/</a> — без встановлення, якщо йдеться про
+        браузерну версію.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ZERO-SERVER ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Архітектура Zero-Server: чому це важливо</h2>
+      <p class="section-intro">
+        Психофізіологічні дослідження оперують чутливими персональними даними. Для цієї категорії
+        інформації спосіб зберігання не менш важливий, ніж точність самої методики підрахунку.
+      </p>
+      <!-- SCREENSHOT: Схема архітектури — пристрій користувача з іконками localStorage/IndexedDB, перекреслена стрілка до хмари/сервера -->
+      <div class="feature-grid">
+        <div class="card">
+          <h4><span class="dot"></span>Немає серверної інфраструктури</h4>
+          <p>Застосунок не надсилає дані на бекенд, тому що бекенда, який міг би їх прийняти, не існує.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Локальне зберігання</h4>
+          <p>Дані сесії — у localStorage браузера, зображення нотаток — в IndexedDB на пристрої користувача.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Онлайн і офлайн</h4>
+          <p>Веб-версія працює без мережі після завантаження; окремо доступна автономна офлайн-збірка файлів.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Будь-яка операційна система</h4>
+          <p>Немає прив'язки до конкретної ОС — застосунок працює в браузері на Windows, macOS і Linux.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ МЕТОДИКИ ============ -->
+  <section id="methodology">
+    <div class="wrap-wide">
+      <h2>Три валідовані наукові методики</h2>
+      <p class="section-intro">
+        Кожна вкладка калькулятора реалізує окрему, самостійну методику аналізу — вони покривають
+        різні типи тестів і різні задачі поліграфологічного дослідження.
+      </p>
+
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="method-tag">Порівняльний тест (CQT)</span>
+          <h3>ESS-M</h3>
+          <p>
+            Empirical Scoring System — Multinomial. Оновлена версія ESS, опублікована Реймондом
+            Нельсоном у 2017 році. Використовує баєсівський класифікатор із поліноміальним
+            розподілом для аналізу даних порівняльних тестів. Підтримує скринінговий і
+            діагностичний формати з окремим оцінюванням п'яти фізіологічних каналів: грудного й
+            черевного дихання, електродермальної активності (ЕДА), кардіо та фотоплетизмографії.
+          </p>
+          <ul>
+            <li>Вердикт: SR / NSR / NO або DI / NDI / INC</li>
+            <li>5 фізіологічних каналів окремо</li>
+            <li>Формати DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Прихована інформація</span>
+          <h3>CIT</h3>
+          <p>
+            Concealed Information Test — тест на приховану інформацію, запропонований Девідом
+            Ліккеном у 1959 році. Система оцінювання побудована на матриці ймовірностей Ліккена,
+            що дозволяє статистично оцінити ймовірність володіння респондентом інформацією,
+            недоступною непричетній особі.
+          </p>
+          <ul>
+            <li>Матриця ймовірностей Ліккена</li>
+            <li>Вердикт: RI / NRI / NO</li>
+            <li>Ґрунтується на теорії орієнтовної реакції</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Скринінг, допоміжний метод</span>
+          <h3>R&amp;I / FROSS</h3>
+          <p>
+            Field Rank Order Scoring System («Велика трійка», High Three) — ранговий метод аналізу
+            релевантних та іррелевантних питань. FROSS — допоміжний, вторинний метод: він не
+            визначає вердикт SR/NSR/NO — це рішення поліграфолог ухвалює глобально. Метод вказує,
+            яке релевантне питання найзначущіше для подальшого уточнюючого дослідження.
+          </p>
+          <ul>
+            <li>НЕ визначає вердикт самостійно</li>
+            <li>Ранжування 5 релевантних питань по 3 каналах</li>
+            <li>Графік значущості: топ-3 кольором</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT: Порівняльна ілюстрація трьох вкладок інтерфейсу поруч — ESS-M, CIT, R&I -->
+
+      <h3 style="margin-top:6px;">Порівняння методик</h3>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Методика</th>
+              <th>Тип тесту</th>
+              <th>Наукова база</th>
+              <th>Що показує вердикт</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ESS-M</td>
+              <td>Порівняльний (CQT)</td>
+              <td>Баєсівський поліноміальний класифікатор (Nelson, 2017)</td>
+              <td>SR/NSR/NO або DI/NDI/INC — самостійний вердикт по 5 каналах</td>
+            </tr>
+            <tr>
+              <td>CIT</td>
+              <td>Прихована інформація</td>
+              <td>Матриця ймовірностей Ліккена (1959)</td>
+              <td>RI/NRI/NO — ймовірність володіння прихованою інформацією</td>
+            </tr>
+            <tr>
+              <td>R&amp;I / FROSS</td>
+              <td>Скринінговий, ранговий</td>
+              <td>Krapohl, Shaw (2015); Krapohl, Senter, Stern (2005)</td>
+              <td>Ранжування питань — НЕ самостійний вердикт</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sources-block">
+        <h4>Наукові джерела</h4>
+        <ul>
+          <li>Nelson R. (2017). Multinomial reference distributions for the Empirical Scoring System. <em>Polygraph and Forensic Credibility Assessment</em>, 46(2), 81–115.</li>
+          <li>Nelson R. (2016). Scientific (analytic) theory of polygraph testing. <em>APA Magazine</em>, 49(5), 69–82.</li>
+          <li>Krapohl D.J. (2010). Reference Guide for the Empirical Scoring System — Multinomial (ESS-M). Lafayette Instrument Company.</li>
+          <li>Lykken D.T. (1959). The GSR in the detection of guilt. <em>Journal of Applied Psychology</em>, 43(6), 385–388.</li>
+          <li>Krapohl D., Shaw P. (2015). Fundamentals of Polygraph Practice, p. 122.</li>
+          <li>Krapohl D., Senter S., Stern B. (2005). An exploration of methods for analysis of multiple-issue relevant/irrelevant screening data. <em>Polygraph</em>, 34(1), 47–61.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ДОПОМІЖНІ ІНСТРУМЕНТИ ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Допоміжні інструменти</h2>
+
+      <h3>Нотатки</h3>
+      <p>
+        Markdown-редактор для спостережень поліграфолога під час дослідження. Підтримує
+        прикріплення зображень (JPG/PNG/WEBP, до 5 МБ на файл, до 20 файлів) та документів
+        (PDF/DOC(X)/XLS(X)/PPT(X)/TXT, до 20 МБ на файл, до 20 файлів). Усі вкладення зберігаються
+        так само локально, як і решта даних сесії.
+      </p>
+      <!-- SCREENSHOT: Вкладка "Нотатки" — Markdown-редактор, сітка мініатюр прикріплених зображень і плитки документів -->
+
+      <h3>Супервізія</h3>
+      <p>
+        Другий фахівець вводить власні бали ESS-M поруч з оригінальними — оригінальні бали при
+        цьому лишаються нередагованими. Система в реальному часі показує позначки розбіжності по
+        кожній комірці таблиці й підсумок: скільки оцінок збіглися, яка сумарна розбіжність, і
+        прямо називає найпроблемніший фізіологічний канал — той із п'яти, де сума розбіжностей
+        найвища. Корисно для навчання молодших фахівців, контролю якості й наставництва.
+      </p>
+      <!-- SCREENSHOT: Вкладка "Супервізія" — таблиця з оригінальними та супервізорськими балами поруч, кольорові позначки розбіжностей -->
+    </div>
+  </section>
+
+  <!-- ============ ДЛЯ КОГО ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Для кого цей інструмент</h2>
+      <p class="section-intro">
+        Polygraph Suite розрахований на практикуючих фахівців трьох мовних сегментів. Інструмент
+        не є навчальним посібником для студентів чи новачків у методі.
+      </p>
+      <div class="audience-grid">
+        <div class="audience-card">
+          <span class="audience-num">1</span>
+          <h4>Одноосібні практикуючі поліграфологи</h4>
+          <p>Власний робочий інструмент для підрахунку результатів і портативний архів обрахунків.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">2</span>
+          <h4>Відділи та агенції з кількома фахівцями</h4>
+          <p>Обмін результатами між колегами та спільна робота над одним і тим самим респондентом.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">3</span>
+          <h4>Керівники й старші фахівці, що супервізують</h4>
+          <p>Контроль якості роботи підлеглих поліграфологів через вкладку «Супервізія».</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ СЦЕНАРІЇ ============ -->
+  <section class="alt-bg" id="scenarios">
+    <div class="wrap">
+      <h2>Розширені сценарії використання</h2>
+      <div class="roadmap-note">
+        Пункти нижче — це не окремі «функції» з окремими кнопками в інтерфейсі, а способи
+        застосування вже наявного функціоналу (експорт/імпорт файлів, вкладка «Супервізія»,
+        захищене шифрування), скомбінованого користувачем під власну робочу практику. Усі
+        сценарії доступні безкоштовно.
+      </div>
+
+      <div class="roadmap">
+        <div class="roadmap-step" data-step="1">
+          <h4>Обмін між поліграфологами при повторному тестуванні</h4>
+          <p>
+            Другий поліграфолог, який проводить додаткове дослідження раніше протестованого
+            респондента, відкриває отриманий файл сесії у своїй копії застосунку — всі дані,
+            нотатки, зображення й документи відновлюються повністю. Далі додає власний тест у тій
+            самій сесії.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="2">
+          <h4>Надсилання результатів керівнику чи замовнику</h4>
+          <p>
+            Отримувач відкриває той самий безкоштовний застосунок за посиланням, без реєстрації, і
+            імпортує надісланий файл — простий крок, а не бар'єр для людини, яка бачить застосунок
+            вперше.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="3">
+          <h4>Проведення супервізії керівником чи старшим фахівцем</h4>
+          <p>
+            Супервізор відкриває файл у тому ж застосунку, переходить на вкладку «Супервізія»,
+            вводить власні бали поруч з оригінальними (незмінними) і бачить позначки розбіжності в
+            реальному часі.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="4">
+          <h4>Виявлення систематичних помилок інтерпретації окремих каналів</h4>
+          <p>
+            Повторний незалежний підрахунок супервізором після порівняння показує розбіжність — і
+            система автоматично вказує саме на проблемний канал за сумою розбіжностей. Це виявляє
+            систематичну помилку конкретного фахівця, а не одноразову випадковість.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="5">
+          <h4>Захищений обмін файлом із чутливими даними</h4>
+          <p>
+            Передача файлу результатів через канали зв'язку, що не гарантують конфіденційності —
+            захищений .pgse-файл марний без пароля, який передається окремим каналом.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="6">
+          <h4>Друк або PDF-звіт для замовника</h4>
+          <p>
+            Вбудована функція друку формує чистий структурований вивід (без службових елементів
+            інтерфейсу) з таблицями та висновком, який зберігається як PDF через стандартний
+            діалог друку браузера.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="7">
+          <h4>Архів власних обрахунків</h4>
+          <p>
+            Кожна сесія зберігається як окремий файл з автоіменуванням (ім'я респондента + дата) —
+            портативний файл, який користувач самостійно впорядковує на своєму пристрої чи в
+            хмарному сховищі на власний вибір.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ КАРУСЕЛЬ ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Інтерфейс калькулятора</h2>
+      <p class="section-intro">Огляд основних вкладок застосунку.</p>
+
+      <div class="carousel-wrap">
+        <div class="carousel-tabs" id="carouselTabs">
+          <button class="carousel-tab active" data-slide="0">ESS-M</button>
+          <button class="carousel-tab" data-slide="1">CIT</button>
+          <button class="carousel-tab" data-slide="2">R&amp;I</button>
+          <button class="carousel-tab" data-slide="3">Нотатки</button>
+          <button class="carousel-tab" data-slide="4">Супервізія</button>
+        </div>
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Вкладка ESS-M — таблиця балів по 5 каналах, підсумковий вердикт -->Скріншот: вкладка ESS-M</div>
+            <h4>ESS-M</h4>
+            <p>Таблиця підрахунку балів по п'яти фізіологічних каналах.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Вкладка CIT — інтерфейс введення даних матриці Ліккена -->Скріншот: вкладка CIT</div>
+            <h4>CIT</h4>
+            <p>Розрахунок за матрицею ймовірностей Ліккена.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Вкладка R&I/FROSS — графік значущості з топ-3 кольором -->Скріншот: вкладка R&amp;I / FROSS</div>
+            <h4>R&amp;I / FROSS</h4>
+            <p>Ранжування релевантних питань із графіком значущості.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Вкладка Нотатки — Markdown-редактор, мініатюри зображень і документів -->Скріншот: вкладка Нотатки</div>
+            <h4>Нотатки</h4>
+            <p>Markdown-редактор спостережень із прикріпленням зображень і документів.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Вкладка Супервізія — оригінальні й супервізорські бали поруч -->Скріншот: вкладка Супервізія</div>
+            <h4>Супервізія</h4>
+            <p>Порівняння балів із автоматичним визначенням проблемного каналу.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ОНЛАЙН/ОФЛАЙН ============ -->
+  <section class="alt-bg" id="offline">
+    <div class="wrap">
+      <h2>Онлайн і офлайн: два способи використання</h2>
+      <p class="section-intro">
+        Polygraph Suite можна використовувати як безпосередньо в браузері з підключенням до
+        інтернету, так і повністю автономно, без мережі.
+      </p>
+
+      <div class="offline-block">
+        <div class="offline-modes">
+          <div class="offline-mode-card">
+            <h4><span class="dot"></span>Онлайн-версія</h4>
+            <p>
+              Відкривається за посиланням <a href="https://plgrph.com/ps/">plgrph.com/ps/</a> у
+              будь-якому сучасному браузері. Після першого завантаження сторінки подальша робота
+              й розрахунки не потребують повторних звернень до мережі — усі бібліотеки локальні.
+            </p>
+          </div>
+          <div class="offline-mode-card">
+            <h4><span class="dot dot-amber"></span>Офлайн-збірка</h4>
+            <p>
+              Для роботи там, де стабільного зв'язку немає — виїзні дослідження, режимні об'єкти,
+              місця без покриття — доступна автономна збірка застосунку у вигляді файлів. Вона
+              відкривається прямо з пристрою без інтернету.
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-bottom:8px;"><strong>Офлайн-збірка працює на будь-якій операційній системі:</strong></p>
+        <div class="os-badges">
+          <span class="os-badge">Windows</span>
+          <span class="os-badge">macOS</span>
+          <span class="os-badge">Linux</span>
+        </div>
+
+        <div class="offline-cta" style="margin-top:16px;">
+          <strong>Як отримати офлайн-версію.</strong> Автономна збірка не викладена у вільний
+          доступ для завантаження — її висилають індивідуально за запитом користувача через
+          <a href="https://t.me/plgrph_ukr">Telegram</a> або email, вказавши кількість пристроїв,
+          для яких потрібна збірка.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЕЗПЕКА ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Безпека й обмін файлами</h2>
+      <div class="card">
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Стандартний експорт</h4>
+            <p><code>.json</code> — без зображень і документів, або <code>.zip</code> — з папками images/ та documents/, з автоматичним іменуванням файлу.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot dot-amber" style="margin-top:6px;"></span>
+          <div>
+            <h4>Захищений експорт із паролем (.pgse)</h4>
+            <p>
+              Окрема кнопка з іконкою жовтого замка шифрує весь файл алгоритмом AES-256-GCM (ключ
+              похідний від пароля через PBKDF2-SHA256, 150 000 ітерацій), повністю на клієнті
+              через вбудований Web Crypto API. Файл марний без пароля, який передається окремим
+              каналом зв'язку.
+            </p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Розумний імпорт</h4>
+            <p>Застосунок автоматично розпізнає формат файлу (звичайний чи захищений) і запитує пароль лише тоді, коли це необхідно.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ПОРІВНЯННЯ ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Порівняно з ручним підрахунком</h2>
+      <p class="section-intro">
+        Методики ESS-M, CIT та R&amp;I можна застосовувати і вручну — на папері чи в Excel-таблиці
+        власної побудови. Ключова відмінність калькулятора — не в самій методиці, а в способі її
+        застосування.
+      </p>
+      <div class="compare-manual-grid">
+        <div class="compare-manual-col">
+          <h4>Ручний підрахунок / Excel</h4>
+          <ul>
+            <li>Підсумовування балів вручну — ризик арифметичної помилки</li>
+            <li>Візуалізації потрібно будувати самостійно</li>
+            <li>Формат таблиці й підхід відрізняються від фахівця до фахівця</li>
+            <li>Обмін файлом супроводжується ризиком розбіжностей у структурі таблиці</li>
+          </ul>
+        </div>
+        <div class="compare-manual-col highlight">
+          <h4>Polygraph Suite</h4>
+          <ul>
+            <li>Підрахунок балів автоматизований — арифметичні помилки виключені</li>
+            <li>Графік значущості FROSS і позначки розбіжностей будуються автоматично</li>
+            <li>Єдиний стандартизований підхід між сесіями та фахівцями</li>
+            <li>Формат обміну (.json/.zip/.pgse) незмінний і сумісний між копіями застосунку</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>Часті запитання</h2>
+
+      <details class="faq-item">
+        <summary>Чи безпечно зберігати результати поліграфа в Polygraph Suite?</summary>
+        <div class="faq-answer">
+          Так, за архітектурою застосунку. Усі дані зберігаються виключно в локальному сховищі
+          браузера (localStorage та IndexedDB) на пристрої користувача і не передаються в мережу.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Яка різниця між ESS та ESS-M?</summary>
+        <div class="faq-answer">
+          ESS-M — оновлена версія класичної ESS (Нельсон, 2017), що використовує баєсівський
+          класифікатор із поліноміальним розподілом ймовірностей.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чи можна користуватися Polygraph Suite офлайн, без інтернету?</summary>
+        <div class="faq-answer">
+          Так, двома способами: веб-версія не потребує повторних звернень до мережі під час
+          розрахунків, а для повністю автономної роботи доступна офлайн-збірка файлів, яку
+          надсилають за індивідуальним запитом через email або Telegram — вона працює на Windows,
+          macOS та Linux.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Скільки коштує Polygraph Suite?</summary>
+        <div class="faq-answer">
+          Безкоштовно — включно з усіма трьома методиками, нотатками, супервізією й захищеним
+          експортом. Окремого платного тарифу немає.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чи можна передати результати колезі для перевірки?</summary>
+        <div class="faq-answer">
+          Так, через експорт/імпорт файлу сесії. Отримувач відкриває той самий застосунок за
+          посиланням і імпортує файл — усі дані відновлюються повністю.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Що таке FROSS і навіщо він потрібен?</summary>
+        <div class="faq-answer">
+          Допоміжний ранговий метод аналізу релевантних питань у вкладці R&amp;I. Він не визначає
+          вердикт SR/NSR/NO — лише вказує, яке питання найзначущіше для подальшого дослідження.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чи потрібна реєстрація або обліковий запис?</summary>
+        <div class="faq-answer">
+          Ні, через відсутність серверної частини реєстрація непотрібна. Доступ до калькулятора
+          захищений паролем, який видається після короткої перевірки професійних знань.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Як працює захищений експорт із паролем (.pgse)?</summary>
+        <div class="faq-answer">
+          Вміст сесії шифрується AES-256-GCM, ключ похідний від пароля через PBKDF2-SHA256
+          (150 000 ітерацій), повністю на клієнті через Web Crypto API.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чи можна використовувати застосунок для командної роботи в агенції?</summary>
+        <div class="faq-answer">
+          Так. Обмін файлами сесій і вкладка «Супервізія» дозволяють кільком фахівцям спільно
+          працювати над одним респондентом — без платного тарифу.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чим Polygraph Suite відрізняється від ручного підрахунку в Excel?</summary>
+        <div class="faq-answer">
+          Швидкістю, відсутністю арифметичних помилок, автоматичною побудовою візуалізацій і
+          єдиним стандартизованим підходом між фахівцями та сесіями.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Чи можна роздрукувати або зберегти результат як PDF?</summary>
+        <div class="faq-answer">
+          Так, через стандартний діалог друку браузера — вбудована функція друку формує чистий
+          структурований вивід без службових елементів інтерфейсу.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>На яких операційних системах працює офлайн-версія?</summary>
+        <div class="faq-answer">
+          Офлайн-збірка — це локальні файли, що відкриваються в браузері з пристрою. Оскільки
+          застосунок не залежить від ОС, а лише від браузера, він однаково працює на Windows,
+          macOS і Linux.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-final">
+    <div class="wrap">
+      <h2>Спробувати Polygraph Suite</h2>
+      <p class="section-intro">
+        Калькулятор доступний безпосередньо в браузері, без реєстрації та встановлення. Для
+        роботи без інтернету — офлайн-збірка за запитом.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/">Відкрити plgrph.com/ps/</a>
+        <a class="btn btn-secondary" href="https://t.me/plgrph_ukr">Запросити офлайн-версію</a>
+      </div>
+    </div>
+  </section>
+
+</article>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>PLGRPH · Polygraph Suite — безкоштовний калькулятор для поліграфологів</div>
+    <div class="footer-links">
+      <a href="https://plgrph.com/ps/">Калькулятор</a>
+      <a href="https://plgrph.com/">plgrph.com</a>
+      <a href="https://t.me/plgrph_ukr">Telegram</a>
+      <a href="https://plgrph.com/ps/info/en/">EN</a>
+      <a href="https://plgrph.com/ps/info/es/">ES</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('#carouselTabs .carousel-tab');
+    var track = document.getElementById('carouselTrack');
+    if (!tabs.length || !track) return;
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var idx = parseInt(tab.getAttribute('data-slide'), 10);
+        var slide = track.children[idx];
+        if (slide) { track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' }); }
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+      });
+    });
+
+    var scrollTimeout;
+    track.addEventListener('scroll', function () {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        var trackRect = track.getBoundingClientRect();
+        var closestIdx = 0, closestDist = Infinity;
+        Array.prototype.forEach.call(track.children, function (slide, i) {
+          var dist = Math.abs(slide.getBoundingClientRect().left - trackRect.left);
+          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+        });
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        if (tabs[closestIdx]) tabs[closestIdx].classList.add('active');
+      }, 100);
+    });
+  })();
+</script>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q7JS2JHVG7');
+</script>
+
+</body>
+</html>
+
+<!--
+==============================================================================
+ІНСТРУКЦІЯ ДЛЯ AI-АСИСТЕНТА, ЩО ВЕДЕ РОЗРОБКУ САЙТУ PLGRPH.COM (Eleventy/11ty)
+Мета: коректно опублікувати три мовні версії цієї презентаційної сторінки за
+шляхами https://plgrph.com/ps/info/ (UA), /ps/info/en/ (EN), /ps/info/es/ (ES)
+на тому самому стеку, що вже використовується на сайті: Eleventy (11ty) +
+GitHub Pages + Cloudflare DNS, репозиторій hypnoser/plgrph.
+==============================================================================
+
+КРОК 1. Розташування вихідних файлів
+Три готові HTML-файли (ps-info-uk.html, ps-info-en.html, ps-info-es.html)
+містять повний inline CSS у <head> і не залежать від зовнішніх бібліотек.
+Їх потрібно інтегрувати у структуру 11ty-проєкту одним із двох способів:
+
+  Варіант А (рекомендовано, якщо сторінка має лишитись автономним HTML
+  без обробки через Nunjucks-層aut): розмістити файли як passthrough-копії
+  без layout, за аналогією з тим, як /ps/index.html, /ps/en/index.html та
+  /ps/info.html уже існують поза загальним base.njk шаблоном сайту (в
+  проєкті вже підтверджено, що каталог /ps/ не використовує спільний
+  layout сайту). У такому разі:
+    - Помістити файл як /ps/info/index.html (UA), /ps/info/en/index.html (EN),
+      /ps/info/es/index.html (ES) — саме "index.html" в підпапці, а не
+      "info.html" в корені, щоб чисті URL (/ps/info/, /ps/info/en/)
+      працювали без розширення .html через GitHub Pages.
+    - Додати відповідний шлях (наприклад "ps/info/**") до конфігурації
+      passthroughCopy в .eleventy.js / eleventy.config.js, якщо каталог /ps/
+      наразі копіюється як статичні файли (перевірити наявний запис для
+      "ps" у конфігурації — з високою ймовірністю він уже є, оскільки сам
+      калькулятор working тим самим чином).
+
+  Варіант Б (якщо потрібна інтеграція в загальний дизайн і навігацію сайту
+  через base.njk, з automated meta/OG через eleventyComputed, як на решті
+  сторінок /perevirky/, /dlya-fahivtsiv/ тощо): перенести контент кожного
+  файлу (без <html>/<head>/<style>, залишивши лише вміст <article>...</article>)
+  у Nunjucks-шаблон .njk із front matter (title, meta-description, canonical,
+  layout: base.njk), а CSS-класи — у спільний css/style.css сайту під
+  унікальним префіксом (наприклад .ps-info-*), щоб уникнути конфліктів з
+  існуючими стилями. Цей варіант складніший і на розсуд ШІ-розробника
+  доцільний лише якщо власник явно попросить повну інтеграцію в шаблон
+  сайту; за замовчуванням застосовувати Варіант А.
+
+КРОК 2. Мовна структура (hreflang)
+Файли вже містять коректні <link rel="alternate" hreflang="..."> теги one
+до одного, за тим самим принципом, що вже реалізований для /ps/, /ps/en/,
+/ps/es/. Перевірити, що canonical та hreflang-посилання в усіх трьох файлах
+використовують ІДЕНТИЧНІ фінальні шляхи — якщо кінцевий шлях публікації
+відрізняється від /ps/info/ (наприклад, якщо власник обере інший шлях),
+замінити в усіх трьох файлах одночасно: canonical, усі hreflang, OG
+og:url, JSON-LD @id/url поля, BreadcrumbList item, і посилання в
+lang-switch навігації.
+
+КРОК 3. Шрифти (Manrope + Inter, self-hosted)
+У кожному файлі є блок @font-face з плейсхолдерними шляхами
+(/assets/fonts/manrope-700.woff2, /assets/fonts/inter-400.woff2,
+/assets/fonts/inter-600.woff2). Це ПОТРІБНО замінити одним із способів:
+  - Якщо на сайті вже є спільний файл css/fonts.css або аналогічний з
+    @font-face для Manrope/Inter — видалити цей inline-блок @font-face
+    повністю і покластися на те, що сторінка успадкує шрифти зі спільного
+    стилю сайту (актуально для Варіанту Б вище, або якщо HTML публікується
+    в межах base.njk).
+  - Якщо сторінка лишається повністю автономним HTML (Варіант А) — знайти
+    фактичні шляхи до .woff2-файлів Manrope Bold (700) та Inter Regular
+    (400)/SemiBold (600) у репозиторії (ймовірно /assets/fonts/ або
+    /css/fonts/) і підставити реальні шляхи замість плейсхолдерів.
+
+КРОК 4. Логотип
+Файли посилаються на https://plgrph.com/assets/images/logo-transparent.png
+(підтверджений реальний шлях логотипу з головної сторінки сайту). Якщо
+шлях відрізняється в актуальній версії репозиторію — оновити у трьох
+місцях кожного файлу: <img src> у шапці (.brand), Organization JSON-LD
+поле "logo", og:image (якщо власник вирішить використати сам логотип
+замість окремого og-image.jpg).
+
+КРОК 5. Внутрішнє перелінкування
+Додати посилання на нову сторінку /ps/info/ з головної сторінки plgrph.com
+(наприклад, з блоку промо калькулятора "Поліграфологічний онлайн-калькулятор")
+та з /dlya-fahivtsiv/, щоб пошукові краулери й AI-асистенти знаходили її
+через кілька внутрішніх шляхів, а не лише через sitemap.xml.
+
+КРОК 6. robots.txt і sitemap.xml
+Перевірити, що robots.txt (Disallow: /404.html — єдиний наявний запис)
+НЕ блокує /ps/info/ та мовні підкаталоги. Додати три нові <url> записи в
+sitemap.xml з <loc> для UA/EN/ES версій та <lastmod> на дату фактичної
+публікації — якщо sitemap збирається автоматично за File Modified Time
+(як зафіксовано для решти сторінок сайту), додаткових ручних дій не
+потрібно, окрім самого розміщення файлів.
+
+КРОК 7. Перевірка після публікації
+Обов'язково перевірити реальним браузером (Playwright/Chromium чи
+еквівалент) усі три мовні версії: коректність перемикача мов (усі три
+посилання ведуть на робочі URL одна одної), рендер каруселі скріншотів,
+відсутність зламаного sticky/layout на вузькій колонці (max-width: 760px)
+на мобільних роздільностях, та що GA4-тег (G-Q7JS2JHVG7) не задвоюється,
+якщо base.njk сайту вже підключає той самий тег глобально — у такому разі
+видалити дубльований inline GA4-скрипт з цих трьох файлів.
+==============================================================================
+-->

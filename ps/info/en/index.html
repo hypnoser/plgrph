@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ==========================================================================
+     PLACEHOLDER URL: this page is intended for https://plgrph.com/ps/info/en/
+     (English version). UA version — https://plgrph.com/ps/info/, ES version —
+     https://plgrph.com/ps/info/es/, following the same URL pattern already
+     used by the calculator itself (plgrph.com/ps/, /ps/en/, /ps/es/) and by
+     /ps/info.html, /ps/en/info.html. If the final path differs, update
+     canonical, hreflang, OG tags, JSON-LD and the language-switch links below.
+     ========================================================================== -->
+
+<title>Polygraph Suite — Free ESS-M, CIT, FROSS Calculator | PLGRPH</title>
+<meta name="description" content="Free offline calculator for ESS-M, CIT, FROSS for polygraph examiners. Zero-Server: data never leaves the browser. UA/EN/ES, online and offline builds.">
+<link rel="canonical" href="https://plgrph.com/ps/info/en/">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="uk" href="https://plgrph.com/ps/info/">
+<link rel="alternate" hreflang="en" href="https://plgrph.com/ps/info/en/">
+<link rel="alternate" hreflang="es" href="https://plgrph.com/ps/info/es/">
+<link rel="alternate" hreflang="x-default" href="https://plgrph.com/ps/info/">
+
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#0C5DC7">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Polygraph Suite — Free Calculator for Polygraph Examiners">
+<meta property="og:description" content="Zero-Server calculator for ESS-M, CIT and FROSS. Data never leaves the user's device. Free, online and offline, UA/EN/ES.">
+<meta property="og:image" content="https://plgrph.com/assets/images/og-image.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://plgrph.com/ps/info/en/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="PLGRPH">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Polygraph Suite — Free Calculator for Polygraph Examiners">
+<meta name="twitter:description" content="ESS-M, CIT, FROSS. Data never leaves the browser. Free, online and offline, UA/EN/ES.">
+<meta name="twitter:image" content="https://plgrph.com/assets/images/og-image.jpg">
+
+<!-- Self-hosted fonts, matching plgrph.com -->
+<style>
+@font-face {
+  font-family: 'Manrope';
+  src: url('/assets/fonts/manrope-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+</style>
+<!-- NOTE: .woff2 paths above are placeholders following the site's self-hosted
+     font convention (Manrope for headings, Inter for body text). If actual
+     paths on plgrph.com differ, update them here, or (recommended) remove
+     this @font-face block entirely and rely on the site's shared css/fonts.css
+     if this page is published inside the same 11ty build — see the developer
+     instructions at the end of this file. -->
+
+<!-- JSON-LD: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Polygraph Suite",
+  "applicationCategory": "UtilitiesApplication",
+  "applicationSubCategory": "Forensic Psychophysiology Software",
+  "operatingSystem": "Windows, macOS, Linux, any OS with a modern browser",
+  "url": "https://plgrph.com/ps/en/",
+  "description": "A free, multilingual (Ukrainian, English, Spanish) web calculator for polygraph examiners. Implements the ESS-M, CIT, and R&I/FROSS scoring methods. Zero-Server architecture: all data is processed and stored exclusively on the user's device, never transmitted to a server. Available online and as a standalone offline build for any operating system.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "inLanguage": ["uk", "en", "es"],
+  "softwareVersion": "9.7",
+  "publisher": {
+    "@type": "Organization",
+    "name": "PLGRPH",
+    "url": "https://plgrph.com/"
+  }
+}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is it safe to store polygraph results in Polygraph Suite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, by design. Polygraph Suite has no server component: all entered data (examinee names, scores, notes, images, documents) is processed and stored exclusively in the browser's local storage (localStorage and IndexedDB) on the user's device. Data is never transmitted over the network and never reaches any server operated by the developer or a third party. Responsibility for the physical security of the device rests with the user, as with any other local software."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between ESS and ESS-M?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ESS-M (Empirical Scoring System — Multinomial) is an updated version of the classic Empirical Scoring System, published by Raymond Nelson in 2017. Unlike the original ESS, ESS-M uses a Bayesian classifier with a multinomial probability distribution instead of the simpler statistical assumptions of the earlier version."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Polygraph Suite be used offline, without an internet connection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in two ways. First, the web version, once the page has loaded, works without further network requests during calculations — all libraries are local. Second, for work in locations without a stable connection (field examinations, secure facilities), a standalone offline build is available as a set of files, sent upon individual request via email or Telegram; this build opens directly from the device without internet access and runs on Windows, macOS, and Linux."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does Polygraph Suite cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Polygraph Suite is free. This applies to the web version, the offline build, all three scoring methods (ESS-M, CIT, R&I/FROSS), and the auxiliary tools — notes, supervision, and password-protected export. There is no separate paid tier; the project is supported by voluntary donations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I share results with a colleague or supervisor for review?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A session can be exported to a file (.json or .zip) and sent to another examiner. The recipient opens the same free web application via the link and imports the file — all data, notes, and attachments are fully restored in their copy of the application."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is FROSS and why is it needed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "FROSS (Field Rank Order Scoring System), also known as the \"High Three\", is a supplementary, secondary ranking method for analyzing relevant questions in the R&I tab. It does not determine the final SR/NSR/NO verdict — that decision is made globally by the examiner. FROSS indicates which relevant question is most significant for further follow-up investigation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is registration or an account required?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Since the application has no server component, registration is technically impossible and unnecessary — simply open the page in a browser. Access to the calculator itself is password-protected, with the password issued after a short professional knowledge check."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the password-protected export (.pgse) work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The entire session content is encrypted with AES-256-GCM, with the key derived from the user's password via PBKDF2-SHA256 with 150,000 iterations. Encryption happens entirely on the client side through the browser's built-in Web Crypto API, with no third-party libraries. Without the correct password, transmitted through a separate channel, the file contents cannot be decrypted."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Polygraph Suite be used for team work in an agency?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, although there is no centralized server account for a team. Exchanging session files and the Supervision tab allow several examiners to share results for the same examinee and control quality of work — with no separate paid tier."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Polygraph Suite differ from manual scoring in Excel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The main differences are speed, the elimination of arithmetic errors when summing scores, automatic generation of visualizations (the FROSS significance chart, discrepancy markers in supervision), and a single standardized approach applied consistently across examiners and sessions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I print or save the result as a PDF for a client?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The built-in print function produces a clean, structured output without interface controls, which can be saved as a PDF through the browser's standard print dialog. The client does not need to open the application itself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which operating systems does the offline version support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The offline build is a set of local files of the same application, opened directly in a browser from the device. Since the application depends only on the browser and not on a specific operating system, the offline version runs identically on Windows, macOS, and Linux."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "PLGRPH", "item": "https://plgrph.com/" },
+    { "@type": "ListItem", "position": 2, "name": "For Professionals", "item": "https://plgrph.com/dlya-fahivtsiv/" },
+    { "@type": "ListItem", "position": 3, "name": "Polygraph Suite: About", "item": "https://plgrph.com/ps/info/en/" }
+  ]
+}
+</script>
+
+<!-- JSON-LD: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PLGRPH",
+  "url": "https://plgrph.com/",
+  "logo": "https://plgrph.com/assets/images/logo-transparent.png",
+  "sameAs": [
+    "https://t.me/plgrph_ukr",
+    "https://www.linkedin.com/company/plgrph/",
+    "https://www.facebook.com/plgrph"
+  ]
+}
+</script>
+<!-- NOTE: LinkedIn and Facebook in sameAs are PLACEHOLDERS — accounts not yet created. REPLACE with real links or remove from the array until created. Telegram @plgrph_ukr is real. -->
+
+<style>
+  /* ==========================================================================
+     DESIGN SYSTEM — synchronized with the actual plgrph.com redesign palette:
+     blue #0C5DC7 (WCAG AA) / dark #0A4FA8 / amber accent #D98E2F
+     (--accent-dark: #A8641A for text on light background, WCAG-safe)
+     background #F7F9FB / text #1A1D21 / secondary #5B6470 / border #E3E7EC
+     Fonts: Manrope (headings) + Inter (body), self-hosted, no Google Fonts CDN.
+     ========================================================================== */
+  :root {
+    --blue: #0C5DC7;
+    --blue-dark: #0A4FA8;
+    --amber: #D98E2F;
+    --amber-dark: #A8641A;
+    --bg: #F7F9FB;
+    --text: #1A1D21;
+    --text-secondary: #5B6470;
+    --card-bg: #fff;
+    --border: #E3E7EC;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --max-width: 760px;
+    --max-width-wide: 960px;
+    --font-head: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+  .wrap-wide { max-width: var(--max-width-wide); margin: 0 auto; padding: 0 20px; }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-head);
+    line-height: 1.22;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: 1.9rem; margin: 0 0 14px; }
+  h2 { font-size: 1.4rem; margin: 0 0 18px; }
+  h3 { font-size: 1.1rem; margin: 0 0 8px; }
+  h4 { font-size: 0.98rem; margin: 0 0 6px; }
+
+  p { margin: 0 0 14px; font-size: 0.98rem; }
+  ul, ol { margin: 0 0 14px; padding-left: 20px; }
+  li { margin-bottom: 5px; font-size: 0.98rem; }
+
+  header.site-header { background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .header-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { height: 30px; width: auto; display: block; }
+  nav.top-nav { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  nav.top-nav a { color: var(--text-secondary); font-size: 0.88rem; font-weight: 600; }
+  .lang-switch { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .lang-switch a { padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+  .lang-switch a.active { background: var(--blue); color: #fff; }
+  .lang-switch a:hover { text-decoration: none; }
+
+  .hero { padding: 44px 0 32px; text-align: center; }
+  .hero .wrap-wide { max-width: 720px; }
+  .hero-eyebrow {
+    display: inline-block;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .hero h1 { font-size: 1.85rem; }
+  .hero-sub { color: var(--text-secondary); font-size: 1.02rem; max-width: 600px; margin: 0 auto 24px; }
+  .hero-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 26px; }
+  .hero-badge {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .cta-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-head);
+  }
+  .btn:hover { text-decoration: none; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary { background: var(--card-bg); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+  section { padding: 38px 0; }
+  section.alt-bg { background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .section-intro { color: var(--text-secondary); max-width: 600px; margin-bottom: 22px; font-size: 0.96rem; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+  }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 20px; }
+  .feature-grid .card h4 { color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .feature-grid .card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .dot-amber { background: var(--amber); }
+
+  .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .method-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+    display: flex;
+    flex-direction: column;
+  }
+  .method-tag {
+    display: inline-block;
+    background: rgba(12,93,199,0.08);
+    color: var(--blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    width: fit-content;
+    text-transform: uppercase;
+  }
+  .method-card h3 { margin-bottom: 6px; }
+  .method-card p { color: var(--text-secondary); font-size: 0.88rem; }
+  .method-card ul { color: var(--text-secondary); font-size: 0.84rem; margin-top: auto; }
+
+  .table-scroll { overflow-x: auto; margin-bottom: 8px; }
+  table.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 0.85rem;
+    min-width: 520px;
+  }
+  table.compare-table th, table.compare-table td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  table.compare-table th { background: #F7F9FB; font-weight: 700; color: var(--text); }
+  table.compare-table td { color: var(--text-secondary); }
+
+  .sources-block { border-left: 3px solid var(--amber); padding: 2px 0 2px 16px; margin: 18px 0; }
+  .sources-block ul { margin-bottom: 0; }
+  .sources-block li { font-size: 0.83rem; color: var(--text-secondary); }
+
+  .audience-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .audience-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+  .audience-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+    font-family: var(--font-head);
+  }
+  .audience-card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .roadmap-note {
+    background: #FBF3E7;
+    border: 1px solid #EFD8AF;
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    margin-bottom: 24px;
+  }
+  .roadmap { position: relative; margin-left: 4px; padding-left: 30px; border-left: 2px solid var(--border); }
+  .roadmap-step { position: relative; padding-bottom: 30px; }
+  .roadmap-step:last-child { padding-bottom: 4px; }
+  .roadmap-step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -41px;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: var(--amber);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.78rem;
+    font-family: var(--font-head);
+  }
+  .roadmap-step h4 { margin-bottom: 5px; }
+  .roadmap-step p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .carousel-wrap { margin: 20px 0; }
+  .carousel-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; }
+  .carousel-tab {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .carousel-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; border-radius: var(--radius-lg); }
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .carousel-slide .shot-placeholder {
+    background: repeating-linear-gradient(45deg, #EEF1F5, #EEF1F5 10px, #F7F9FB 10px, #F7F9FB 20px);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .carousel-slide h4 { margin-bottom: 5px; }
+  .carousel-slide p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0; }
+
+  .security-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .security-item:last-child { border-bottom: none; }
+  .security-item .dot { margin-top: 7px; }
+  .security-item h4 { margin-bottom: 3px; }
+  .security-item p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .offline-block { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-top: 20px; }
+  .offline-modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 16px 0; }
+  .offline-mode-card { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
+  .offline-mode-card h4 { display: flex; align-items: center; gap: 7px; color: var(--blue); }
+  .offline-mode-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0; }
+  .os-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .os-badge { background: #F7F9FB; border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+  .offline-cta { background: #EEF4FC; border: 1px solid #CFE0F5; border-radius: var(--radius-md); padding: 14px 16px; font-size: 0.88rem; color: var(--text-secondary); margin-top: 6px; }
+  .offline-cta strong { color: var(--text); }
+
+  details.faq-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px 16px; margin-bottom: 8px; }
+  details.faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-head);
+    font-size: 0.94rem;
+    padding: 12px 0;
+    list-style: none;
+    position: relative;
+    padding-right: 22px;
+  }
+  details.faq-item summary::-webkit-details-marker { display: none; }
+  details.faq-item summary::after { content: '+'; position: absolute; right: 0; top: 10px; font-size: 1.2rem; color: var(--amber-dark); }
+  details.faq-item[open] summary::after { content: '−'; }
+  details.faq-item .faq-answer { color: var(--text-secondary); padding-bottom: 14px; font-size: 0.88rem; }
+
+  .compare-manual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .compare-manual-grid { grid-template-columns: 1fr; } }
+  .compare-manual-col { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+  .compare-manual-col.highlight { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+  .compare-manual-col h4 { margin-bottom: 10px; }
+  .compare-manual-col ul { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 0; }
+
+  .cta-final { text-align: center; padding: 48px 0; }
+  .cta-final h2 { max-width: 560px; margin-left: auto; margin-right: auto; }
+  .cta-final p.section-intro { margin-left: auto; margin-right: auto; text-align: center; }
+
+  footer.site-footer { background: #0F1216; color: #A9B2BD; padding: 28px 0; font-size: 0.82rem; }
+  footer.site-footer a { color: #A9B2BD; }
+  footer.site-footer .footer-inner { max-width: var(--max-width-wide); margin: 0 auto; padding: 0 20px; }
+  footer.site-footer .footer-links { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+
+  .lang-note { background: #FBF3E7; border: 1px solid #EFD8AF; border-radius: var(--radius-md); padding: 13px 16px; font-size: 0.85rem; color: var(--text-secondary); margin-top: 18px; }
+
+  code { background: #EEF1F5; padding: 2px 5px; border-radius: 4px; font-size: 0.88em; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+    body { font-size: 15px; }
+    p, li { font-size: 0.92rem; }
+    .hero { padding: 32px 0 24px; }
+    section { padding: 28px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="https://plgrph.com/">
+      <img src="https://plgrph.com/assets/images/logo-transparent.png" alt="PLGRPH — logo">
+    </a>
+    <nav class="top-nav">
+      <a href="#methodology">Methods</a>
+      <a href="#scenarios">Scenarios</a>
+      <a href="#offline">Online/Offline</a>
+      <a href="#faq">FAQ</a>
+      <div class="lang-switch">
+        <a href="https://plgrph.com/ps/info/">UA</a>
+        <a href="https://plgrph.com/ps/info/en/" class="active">EN</a>
+        <a href="https://plgrph.com/ps/info/es/">ES</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<article>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap-wide">
+      <span class="hero-eyebrow">Free tool for polygraph examiners</span>
+      <h1>Polygraph Suite: an ESS-M, CIT, and FROSS calculator that never leaves your device</h1>
+      <p class="hero-sub">
+        A multilingual (Ukrainian, English, Spanish) calculator for scoring psychophysiological
+        detection of deception (PDD) results using three validated scientific methods — online and
+        offline, no registration, no data ever sent over the network.
+      </p>
+      <div class="hero-badges">
+        <span class="hero-badge">Free</span>
+        <span class="hero-badge">Zero-Server architecture</span>
+        <span class="hero-badge">Online and offline</span>
+        <span class="hero-badge">UA · EN · ES</span>
+        <span class="hero-badge">Windows · macOS · Linux</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/en/">Try the calculator</a>
+        <a class="btn btn-secondary" href="#methodology">Learn about the methods</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section>
+    <div class="wrap">
+      <h2>What Polygraph Suite is</h2>
+      <p>
+        Polygraph Suite is a free calculator for polygraph examiners, built for scoring
+        psychophysiological detection of deception (PDD) results using three validated scientific
+        methods: <strong>ESS-M</strong>, <strong>CIT</strong>, and <strong>R&amp;I (FROSS)</strong>.
+        The application is available in three languages — Ukrainian, English, and Spanish — and is
+        intended for practicing professionals.
+      </p>
+      <p>
+        The application was developed by <a href="https://plgrph.com/">PLGRPH</a> — the same
+        credibility assessment center that has been conducting polygraph examinations since 2013
+        and provides <a href="https://plgrph.com/dlya-fahivtsiv/">methodological support to
+        examiners</a>.
+      </p>
+      <p>
+        You can try the calculator directly at
+        <a href="https://plgrph.com/ps/en/">plgrph.com/ps/en/</a> — no installation required for the
+        browser version.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ZERO-SERVER ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Zero-Server architecture: why it matters</h2>
+      <p class="section-intro">
+        Psychophysiological examinations involve sensitive personal data. For this category of
+        information, how the data is stored matters as much as the accuracy of the scoring method
+        itself.
+      </p>
+      <!-- SCREENSHOT: Architecture diagram — a device with localStorage/IndexedDB icons, a crossed-out arrow to a cloud/server -->
+      <div class="feature-grid">
+        <div class="card">
+          <h4><span class="dot"></span>No server infrastructure</h4>
+          <p>The application never sends data to a backend, because there is no backend to receive it.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Local storage</h4>
+          <p>Session data lives in the browser's localStorage; note images are stored in IndexedDB on the user's device.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Online and offline</h4>
+          <p>The web version works without a network connection after loading; a standalone offline build is also available.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Any operating system</h4>
+          <p>No dependency on a specific OS — the application runs in a browser on Windows, macOS, and Linux.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHODS ============ -->
+  <section id="methodology">
+    <div class="wrap-wide">
+      <h2>Three validated scientific methods</h2>
+      <p class="section-intro">
+        Each tab of the calculator implements a separate, self-contained scoring method — covering
+        different test types and different tasks within a polygraph examination.
+      </p>
+
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="method-tag">Comparison test (CQT)</span>
+          <h3>ESS-M</h3>
+          <p>
+            Empirical Scoring System — Multinomial. An updated version of ESS, published by Raymond
+            Nelson in 2017. Uses a Bayesian classifier with a multinomial distribution to analyze
+            comparison question test (CQT) data. Supports both screening and diagnostic formats,
+            with separate scoring of five physiological channels: thoracic and abdominal
+            respiration, electrodermal activity (EDA), cardio, and photoplethysmography (PPG).
+          </p>
+          <ul>
+            <li>Verdict: SR / NSR / NO or DI / NDI / INC</li>
+            <li>5 physiological channels scored separately</li>
+            <li>DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah formats</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Concealed information</span>
+          <h3>CIT</h3>
+          <p>
+            Concealed Information Test, proposed by David Lykken in 1959. The scoring system is
+            based on the Lykken probability matrix, which allows a statistical estimate of the
+            probability that an examinee possesses information unavailable to an innocent person.
+          </p>
+          <ul>
+            <li>Lykken probability matrix</li>
+            <li>Verdict: RI / NRI / NO</li>
+            <li>Based on the orienting response theory</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Screening, supplementary method</span>
+          <h3>R&amp;I / FROSS</h3>
+          <p>
+            Field Rank Order Scoring System ("High Three") — a ranking method for analyzing
+            relevant and irrelevant questions. FROSS is a supplementary, secondary method: it does
+            not determine the SR/NSR/NO verdict — that decision is always made globally by the
+            examiner. The method indicates which relevant question is most significant for further
+            follow-up investigation.
+          </p>
+          <ul>
+            <li>Does NOT determine the verdict on its own</li>
+            <li>Ranking of 5 relevant questions across 3 channels</li>
+            <li>Significance chart: top 3 highlighted by color</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT: Comparative illustration of the three interface tabs side by side — ESS-M, CIT, R&I -->
+
+      <h3 style="margin-top:6px;">Comparing the methods</h3>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Test type</th>
+              <th>Scientific basis</th>
+              <th>What the verdict shows</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ESS-M</td>
+              <td>Comparison (CQT)</td>
+              <td>Bayesian multinomial classifier (Nelson, 2017)</td>
+              <td>SR/NSR/NO or DI/NDI/INC — an independent verdict across 5 channels</td>
+            </tr>
+            <tr>
+              <td>CIT</td>
+              <td>Concealed information</td>
+              <td>Lykken probability matrix (1959)</td>
+              <td>RI/NRI/NO — probability of possessing concealed information</td>
+            </tr>
+            <tr>
+              <td>R&amp;I / FROSS</td>
+              <td>Screening, ranking</td>
+              <td>Krapohl, Shaw (2015); Krapohl, Senter, Stern (2005)</td>
+              <td>Ranking of questions — NOT an independent verdict</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sources-block">
+        <h4>Scientific sources</h4>
+        <ul>
+          <li>Nelson R. (2017). Multinomial reference distributions for the Empirical Scoring System. <em>Polygraph and Forensic Credibility Assessment</em>, 46(2), 81–115.</li>
+          <li>Nelson R. (2016). Scientific (analytic) theory of polygraph testing. <em>APA Magazine</em>, 49(5), 69–82.</li>
+          <li>Krapohl D.J. (2010). Reference Guide for the Empirical Scoring System — Multinomial (ESS-M). Lafayette Instrument Company.</li>
+          <li>Lykken D.T. (1959). The GSR in the detection of guilt. <em>Journal of Applied Psychology</em>, 43(6), 385–388.</li>
+          <li>Krapohl D., Shaw P. (2015). Fundamentals of Polygraph Practice, p. 122.</li>
+          <li>Krapohl D., Senter S., Stern B. (2005). An exploration of methods for analysis of multiple-issue relevant/irrelevant screening data. <em>Polygraph</em>, 34(1), 47–61.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AUXILIARY TOOLS ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Auxiliary tools</h2>
+
+      <h3>Notes</h3>
+      <p>
+        A Markdown editor for the examiner's observations during the examination. Supports
+        attaching images (JPG/PNG/WEBP, up to 5 MB per file, up to 20 files) and documents
+        (PDF/DOC(X)/XLS(X)/PPT(X)/TXT, up to 20 MB per file, up to 20 files). All attachments are
+        stored locally, the same as the rest of the session data.
+      </p>
+      <!-- SCREENSHOT: "Notes" tab — Markdown editor, grid of attached image thumbnails and document tiles -->
+
+      <h3>Supervision</h3>
+      <p>
+        A second examiner enters their own ESS-M scores alongside the originals — the original
+        scores remain unedited. The system shows discrepancy markers in real time for every cell of
+        the table, along with a summary: how many scores match, the total discrepancy, and it
+        directly names the most problematic physiological channel — the one, out of five, with the
+        highest sum of discrepancies. Useful for training junior examiners, quality control, and
+        mentoring.
+      </p>
+      <!-- SCREENSHOT: "Supervision" tab — original and supervisor scores side by side, colored discrepancy markers -->
+    </div>
+  </section>
+
+  <!-- ============ AUDIENCE ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Who this tool is for</h2>
+      <p class="section-intro">
+        Polygraph Suite is designed for practicing professionals across three language segments.
+        The tool is not a training manual for students or newcomers to the method.
+      </p>
+      <div class="audience-grid">
+        <div class="audience-card">
+          <span class="audience-num">1</span>
+          <h4>Independent practicing examiners</h4>
+          <p>A personal working tool for scoring results and a portable archive of calculations.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">2</span>
+          <h4>Departments and agencies with several examiners</h4>
+          <p>Sharing results between colleagues and collaborating on the same examinee.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">3</span>
+          <h4>Supervisors and senior examiners</h4>
+          <p>Quality control over subordinate examiners' work via the Supervision tab.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENARIOS ============ -->
+  <section class="alt-bg" id="scenarios">
+    <div class="wrap">
+      <h2>Extended usage scenarios</h2>
+      <div class="roadmap-note">
+        The points below are not separate "features" with dedicated interface buttons — they are
+        ways of applying existing functionality (file export/import, the Supervision tab,
+        password-protected encryption), combined by the user to fit their own workflow. All
+        scenarios are available free of charge.
+      </div>
+
+      <div class="roadmap">
+        <div class="roadmap-step" data-step="1">
+          <h4>Exchange between examiners for repeat testing</h4>
+          <p>
+            A second examiner conducting a follow-up examination of a previously tested individual
+            opens the received session file in their own copy of the application — all data, notes,
+            images, and documents are fully restored. They then add their own test to the same
+            session.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="2">
+          <h4>Sending results to a supervisor or client</h4>
+          <p>
+            The recipient opens the same free application via the link, without registering, and
+            imports the file — a simple, accessible step rather than a barrier for someone seeing
+            the application for the first time.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="3">
+          <h4>Supervision by a manager or senior examiner</h4>
+          <p>
+            The supervisor opens the file in the same application, switches to the Supervision tab,
+            enters their own scores alongside the original (unedited) ones, and sees discrepancy
+            markers in real time.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="4">
+          <h4>Identifying systematic misinterpretation of individual channels</h4>
+          <p>
+            A repeated independent scoring by a supervisor reveals a discrepancy after comparison —
+            and the system automatically points to the problematic channel based on the sum of
+            discrepancies. This reveals a systematic error by a specific examiner, not a one-off
+            occurrence.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="5">
+          <h4>Secure exchange of a file with sensitive data</h4>
+          <p>
+            Transmitting a results file over channels that do not guarantee confidentiality — a
+            password-protected .pgse file is useless without the password, sent through a separate
+            channel.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="6">
+          <h4>Print or PDF report for a client</h4>
+          <p>
+            The built-in print function produces a clean, structured output (without interface
+            controls) with tables and a conclusion, saved as a PDF through the browser's standard
+            print dialog.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="7">
+          <h4>Personal archive of calculations</h4>
+          <p>
+            Each session is saved as a separate, auto-named file (examinee name + date) — a
+            portable file that the user organizes independently on their own device or in a cloud
+            storage of their choice.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAROUSEL ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Calculator interface</h2>
+      <p class="section-intro">An overview of the application's main tabs.</p>
+
+      <div class="carousel-wrap">
+        <div class="carousel-tabs" id="carouselTabs">
+          <button class="carousel-tab active" data-slide="0">ESS-M</button>
+          <button class="carousel-tab" data-slide="1">CIT</button>
+          <button class="carousel-tab" data-slide="2">R&amp;I</button>
+          <button class="carousel-tab" data-slide="3">Notes</button>
+          <button class="carousel-tab" data-slide="4">Supervision</button>
+        </div>
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: ESS-M tab — scoring table across 5 channels, final verdict -->Screenshot: ESS-M tab</div>
+            <h4>ESS-M</h4>
+            <p>Scoring table across five physiological channels.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: CIT tab — Lykken matrix data entry interface -->Screenshot: CIT tab</div>
+            <h4>CIT</h4>
+            <p>Scoring based on the Lykken probability matrix.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: R&I/FROSS tab — significance chart with top 3 highlighted by color -->Screenshot: R&amp;I / FROSS tab</div>
+            <h4>R&amp;I / FROSS</h4>
+            <p>Ranking of relevant questions with a significance chart.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Notes tab — Markdown editor, image and document thumbnails -->Screenshot: Notes tab</div>
+            <h4>Notes</h4>
+            <p>Markdown observation editor with image and document attachments.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Supervision tab — original and supervisor scores side by side -->Screenshot: Supervision tab</div>
+            <h4>Supervision</h4>
+            <p>Score comparison with automatic identification of the problematic channel.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ONLINE/OFFLINE ============ -->
+  <section class="alt-bg" id="offline">
+    <div class="wrap">
+      <h2>Online and offline: two ways to use it</h2>
+      <p class="section-intro">
+        Polygraph Suite can be used directly in a browser with an internet connection, or fully
+        standalone, without a network.
+      </p>
+
+      <div class="offline-block">
+        <div class="offline-modes">
+          <div class="offline-mode-card">
+            <h4><span class="dot"></span>Online version</h4>
+            <p>
+              Opens at <a href="https://plgrph.com/ps/en/">plgrph.com/ps/en/</a> in any modern
+              browser. Once the page has loaded, further work and calculations do not require
+              additional network requests — all libraries are local.
+            </p>
+          </div>
+          <div class="offline-mode-card">
+            <h4><span class="dot dot-amber"></span>Offline build</h4>
+            <p>
+              For work in places without a stable connection — field examinations, secure
+              facilities, areas without coverage — a standalone build of the application is
+              available as a set of files. It opens directly from the device, no internet required.
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-bottom:8px;"><strong>The offline build runs on any operating system:</strong></p>
+        <div class="os-badges">
+          <span class="os-badge">Windows</span>
+          <span class="os-badge">macOS</span>
+          <span class="os-badge">Linux</span>
+        </div>
+
+        <div class="offline-cta" style="margin-top:16px;">
+          <strong>How to get the offline version.</strong> The standalone build is not published
+          for open download — it is sent individually upon request via
+          <a href="https://t.me/plgrph_ukr">Telegram</a> or email, specifying the number of devices
+          the build is needed for.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECURITY ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Security and file sharing</h2>
+      <div class="card">
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Standard export</h4>
+            <p><code>.json</code> — without images and documents, or <code>.zip</code> — with images/ and documents/ folders, with automatic file naming.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot dot-amber" style="margin-top:6px;"></span>
+          <div>
+            <h4>Password-protected export (.pgse)</h4>
+            <p>
+              A separate button with a yellow-lock icon encrypts the entire file using AES-256-GCM
+              (key derived from the password via PBKDF2-SHA256, 150,000 iterations), entirely on
+              the client side through the built-in Web Crypto API. The file is useless without the
+              password, which is sent through a separate channel.
+            </p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Smart import</h4>
+            <p>The application automatically detects the file format (regular or protected) and asks for a password only when needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Compared to manual scoring</h2>
+      <p class="section-intro">
+        ESS-M, CIT, and R&amp;I can also be applied manually — on paper or in a custom-built Excel
+        spreadsheet. The key difference of a dedicated calculator lies not in the method itself, but
+        in how it's applied.
+      </p>
+      <div class="compare-manual-grid">
+        <div class="compare-manual-col">
+          <h4>Manual scoring / Excel</h4>
+          <ul>
+            <li>Manual summation of scores — risk of arithmetic errors</li>
+            <li>Visualizations need to be built independently</li>
+            <li>Table format and approach vary from one examiner to another</li>
+            <li>File sharing carries the risk of discrepancies in table structure</li>
+          </ul>
+        </div>
+        <div class="compare-manual-col highlight">
+          <h4>Polygraph Suite</h4>
+          <ul>
+            <li>Score calculation is automated — arithmetic errors are eliminated</li>
+            <li>The FROSS significance chart and discrepancy markers are generated automatically</li>
+            <li>A single standardized approach across sessions and examiners</li>
+            <li>The exchange format (.json/.zip/.pgse) is consistent and compatible between copies of the application</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>Frequently asked questions</h2>
+
+      <details class="faq-item">
+        <summary>Is it safe to store polygraph results in Polygraph Suite?</summary>
+        <div class="faq-answer">
+          Yes, by design. All data is stored exclusively in the browser's local storage
+          (localStorage and IndexedDB) on the user's device and is never transmitted over the
+          network.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What is the difference between ESS and ESS-M?</summary>
+        <div class="faq-answer">
+          ESS-M is an updated version of the classic ESS (Nelson, 2017), using a Bayesian classifier
+          with a multinomial probability distribution.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can Polygraph Suite be used offline, without an internet connection?</summary>
+        <div class="faq-answer">
+          Yes, in two ways: the web version does not require further network access during
+          calculations, and a fully standalone offline build is available upon individual request
+          via email or Telegram — it runs on Windows, macOS, and Linux.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>How much does Polygraph Suite cost?</summary>
+        <div class="faq-answer">
+          Free — including all three scoring methods, notes, supervision, and password-protected
+          export. There is no separate paid tier.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can I share results with a colleague for review?</summary>
+        <div class="faq-answer">
+          Yes, via session file export/import. The recipient opens the same application via the
+          link and imports the file — all data is fully restored.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What is FROSS and why is it needed?</summary>
+        <div class="faq-answer">
+          A supplementary ranking method for analyzing relevant questions in the R&amp;I tab. It
+          does not determine the SR/NSR/NO verdict — it only indicates which question is most
+          significant for further investigation.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is registration or an account required?</summary>
+        <div class="faq-answer">
+          No, since there is no server component. Access to the calculator is password-protected,
+          with the password issued after a short professional knowledge check.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>How does the password-protected export (.pgse) work?</summary>
+        <div class="faq-answer">
+          Session content is encrypted with AES-256-GCM, with the key derived from the password via
+          PBKDF2-SHA256 (150,000 iterations), entirely on the client through the Web Crypto API.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can Polygraph Suite be used for team work in an agency?</summary>
+        <div class="faq-answer">
+          Yes. File exchange and the Supervision tab allow several examiners to collaborate on the
+          same examinee — with no paid tier required.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>How does Polygraph Suite differ from manual scoring in Excel?</summary>
+        <div class="faq-answer">
+          Speed, the elimination of arithmetic errors, automatic generation of visualizations, and a
+          single standardized approach across examiners and sessions.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can I print or save the result as a PDF?</summary>
+        <div class="faq-answer">
+          Yes, through the browser's standard print dialog — the built-in print function produces a
+          clean, structured output without interface controls.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Which operating systems does the offline version support?</summary>
+        <div class="faq-answer">
+          The offline build is a set of local files opened in a browser from the device. Since the
+          application depends only on the browser, not on a specific OS, it runs identically on
+          Windows, macOS, and Linux.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-final">
+    <div class="wrap">
+      <h2>Try Polygraph Suite</h2>
+      <p class="section-intro">
+        The calculator is available directly in your browser, with no registration or installation.
+        For offline work — the standalone build is available upon request.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/en/">Open plgrph.com/ps/en/</a>
+        <a class="btn btn-secondary" href="https://t.me/plgrph_ukr">Request the offline version</a>
+      </div>
+    </div>
+  </section>
+
+</article>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>PLGRPH · Polygraph Suite — a free calculator for polygraph examiners</div>
+    <div class="footer-links">
+      <a href="https://plgrph.com/ps/en/">Calculator</a>
+      <a href="https://plgrph.com/">plgrph.com</a>
+      <a href="https://t.me/plgrph_ukr">Telegram</a>
+      <a href="https://plgrph.com/ps/info/">UA</a>
+      <a href="https://plgrph.com/ps/info/es/">ES</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('#carouselTabs .carousel-tab');
+    var track = document.getElementById('carouselTrack');
+    if (!tabs.length || !track) return;
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var idx = parseInt(tab.getAttribute('data-slide'), 10);
+        var slide = track.children[idx];
+        if (slide) { track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' }); }
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+      });
+    });
+
+    var scrollTimeout;
+    track.addEventListener('scroll', function () {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        var trackRect = track.getBoundingClientRect();
+        var closestIdx = 0, closestDist = Infinity;
+        Array.prototype.forEach.call(track.children, function (slide, i) {
+          var dist = Math.abs(slide.getBoundingClientRect().left - trackRect.left);
+          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+        });
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        if (tabs[closestIdx]) tabs[closestIdx].classList.add('active');
+      }, 100);
+    });
+  })();
+</script>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q7JS2JHVG7');
+</script>
+
+</body>
+</html>
+
+<!--
+==============================================================================
+See the Ukrainian version (ps-info-uk.html) for the full developer integration
+instructions (AI assistant maintaining plgrph.com on Eleventy/11ty + GitHub
+Pages + Cloudflare DNS). This English file should be placed at
+/ps/info/en/index.html following the same steps outlined there — Step 1
+(file placement / passthrough copy), Step 2 (hreflang consistency across all
+three files), Step 3 (font paths), Step 4 (logo path), Step 5 (internal
+linking), Step 6 (robots.txt / sitemap.xml), Step 7 (post-publish QA).
+==============================================================================
+-->

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ==========================================================================
+     URL DE MARCADOR DE POSICIÓN: esta página está pensada para
+     https://plgrph.com/ps/info/es/ (versión en español). Versión UA —
+     https://plgrph.com/ps/info/, versión EN — https://plgrph.com/ps/info/en/,
+     siguiendo el mismo patrón de URL que ya usa la propia calculadora
+     (plgrph.com/ps/, /ps/en/, /ps/es/) y /ps/info.html, /ps/en/info.html. Si
+     la ruta final difiere, actualizar canonical, hreflang, etiquetas OG,
+     JSON-LD y los enlaces del selector de idioma más abajo.
+     ========================================================================== -->
+
+<title>Polygraph Suite — Calculadora gratuita ESS-M, CIT, FROSS | PLGRPH</title>
+<meta name="description" content="Calculadora gratuita y offline ESS-M, CIT, FROSS para poligrafistas. Zero-Server: los datos nunca salen del navegador. UA/EN/ES, versiones online y offline.">
+<link rel="canonical" href="https://plgrph.com/ps/info/es/">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="uk" href="https://plgrph.com/ps/info/">
+<link rel="alternate" hreflang="en" href="https://plgrph.com/ps/info/en/">
+<link rel="alternate" hreflang="es" href="https://plgrph.com/ps/info/es/">
+<link rel="alternate" hreflang="x-default" href="https://plgrph.com/ps/info/">
+
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#0C5DC7">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Polygraph Suite — Calculadora gratuita para poligrafistas">
+<meta property="og:description" content="Calculadora Zero-Server para ESS-M, CIT y FROSS. Los datos nunca salen del dispositivo del usuario. Gratuita, online y offline, UA/EN/ES.">
+<meta property="og:image" content="https://plgrph.com/assets/images/og-image.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://plgrph.com/ps/info/es/">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="PLGRPH">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Polygraph Suite — Calculadora gratuita para poligrafistas">
+<meta name="twitter:description" content="ESS-M, CIT, FROSS. Los datos nunca salen del navegador. Gratuita, online y offline, UA/EN/ES.">
+<meta name="twitter:image" content="https://plgrph.com/assets/images/og-image.jpg">
+
+<!-- Fuentes autoalojadas, idénticas a plgrph.com -->
+<style>
+@font-face {
+  font-family: 'Manrope';
+  src: url('/assets/fonts/manrope-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+</style>
+<!-- NOTA: las rutas .woff2 anteriores son marcadores de posición según la
+     convención de fuentes autoalojadas del sitio (Manrope para títulos, Inter
+     para el cuerpo del texto). Si las rutas reales en plgrph.com difieren,
+     actualizarlas aquí, o (recomendado) eliminar este bloque @font-face por
+     completo y depender del css/fonts.css compartido del sitio si esta
+     página se publica dentro del mismo build de 11ty — ver las instrucciones
+     para el desarrollador al final de este archivo. -->
+
+<!-- JSON-LD: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Polygraph Suite",
+  "applicationCategory": "UtilitiesApplication",
+  "applicationSubCategory": "Forensic Psychophysiology Software",
+  "operatingSystem": "Windows, macOS, Linux, cualquier SO con navegador moderno",
+  "url": "https://plgrph.com/ps/es/",
+  "description": "Una calculadora web gratuita y multilingüe (ucraniano, inglés, español) para poligrafistas. Implementa los métodos de evaluación ESS-M, CIT y R&I/FROSS. Arquitectura Zero-Server: todos los datos se procesan y almacenan exclusivamente en el dispositivo del usuario, sin transmitirse nunca a un servidor. Disponible online y como compilación offline independiente para cualquier sistema operativo.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "inLanguage": ["uk", "en", "es"],
+  "softwareVersion": "9.7",
+  "publisher": {
+    "@type": "Organization",
+    "name": "PLGRPH",
+    "url": "https://plgrph.com/"
+  }
+}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Es seguro almacenar resultados de poligrafía en Polygraph Suite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí, por diseño. Polygraph Suite no tiene componente de servidor: todos los datos introducidos (nombres de examinados, puntuaciones, notas, imágenes, documentos) se procesan y almacenan exclusivamente en el almacenamiento local del navegador (localStorage e IndexedDB) en el dispositivo del usuario. Los datos nunca se transmiten por la red ni llegan a ningún servidor del desarrollador o de terceros. La responsabilidad de la seguridad física del dispositivo recae en el usuario, como con cualquier otro software local."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuál es la diferencia entre ESS y ESS-M?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ESS-M (Empirical Scoring System — Multinomial) es una versión actualizada del clásico Empirical Scoring System, publicada por Raymond Nelson en 2017. A diferencia del ESS original, ESS-M utiliza un clasificador bayesiano con una distribución de probabilidad multinomial en lugar de los supuestos estadísticos más simples de la versión anterior."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Se puede usar Polygraph Suite sin conexión a internet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí, de dos maneras. Primero, la versión web, una vez cargada la página, funciona sin más solicitudes de red durante los cálculos — todas las bibliotecas son locales. Segundo, para trabajar en lugares sin conexión estable (exámenes de campo, instalaciones restringidas), hay disponible una compilación offline independiente en forma de archivos, enviada bajo solicitud individual por correo electrónico o Telegram; esta compilación se abre directamente desde el dispositivo sin necesidad de internet y funciona en Windows, macOS y Linux."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuánto cuesta Polygraph Suite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Polygraph Suite es gratuita. Esto incluye la versión web, la compilación offline, los tres métodos de evaluación (ESS-M, CIT, R&I/FROSS) y las herramientas auxiliares — notas, supervisión y exportación protegida con contraseña. No existe un nivel de pago independiente; el proyecto se sostiene con donaciones voluntarias."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Puedo compartir resultados con un colega o supervisor para su revisión?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. Una sesión se puede exportar a un archivo (.json o .zip) y enviarse a otro examinador. El destinatario abre la misma aplicación web gratuita mediante el enlace e importa el archivo — todos los datos, notas y adjuntos se restauran por completo en su copia de la aplicación."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es FROSS y para qué sirve?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "FROSS (Field Rank Order Scoring System), también conocido como \"High Three\", es un método de clasificación auxiliar y secundario para analizar preguntas relevantes en la pestaña R&I. No determina el veredicto final SR/NSR/NO — esa decisión la toma siempre el examinador de forma global. FROSS indica qué pregunta relevante es más significativa para una investigación de seguimiento."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Se requiere registro o una cuenta?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Dado que la aplicación no tiene componente de servidor, el registro es técnicamente imposible e innecesario — basta con abrir la página en un navegador. El acceso a la propia calculadora está protegido con contraseña, que se entrega tras una breve verificación de conocimientos profesionales."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo funciona la exportación protegida con contraseña (.pgse)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Todo el contenido de la sesión se cifra con AES-256-GCM, con una clave derivada de la contraseña del usuario mediante PBKDF2-SHA256 con 150.000 iteraciones. El cifrado ocurre completamente en el lado del cliente a través de la API Web Crypto integrada del navegador, sin bibliotecas de terceros. Sin la contraseña correcta, transmitida por un canal separado, el contenido del archivo no se puede descifrar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Se puede usar Polygraph Suite para el trabajo en equipo en una agencia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí, aunque no existe una cuenta de servidor centralizada para equipos. El intercambio de archivos de sesión y la pestaña Supervisión permiten que varios examinadores compartan resultados del mismo examinado y controlen la calidad del trabajo — sin ningún nivel de pago."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿En qué se diferencia Polygraph Suite del cálculo manual en Excel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Las principales diferencias son la velocidad, la eliminación de errores aritméticos al sumar puntuaciones, la generación automática de visualizaciones (el gráfico de significancia FROSS, los marcadores de discrepancia en supervisión) y un enfoque estandarizado aplicado de forma coherente entre examinadores y sesiones."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Puedo imprimir o guardar el resultado como PDF para un cliente?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. La función de impresión integrada genera una salida limpia y estructurada sin controles de interfaz, que se puede guardar como PDF mediante el diálogo de impresión estándar del navegador. El cliente no necesita abrir la propia aplicación."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué sistemas operativos admite la versión offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La compilación offline es un conjunto de archivos locales de la misma aplicación, que se abren directamente en un navegador desde el dispositivo. Dado que la aplicación depende únicamente del navegador y no de un sistema operativo específico, la versión offline funciona de forma idéntica en Windows, macOS y Linux."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "PLGRPH", "item": "https://plgrph.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Para profesionales", "item": "https://plgrph.com/dlya-fahivtsiv/" },
+    { "@type": "ListItem", "position": 3, "name": "Polygraph Suite: acerca de", "item": "https://plgrph.com/ps/info/es/" }
+  ]
+}
+</script>
+
+<!-- JSON-LD: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PLGRPH",
+  "url": "https://plgrph.com/",
+  "logo": "https://plgrph.com/assets/images/logo-transparent.png",
+  "sameAs": [
+    "https://t.me/plgrph_ukr",
+    "https://www.linkedin.com/company/plgrph/",
+    "https://www.facebook.com/plgrph"
+  ]
+}
+</script>
+<!-- NOTA: LinkedIn y Facebook en sameAs son MARCADORES DE POSICIÓN — las cuentas aún no se han creado. REEMPLAZAR con enlaces reales o eliminar del array hasta que se creen. Telegram @plgrph_ukr es real. -->
+
+<style>
+  /* ==========================================================================
+     SISTEMA DE DISEÑO — sincronizado con la paleta real del rediseño de
+     plgrph.com: azul #0C5DC7 (WCAG AA) / oscuro #0A4FA8 / acento ámbar #D98E2F
+     (--accent-dark: #A8641A para texto sobre fondo claro, seguro para WCAG)
+     fondo #F7F9FB / texto #1A1D21 / secundario #5B6470 / borde #E3E7EC
+     Fuentes: Manrope (títulos) + Inter (cuerpo), autoalojadas, sin CDN de Google Fonts.
+     ========================================================================== */
+  :root {
+    --blue: #0C5DC7;
+    --blue-dark: #0A4FA8;
+    --amber: #D98E2F;
+    --amber-dark: #A8641A;
+    --bg: #F7F9FB;
+    --text: #1A1D21;
+    --text-secondary: #5B6470;
+    --card-bg: #fff;
+    --border: #E3E7EC;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --max-width: 760px;
+    --max-width-wide: 960px;
+    --font-head: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+  .wrap-wide { max-width: var(--max-width-wide); margin: 0 auto; padding: 0 20px; }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-head);
+    line-height: 1.22;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: 1.9rem; margin: 0 0 14px; }
+  h2 { font-size: 1.4rem; margin: 0 0 18px; }
+  h3 { font-size: 1.1rem; margin: 0 0 8px; }
+  h4 { font-size: 0.98rem; margin: 0 0 6px; }
+
+  p { margin: 0 0 14px; font-size: 0.98rem; }
+  ul, ol { margin: 0 0 14px; padding-left: 20px; }
+  li { margin-bottom: 5px; font-size: 0.98rem; }
+
+  header.site-header { background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .header-inner {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { height: 30px; width: auto; display: block; }
+  nav.top-nav { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  nav.top-nav a { color: var(--text-secondary); font-size: 0.88rem; font-weight: 600; }
+  .lang-switch { display: flex; gap: 4px; border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .lang-switch a { padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+  .lang-switch a.active { background: var(--blue); color: #fff; }
+  .lang-switch a:hover { text-decoration: none; }
+
+  .hero { padding: 44px 0 32px; text-align: center; }
+  .hero .wrap-wide { max-width: 720px; }
+  .hero-eyebrow {
+    display: inline-block;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .hero h1 { font-size: 1.85rem; }
+  .hero-sub { color: var(--text-secondary); font-size: 1.02rem; max-width: 600px; margin: 0 auto 24px; }
+  .hero-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 26px; }
+  .hero-badge {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .cta-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-head);
+  }
+  .btn:hover { text-decoration: none; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary { background: var(--card-bg); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+  section { padding: 38px 0; }
+  section.alt-bg { background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .section-intro { color: var(--text-secondary); max-width: 600px; margin-bottom: 22px; font-size: 0.96rem; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+  }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 20px; }
+  .feature-grid .card h4 { color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .feature-grid .card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .dot-amber { background: var(--amber); }
+
+  .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .method-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 1px 2px rgba(10,20,40,0.04);
+    display: flex;
+    flex-direction: column;
+  }
+  .method-tag {
+    display: inline-block;
+    background: rgba(12,93,199,0.08);
+    color: var(--blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    width: fit-content;
+    text-transform: uppercase;
+  }
+  .method-card h3 { margin-bottom: 6px; }
+  .method-card p { color: var(--text-secondary); font-size: 0.88rem; }
+  .method-card ul { color: var(--text-secondary); font-size: 0.84rem; margin-top: auto; }
+
+  .table-scroll { overflow-x: auto; margin-bottom: 8px; }
+  table.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 0.85rem;
+    min-width: 520px;
+  }
+  table.compare-table th, table.compare-table td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  table.compare-table th { background: #F7F9FB; font-weight: 700; color: var(--text); }
+  table.compare-table td { color: var(--text-secondary); }
+
+  .sources-block { border-left: 3px solid var(--amber); padding: 2px 0 2px 16px; margin: 18px 0; }
+  .sources-block ul { margin-bottom: 0; }
+  .sources-block li { font-size: 0.83rem; color: var(--text-secondary); }
+
+  .audience-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .audience-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+  .audience-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    margin-bottom: 10px;
+    font-family: var(--font-head);
+  }
+  .audience-card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .roadmap-note {
+    background: #FBF3E7;
+    border: 1px solid #EFD8AF;
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    margin-bottom: 24px;
+  }
+  .roadmap { position: relative; margin-left: 4px; padding-left: 30px; border-left: 2px solid var(--border); }
+  .roadmap-step { position: relative; padding-bottom: 30px; }
+  .roadmap-step:last-child { padding-bottom: 4px; }
+  .roadmap-step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -41px;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: var(--amber);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.78rem;
+    font-family: var(--font-head);
+  }
+  .roadmap-step h4 { margin-bottom: 5px; }
+  .roadmap-step p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .carousel-wrap { margin: 20px 0; }
+  .carousel-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; }
+  .carousel-tab {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .carousel-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; border-radius: var(--radius-lg); }
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .carousel-slide .shot-placeholder {
+    background: repeating-linear-gradient(45deg, #EEF1F5, #EEF1F5 10px, #F7F9FB 10px, #F7F9FB 20px);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .carousel-slide h4 { margin-bottom: 5px; }
+  .carousel-slide p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0; }
+
+  .security-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .security-item:last-child { border-bottom: none; }
+  .security-item .dot { margin-top: 7px; }
+  .security-item h4 { margin-bottom: 3px; }
+  .security-item p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+  .offline-block { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-top: 20px; }
+  .offline-modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 16px 0; }
+  .offline-mode-card { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
+  .offline-mode-card h4 { display: flex; align-items: center; gap: 7px; color: var(--blue); }
+  .offline-mode-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0; }
+  .os-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .os-badge { background: #F7F9FB; border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+  .offline-cta { background: #EEF4FC; border: 1px solid #CFE0F5; border-radius: var(--radius-md); padding: 14px 16px; font-size: 0.88rem; color: var(--text-secondary); margin-top: 6px; }
+  .offline-cta strong { color: var(--text); }
+
+  details.faq-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px 16px; margin-bottom: 8px; }
+  details.faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-head);
+    font-size: 0.94rem;
+    padding: 12px 0;
+    list-style: none;
+    position: relative;
+    padding-right: 22px;
+  }
+  details.faq-item summary::-webkit-details-marker { display: none; }
+  details.faq-item summary::after { content: '+'; position: absolute; right: 0; top: 10px; font-size: 1.2rem; color: var(--amber-dark); }
+  details.faq-item[open] summary::after { content: '−'; }
+  details.faq-item .faq-answer { color: var(--text-secondary); padding-bottom: 14px; font-size: 0.88rem; }
+
+  .compare-manual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .compare-manual-grid { grid-template-columns: 1fr; } }
+  .compare-manual-col { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+  .compare-manual-col.highlight { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+  .compare-manual-col h4 { margin-bottom: 10px; }
+  .compare-manual-col ul { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 0; }
+
+  .cta-final { text-align: center; padding: 48px 0; }
+  .cta-final h2 { max-width: 560px; margin-left: auto; margin-right: auto; }
+  .cta-final p.section-intro { margin-left: auto; margin-right: auto; text-align: center; }
+
+  footer.site-footer { background: #0F1216; color: #A9B2BD; padding: 28px 0; font-size: 0.82rem; }
+  footer.site-footer a { color: #A9B2BD; }
+  footer.site-footer .footer-inner { max-width: var(--max-width-wide); margin: 0 auto; padding: 0 20px; }
+  footer.site-footer .footer-links { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+
+  .lang-note { background: #FBF3E7; border: 1px solid #EFD8AF; border-radius: var(--radius-md); padding: 13px 16px; font-size: 0.85rem; color: var(--text-secondary); margin-top: 18px; }
+
+  code { background: #EEF1F5; padding: 2px 5px; border-radius: 4px; font-size: 0.88em; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+    body { font-size: 15px; }
+    p, li { font-size: 0.92rem; }
+    .hero { padding: 32px 0 24px; }
+    section { padding: 28px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="https://plgrph.com/">
+      <img src="https://plgrph.com/assets/images/logo-transparent.png" alt="PLGRPH — logotipo">
+    </a>
+    <nav class="top-nav">
+      <a href="#methodology">Métodos</a>
+      <a href="#scenarios">Escenarios</a>
+      <a href="#offline">Online/Offline</a>
+      <a href="#faq">FAQ</a>
+      <div class="lang-switch">
+        <a href="https://plgrph.com/ps/info/">UA</a>
+        <a href="https://plgrph.com/ps/info/en/">EN</a>
+        <a href="https://plgrph.com/ps/info/es/" class="active">ES</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<article>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap-wide">
+      <span class="hero-eyebrow">Herramienta gratuita para poligrafistas</span>
+      <h1>Polygraph Suite: una calculadora ESS-M, CIT y FROSS que nunca sale de su dispositivo</h1>
+      <p class="hero-sub">
+        Una calculadora multilingüe (ucraniano, inglés, español) para evaluar resultados de
+        exámenes psicofisiológicos según tres métodos científicos validados — online y offline,
+        sin registro, sin envío de datos por red.
+      </p>
+      <div class="hero-badges">
+        <span class="hero-badge">Gratuita</span>
+        <span class="hero-badge">Arquitectura Zero-Server</span>
+        <span class="hero-badge">Online y offline</span>
+        <span class="hero-badge">UA · EN · ES</span>
+        <span class="hero-badge">Windows · macOS · Linux</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/es/">Probar la calculadora</a>
+        <a class="btn btn-secondary" href="#methodology">Conocer los métodos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTRODUCCIÓN ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Qué es Polygraph Suite</h2>
+      <p>
+        Polygraph Suite es una calculadora gratuita para poligrafistas, diseñada para evaluar
+        resultados de exámenes psicofisiológicos según tres métodos científicos validados:
+        <strong>ESS-M</strong>, <strong>CIT</strong> y <strong>R&amp;I (FROSS)</strong>. La
+        aplicación está disponible en tres idiomas — ucraniano, inglés y español — y está pensada
+        para profesionales en ejercicio.
+      </p>
+      <p>
+        La aplicación fue desarrollada por <a href="https://plgrph.com/">PLGRPH</a> — el mismo
+        centro de evaluación de credibilidad que realiza exámenes poligráficos desde 2013 y ofrece
+        <a href="https://plgrph.com/dlya-fahivtsiv/">apoyo metodológico a profesionales</a>.
+      </p>
+      <p>
+        Puede probar la calculadora directamente en
+        <a href="https://plgrph.com/ps/es/">plgrph.com/ps/es/</a> — sin instalación, para la
+        versión de navegador.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ZERO-SERVER ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Arquitectura Zero-Server: por qué importa</h2>
+      <p class="section-intro">
+        Los exámenes psicofisiológicos manejan datos personales sensibles. Para esta categoría de
+        información, la forma de almacenar los datos importa tanto como la precisión del propio
+        método de evaluación.
+      </p>
+      <!-- SCREENSHOT: Diagrama de arquitectura — un dispositivo con iconos de localStorage/IndexedDB, una flecha tachada hacia una nube/servidor -->
+      <div class="feature-grid">
+        <div class="card">
+          <h4><span class="dot"></span>Sin infraestructura de servidor</h4>
+          <p>La aplicación nunca envía datos a un backend, porque no existe un backend que pueda recibirlos.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Almacenamiento local</h4>
+          <p>Los datos de sesión residen en el localStorage del navegador; las imágenes de las notas se guardan en IndexedDB en el dispositivo del usuario.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Online y offline</h4>
+          <p>La versión web funciona sin conexión de red tras la carga; también hay disponible una compilación offline independiente.</p>
+        </div>
+        <div class="card">
+          <h4><span class="dot"></span>Cualquier sistema operativo</h4>
+          <p>Sin dependencia de un SO específico — la aplicación funciona en el navegador en Windows, macOS y Linux.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MÉTODOS ============ -->
+  <section id="methodology">
+    <div class="wrap-wide">
+      <h2>Tres métodos científicos validados</h2>
+      <p class="section-intro">
+        Cada pestaña de la calculadora implementa un método de evaluación independiente y
+        autónomo — cubriendo diferentes tipos de prueba y distintas tareas dentro de un examen
+        poligráfico.
+      </p>
+
+      <div class="method-grid">
+        <div class="method-card">
+          <span class="method-tag">Prueba comparativa (CQT)</span>
+          <h3>ESS-M</h3>
+          <p>
+            Empirical Scoring System — Multinomial. Una versión actualizada de ESS, publicada por
+            Raymond Nelson en 2017. Utiliza un clasificador bayesiano con una distribución
+            multinomial para analizar datos de pruebas de preguntas comparativas (CQT). Admite los
+            formatos de cribado (screening) y diagnóstico, con evaluación independiente de cinco
+            canales fisiológicos: respiración torácica y abdominal, actividad electrodérmica (EDA),
+            cardio y fotopletismografía (PPG).
+          </p>
+          <ul>
+            <li>Veredicto: SR / NSR / NO o DI / NDI / INC</li>
+            <li>5 canales fisiológicos evaluados por separado</li>
+            <li>Formatos DLST, DLDT, LEPET, AFMGQT, BOST, Federal, Utah</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Información oculta</span>
+          <h3>CIT</h3>
+          <p>
+            Concealed Information Test, propuesto por David Lykken en 1959. El sistema de
+            puntuación se basa en la matriz de probabilidad de Lykken, que permite estimar
+            estadísticamente la probabilidad de que un examinado posea información no disponible
+            para una persona inocente.
+          </p>
+          <ul>
+            <li>Matriz de probabilidad de Lykken</li>
+            <li>Veredicto: RI / NRI / NO</li>
+            <li>Basado en la teoría de la respuesta de orientación</li>
+          </ul>
+        </div>
+
+        <div class="method-card">
+          <span class="method-tag">Cribado, método auxiliar</span>
+          <h3>R&amp;I / FROSS</h3>
+          <p>
+            Field Rank Order Scoring System ("High Three") — un método de clasificación para
+            analizar preguntas relevantes e irrelevantes. FROSS es un método auxiliar y secundario:
+            no determina el veredicto SR/NSR/NO — esa decisión la toma siempre el poligrafista de
+            forma global. El método indica qué pregunta relevante es más significativa para una
+            investigación de seguimiento.
+          </p>
+          <ul>
+            <li>NO determina el veredicto por sí solo</li>
+            <li>Clasificación de 5 preguntas relevantes en 3 canales</li>
+            <li>Gráfico de significancia: las 3 principales resaltadas por color</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT: Ilustración comparativa de las tres pestañas de la interfaz una junto a otra — ESS-M, CIT, R&I -->
+
+      <h3 style="margin-top:6px;">Comparación de los métodos</h3>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>Tipo de prueba</th>
+              <th>Base científica</th>
+              <th>Qué muestra el veredicto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ESS-M</td>
+              <td>Comparativa (CQT)</td>
+              <td>Clasificador bayesiano multinomial (Nelson, 2017)</td>
+              <td>SR/NSR/NO o DI/NDI/INC — veredicto independiente en 5 canales</td>
+            </tr>
+            <tr>
+              <td>CIT</td>
+              <td>Información oculta</td>
+              <td>Matriz de probabilidad de Lykken (1959)</td>
+              <td>RI/NRI/NO — probabilidad de poseer información oculta</td>
+            </tr>
+            <tr>
+              <td>R&amp;I / FROSS</td>
+              <td>Cribado, clasificación</td>
+              <td>Krapohl, Shaw (2015); Krapohl, Senter, Stern (2005)</td>
+              <td>Clasificación de preguntas — NO es un veredicto independiente</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sources-block">
+        <h4>Fuentes científicas</h4>
+        <ul>
+          <li>Nelson R. (2017). Multinomial reference distributions for the Empirical Scoring System. <em>Polygraph and Forensic Credibility Assessment</em>, 46(2), 81–115.</li>
+          <li>Nelson R. (2016). Scientific (analytic) theory of polygraph testing. <em>APA Magazine</em>, 49(5), 69–82.</li>
+          <li>Krapohl D.J. (2010). Reference Guide for the Empirical Scoring System — Multinomial (ESS-M). Lafayette Instrument Company.</li>
+          <li>Lykken D.T. (1959). The GSR in the detection of guilt. <em>Journal of Applied Psychology</em>, 43(6), 385–388.</li>
+          <li>Krapohl D., Shaw P. (2015). Fundamentals of Polygraph Practice, p. 122.</li>
+          <li>Krapohl D., Senter S., Stern B. (2005). An exploration of methods for analysis of multiple-issue relevant/irrelevant screening data. <em>Polygraph</em>, 34(1), 47–61.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HERRAMIENTAS AUXILIARES ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Herramientas auxiliares</h2>
+
+      <h3>Notas</h3>
+      <p>
+        Un editor Markdown para las observaciones del poligrafista durante el examen. Admite
+        adjuntar imágenes (JPG/PNG/WEBP, hasta 5 MB por archivo, hasta 20 archivos) y documentos
+        (PDF/DOC(X)/XLS(X)/PPT(X)/TXT, hasta 20 MB por archivo, hasta 20 archivos). Todos los
+        adjuntos se almacenan localmente, igual que el resto de los datos de la sesión.
+      </p>
+      <!-- SCREENSHOT: Pestaña "Notas" — editor Markdown, cuadrícula de miniaturas de imágenes adjuntas y fichas de documentos -->
+
+      <h3>Supervisión</h3>
+      <p>
+        Un segundo profesional introduce sus propias puntuaciones ESS-M junto a las originales —
+        las puntuaciones originales permanecen sin editar. El sistema muestra marcadores de
+        discrepancia en tiempo real para cada celda de la tabla, junto con un resumen: cuántas
+        puntuaciones coinciden, la discrepancia total, y señala directamente el canal fisiológico
+        más problemático — el que, de los cinco, presenta la mayor suma de discrepancias. Útil para
+        la formación de examinadores junior, el control de calidad y la mentoría.
+      </p>
+      <!-- SCREENSHOT: Pestaña "Supervisión" — puntuaciones originales y de supervisión una junto a otra, marcadores de discrepancia en color -->
+    </div>
+  </section>
+
+  <!-- ============ AUDIENCIA ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Para quién es esta herramienta</h2>
+      <p class="section-intro">
+        Polygraph Suite está diseñada para profesionales en ejercicio de tres segmentos
+        lingüísticos. La herramienta no es un manual de formación para estudiantes o principiantes
+        en el método.
+      </p>
+      <div class="audience-grid">
+        <div class="audience-card">
+          <span class="audience-num">1</span>
+          <h4>Poligrafistas independientes</h4>
+          <p>Una herramienta de trabajo personal para evaluar resultados y un archivo portátil de cálculos.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">2</span>
+          <h4>Departamentos y agencias con varios profesionales</h4>
+          <p>Intercambio de resultados entre colegas y colaboración sobre el mismo examinado.</p>
+        </div>
+        <div class="audience-card">
+          <span class="audience-num">3</span>
+          <h4>Supervisores y profesionales senior</h4>
+          <p>Control de calidad del trabajo de examinadores subordinados mediante la pestaña Supervisión.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ESCENARIOS ============ -->
+  <section class="alt-bg" id="scenarios">
+    <div class="wrap">
+      <h2>Escenarios de uso ampliados</h2>
+      <div class="roadmap-note">
+        Los puntos siguientes no son "funciones" separadas con botones dedicados en la interfaz —
+        son formas de aplicar la funcionalidad ya existente (exportación/importación de archivos,
+        la pestaña Supervisión, el cifrado protegido con contraseña), combinadas por el usuario
+        según su propia práctica de trabajo. Todos los escenarios están disponibles de forma
+        gratuita.
+      </div>
+
+      <div class="roadmap">
+        <div class="roadmap-step" data-step="1">
+          <h4>Intercambio entre poligrafistas para repetir un examen</h4>
+          <p>
+            Un segundo profesional que realiza un examen de seguimiento a una persona ya examinada
+            abre el archivo de sesión recibido en su propia copia de la aplicación — todos los
+            datos, notas, imágenes y documentos se restauran por completo. Luego añade su propia
+            prueba a la misma sesión.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="2">
+          <h4>Envío de resultados a un supervisor o cliente</h4>
+          <p>
+            El destinatario abre la misma aplicación gratuita mediante el enlace, sin registrarse, e
+            importa el archivo — un paso simple y accesible, no una barrera para alguien que ve la
+            aplicación por primera vez.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="3">
+          <h4>Supervisión por parte de un responsable o profesional senior</h4>
+          <p>
+            El supervisor abre el archivo en la misma aplicación, pasa a la pestaña Supervisión,
+            introduce sus propias puntuaciones junto a las originales (sin modificar) y ve los
+            marcadores de discrepancia en tiempo real.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="4">
+          <h4>Detección de errores sistemáticos en la interpretación de canales</h4>
+          <p>
+            Una nueva evaluación independiente por parte del supervisor revela una discrepancia tras
+            la comparación — y el sistema señala automáticamente el canal problemático según la
+            suma de discrepancias. Esto revela un error sistemático de un profesional concreto, no
+            un hecho aislado.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="5">
+          <h4>Intercambio seguro de un archivo con datos sensibles</h4>
+          <p>
+            Transmisión de un archivo de resultados por canales que no garantizan confidencialidad —
+            un archivo .pgse protegido es inútil sin la contraseña, enviada por un canal separado.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="6">
+          <h4>Informe impreso o en PDF para un cliente</h4>
+          <p>
+            La función de impresión integrada genera una salida limpia y estructurada (sin
+            controles de interfaz) con tablas y una conclusión, guardada como PDF mediante el
+            diálogo de impresión estándar del navegador.
+          </p>
+        </div>
+
+        <div class="roadmap-step" data-step="7">
+          <h4>Archivo personal de cálculos</h4>
+          <p>
+            Cada sesión se guarda como un archivo independiente con nombre automático (nombre del
+            examinado + fecha) — un archivo portátil que el usuario organiza por su cuenta en su
+            propio dispositivo o en el almacenamiento en la nube que elija.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARRUSEL ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Interfaz de la calculadora</h2>
+      <p class="section-intro">Un vistazo a las pestañas principales de la aplicación.</p>
+
+      <div class="carousel-wrap">
+        <div class="carousel-tabs" id="carouselTabs">
+          <button class="carousel-tab active" data-slide="0">ESS-M</button>
+          <button class="carousel-tab" data-slide="1">CIT</button>
+          <button class="carousel-tab" data-slide="2">R&amp;I</button>
+          <button class="carousel-tab" data-slide="3">Notas</button>
+          <button class="carousel-tab" data-slide="4">Supervisión</button>
+        </div>
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Pestaña ESS-M — tabla de puntuación en 5 canales, veredicto final -->Captura: pestaña ESS-M</div>
+            <h4>ESS-M</h4>
+            <p>Tabla de puntuación en cinco canales fisiológicos.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Pestaña CIT — interfaz de entrada de la matriz de Lykken -->Captura: pestaña CIT</div>
+            <h4>CIT</h4>
+            <p>Cálculo basado en la matriz de probabilidad de Lykken.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Pestaña R&I/FROSS — gráfico de significancia con las 3 principales resaltadas por color -->Captura: pestaña R&amp;I / FROSS</div>
+            <h4>R&amp;I / FROSS</h4>
+            <p>Clasificación de preguntas relevantes con gráfico de significancia.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Pestaña Notas — editor Markdown, miniaturas de imágenes y documentos -->Captura: pestaña Notas</div>
+            <h4>Notas</h4>
+            <p>Editor Markdown de observaciones con adjuntos de imágenes y documentos.</p>
+          </div>
+          <div class="carousel-slide">
+            <div class="shot-placeholder"><!-- SCREENSHOT: Pestaña Supervisión — puntuaciones originales y de supervisión una junto a otra -->Captura: pestaña Supervisión</div>
+            <h4>Supervisión</h4>
+            <p>Comparación de puntuaciones con identificación automática del canal problemático.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ONLINE/OFFLINE ============ -->
+  <section class="alt-bg" id="offline">
+    <div class="wrap">
+      <h2>Online y offline: dos formas de uso</h2>
+      <p class="section-intro">
+        Polygraph Suite se puede usar directamente en un navegador con conexión a internet, o de
+        forma totalmente autónoma, sin red.
+      </p>
+
+      <div class="offline-block">
+        <div class="offline-modes">
+          <div class="offline-mode-card">
+            <h4><span class="dot"></span>Versión online</h4>
+            <p>
+              Se abre en <a href="https://plgrph.com/ps/es/">plgrph.com/ps/es/</a> en cualquier
+              navegador moderno. Una vez cargada la página, el trabajo y los cálculos posteriores no
+              requieren más solicitudes de red — todas las bibliotecas son locales.
+            </p>
+          </div>
+          <div class="offline-mode-card">
+            <h4><span class="dot dot-amber"></span>Compilación offline</h4>
+            <p>
+              Para trabajar en lugares sin conexión estable — exámenes de campo, instalaciones
+              restringidas, zonas sin cobertura — hay disponible una compilación independiente de
+              la aplicación en forma de archivos. Se abre directamente desde el dispositivo, sin
+              necesidad de internet.
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-bottom:8px;"><strong>La compilación offline funciona en cualquier sistema operativo:</strong></p>
+        <div class="os-badges">
+          <span class="os-badge">Windows</span>
+          <span class="os-badge">macOS</span>
+          <span class="os-badge">Linux</span>
+        </div>
+
+        <div class="offline-cta" style="margin-top:16px;">
+          <strong>Cómo obtener la versión offline.</strong> La compilación independiente no está
+          publicada para descarga abierta — se envía de forma individual bajo solicitud a través de
+          <a href="https://t.me/plgrph_ukr">Telegram</a> o correo electrónico, indicando el número
+          de dispositivos para los que se necesita la compilación.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEGURIDAD ============ -->
+  <section>
+    <div class="wrap">
+      <h2>Seguridad e intercambio de archivos</h2>
+      <div class="card">
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Exportación estándar</h4>
+            <p><code>.json</code> — sin imágenes ni documentos, o <code>.zip</code> — con carpetas images/ y documents/, con nombre de archivo automático.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot dot-amber" style="margin-top:6px;"></span>
+          <div>
+            <h4>Exportación protegida con contraseña (.pgse)</h4>
+            <p>
+              Un botón independiente con un icono de candado amarillo cifra todo el archivo con
+              AES-256-GCM (clave derivada de la contraseña mediante PBKDF2-SHA256, 150.000
+              iteraciones), completamente en el lado del cliente a través de la API Web Crypto
+              integrada. El archivo es inútil sin la contraseña, enviada por un canal separado.
+            </p>
+          </div>
+        </div>
+        <div class="security-item">
+          <span class="dot" style="margin-top:6px;"></span>
+          <div>
+            <h4>Importación inteligente</h4>
+            <p>La aplicación detecta automáticamente el formato del archivo (normal o protegido) y solicita la contraseña solo cuando es necesario.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARACIÓN ============ -->
+  <section class="alt-bg">
+    <div class="wrap">
+      <h2>Comparación con el cálculo manual</h2>
+      <p class="section-intro">
+        ESS-M, CIT y R&amp;I también se pueden aplicar manualmente — en papel o en una hoja de
+        cálculo de Excel construida a medida. La diferencia clave de una calculadora dedicada no
+        está en el propio método, sino en la forma de aplicarlo.
+      </p>
+      <div class="compare-manual-grid">
+        <div class="compare-manual-col">
+          <h4>Cálculo manual / Excel</h4>
+          <ul>
+            <li>Suma manual de puntuaciones — riesgo de errores aritméticos</li>
+            <li>Las visualizaciones deben construirse de forma independiente</li>
+            <li>El formato de la tabla y el enfoque varían de un profesional a otro</li>
+            <li>El intercambio de archivos conlleva el riesgo de discrepancias en la estructura de la tabla</li>
+          </ul>
+        </div>
+        <div class="compare-manual-col highlight">
+          <h4>Polygraph Suite</h4>
+          <ul>
+            <li>El cálculo de puntuaciones está automatizado — se eliminan los errores aritméticos</li>
+            <li>El gráfico de significancia FROSS y los marcadores de discrepancia se generan automáticamente</li>
+            <li>Un enfoque estandarizado único entre sesiones y profesionales</li>
+            <li>El formato de intercambio (.json/.zip/.pgse) es coherente y compatible entre copias de la aplicación</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>Preguntas frecuentes</h2>
+
+      <details class="faq-item">
+        <summary>¿Es seguro almacenar resultados de poligrafía en Polygraph Suite?</summary>
+        <div class="faq-answer">
+          Sí, por diseño. Todos los datos se almacenan exclusivamente en el almacenamiento local del
+          navegador (localStorage e IndexedDB) en el dispositivo del usuario y nunca se transmiten
+          por la red.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Cuál es la diferencia entre ESS y ESS-M?</summary>
+        <div class="faq-answer">
+          ESS-M es una versión actualizada del ESS clásico (Nelson, 2017), que utiliza un
+          clasificador bayesiano con una distribución de probabilidad multinomial.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Se puede usar Polygraph Suite sin conexión a internet?</summary>
+        <div class="faq-answer">
+          Sí, de dos maneras: la versión web no requiere más acceso a la red durante los cálculos, y
+          hay disponible una compilación offline totalmente independiente bajo solicitud individual
+          por correo electrónico o Telegram — funciona en Windows, macOS y Linux.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Cuánto cuesta Polygraph Suite?</summary>
+        <div class="faq-answer">
+          Gratuita — incluyendo los tres métodos de evaluación, notas, supervisión y exportación
+          protegida con contraseña. No existe un nivel de pago independiente.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Puedo compartir resultados con un colega para su revisión?</summary>
+        <div class="faq-answer">
+          Sí, mediante exportación/importación del archivo de sesión. El destinatario abre la misma
+          aplicación mediante el enlace e importa el archivo — todos los datos se restauran por
+          completo.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Qué es FROSS y para qué sirve?</summary>
+        <div class="faq-answer">
+          Un método de clasificación auxiliar para analizar preguntas relevantes en la pestaña
+          R&amp;I. No determina el veredicto SR/NSR/NO — solo indica qué pregunta es más
+          significativa para una investigación adicional.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Se requiere registro o una cuenta?</summary>
+        <div class="faq-answer">
+          No, ya que no existe componente de servidor. El acceso a la calculadora está protegido con
+          contraseña, que se entrega tras una breve verificación de conocimientos profesionales.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Cómo funciona la exportación protegida con contraseña (.pgse)?</summary>
+        <div class="faq-answer">
+          El contenido de la sesión se cifra con AES-256-GCM, con una clave derivada de la
+          contraseña mediante PBKDF2-SHA256 (150.000 iteraciones), completamente en el cliente a
+          través de la API Web Crypto.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Se puede usar Polygraph Suite para el trabajo en equipo en una agencia?</summary>
+        <div class="faq-answer">
+          Sí. El intercambio de archivos y la pestaña Supervisión permiten que varios profesionales
+          colaboren sobre el mismo examinado — sin necesidad de ningún nivel de pago.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿En qué se diferencia Polygraph Suite del cálculo manual en Excel?</summary>
+        <div class="faq-answer">
+          Velocidad, eliminación de errores aritméticos, generación automática de visualizaciones y
+          un enfoque estandarizado único entre profesionales y sesiones.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Puedo imprimir o guardar el resultado como PDF?</summary>
+        <div class="faq-answer">
+          Sí, mediante el diálogo de impresión estándar del navegador — la función de impresión
+          integrada genera una salida limpia y estructurada sin controles de interfaz.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Qué sistemas operativos admite la versión offline?</summary>
+        <div class="faq-answer">
+          La compilación offline es un conjunto de archivos locales que se abren en un navegador
+          desde el dispositivo. Dado que la aplicación depende únicamente del navegador y no de un
+          sistema operativo específico, funciona de forma idéntica en Windows, macOS y Linux.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="cta-final">
+    <div class="wrap">
+      <h2>Pruebe Polygraph Suite</h2>
+      <p class="section-intro">
+        La calculadora está disponible directamente en su navegador, sin registro ni instalación.
+        Para trabajar sin conexión — la compilación independiente está disponible bajo solicitud.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://plgrph.com/ps/es/">Abrir plgrph.com/ps/es/</a>
+        <a class="btn btn-secondary" href="https://t.me/plgrph_ukr">Solicitar la versión offline</a>
+      </div>
+    </div>
+  </section>
+
+</article>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>PLGRPH · Polygraph Suite — una calculadora gratuita para poligrafistas</div>
+    <div class="footer-links">
+      <a href="https://plgrph.com/ps/es/">Calculadora</a>
+      <a href="https://plgrph.com/">plgrph.com</a>
+      <a href="https://t.me/plgrph_ukr">Telegram</a>
+      <a href="https://plgrph.com/ps/info/">UA</a>
+      <a href="https://plgrph.com/ps/info/en/">EN</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = document.querySelectorAll('#carouselTabs .carousel-tab');
+    var track = document.getElementById('carouselTrack');
+    if (!tabs.length || !track) return;
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var idx = parseInt(tab.getAttribute('data-slide'), 10);
+        var slide = track.children[idx];
+        if (slide) { track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' }); }
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+      });
+    });
+
+    var scrollTimeout;
+    track.addEventListener('scroll', function () {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        var trackRect = track.getBoundingClientRect();
+        var closestIdx = 0, closestDist = Infinity;
+        Array.prototype.forEach.call(track.children, function (slide, i) {
+          var dist = Math.abs(slide.getBoundingClientRect().left - trackRect.left);
+          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+        });
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        if (tabs[closestIdx]) tabs[closestIdx].classList.add('active');
+      }, 100);
+    });
+  })();
+</script>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7JS2JHVG7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q7JS2JHVG7');
+</script>
+
+</body>
+</html>
+
+<!--
+==============================================================================
+Consulte la versión ucraniana (ps-info-uk.html) para ver las instrucciones
+completas de integración para el desarrollador (asistente de IA que mantiene
+plgrph.com en Eleventy/11ty + GitHub Pages + Cloudflare DNS). Este archivo en
+español debe colocarse en /ps/info/es/index.html siguiendo los mismos pasos
+descritos allí — Paso 1 (ubicación del archivo / copia passthrough), Paso 2
+(coherencia de hreflang entre los tres archivos), Paso 3 (rutas de fuentes),
+Paso 4 (ruta del logotipo), Paso 5 (enlazado interno), Paso 6
+(robots.txt / sitemap.xml), Paso 7 (control de calidad tras la publicación).
+==============================================================================
+-->
