@@ -28,6 +28,21 @@ window.APP_API = (function () {
     return map[ext] || 'image/jpeg';
   }
 
+  function getDocMimeFromName(name) {
+    var ext = name.split('.').pop().toLowerCase();
+    var map = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ppt: 'application/vnd.ms-powerpoint',
+      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      txt: 'text/plain'
+    };
+    return map[ext] || 'application/octet-stream';
+  }
+
   // ── Шифрування захищеного експорту (AES-256-GCM, ключ з пароля через PBKDF2) ──
   // Формат файлу .pgse: JSON-обгортка { pgseVersion, kdf: {salt, iterations}, iv, ciphertext } —
   // усі бінарні поля в base64. Ключ ніколи не зберігається, лише похідний від пароля щоразу заново.
@@ -111,7 +126,7 @@ window.APP_API = (function () {
   }
 
   function collectGlobalState() {
-    var notesState = window.NOTES_API ? window.NOTES_API.collectState() : { text: '', imagesMeta: [] };
+    var notesState = window.NOTES_API ? window.NOTES_API.collectState() : { text: '', imagesMeta: [], docsMeta: [] };
     return {
       respondentName: nameInp ? nameInp.value : '',
       examDate: dateInp ? dateInp.value : '',
@@ -119,6 +134,7 @@ window.APP_API = (function () {
       cit: window.CIT_API ? window.CIT_API.collectState() : [],
       notes: notesState.text || '',
       imagesMeta: notesState.imagesMeta || [],
+      docsMeta: notesState.docsMeta || [],
       sv: window.SUPERVISION_API ? window.SUPERVISION_API.collectState() : [],
       ri: window.RI_API ? window.RI_API.collectState() : []
     };
@@ -168,7 +184,7 @@ window.APP_API = (function () {
     try { if (window.CIT_API) window.CIT_API.restoreState(parsed ? (parsed.cit || []) : []); }
     catch (err) { console.error('loadData Error (CIT_API):', err); }
 
-    try { if (window.NOTES_API) window.NOTES_API.restoreState({ text: parsed ? (parsed.notes || '') : '', imagesMeta: parsed ? (parsed.imagesMeta || []) : [] }); }
+    try { if (window.NOTES_API) window.NOTES_API.restoreState({ text: parsed ? (parsed.notes || '') : '', imagesMeta: parsed ? (parsed.imagesMeta || []) : [], docsMeta: parsed ? (parsed.docsMeta || []) : [] }); }
     catch (err) { console.error('loadData Error (NOTES_API):', err); }
 
     try { if (window.SUPERVISION_API) window.SUPERVISION_API.restoreState(parsed ? (parsed.sv || []) : []); }
@@ -207,29 +223,51 @@ window.APP_API = (function () {
           ess: parsed.ess || [],
           cit: parsed.cit || [],
           notes: parsed.notes || '',
-          // навмисно порожній: реальні id призначаються в restoreImagesFromZip
-          // після reload, щоб уникнути дублювання зображень
-          imagesMeta: []
+          // навмисно порожні: реальні id призначаються в restoreImagesFromZip/restoreDocsFromZip
+          // після reload, щоб уникнути дублювання файлів
+          imagesMeta: [],
+          docsMeta: []
         };
         localStorage.setItem('polygraph_suite_data', JSON.stringify(cleanState));
 
         var imageFiles = [];
-        var folder = zip.folder('images');
-        if (folder) folder.forEach(function (relativePath, f) { imageFiles.push({ name: relativePath, file: f }); });
-        if (imageFiles.length === 0) { location.reload(); return; }
+        var imgFolderZip = zip.folder('images');
+        if (imgFolderZip) imgFolderZip.forEach(function (relativePath, f) { imageFiles.push({ name: relativePath, file: f }); });
 
-        var pending = imageFiles.length;
+        var docFiles = [];
+        var docFolderZip = zip.folder('documents');
+        if (docFolderZip) docFolderZip.forEach(function (relativePath, f) { docFiles.push({ name: relativePath, file: f }); });
+
+        if (imageFiles.length === 0 && docFiles.length === 0) { location.reload(); return; }
+
         var imagesForRestore = [];
+        var docsForRestore = [];
+        var pending = imageFiles.length + docFiles.length;
+
+        var finishIfDone = function () {
+          if (pending > 0) return;
+          if (imagesForRestore.length > 0) sessionStorage.setItem('polygraph_zip_images', JSON.stringify(imagesForRestore));
+          if (docsForRestore.length > 0) sessionStorage.setItem('polygraph_zip_docs', JSON.stringify(docsForRestore));
+          location.reload();
+        };
+
         imageFiles.forEach(function (item) {
           item.file.async('uint8array').then(function (data) {
             var mime = getMimeFromName(item.name);
             var dataUrl = uint8ToDataUrl(data, mime);
             imagesForRestore.push({ name: item.name, dataUrl: dataUrl });
             pending--;
-            if (pending === 0) {
-              sessionStorage.setItem('polygraph_zip_images', JSON.stringify(imagesForRestore));
-              location.reload();
-            }
+            finishIfDone();
+          });
+        });
+
+        docFiles.forEach(function (item) {
+          item.file.async('uint8array').then(function (data) {
+            var mime = getDocMimeFromName(item.name);
+            var dataUrl = uint8ToDataUrl(data, mime);
+            docsForRestore.push({ name: item.name, dataUrl: dataUrl });
+            pending--;
+            finishIfDone();
           });
         });
       });
@@ -239,36 +277,67 @@ window.APP_API = (function () {
   }
 
   function restoreZipImagesIfNeeded() {
-    var raw = sessionStorage.getItem('polygraph_zip_images');
-    if (!raw) return;
+    var rawImages = sessionStorage.getItem('polygraph_zip_images');
+    var rawDocs = sessionStorage.getItem('polygraph_zip_docs');
+    if (!rawImages && !rawDocs) return;
     sessionStorage.removeItem('polygraph_zip_images');
+    sessionStorage.removeItem('polygraph_zip_docs');
     if (!window.NOTES_API) return;
-    try {
-      var images = JSON.parse(raw);
-      if (images && images.length > 0) {
-        window.NOTES_API.restoreImagesFromZip(images, function () { performSave(); });
-      }
-    } catch (e) {}
+    var restoreImages = function (next) {
+      if (!rawImages) { next(); return; }
+      try {
+        var images = JSON.parse(rawImages);
+        if (images && images.length > 0) { window.NOTES_API.restoreImagesFromZip(images, next); return; }
+      } catch (e) {}
+      next();
+    };
+    var restoreDocs = function (next) {
+      if (!rawDocs) { next(); return; }
+      try {
+        var docs = JSON.parse(rawDocs);
+        if (docs && docs.length > 0) { window.NOTES_API.restoreDocsFromZip(docs, next); return; }
+      } catch (e) {}
+      next();
+    };
+    restoreImages(function () { restoreDocs(function () { performSave(); }); });
   }
 
-  // Формує вміст експорту (JSON-текст або ZIP-байти, залежно від наявності зображень)
+  // Формує вміст експорту (JSON-текст або ZIP-байти, залежно від наявності зображень/документів)
   // без запуску завантаження файлу — спільна логіка для звичайного й захищеного експорту.
   // callback(err, { bytes: Uint8Array, ext: 'json'|'zip' })
   function buildExportPayload(state, callback) {
-    if (window.NOTES_API && window.NOTES_API.hasImages()) {
+    var hasImages = window.NOTES_API && window.NOTES_API.hasImages();
+    var hasDocs = window.NOTES_API && window.NOTES_API.hasDocs();
+    if (hasImages || hasDocs) {
       if (!checkJSZip()) { callback(new Error('jszip_missing')); return; }
-      window.NOTES_API.getAllImageData(function (err, images) {
+      var buildZip = function (images, docs) {
         var zip = new JSZip();
         zip.file('data.json', JSON.stringify(state, null, 2));
-        var imgFolder = zip.folder('images');
-        images.forEach(function (img) {
-          try {
-            var uint8 = dataUrlToUint8(img.dataUrl);
-            imgFolder.file(img.name, uint8, { binary: true });
-          } catch (e) {}
-        });
+        if (images && images.length > 0) {
+          var imgFolder = zip.folder('images');
+          images.forEach(function (img) {
+            try {
+              var uint8 = dataUrlToUint8(img.dataUrl);
+              imgFolder.file(img.name, uint8, { binary: true });
+            } catch (e) {}
+          });
+        }
+        if (docs && docs.length > 0) {
+          var docFolder = zip.folder('documents');
+          docs.forEach(function (doc) {
+            try {
+              var uint8 = dataUrlToUint8(doc.dataUrl);
+              docFolder.file(doc.name, uint8, { binary: true });
+            } catch (e) {}
+          });
+        }
         zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } }).then(function (bytes) {
           callback(null, { bytes: bytes, ext: 'zip' });
+        });
+      };
+      window.NOTES_API.getAllImageData(function (err, images) {
+        window.NOTES_API.getAllDocData(function (err2, docs) {
+          buildZip(images, docs);
         });
       });
     } else {
@@ -297,21 +366,34 @@ window.APP_API = (function () {
   function exportZip(state, safeResp, dateStr) {
     if (!checkJSZip()) return;
     window.NOTES_API.getAllImageData(function (err, images) {
-      var zip = new JSZip();
-      zip.file('data.json', JSON.stringify(state, null, 2));
-      var imgFolder = zip.folder('images');
-      images.forEach(function (img) {
-        try {
-          var uint8 = dataUrlToUint8(img.dataUrl);
-          imgFolder.file(img.name, uint8, { binary: true });
-        } catch (e) {}
-      });
-      zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } }).then(function (blob) {
-        var filename = 'polygraph-suite-' + safeResp + dateStr + '.zip';
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = filename; a.click();
-        URL.revokeObjectURL(url);
+      window.NOTES_API.getAllDocData(function (err2, docs) {
+        var zip = new JSZip();
+        zip.file('data.json', JSON.stringify(state, null, 2));
+        if (images && images.length > 0) {
+          var imgFolder = zip.folder('images');
+          images.forEach(function (img) {
+            try {
+              var uint8 = dataUrlToUint8(img.dataUrl);
+              imgFolder.file(img.name, uint8, { binary: true });
+            } catch (e) {}
+          });
+        }
+        if (docs && docs.length > 0) {
+          var docFolder = zip.folder('documents');
+          docs.forEach(function (doc) {
+            try {
+              var uint8 = dataUrlToUint8(doc.dataUrl);
+              docFolder.file(doc.name, uint8, { binary: true });
+            } catch (e) {}
+          });
+        }
+        zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } }).then(function (blob) {
+          var filename = 'polygraph-suite-' + safeResp + dateStr + '.zip';
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = filename; a.click();
+          URL.revokeObjectURL(url);
+        });
       });
     });
   }
@@ -360,7 +442,7 @@ window.APP_API = (function () {
         var safeResp = resp ? resp.replace(/[^a-zа-яієїґ0-9]/gi, '_') + '-' : '';
         var dateStr = (dateInp && dateInp.value) ? dateInp.value : new Date().toISOString().slice(0, 10);
 
-        if (window.NOTES_API && window.NOTES_API.hasImages()) {
+        if (window.NOTES_API && (window.NOTES_API.hasImages() || window.NOTES_API.hasDocs())) {
           if (confirm(S.confirm_export_zip)) exportZip(state, safeResp, dateStr);
           else exportJson(state, safeResp, dateStr);
         } else {
