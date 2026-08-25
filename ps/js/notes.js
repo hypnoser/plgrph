@@ -78,10 +78,11 @@ window.NOTES_API = (function () {
   }
 
   // ── Стан ───────────────────────────────────────────────────
-  var state = { text: '', imagesMeta: [] };
+  var state = { text: '', imagesMeta: [], docsMeta: [] };
   var editMode = true;
   var elements = {};
   var renderThumbnails; // замикання, присвоюється в buildUI
+  var renderDocThumbnails; // замикання, присвоюється в buildUI
 
   var triggerUnsaved = function() { if (window.APP_API) window.APP_API.markUnsaved(); };
 
@@ -119,9 +120,40 @@ window.NOTES_API = (function () {
   }
   function closeLightbox() { if (lightbox) lightbox.style.display = 'none'; }
 
+  // Для документів немає прев'ю в браузері (PDF/DOCX/XLSX тощо) — клік завантажує файл.
+  // Завантаження, а не відкриття в новій вкладці: асинхронний виклик IndexedDB втрачає
+  // "trusted user gesture", тому браузери можуть заблокувати window.open/новий таб як спливаюче
+  // вікно; крім того, деякі браузери мають ліміт довжини URL для великих data: посилань.
+  function openDocument(docId, docName) {
+    dbGetImage(docId, function(err, docObj) {
+      if (err || !docObj) return;
+      var a = document.createElement('a');
+      a.href = docObj.dataUrl;
+      a.download = docName || 'document';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+  }
+
   // ── Зображення ─────────────────────────────────────────────
   var MAX_FILE_SIZE = 5 * 1024 * 1024;
   var MAX_FILES = 20;
+
+  // ── Документи (PDF/DOC/DOCX/XLS/XLSX/PPT/PPTX/TXT) ──────────
+  var MAX_DOC_FILE_SIZE = 20 * 1024 * 1024;
+  var MAX_DOCS = 20;
+  var DOC_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+  var DOC_MIME_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'text/plain'
+  ];
 
   function formatBytes(bytes) {
     if (bytes < 1024) return bytes + ' ' + S.notes_unit_b;
@@ -157,6 +189,36 @@ window.NOTES_API = (function () {
           renderThumbnails();
           triggerUnsaved();
           // Явне збереження одразу після додавання зображення
+          if (window.APP_API) window.APP_API.performSave();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function getDocExtension(filename) {
+    var parts = filename.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : '';
+  }
+
+  function processDocumentFiles(files) {
+    var reserved = 0;
+    Array.from(files).forEach(function(file) {
+      var ext = getDocExtension(file.name);
+      if (DOC_EXTENSIONS.indexOf(ext) === -1) { showToast('«' + file.name + '» ' + S.notes_toast_not_doc, 'warn'); return; }
+      if (file.size > MAX_DOC_FILE_SIZE) { showToast('«' + file.name + '» ' + S.notes_toast_too_big, 'warn'); return; }
+      if (state.docsMeta.length + reserved >= MAX_DOCS) { showToast(S.notes_toast_limit + ' ' + MAX_DOCS + '.', 'warn'); return; }
+      reserved++;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var id = 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        dbSaveImage({ id: id, dataUrl: evt.target.result }, function(err) {
+          reserved--;
+          if (err) { showToast(S.notes_toast_save_error + ': ' + err, 'error'); return; }
+          state.docsMeta.push({ id: id, name: file.name, size: file.size, ext: ext, added: new Date().toISOString() });
+          renderDocThumbnails();
+          triggerUnsaved();
+          // Явне збереження одразу після додавання документа
           if (window.APP_API) window.APP_API.performSave();
         });
       };
@@ -211,6 +273,7 @@ window.NOTES_API = (function () {
       '.notes-preview hr{border:0;border-top:2px solid #e2e8f0;margin:12px 0;}',
       '.notes-images-section{margin-top:20px;padding:14px;background:#fff;border:1px solid #ddd;border-radius:6px;}',
       '.notes-images-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}',
+      '.notes-docs-header{margin-top:22px;padding-top:16px;border-top:1px dashed #ddd;}',
       '.notes-images-title{font-size:13px;font-weight:700;color:#444;}',
       '.notes-add-btn{padding:4px 12px;font-size:12px;font-weight:700;background:#3a7cfd;color:#fff;border:none;border-radius:4px;cursor:pointer;transition:background .2s;}',
       '.notes-add-btn:hover{background:#2a68e0;}',
@@ -218,12 +281,15 @@ window.NOTES_API = (function () {
       '.notes-drop-zone{border:2px dashed #ccc;border-radius:6px;padding:16px;text-align:center;font-size:12px;color:#999;transition:all .2s;cursor:pointer;margin-bottom:12px;}',
       '.notes-drop-zone.drag-over{border-color:#3a7cfd;background:rgba(58,124,253,.06);color:#3a7cfd;}',
       '.notes-thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;}',
-      '.notes-no-images{font-size:12px;color:#aaa;text-align:center;padding:16px;}',
+      '.notes-no-images{grid-column:1/-1;font-size:12px;color:#aaa;text-align:center;padding:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
       '.notes-thumb{position:relative;border-radius:6px;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .2s;}',
       '.notes-thumb:hover{box-shadow:0 2px 10px rgba(0,0,0,.12);}',
       '.notes-thumb img{width:100%;height:100%;object-fit:cover;display:block;}',
       '.notes-thumb-placeholder{opacity:.3;display:flex;align-items:center;justify-content:center;}',
       '.notes-thumb-placeholder svg{width:36px;height:36px;}',
+      '.notes-thumb-doc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;height:100%;background:#eef2f7;}',
+      '.notes-thumb-doc svg{width:34px;height:34px;color:#5b7285;}',
+      '.notes-thumb-doc-ext{font-size:10px;font-weight:800;letter-spacing:.5px;color:#5b7285;text-transform:uppercase;background:#fff;border:1px solid #cbd5e1;border-radius:3px;padding:1px 6px;}',
       '.notes-thumb-caption{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
       '.notes-thumb-del{position:absolute;top:3px;right:3px;width:18px;height:18px;font-size:12px;line-height:1;font-weight:900;border-radius:50%;background:rgba(255,0,0,.8);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}',
       '.notes-thumb:hover .notes-thumb-del{opacity:1;}',
@@ -331,6 +397,56 @@ window.NOTES_API = (function () {
     imagesSection.appendChild(dropZone);
     imagesSection.appendChild(thumbGrid);
 
+    // ── Документи (PDF/DOC/DOCX/XLS/XLSX/PPT/PPTX/TXT) — той самий блок, нижче зображень ──
+    var docsHeader = document.createElement('div');
+    docsHeader.className = 'notes-images-header notes-docs-header';
+
+    var docsTitle = document.createElement('span');
+    docsTitle.className = 'notes-images-title';
+    docsTitle.textContent = S.notes_documents;
+
+    var docsAddBtn = document.createElement('button');
+    docsAddBtn.className = 'notes-add-btn';
+    docsAddBtn.textContent = S.notes_add_doc_btn;
+
+    var docsFileInputHidden = document.createElement('input');
+    docsFileInputHidden.type = 'file';
+    docsFileInputHidden.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt';
+    docsFileInputHidden.multiple = true;
+    docsFileInputHidden.style.display = 'none';
+    docsFileInputHidden.addEventListener('change', function(e) {
+      if (e.target.files.length) processDocumentFiles(e.target.files);
+      docsFileInputHidden.value = '';
+    });
+    docsAddBtn.addEventListener('click', function() { docsFileInputHidden.click(); });
+
+    var docsCount = document.createElement('span');
+    docsCount.className = 'notes-images-count';
+    docsCount.textContent = '0 / ' + MAX_DOCS;
+
+    var docsDropZone = document.createElement('div');
+    docsDropZone.className = 'notes-drop-zone';
+    docsDropZone.textContent = S.notes_drop_docs;
+    docsDropZone.addEventListener('dragover',  function(e) { e.preventDefault(); docsDropZone.classList.add('drag-over'); });
+    docsDropZone.addEventListener('dragleave', function()  { docsDropZone.classList.remove('drag-over'); });
+    docsDropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      docsDropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) processDocumentFiles(e.dataTransfer.files);
+    });
+    docsDropZone.addEventListener('click', function() { docsFileInputHidden.click(); });
+
+    var docsThumbGrid = document.createElement('div');
+    docsThumbGrid.className = 'notes-thumb-grid';
+
+    docsHeader.appendChild(docsTitle);
+    docsHeader.appendChild(docsAddBtn);
+    docsHeader.appendChild(docsFileInputHidden);
+    docsHeader.appendChild(docsCount);
+    imagesSection.appendChild(docsHeader);
+    imagesSection.appendChild(docsDropZone);
+    imagesSection.appendChild(docsThumbGrid);
+
     container.appendChild(modeBar);
     container.appendChild(textarea);
     container.appendChild(preview);
@@ -402,7 +518,56 @@ window.NOTES_API = (function () {
       });
     };
 
+    renderDocThumbnails = function() {
+      docsCount.textContent = state.docsMeta.length + ' / ' + MAX_DOCS;
+      docsThumbGrid.innerHTML = '';
+      if (state.docsMeta.length === 0) {
+        var noDoc = document.createElement('div');
+        noDoc.className = 'notes-no-images';
+        noDoc.textContent = S.notes_no_docs;
+        docsThumbGrid.appendChild(noDoc);
+        return;
+      }
+      state.docsMeta.forEach(function(meta) {
+        var thumb = document.createElement('div');
+        thumb.className = 'notes-thumb';
+        var docBox = document.createElement('div');
+        docBox.className = 'notes-thumb-doc';
+        docBox.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+        var extBadge = document.createElement('span');
+        extBadge.className = 'notes-thumb-doc-ext';
+        extBadge.textContent = meta.ext;
+        docBox.appendChild(extBadge);
+        docBox.title = meta.name + '\n' + formatBytes(meta.size);
+        docBox.addEventListener('click', function() { openDocument(meta.id, meta.name); });
+        thumb.appendChild(docBox);
+        var caption = document.createElement('div');
+        caption.className = 'notes-thumb-caption';
+        caption.textContent = meta.name;
+        thumb.appendChild(caption);
+        var delBtn = document.createElement('button');
+        delBtn.className = 'notes-thumb-del';
+        delBtn.innerHTML = '×';
+        delBtn.title = S.notes_delete_doc_title;
+        delBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (confirm(S.notes_confirm_delete_doc + ' «' + meta.name + '»?')) {
+            dbDeleteImage(meta.id, function() {
+              state.docsMeta = state.docsMeta.filter(function(m) { return m.id !== meta.id; });
+              renderDocThumbnails();
+              triggerUnsaved();
+              // Явне збереження одразу після видалення документа
+              if (window.APP_API) window.APP_API.performSave();
+            });
+          }
+        });
+        thumb.appendChild(delBtn);
+        docsThumbGrid.appendChild(thumb);
+      });
+    };
+
     renderThumbnails();
+    renderDocThumbnails();
   }
 
   // ── Публічний API ───────────────────────────────────────────
@@ -416,31 +581,36 @@ window.NOTES_API = (function () {
 
     collectState: function() {
       var currentText = elements.textarea ? elements.textarea.value : state.text;
-      return { text: currentText, imagesMeta: state.imagesMeta.slice() };
+      return { text: currentText, imagesMeta: state.imagesMeta.slice(), docsMeta: state.docsMeta.slice() };
     },
 
     restoreState: function(data) {
       if (!data) return;
       state.text = data.text || '';
       state.imagesMeta = Array.isArray(data.imagesMeta) ? data.imagesMeta : [];
+      state.docsMeta = Array.isArray(data.docsMeta) ? data.docsMeta : [];
       if (elements.textarea) elements.textarea.value = state.text;
       if (renderThumbnails) renderThumbnails();
+      if (renderDocThumbnails) renderDocThumbnails();
     },
 
     clearAll: function(callback) {
-      var ids = state.imagesMeta.map(function(m) { return m.id; });
+      var ids = state.imagesMeta.map(function(m) { return m.id; }).concat(state.docsMeta.map(function(m) { return m.id; }));
       dbClearAllImages(ids, function() {
         state.text = '';
         state.imagesMeta = [];
+        state.docsMeta = [];
         if (elements.textarea) elements.textarea.value = '';
         if (elements.preview)  elements.preview.innerHTML = '';
         setMode('edit');
         if (renderThumbnails) renderThumbnails();
+        if (renderDocThumbnails) renderDocThumbnails();
         if (callback) callback();
       });
     },
 
     hasImages: function() { return state.imagesMeta.length > 0; },
+    hasDocs: function() { return state.docsMeta.length > 0; },
 
     getAllImageData: function(callback) {
       var ids = state.imagesMeta.map(function(m) { return m.id; });
@@ -448,6 +618,17 @@ window.NOTES_API = (function () {
         var result = imgs.map(function(img) {
           var meta = state.imagesMeta.find(function(m) { return m.id === img.id; });
           return { id: img.id, name: meta ? meta.name : img.id, dataUrl: img.dataUrl };
+        });
+        callback(err, result);
+      });
+    },
+
+    getAllDocData: function(callback) {
+      var ids = state.docsMeta.map(function(m) { return m.id; });
+      dbGetAllImages(ids, function(err, docs) {
+        var result = docs.map(function(doc) {
+          var meta = state.docsMeta.find(function(m) { return m.id === doc.id; });
+          return { id: doc.id, name: meta ? meta.name : doc.id, dataUrl: doc.dataUrl };
         });
         callback(err, result);
       });
@@ -474,13 +655,38 @@ window.NOTES_API = (function () {
       });
     },
 
+    restoreDocsFromZip: function(docsArray, callback) {
+      var pending = docsArray.length;
+      if (pending === 0) { if (callback) callback(); return; }
+      docsArray.forEach(function(item) {
+        var id = 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        dbSaveImage({ id: id, dataUrl: item.dataUrl }, function() {
+          state.docsMeta.push({
+            id: id,
+            name: item.name,
+            size: Math.round((item.dataUrl.length * 3) / 4),
+            ext: getDocExtension(item.name),
+            added: new Date().toISOString()
+          });
+          if (--pending === 0) {
+            if (renderDocThumbnails) renderDocThumbnails();
+            if (callback) callback();
+          }
+        });
+      });
+    },
+
     getMarkdown: function() {
       var text = elements.textarea ? elements.textarea.value : state.text;
-      if (!text && state.imagesMeta.length === 0) return '';
+      if (!text && state.imagesMeta.length === 0 && state.docsMeta.length === 0) return '';
       var md = text ? text + '\n\n' : '';
       if (state.imagesMeta.length > 0) {
         md += '### ' + S.notes_images + '\n\n';
         state.imagesMeta.forEach(function(m) { md += '- ' + m.name + ' (' + formatBytes(m.size) + ')\n'; });
+      }
+      if (state.docsMeta.length > 0) {
+        md += '### ' + S.notes_documents + '\n\n';
+        state.docsMeta.forEach(function(m) { md += '- ' + m.name + ' (' + formatBytes(m.size) + ')\n'; });
       }
       return md;
     }
