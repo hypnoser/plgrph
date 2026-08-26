@@ -6,8 +6,8 @@
 
 <!-- ==========================================================================
      ПЛЕЙСХОЛДЕР URL: ця сторінка розрахована на розміщення за адресою
-     https://plgrph.com/ps/info/ (українська версія, коренева, як і решта сайту UA).
-     Мовні версії — https://plgrph.com/ps/info/en/ та https://plgrph.com/ps/info/es/,
+     https://plgrph.com/ps/pr/ (українська версія, коренева, як і решта сайту UA).
+     Мовні версії — https://plgrph.com/ps/pr/en/ та https://plgrph.com/ps/pr/es/,
      за тим самим принципом побудови шляхів, що вже реалізований у калькуляторі
      (plgrph.com/ps/, /ps/en/, /ps/es/) та в /ps/info.html, /ps/en/info.html.
      Якщо фактичний шлях відрізнятиметься — замінити в canonical, hreflang, OG,
@@ -16,13 +16,13 @@
 
 <title>Polygraph Suite — безкоштовний калькулятор ESS-M, CIT, FROSS | PLGRPH</title>
 <meta name="description" content="Безкоштовний офлайн-калькулятор ESS-M, CIT, FROSS для поліграфологів. Zero-Server: дані не залишають браузер. UA/EN/ES, онлайн і офлайн-версії.">
-<link rel="canonical" href="https://plgrph.com/ps/info/">
+<link rel="canonical" href="https://plgrph.com/ps/pr/">
 
 <!-- hreflang -->
-<link rel="alternate" hreflang="uk" href="https://plgrph.com/ps/info/">
-<link rel="alternate" hreflang="en" href="https://plgrph.com/ps/info/en/">
-<link rel="alternate" hreflang="es" href="https://plgrph.com/ps/info/es/">
-<link rel="alternate" hreflang="x-default" href="https://plgrph.com/ps/info/">
+<link rel="alternate" hreflang="uk" href="https://plgrph.com/ps/pr/">
+<link rel="alternate" hreflang="en" href="https://plgrph.com/ps/pr/en/">
+<link rel="alternate" hreflang="es" href="https://plgrph.com/ps/pr/es/">
+<link rel="alternate" hreflang="x-default" href="https://plgrph.com/ps/pr/">
 
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="theme-color" content="#0C5DC7">
@@ -32,7 +32,7 @@
 <meta property="og:description" content="Zero-Server калькулятор ESS-M, CIT та FROSS. Дані не залишають браузер користувача. Безкоштовно, онлайн і офлайн, UA/EN/ES.">
 <meta property="og:image" content="https://plgrph.com/assets/images/og-image.jpg">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://plgrph.com/ps/info/">
+<meta property="og:url" content="https://plgrph.com/ps/pr/">
 <meta property="og:locale" content="uk_UA">
 <meta property="og:site_name" content="PLGRPH">
 
@@ -213,7 +213,7 @@
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "PLGRPH", "item": "https://plgrph.com/" },
     { "@type": "ListItem", "position": 2, "name": "Для фахівців", "item": "https://plgrph.com/dlya-fahivtsiv/" },
-    { "@type": "ListItem", "position": 3, "name": "Polygraph Suite: про застосунок", "item": "https://plgrph.com/ps/info/" }
+    { "@type": "ListItem", "position": 3, "name": "Polygraph Suite: про застосунок", "item": "https://plgrph.com/ps/pr/" }
   ]
 }
 </script>
@@ -829,9 +829,9 @@
       <a href="#offline">Онлайн/офлайн</a>
       <a href="#faq">FAQ</a>
       <div class="lang-switch">
-        <a href="https://plgrph.com/ps/info/" class="active">UA</a>
-        <a href="https://plgrph.com/ps/info/en/">EN</a>
-        <a href="https://plgrph.com/ps/info/es/">ES</a>
+        <a href="https://plgrph.com/ps/pr/" class="active">UA</a>
+        <a href="https://plgrph.com/ps/pr/en/">EN</a>
+        <a href="https://plgrph.com/ps/pr/es/">ES</a>
       </div>
     </nav>
   </div>
@@ -1448,8 +1448,8 @@
       <a href="https://plgrph.com/ps/">Калькулятор</a>
       <a href="https://plgrph.com/">plgrph.com</a>
       <a href="https://t.me/plgrph_ukr">Telegram</a>
-      <a href="https://plgrph.com/ps/info/en/">EN</a>
-      <a href="https://plgrph.com/ps/info/es/">ES</a>
+      <a href="https://plgrph.com/ps/pr/en/">EN</a>
+      <a href="https://plgrph.com/ps/pr/es/">ES</a>
     </div>
   </div>
 </footer>
@@ -1503,7 +1503,7 @@
 ==============================================================================
 ІНСТРУКЦІЯ ДЛЯ AI-АСИСТЕНТА, ЩО ВЕДЕ РОЗРОБКУ САЙТУ PLGRPH.COM (Eleventy/11ty)
 Мета: коректно опублікувати три мовні версії цієї презентаційної сторінки за
-шляхами https://plgrph.com/ps/info/ (UA), /ps/info/en/ (EN), /ps/info/es/ (ES)
+шляхами https://plgrph.com/ps/pr/ (UA), /ps/pr/en/ (EN), /ps/pr/es/ (ES)
 на тому самому стеку, що вже використовується на сайті: Eleventy (11ty) +
 GitHub Pages + Cloudflare DNS, репозиторій hypnoser/plgrph.
 ==============================================================================
@@ -1519,11 +1519,11 @@ GitHub Pages + Cloudflare DNS, репозиторій hypnoser/plgrph.
   /ps/info.html уже існують поза загальним base.njk шаблоном сайту (в
   проєкті вже підтверджено, що каталог /ps/ не використовує спільний
   layout сайту). У такому разі:
-    - Помістити файл як /ps/info/index.html (UA), /ps/info/en/index.html (EN),
-      /ps/info/es/index.html (ES) — саме "index.html" в підпапці, а не
-      "info.html" в корені, щоб чисті URL (/ps/info/, /ps/info/en/)
+    - Помістити файл як /ps/pr/index.html (UA), /ps/pr/en/index.html (EN),
+      /ps/pr/es/index.html (ES) — саме "index.html" в підпапці, а не
+      "info.html" в корені, щоб чисті URL (/ps/pr/, /ps/pr/en/)
       працювали без розширення .html через GitHub Pages.
-    - Додати відповідний шлях (наприклад "ps/info/**") до конфігурації
+    - Додати відповідний шлях (наприклад "ps/pr/**") до конфігурації
       passthroughCopy в .eleventy.js / eleventy.config.js, якщо каталог /ps/
       наразі копіюється як статичні файли (перевірити наявний запис для
       "ps" у конфігурації — з високою ймовірністю він уже є, оскільки сам
@@ -1545,7 +1545,7 @@ GitHub Pages + Cloudflare DNS, репозиторій hypnoser/plgrph.
 до одного, за тим самим принципом, що вже реалізований для /ps/, /ps/en/,
 /ps/es/. Перевірити, що canonical та hreflang-посилання в усіх трьох файлах
 використовують ІДЕНТИЧНІ фінальні шляхи — якщо кінцевий шлях публікації
-відрізняється від /ps/info/ (наприклад, якщо власник обере інший шлях),
+відрізняється від /ps/pr/ (наприклад, якщо власник обере інший шлях),
 замінити в усіх трьох файлах одночасно: canonical, усі hreflang, OG
 og:url, JSON-LD @id/url поля, BreadcrumbList item, і посилання в
 lang-switch навігації.
@@ -1573,14 +1573,14 @@ lang-switch навігації.
 замість окремого og-image.jpg).
 
 КРОК 5. Внутрішнє перелінкування
-Додати посилання на нову сторінку /ps/info/ з головної сторінки plgrph.com
+Додати посилання на нову сторінку /ps/pr/ з головної сторінки plgrph.com
 (наприклад, з блоку промо калькулятора "Поліграфологічний онлайн-калькулятор")
 та з /dlya-fahivtsiv/, щоб пошукові краулери й AI-асистенти знаходили її
 через кілька внутрішніх шляхів, а не лише через sitemap.xml.
 
 КРОК 6. robots.txt і sitemap.xml
 Перевірити, що robots.txt (Disallow: /404.html — єдиний наявний запис)
-НЕ блокує /ps/info/ та мовні підкаталоги. Додати три нові <url> записи в
+НЕ блокує /ps/pr/ та мовні підкаталоги. Додати три нові <url> записи в
 sitemap.xml з <loc> для UA/EN/ES версій та <lastmod> на дату фактичної
 публікації — якщо sitemap збирається автоматично за File Modified Time
 (як зафіксовано для решти сторінок сайту), додаткових ручних дій не
