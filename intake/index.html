@@ -552,6 +552,16 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
  .dimg{break-inside:avoid}.dimg img{max-height:45mm;object-fit:contain;object-position:left}
  .dhead{break-after:avoid}
 }
+/* Report 2.1: map → selected question → episodes → full data. */
+#s-report .wrap{max-width:1120px}
+.rx-overview{border-left:3px solid var(--accent);padding:0 16px;margin:22px 0}.rx-overview h2{font-size:17px}.rx-overview-text{margin:6px 0;font-size:14px;line-height:1.6}
+.rx-map-panel,.rx-question{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:20px;margin:16px 0}.rx-map-panel h2{font-size:18px;margin:0 0 16px}.rx-map-row{display:grid;grid-template-columns:210px minmax(0,1fr);gap:12px;align-items:center;margin:10px 0}.rx-topic{font-size:13px;line-height:1.4;color:var(--muted)}.rx-cells{display:flex;gap:6px;flex-wrap:wrap}.rx-cell{flex:1 1 52px;max-width:108px;min-height:50px;padding:6px;border:1px solid var(--rule);background:#f5f7f9;color:var(--ink);font-size:13px;display:flex;flex-direction:column;justify-content:center;gap:7px;align-items:center}.rx-cell.rx-has-event{background:#eaf3f6}.rx-cell[aria-pressed=true]{outline:2px solid var(--accent);outline-offset:-2px}.rx-dots{display:flex;gap:4px;height:7px}.rx-dot{display:inline-block;width:7px;height:7px;flex-shrink:0;border-radius:50%;background:#754bb1}.rx-time{background:#956a19;border-radius:0}.rx-observer{background:transparent;border:1.5px solid #286692}.rx-legend{border-top:1px solid var(--rule);padding-top:12px;margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted)}.rx-legend>span{display:flex;gap:6px;align-items:center}.rx-map-note{font-size:12px;color:var(--muted);margin-bottom:0}
+.rx-question{scroll-margin-top:15px}.rx-question-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.rx-qid{font-size:13px;color:var(--accent)}.rx-important{font-size:13px;padding:8px 12px;min-height:40px}.rx-important[aria-pressed=true]{background:#eaf3f6;border-color:var(--accent);color:var(--accent)}.rx-question h2.rx-question-text{font-size:22px;line-height:1.4;margin:16px 0}.rx-answer{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 0}.rx-detail-columns{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}.rx-observations{border-left:1px solid var(--rule);padding-left:24px}.rx-label{font-size:12px;color:var(--muted);font-weight:500;margin:16px 0 12px}.rx-trail{font-size:15px;line-height:1.6}.rx-event{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;font-size:14px;padding-bottom:16px}.rx-event time{color:var(--muted);font-size:12px}.rx-event small{display:block;font-size:12px;color:var(--muted);margin-top:4px}.rx-observation{padding:12px;background:#eaf3f6;border-radius:6px;font-size:14px}.rx-limit{border-top:1px solid var(--rule);padding-top:12px;font-size:12px;color:var(--muted)}.rx-related{border-top:1px solid var(--rule);margin-top:16px}.rx-link{font-size:12px;padding:7px 10px;margin:0 6px 6px 0}.rx-episodes-head{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-top:26px}.rx-episodes-head h2{font-size:18px}.rx-episodes-head>span{font-size:13px;color:var(--muted)}.rx-episode{display:flex;gap:14px;text-align:left;width:100%;padding:14px 8px;background:transparent;color:var(--ink);border:0;border-top:1px solid var(--rule);border-radius:0;align-items:flex-start}.rx-episode[aria-pressed=true]{background:#eaf3f6}.rx-episode-id{min-width:38px;color:var(--muted);font-size:13px}.rx-episode-title{display:block;font-size:14px}.rx-episode small{display:block;font-size:12px;color:var(--muted);margin-top:4px}.rx-star{color:var(--accent);margin-left:auto}.rx-appendix{margin-top:28px}.rx-fold{border-top:1px solid var(--rule);padding:14px 0}.rx-fold>summary{cursor:pointer;font-size:15px;font-weight:500}.rx-fold-body{padding:10px 0}.rx-fold .rsec,.rx-fold .bsec{margin:8px 0}.rx-log-row{display:grid;grid-template-columns:55px 70px minmax(0,1fr);gap:10px;border-bottom:1px solid var(--rule);padding:7px 0;font-size:12px;overflow-wrap:anywhere}.rx-fold-body>p{overflow-wrap:anywhere}.rx-question button:focus-visible,.rx-map-panel button:focus-visible,.rx-episode:focus-visible{outline:3px solid #286692;outline-offset:2px}
+@media(max-width:650px){.rx-map-row{grid-template-columns:1fr}.rx-detail-columns{grid-template-columns:1fr;gap:10px}.rx-observations{border-left:0;padding-left:0;border-top:1px solid var(--rule)}.rx-map-panel,.rx-question{padding:14px}.rx-question h2.rx-question-text{font-size:19px}.rx-episodes-head{flex-wrap:wrap}.rx-question-head{flex-wrap:wrap}.rx-cell{max-width:none}.rx-important{min-height:44px}}
+@page attention { @top-left { content:"Карта помітних реакцій. Реакція не визначає причини поведінки.";font:8pt sans-serif; } }
+@media print{.rx-important,.rx-related,.rx-link{display:none!important}.rx-fold>summary{display:block!important;font-size:12pt;margin:6mm 0 3mm;break-after:avoid}.rx-appendix .report-opening{break-after:auto}.rx-map-panel,.rx-question{border:0;padding:0;break-inside:auto}.rx-map-panel{break-inside:avoid}.rx-map-row{grid-template-columns:43mm minmax(0,1fr)}.rx-cell{min-height:11mm;font-size:9pt}.rx-map-note,.rx-legend{font-size:8pt}.rx-episode{break-inside:avoid}.rx-detail-columns{grid-template-columns:1.2fr 1fr}.rx-question-text{break-after:avoid}.rx-appendix{break-before:page}.rx-fold .ovbar{display:none!important}.rx-episode-title{font-size:10pt}.rx-episode small{font-size:9pt}.rx-log-row{break-inside:avoid}.rx-event{break-inside:avoid}.rx-event small{font-size:9pt}.rx-map-panel h2,.rx-episodes-head h2{font-size:13pt}}
+
+@media print{.rx-question{break-before:page}.rx-question-head{break-after:avoid}.rx-question h2.rx-question-text{break-inside:avoid;break-after:avoid;font-size:16pt}.rx-appendix summary{break-after:avoid}}
 </style>
 </head>
 <body>
@@ -886,7 +896,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
 (function(){
 "use strict";
 
-var VERSION = "2.0";
+var VERSION = "2.1";
 var SCHEMA  = "1.0";
 /* Stable identities, archive validation and report snapshots. */
 var ANALYTICS_VERSION='2.0';
@@ -908,6 +918,7 @@ function validateSaved(s){
  Object.keys(s.answers).forEach(function(id){var r=s.answers[id];if(!ix[id]||!obj(r)||values.indexOf(r.value)<0)throw new Error('Некоректна відповідь: '+id);});
  var last=-1;s.events.forEach(function(e){if(!obj(e)||typeof e.type!=='string'||!Number.isFinite(e.t)||e.t<0||e.t<last)throw new Error('Некоректна хронологія');last=e.t;if(e.q&&!ix[e.q])throw new Error('Невідоме питання в журналі');if(['answer','change'].indexOf(e.type)>=0&&(!e.q||values.indexOf(e.value)<0||!Number.isFinite(e.since)||e.since<0))throw new Error('Некоректна подія відповіді');});
  if(s.blockIdx!==undefined&&(!Number.isInteger(s.blockIdx)||s.blockIdx<-1||s.blockIdx>=s.questionnaire.blocks.length))throw new Error('Некоректний номер блоку');
+ if(s.report_priority&&(!obj(s.report_priority)||Object.keys(s.report_priority).some(function(id){var p=s.report_priority[id];return !ix[id]||!obj(p)||typeof p.important!=='boolean';})))throw new Error('Некоректні позначки важливості');
  if(s.marks&&(!Array.isArray(s.marks)||s.marks.some(function(m){return !m||!ix[m.q]||typeof m.mark!=='string';})))throw new Error('Некоректні позначки');
  return true;
 }
@@ -1080,7 +1091,7 @@ uk: {
   r_dev:         "відхилення {z}",
 
   r_head:        "Карта уваги",
-  r_banner:      "Карта уваги для побудови передтестової бесіди. Не висновок про достовірність.",
+  r_banner:      "Карта помітних реакцій перед тестуванням. Реакція не визначає причини поведінки.",
   r_top:         "П\u02BCять точок найбільшої уваги",
   r_lonely:      "Реакція без машинного сигналу",
   r_lonely_note: "Тут поліграфолог щось помітив, а в поведінці респондента слідів немає. Це не суперечність — це матеріал для бесіди.",
@@ -4010,7 +4021,7 @@ function chartTime(A){
 }
 
 
-function renderReport(){
+function renderReportDetails(){
   var S = PI_FILL.session();
   if (!S) return;
   var A = analysisFor(S);
@@ -4038,7 +4049,7 @@ function renderReport(){
     nsec.appendChild(np);
   }
   body.appendChild(nsec);
-  if(A.discussion&&A.discussion.length){var ds=document.createElement("div");ds.className="rsec discussion";var dh=document.createElement("h2");dh.textContent="До бесіди: пояснення та обставини";ds.appendChild(dh);A.discussion.forEach(function(x){var p=infoLine(ds,x.id+" · "+R("r_"+x.value)+" — "+x.text+(x.damped?" (поведінкову підсвітку знято)":""),"discussion-row");p.addEventListener("click",function(){jumpTo(x.id);});});body.appendChild(ds);}
+  if(A.discussion&&A.discussion.length){var ds=document.createElement("div");ds.className="rsec discussion";var dh=document.createElement("h2");dh.textContent="Відповіді «так», «поясню» та позначені обставини";ds.appendChild(dh);A.discussion.forEach(function(x){var p=infoLine(ds,x.id+" · "+R("r_"+x.value)+" — "+x.text+(x.damped?" (поведінкову підсвітку знято)":""),"discussion-row");p.addEventListener("click",function(){jumpTo(x.id);});});body.appendChild(ds);}
 
   if (!A.points.length){
     var none = document.createElement("p");
@@ -4142,6 +4153,122 @@ function renderReport(){
   show("s-report");
 }
 
+/* Report 2.1: observable events and examiner priorities, independent of legacy scores. */
+var REACTION_VIEW=null,REACTION_SELECTED=null,REACTION_SESSION=null;
+function rxNode(tag,cls,parent,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;if(parent)parent.appendChild(n);return n;}
+function rxValue(v){return v?R('r_'+v):'не надано';}
+function rxImportant(S,id){return !!(S.report_priority&&S.report_priority[id]&&S.report_priority[id].important);}
+function rxModel(S,A){
+ var ix=PI_STAT.index(S.questionnaire),items={};
+ ix.order.forEach(function(id){var m=ix.map[id];items[id]={id:id,meta:m,events:[],marks:[],changes:[],reviews:0,collapsed:0,time:null,flags:[]};});
+ (A.sequence||[]).forEach(function(q){if(items[q.id])items[q.id].time=q;});
+ S.events.forEach(function(e){var id=e.q;if(!id&&e.field&&e.field.indexOf('exp_')===0)id=e.field.slice(4);var x=items[id];if(!x)return;x.events.push(e);if(e.type==='change')x.changes.push(e);if(e.type==='review')x.reviews++;if(e.type==='collapse')x.collapsed++;});
+ (S.marks||[]).forEach(function(m){if(items[m.q])items[m.q].marks.push(m);});
+ ix.order.forEach(function(id){var x=items[id];if(x.changes.length||x.reviews||x.collapsed)x.flags.push('route');if(x.time&&x.time.timingAvailable&&!x.time.damped&&x.time.z>=1.5)x.flags.push('time');if(x.marks.length)x.flags.push('observer');});
+ return {S:S,A:A,ix:ix,items:items};
+}
+function rxEvent(e){
+ if(e.type==='answer')return 'Обрано «'+rxValue(e.value)+'»';
+ if(e.type==='change')return 'Зміна: «'+rxValue(e.from)+'» → «'+rxValue(e.value)+'»';
+ if(e.type==='expand')return 'Відкрито уточнення';
+ if(e.type==='collapse')return 'Уточнення згорнуто'+(e.answered?' після відповідей':' без відповідей');
+ if(e.type==='review')return 'Повторний вибір тієї самої відповіді';
+ if(e.type==='write')return 'Початок рукописного пояснення';
+ if(e.type==='write_end')return 'Завершено штрих у поясненні';
+ if(e.type==='erase')return 'Рукописне поле очищено';
+ if(e.type==='mark')return 'Мітка поліграфолога: '+e.mark;
+ if(e.type==='block_open')return 'Відкрито блок '+e.block;
+ if(e.type==='block_done')return 'Завершено блок '+e.block;
+ if(e.type==='session_end')return 'Сесію завершено: '+(e.status==='aborted'?'достроково':'повністю');
+ if(e.type==='lock')return 'Поставлено паузу';if(e.type==='unlock')return 'Паузу знято';
+ if(e.type==='resume')return 'Сесію відновлено';
+ return e.type+(e.q?' · '+e.q:'');
+}
+function rxReasons(x){var a=[];if(x.changes.length)a.push('Змін відповіді: '+x.changes.length);if(x.reviews)a.push('Повторних виборів: '+x.reviews);if(x.collapsed)a.push('Згортань уточнень: '+x.collapsed);if(x.flags.indexOf('time')>=0)a.push('Довший інтервал між діями');if(x.marks.length)a.push('Ваших міток: '+x.marks.length);return a;}
+function rxFamily(M,id){return M.ix.order.filter(function(k){return k===id||M.ix.map[k].gate===id;});}
+function rxFlags(M,id){var f=[];rxFamily(M,id).forEach(function(k){M.items[k].flags.forEach(function(t){if(f.indexOf(t)<0)f.push(t);});});return f;}
+function rxFold(parent,label){var d=rxNode('details','rx-fold',parent);rxNode('summary','',d,label);return rxNode('div','rx-fold-body',d);}
+function rxButtons(M){
+ var root=el('rp-body');Array.from(root.querySelectorAll('[data-rx-id]')).forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-rx-id')===REACTION_SELECTED));});
+}
+function rxSelect(id,scroll){
+ var M=REACTION_VIEW;if(!M||!M.items[id])return;REACTION_SELECTED=id;
+ var box=el('rx-question');if(!box)return;box.textContent='';
+ var x=M.items[id],S=M.S,head=rxNode('div','rx-question-head',box);
+ rxNode('span','rx-qid',head,'ПИТАННЯ '+id+' · '+x.meta.block);
+ var imp=rxNode('button','ghost rx-important',head,rxImportant(S,id)?'★ Важливе':'☆ Позначити важливим');imp.type='button';imp.setAttribute('aria-pressed',String(rxImportant(S,id)));imp.disabled=PI_SAVE.isReadOnly();if(imp.disabled)imp.title='Архів відкрито лише для перегляду';
+ imp.addEventListener('click',function(){if(PI_SAVE.isReadOnly())return;var on=!rxImportant(S,id);if(!S.report_priority)S.report_priority={};if(on)S.report_priority[id]={important:true,at:new Date().toISOString()};else delete S.report_priority[id];noteAudit(S,'report_priority',{question:id,important:on});rxEpisodes(M);rxSelect(id,false);box.querySelector('.rx-important').focus();});
+ rxNode('h2','rx-question-text',box,x.meta.text);
+ rxNode('p','rx-answer',box,'Остаточна відповідь: «'+rxValue(S.answers[id]&&S.answers[id].value)+'»');
+ var columns=rxNode('div','rx-detail-columns',box),auto=rxNode('div','',columns),obs=rxNode('div','rx-observations',columns);
+ rxNode('h3','rx-label',auto,'ПОСЛІДОВНІСТЬ ВІДПОВІДЕЙ');
+ var choices=x.events.filter(function(e){return e.type==='answer'||e.type==='change';});
+ rxNode('p','rx-trail',auto,choices.length?choices.map(function(e){return '«'+rxValue(e.value)+'»';}).join(' → '):'Відповідей у журналі немає.');
+ rxNode('h3','rx-label',auto,'ЗАФІКСОВАНО ПРОГРАМОЮ');
+ var events=x.events.filter(function(e){return e.type!=='mark'&&e.type!=='write_end';});
+ if(!events.length)infoLine(auto,'Подій цього питання не зафіксовано.');
+ events.forEach(function(e){var row=rxNode('div','rx-event',auto);rxNode('time','',row,mmss(e.t));var desc=rxNode('div','',row,rxEvent(e));if(e.type==='answer'&&Number.isFinite(e.since)){rxNode('small','',desc,'Інтервал між діями: '+(e.since/1000).toFixed(1)+' с'+(e.timingValid===false?' · виключений із часового порівняння':''));}});
+ rxNode('h3','rx-label',obs,'СПОСТЕРЕЖЕННЯ ПОЛІГРАФОЛОГА');
+ if(!x.marks.length)infoLine(obs,'Міток немає.');
+ x.marks.forEach(function(m){rxNode('p','rx-observation',obs,mmss(m.t||0)+' · '+m.mark);});
+ if(S.report_priority&&S.report_priority[id]&&S.report_priority[id].note)infoLine(obs,S.report_priority[id].note);
+ var t=x.time;
+ if(t&&t.timingAvailable&&!t.damped){var base=M.A.localBases&&M.A.localBases[id];infoLine(obs,'Часове порівняння: відхилення '+t.z.toFixed(1)+(base?' · попередніх придатних інтервалів: '+base.n:'')+'. Інтервали нормовано на довжину питання.','rx-limit');}
+ else infoLine(obs,t&&t.damped?'Часове порівняння виключено через позначену перешкоду. Інші події питання збережено.':'Для часового порівняння недостатньо придатних даних або інтервал виключено.','rx-limit');
+ if(x.changes.length&&x.collapsed)infoLine(obs,'Зміна відповіді та згортання можуть бути одним пов’язаним епізодом.','rx-limit');
+ if(x.meta.gate){var back=rxNode('button','ghost rx-link',box,'Основне питання '+x.meta.gate);back.addEventListener('click',function(){rxSelect(x.meta.gate,false);});}
+ var subs=rxFamily(M,id).filter(function(k){return k!==id;});
+ if(subs.length){var rel=rxNode('div','rx-related',box);rxNode('h3','rx-label',rel,'УТОЧНЕННЯ ЦІЄЇ ТЕМИ');subs.forEach(function(k){var child=M.items[k],b=rxNode('button','ghost rx-link',rel,k+' · '+rxValue(S.answers[k]&&S.answers[k].value)+(child.flags.length?' · є події':''));b.title=child.meta.text;b.addEventListener('click',function(){rxSelect(k,false);});});}
+ if(S.explanations[id])docImage(box,S.explanations[id],'Рукописне пояснення');
+ rxButtons(M);if(scroll)box.scrollIntoView({block:'start',behavior:'auto'});
+}
+function rxEpisodes(M){
+ var list=el('rx-episodes');list.textContent='';
+ var ids=M.ix.order.filter(function(id){return M.items[id].flags.length||rxImportant(M.S,id);});
+ ids.sort(function(a,b){return Number(rxImportant(M.S,b))-Number(rxImportant(M.S,a))||M.ix.order.indexOf(a)-M.ix.order.indexOf(b);});
+ el('rx-episode-count').textContent=ids.length+' питань · важливих: '+ids.filter(function(id){return rxImportant(M.S,id);}).length;
+ if(!ids.length)infoLine(list,'Помітних подій за цими правилами не зафіксовано. Будь-яке питання можна переглянути на карті.');
+ ids.forEach(function(id){var x=M.items[id],b=rxNode('button','rx-episode',list);b.type='button';b.setAttribute('data-rx-id',id);rxNode('span','rx-episode-id',b,id);var txt=rxNode('span','',b);rxNode('span','rx-episode-title',txt,x.meta.text);rxNode('small','',txt,rxReasons(x).join(' · ')||'Позначено вами');if(rxImportant(M.S,id))rxNode('span','rx-star',b,'★');b.addEventListener('click',function(){rxSelect(id,true);});});rxButtons(M);
+}
+function renderReport(){
+ renderReportDetails();var S=PI_FILL.session();if(!S)return;
+ var A=analysisFor(S),M=rxModel(S,A);REACTION_VIEW=M;if(REACTION_SESSION!==S.session_id){REACTION_SELECTED=null;REACTION_SESSION=S.session_id;}
+ var body=el('rp-body'),existing=Array.from(body.children);body.textContent='';
+ el('rp-head').textContent='Карта помітних реакцій';el('rp-banner').textContent='Події програми та спостереження поліграфолога. Реакція не визначає причини поведінки.';
+ var overview=rxNode('div','rx-overview',body);rxNode('h2','',overview,'Що виділяється в цій сесії');
+ var changes=M.ix.order.filter(function(id){return M.items[id].changes.length;}),observed=M.ix.order.filter(function(id){return M.items[id].marks.length;});
+ function compactIds(ids){return ids.slice(0,8).join(', ')+(ids.length>8?' та ще '+(ids.length-8):'');}
+ var timeIds=M.ix.order.filter(function(id){return M.items[id].flags.indexOf('time')>=0;}),reviewIds=M.ix.order.filter(function(id){return M.items[id].reviews>0;}),summary=[];
+ if(changes.length)summary.push('Зміни відповідей: '+compactIds(changes)+'.');
+ if(timeIds.length)summary.push('Довші інтервали між діями: '+compactIds(timeIds)+'.');
+ if(reviewIds.length)summary.push('Повторні вибори: '+compactIds(reviewIds)+'.');
+ if(observed.length)summary.push('Ваші спостереження: '+compactIds(observed)+'.');
+ if(!summary.length)summary.push('Змін відповідей, часових особливостей і міток за поточними правилами не зафіксовано.');
+ infoLine(overview,summary.join(' '),'rx-overview-text');
+ if(!S.finished||S.status==='aborted')infoLine(overview,S.status==='aborted'?'Сесію припинено достроково. Незаповнені питання не є відповідями «ні».':'Попередній звіт: анкетування ще триває.');
+ var table=rxNode('section','rx-map-panel',body);rxNode('h2','',table,'Теми та питання');
+ S.questionnaire.blocks.forEach(function(block){var qs=block.gates||block.questions||[];var row=rxNode('div','rx-map-row',table);rxNode('div','rx-topic',row,block.id+' · '+block.title);var cells=rxNode('div','rx-cells',row);qs.concat(block.closing?[block.closing]:[]).forEach(function(q){var f=rxFlags(M,q.id),b=rxNode('button','rx-cell'+(f.length?' rx-has-event':''),cells);b.type='button';b.setAttribute('data-rx-id',q.id);b.setAttribute('aria-label',q.id+' — '+q.text);rxNode('span','',b,q.id);var dots=rxNode('span','rx-dots',b);f.forEach(function(t){rxNode('i','rx-dot rx-'+t,dots);});b.addEventListener('click',function(){rxSelect(q.id,false);});});});
+ var legend=rxNode('div','rx-legend',table);[['route','Зміна / повернення'],['time','Часова подія'],['observer','Ваше спостереження']].forEach(function(pair){var n=rxNode('span','',legend);rxNode('i','rx-dot rx-'+pair[0],n);n.appendChild(document.createTextNode(pair[1]));});infoLine(table,'Позначки основного питання враховують також події його уточнень. Без позначок — помітних подій не зафіксовано.','rx-map-note');
+ var question=rxNode('section','rx-question',body);question.id='rx-question';question.setAttribute('aria-live','polite');
+ var ephead=rxNode('div','rx-episodes-head',body);rxNode('h2','',ephead,'Помітні епізоди');rxNode('span','',ephead).id='rx-episode-count';rxNode('div','',body).id='rx-episodes';
+ rxEpisodes(M);var initial=REACTION_SELECTED&&M.items[REACTION_SELECTED]?REACTION_SELECTED:(M.ix.order.find(function(id){return rxImportant(S,id);})||M.ix.order.find(function(id){return M.items[id].flags.length;})||M.ix.order[0]);if(initial)rxSelect(initial,false);
+ var extras=rxNode('section','rx-appendix',body);rxNode('h2','',extras,'Додаткові дані звіту');
+ var full=rxFold(extras,'Повний журнал подій');S.events.forEach(function(e){var row=rxNode('div','rx-log-row',full);rxNode('time','',row,mmss(e.t));rxNode('span','',row,e.q||e.block||'—');rxNode('span','',row,rxEvent(e));});
+ existing.forEach(function(n){
+  if(n.classList.contains('report-state')){extras.appendChild(n);return;}
+  if(n.classList.contains('report-opening')){var old=rxFold(extras,'Раніше розраховані бали та теплова карта');infoLine(old,'Розрахунок за версією алгоритму '+(S.analysis_version||ANALYTICS_VERSION)+'. Ці бали не визначають порядок нової карти реакцій.');old.appendChild(n);return;}
+  if(n.tagName==='DETAILS'){n.classList.add('rx-fold');extras.appendChild(n);return;}
+  var h=n.querySelector('h2,h3');if(!h){extras.appendChild(n);return;}
+  var title=h.textContent;if(title===T('g_charts')||title===T('b_head'))return;
+  var content=rxFold(extras,title);h.remove();content.appendChild(n);
+ });
+ if(S.overrides&&Object.keys(S.overrides).length){var ov=rxFold(extras,'Попередні ручні зміни балів');Object.keys(S.overrides).forEach(function(id){var v=S.overrides[id];infoLine(ov,id+' · '+(v.dir==='up'?'піднято':'опущено')+' · '+v.why);});}
+ var audit=rxFold(extras,'Історія змін звіту');(S.audit||[]).forEach(function(e){infoLine(audit,e.at+' · '+e.type+' · '+JSON.stringify(e.detail));});if(!(S.audit||[]).length)infoLine(audit,'Змін не зафіксовано.');
+}
+var rxPrintDetails=[];
+window.addEventListener('beforeprint',function(){rxPrintDetails=Array.from(el('rp-body').querySelectorAll('details')).map(function(d){var old=d.open;d.open=true;return [d,old];});});
+window.addEventListener('afterprint',function(){rxPrintDetails.forEach(function(p){p[0].open=p[1];});rxPrintDetails=[];});
+
 /* Компактний список п'яти головних — один рядок на точку. */
 function topList(root, A){
   var sec = document.createElement("div"); sec.className = "rsec";
@@ -4206,13 +4333,7 @@ function blockSection(root, A, b){
   root.appendChild(sec);
 }
 
-function jumpTo(q){
-  var card = document.getElementById("pt-" + q);
-  if (!card){var S=PI_FILL.session(),A=analysisFor(S),m=PI_STAT.index(S.questionnaire).map[q];if(!m)return;card=document.createElement('div');card.className='rsec';card.id='pt-'+q;var h=document.createElement('h3');h.textContent=q+' — '+m.text;card.appendChild(h);infoLine(card,'Відповідь: '+(S.answers[q]?R('r_'+S.answers[q].value):'не надано'));infoLine(card,'Питання не має окремої поведінкової підсвітки.');el('rp-body').appendChild(card);}
-  card.scrollIntoView({ block: "center" });
-  card.classList.add("flash");
-  setTimeout(function(){ card.classList.remove("flash"); }, 1400);
-}
+function jumpTo(q){if(REACTION_VIEW&&REACTION_VIEW.items[q])rxSelect(q,true);}
 
 function chartSection(root, title, note, chart, tight){
   if (!chart) return;
@@ -4268,22 +4389,6 @@ function pointCard(pt, rank){
   }
   right.appendChild(ul);
 
-  if (!PI_SAVE.isReadOnly()){
-    var bar = document.createElement("div"); bar.className = "ovbar";
-    var mk = function(label, dir){
-      var b = document.createElement("button");
-      b.className = "ghost mini";
-      b.textContent = label;
-      b.addEventListener("click", function(){ setOverride(pt.id, dir); });
-      bar.appendChild(b);
-    };
-    var S = PI_FILL.session();
-    var has = S && S.overrides && S.overrides[pt.id];
-    mk(T("o_up"), "up");
-    mk(T("o_down"), "down");
-    if (has) mk(T("o_clear"), null);
-    right.appendChild(bar);
-  }
 
   box.appendChild(right);
   return box;
@@ -4292,7 +4397,7 @@ function pointCard(pt, rank){
 /* Ранг змінюється тільки так: вручну і з підставою, яку видно у звіті. */
 function setOverride(id, dir){
   var S = PI_FILL.session();
-  if (!S) return;
+  if (!S || PI_SAVE.isReadOnly()) return;
   if (!S.overrides) S.overrides = {};
   if (!dir){ delete S.overrides[id]; }
   else {
