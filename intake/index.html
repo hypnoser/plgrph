@@ -596,6 +596,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
       <input type="file" id="f-resume" accept=".json,.pgi" class="hidden">
     </div>
     <div class="why" id="b-resume-why"></div>
+    <div class="actions hidden" id="resume-actions"><button id="b-resume-go">Продовжити заповнення</button><button id="b-resume-file" class="ghost">Обрати файл для запису</button></div>
     <details class="settings"><summary>Налаштування та статистика</summary><div class="dirbar">
       <div class="dline">
         <span id="b-dir-state"></span>
@@ -650,6 +651,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
 
     <div class="actions" style="margin-top:32px">
       <button id="b-start">Почати заповнення</button>
+      <button id="b-session-file" class="ghost">Обрати файл сесії</button>
       <button id="b-restart" class="ghost">Завантажити іншу анкету</button>
     </div>
     <p class="note" id="ov-note"></p>
@@ -786,7 +788,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <div class="hsec"><h2>2. Згода та анкета</h2><p>Вкажіть позначку справи, оформіть згоду на папері або кнопкою «Згода», завантажте JSON і перевірте його склад. Інформація для респондента з JSON показується перед питаннями. Згода на поліграф і ознайомлення з попередньою анкетою — окремі записи.</p></div>
     <div class="hsec"><h2>3. Два дисплеї</h2><p>Перетягніть вікно заповнення на Samsung через SpaceDesk. Монітор лишається на ноутбуці. Миша поліграфолога не завершує штрих S Pen. Перемикання фокуса не вважається паузою. PIN, якщо заданий, перевіряється при знятті паузи й поверненні до іншого блоку; він не блокує Windows або засоби браузера.</p></div>
     <div class="hsec"><h2>4. Заповнення</h2><p>Три нейтральні відповіді: «так», «ні», «поясню». У списку «Інша відповідь» можна позначити відмову чи незастосовність. Уточнення відкриваються під своїм питанням. Письмове пояснення необов’язкове: нагадування показується один раз. Парафа — після кожного блоку, підпис — наприкінці анкети. Зміна відповіді анулює попередню парафу цього блоку.</p></div>
-    <div class="hsec"><h2>5. Збереження й пароль</h2><p>З дозволом на запис зміни записуються автоматично; запити утворюють чергу. Наприкінці блоку та сесії запис запитується негайно. У резервному режимі браузер отримує нумеровані копії для завантаження — перевіряйте, що він дозволяє їх зберегти. Пароль вводиться за бажанням після завершення. До цього файл відкритий; шифрування поточного файла не видаляє попередні копії.</p></div>
+    <div class="hsec"><h2>5. Збереження й пароль</h2><p>З дозволом на запис зміни записуються автоматично; запити утворюють чергу. Наприкінці блоку та сесії запис запитується негайно. Усі зміни сесії перезаписують один файл. Без базової теки оберіть файл один раз, а потім повторно натисніть «Почати заповнення». Якщо запис недоступний, початок блокується; помилка під час роботи лишає зміни незбереженими й показує кнопку вибору файла. Пароль вводиться за бажанням після завершення. До цього файл відкритий; шифрування поточного файла не видаляє попередні копії.</p></div>
     <div class="hsec"><h2>6. Монітор і карта уваги</h2><p>П’ять позначок ставляться мишею. Технічна перешкода знімає поведінкову підсвітку, але повідомлені обставини й «поясню» залишаються в окремому списку для бесіди. Час — інтервал між діями, а не чистий час обдумування. Після письма, явної паузи та на початку блоку він не ранжується. Ковзне порівняння використовує до дев’яти попередніх придатних «ні» того самого блоку, щонайменше три.</p></div>
     <div class="hsec"><h2>7. Звіт та архів</h2><p>Документ для справи й звіт друкуються окремо через друк браузера. Архів містить питання, відповіді, почерк, журнал, версію алгоритму та зафіксований аналіз. Старі сесії без знімка аналізуються поточною версією з відповідною позначкою. Контрольна сума підтверджує збіг вмісту з записаним значенням; вона не є електронним підписом.</p></div>
     <div class="hsec"><h2>8. Спільна статистика</h2><p>Формат norm-2 розділяє дані за відбитком анкети. Він не зберігає прізвищ, відповідей чи підписів. Порівняння починається після 15 попередніх сесій і 15 значень конкретного питання. Поточна сесія не порівнюється сама із собою. Старий norm-1 можна експортувати, але не можна надійно розподілити між різними анкетами.</p></div>
@@ -875,6 +877,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <div class="savebar">
       <span id="mo-saved">ще не збережено</span>
       <button id="mo-save" class="ghost mini">Зберегти зараз</button>
+      <button id="mo-save-file" class="ghost mini hidden">Обрати файл для запису</button>
     </div>
 
     <div class="foot">
@@ -896,7 +899,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
 (function(){
 "use strict";
 
-var VERSION = "2.1";
+var VERSION = "2.2";
 var SCHEMA  = "1.0";
 /* Stable identities, archive validation and report snapshots. */
 var ANALYTICS_VERSION='2.0';
@@ -922,7 +925,8 @@ function validateSaved(s){
  if(s.marks&&(!Array.isArray(s.marks)||s.marks.some(function(m){return !m||!ix[m.q]||typeof m.mark!=='string';})))throw new Error('Некоректні позначки');
  return true;
 }
-function ensureCase(){if(!CASE.id){CASE={id:newId(),label:(el('case-label').value||'').trim(),created:new Date().toISOString()};el('case-label').disabled=true;}return PI_SAVE.prepareCase(CASE);}
+function identifyCase(){if(!CASE.id){CASE={id:newId(),label:(el('case-label').value||'').trim(),created:new Date().toISOString()};el('case-label').disabled=true;}return CASE;}
+function ensureCase(){return PI_SAVE.prepareCase(identifyCase());}
 function analysisFor(S){return S.finished&&(S.analysis_current||S.analysis_snapshot)||PI_STAT.analyse(S);}
 function noteAudit(S,type,detail){(S.audit||(S.audit=[])).push({at:new Date().toISOString(),type:type,detail:detail});PI_SAVE.touched();}
 function questionnaireHash(q){return digest(stable({language:q.meta.language||'uk',blocks:q.blocks,period:q.meta.period||'',timing:'inter-action-v2'}));}
@@ -1135,7 +1139,7 @@ uk: {
   s_saved_never: "ще не збережено",
   s_saved_at:    "збережено о {t}",
   s_unsaved:     "є незбережені зміни",
-  s_fallback:    "Прямий запис недоступний — файл вивантажуватиметься в кінці кожного блоку",
+  s_fallback:    "Прямий запис недоступний — оберіть файл для запису",
   s_err:         "помилка запису: {e}",
   s_leave:       "Сесія не збережена повністю.",
   s_resume_pw:   "Введіть пароль до файлу сесії",
@@ -1260,7 +1264,7 @@ Object.assign(DICT.uk,{
  p_hash:'Контрольна сума сесії: {h}',
  d_none:'Базову теку не обрано — записи завантажуватимуться окремими файлами',d_ready:'Базова тека: {name}',d_choose:'Обрати базову теку',d_change:'Змінити базову теку',
  s_end_body:'Пароль необов’язковий. До цього моменту записи зберігалися відкритими. З паролем поточний файл буде перезаписано зашифрованим; попередні завантажені копії залишаться. Відновлення втраченого пароля немає.',
- s_fallback:'Резервний режим: збереження нумерованими копіями через завантаження браузера',
+ s_fallback:'Прямий запис недоступний — оберіть файл для запису',
  b_calib:'Ознайомлювальний блок: {n} питань, «ні» — {no}. До ранжування не входить.',
  n_blocks:'Найбільший середній бал на відповідь — у блоці {hot}; найменший — у блоці {calm}.',
  m_confirm_end:'Припинити анкетування? Відповіді буде збережено, подальше заповнення заблоковано.',
@@ -1872,19 +1876,49 @@ el("mo-finish-skip").addEventListener("click", function(){ PI_MON.finish(false);
 
 /* Перед сесією питаємо тільки, куди класти файл. Пароль — у кінці,
    коли планшет уже повернувся до поліграфолога. */
-var starting=false;
-async function startSession(){
- if(starting)return;starting=true;el('b-start').disabled=true;
+var starting=false, pendingResume=null;
+function fileChoiceError(e){return e&&e.name==='AbortError'?'Вибір файла скасовано. Заповнення ще не розпочато.':(e.message||'Не вдалося отримати доступ до файла.');}
+async function selectSessionFile(resume){
+ var note=el(resume?'b-resume-why':'ov-note');
  try{
-  RESP_LANG=pickLang(STATE.data.meta.language)||'uk';PI_MON.reserve();
-  await PI_SAVE.reset();await ensureCase();
-  STATE.questionnaireHash=await questionnaireHash(STATE.data);
-  var done=await PI_SAVE.fileInDir(CASE.id);
-  if(!done)await PI_SAVE.chooseFile(CASE.id);
-  PI_MON.begin(STATE.data);
- }catch(e){el('ov-note').textContent='Не вдалося почати: '+e.message;}
- finally{starting=false;el('b-start').disabled=false;}
+  // The picker must run directly from a click, before a popup or any await.
+  await PI_SAVE.chooseFile(resume?pendingResume.session_id:identifyCase().id);
+  note.textContent='Файл для запису обрано. Натисніть «'+(resume?'Продовжити заповнення':'Почати заповнення')+'».';
+ }catch(e){note.textContent=fileChoiceError(e);}
 }
+el('b-session-file').addEventListener('click',function(){if(!starting)selectSessionFile(false);});
+el('b-resume-file').addEventListener('click',function(){if(!starting&&pendingResume)selectSessionFile(true);});
+async function startSession(resume){
+ resume=resume===true;
+ if(starting||resume&&!pendingResume)return;
+ starting=true;var button=el(resume?'b-resume-go':'b-start'),note=el(resume?'b-resume-why':'ov-note');button.disabled=true;
+ try{
+  if(!PI_SAVE.hasHandle()&&!PI_SAVE.dirName()){
+   await selectSessionFile(resume);
+   return; // A second click opens the respondent window with fresh activation.
+  }
+  RESP_LANG=pickLang(STATE.data.meta.language)||'uk';PI_MON.reserve();
+  await ensureCase();
+  if(!PI_SAVE.hasHandle()&&!await PI_SAVE.fileInDir(resume?pendingResume.session_id:CASE.id)){
+   throw new Error('Підтвердіть доступ до базової теки в налаштуваннях або натисніть «Обрати файл для запису» / «Обрати файл сесії».');
+  }
+  STATE.questionnaireHash=await questionnaireHash(STATE.data);
+  if(resume){
+   pendingResume.questionnaire_hash=STATE.questionnaireHash;
+   PI_MON.resume(pendingResume);pendingResume=null;el('resume-actions').classList.add('hidden');
+  }else{await PI_SAVE.usePassword('');PI_MON.begin(STATE.data);}
+  note.textContent='';
+ }catch(e){note.textContent='Не вдалося почати: '+e.message;}
+ finally{starting=false;button.disabled=false;}
+}
+el('b-resume-go').addEventListener('click',function(){startSession(true);});
+el('mo-save-file').addEventListener('click',async function(){
+ var S=PI_FILL.session();if(!S||PI_SAVE.isReadOnly())return;
+ this.disabled=true;
+ try{await PI_SAVE.chooseFile(S.session_id);PI_SAVE.touched();await PI_SAVE.now();}
+ catch(e){if(e.name!=='AbortError')alert(e.message);}
+ finally{this.disabled=false;}
+});
 
 /* ---------- робоча тека на екрані завантаження ---------- */
 
@@ -1952,9 +1986,9 @@ el("f-resume").addEventListener("change", function(){
   this.value = "";
   if (!file) return;
   var why = el("b-resume-why");
-  why.textContent = "";
+  why.textContent = "";pendingResume=null;el("resume-actions").classList.add("hidden");
 
-  PI_SAVE.read(file, function(){ return prompt(T("s_resume_pw")) || ""; })
+  PI_SAVE.reset().then(function(){return PI_SAVE.read(file, function(){ return prompt(T("s_resume_pw")) || ""; });})
     .then(function(saved){
       if (!saved){ why.textContent = T("s_bad_file"); return; }
 
@@ -1974,8 +2008,8 @@ el("f-resume").addEventListener("change", function(){
       PI_SAVE.readOnly(false);
       CASE=saved.case_info||{id:saved.session_id,label:'Відновлена справа',created:saved.started};
       el('case-label').value=CASE.label;el('case-label').disabled=true;
-      return ensureCase().then(function(){return PI_SAVE.chooseFile(saved.session_id);})
-        .then(async function(){saved.questionnaire_hash=await questionnaireHash(saved.questionnaire);PI_MON.resume(saved);});
+      pendingResume=saved;el('resume-actions').classList.remove('hidden');
+      why.textContent='Сесію прочитано. Натисніть «Продовжити заповнення». За потреби спочатку оберіть файл для запису — можна вказати той самий файл.';
     })
     .catch(function(e){
       why.textContent = (e && e.message === "bad_password") ? T("s_bad_pw") : (e&&e.message==="no_password"?"Відкриття скасовано":T("s_bad_file")+": "+(e.message||""));
@@ -2724,7 +2758,7 @@ var PI_SAVE = (function(){
 'use strict';
 var ITER=150000, handle=null, key=null, salt=null, dir=null, caseDir=null, casePath='', caseId='';
 var readOnly=false, dirty=false, busy=false, lastSaved=0, lastError='', revision=0, savedRevision=0;
-var source=null, timer=null, running=null, requested=false, fallback=false, downloadNumber=0, normQueue=Promise.resolve();
+var source=null, timer=null, running=null, requested=false, normQueue=Promise.resolve();
 var modeNote='';
 function b64(buf){var a=new Uint8Array(buf),s='';for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s);}
 function unb64(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0);});}
@@ -2754,8 +2788,14 @@ async function readNorm(){
  try{var h=await dir.getFileHandle('norm.json'),f=await h.getFile();return JSON.parse(await f.text());}catch(e){if(e.name==='NotFoundError')return null;throw e;}
 }
 function writeNorm(obj){var text=JSON.stringify(obj);var task=normQueue.catch(function(){}).then(async function(){try{if(dir)await putFile(dir,'norm.json',text);else localStorage.setItem('intake_norm_v2',text);return true;}catch(e){return false;}});normQueue=task;return task;}
-async function fileInDir(id){if(!caseDir)return false;handle=await caseDir.getFileHandle('session_'+id+'.json',{create:true});fallback=false;return true;}
-async function chooseFile(id){handle=null;if(!window.showSaveFilePicker){fallback=true;return false;}try{handle=await window.showSaveFilePicker({suggestedName:'session_'+id+(key?'.pgi':'.json'),types:[{description:'Сесія анкетування',accept:{'application/json':['.json','.pgi']}}]});fallback=false;return true;}catch(e){fallback=true;return false;}}
+async function fileInDir(id){if(!caseDir)return false;handle=await caseDir.getFileHandle('session_'+id+'.json',{create:true});return true;}
+async function chooseFile(id){
+ if(!window.showSaveFilePicker)throw new Error('Цей браузер не підтримує прямий запис у файл. Відкрийте програму в Microsoft Edge або Chrome на комп’ютері.');
+ var selected=await window.showSaveFilePicker({suggestedName:'session_'+id+(key?'.pgi':'.json'),types:[{description:'Сесія анкетування',accept:{'application/json':['.json','.pgi']}}]});
+ // Cancelling a picker must preserve an already selected target.
+ if(running)await running;
+ handle=selected;lastError='';return true;
+}
 async function usePassword(pw){if(running)await running;if(!pw){key=null;salt=null;return false;}var ns=crypto.getRandomValues(new Uint8Array(16)),nk=await derive(pw,ns,ITER);salt=ns;key=nk;return true;}
 async function pack(obj){var plain=JSON.stringify(obj);if(!key)return plain;var iv=crypto.getRandomValues(new Uint8Array(12)),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(plain));return JSON.stringify({pgiVersion:1,kdf:{salt:b64(salt),iterations:ITER},iv:b64(iv),ciphertext:b64(ct)});}
 async function drain(){
@@ -2767,7 +2807,7 @@ async function drain(){
    if(copy.integrity_version===2){copy.hash=await sessionHash(copy);}
    var text=await pack(copy);
    if(handle){var w=await handle.createWritable();try{await w.write(text);await w.close();}catch(e){try{await w.abort();}catch(_){}throw e;}}
-   else{downloadNumber++;download('session_'+copy.session_id+'_v'+String(downloadNumber).padStart(4,'0')+(key?'.pgi':'.json'),text);modeNote='Файл передано браузеру для завантаження';}
+   else{throw new Error('Файл для запису не обрано. Дані ще не збережено.');}
    if(obj===(source&&source())&&revision===rev)obj.hash=copy.hash;
    savedRevision=rev;lastSaved=Date.now();lastError='';dirty=revision!==savedRevision;
    if(dirty&&handle)requested=true;
@@ -2776,9 +2816,9 @@ async function drain(){
  finally{busy=false;running=null;if(timer){clearTimeout(timer);timer=null;}}
  return success;
 }
-function writeNow(){if(readOnly||!source||!source())return Promise.resolve(false);requested=true;if(running)return running;running=drain();return running;}
+function writeNow(){if(readOnly||!source||!source())return Promise.resolve(false);if(!handle){dirty=true;lastError='Файл для запису не обрано. Дані ще не збережено.';return Promise.resolve(false);}requested=true;if(running)return running;running=drain();return running;}
 function touched(){if(readOnly)return;revision++;dirty=true;if(busy){if(handle)requested=true;return;}if(!handle)return;if(!timer)timer=setTimeout(function(){timer=null;writeNow();},1000);}
-function status(){return {mode:handle?'file':fallback?'fallback':'none',encrypted:!!key,dirty:dirty||busy,busy:busy,saved:lastSaved,error:lastError,casePath:casePath,note:modeNote};}
+function status(){return {mode:handle?'file':'none',encrypted:!!key,dirty:dirty||busy,busy:busy,saved:lastSaved,error:lastError,casePath:casePath,note:modeNote};}
 async function readSession(file,ask){
  if(file.size>50*1024*1024)throw new Error('Файл завеликий (понад 50 МБ)');
  var data=JSON.parse(await file.text());assertSafeTree(data);
@@ -2795,8 +2835,8 @@ async function readSession(file,ask){
  if(data.schema==="consent-2"&&data.hash){var check=JSON.parse(JSON.stringify(data)),expected=check.hash;delete check.hash;if(await digest(stable(check))!==expected)throw new Error("Контрольна сума згоди не збігається");}
  key=nk;salt=ns;return data;
 }
-async function reset(){if(running)await running;handle=null;key=null;salt=null;readOnly=false;dirty=false;lastSaved=0;lastError='';revision=0;savedRevision=0;fallback=false;downloadNumber=0;source=null;requested=false;modeNote='';if(timer){clearTimeout(timer);timer=null;}}
-return {readOnly:function(v){readOnly=!!v;if(v)handle=null;},isReadOnly:function(){return readOnly;},usePassword:usePassword,chooseFile:chooseFile,chooseDir:chooseDir,loadDir:loadDir,grantDir:grantDir,dirState:dirState,dirName:function(){return dir?dir.name:'';},casePath:function(){return casePath;},prepareCase:prepareCase,clearCase:function(){caseDir=null;casePath='';caseId='';},fileInDir:fileInDir,readNorm:readNorm,writeNorm:writeNorm,writeFile:writeFile,bind:function(fn){source=fn;},touched:touched,now:writeNow,status:status,read:readSession,reset:reset,available:function(){return !!window.showSaveFilePicker;}};
+async function reset(){if(running)await running;handle=null;key=null;salt=null;readOnly=false;dirty=false;lastSaved=0;lastError='';revision=0;savedRevision=0;source=null;requested=false;modeNote='';if(timer){clearTimeout(timer);timer=null;}}
+return {hasHandle:function(){return !!handle;},readOnly:function(v){readOnly=!!v;if(v)handle=null;},isReadOnly:function(){return readOnly;},usePassword:usePassword,chooseFile:chooseFile,chooseDir:chooseDir,loadDir:loadDir,grantDir:grantDir,dirState:dirState,dirName:function(){return dir?dir.name:'';},casePath:function(){return casePath;},prepareCase:prepareCase,clearCase:function(){caseDir=null;casePath='';caseId='';},fileInDir:fileInDir,readNorm:readNorm,writeNorm:writeNorm,writeFile:writeFile,bind:function(fn){source=fn;},touched:touched,now:writeNow,status:status,read:readSession,reset:reset,available:function(){return !!window.showSaveFilePicker;}};
 })();
 
 /* ------------------------------------------------------------------ */
@@ -3305,7 +3345,7 @@ function saveStatus(){
   else if (!st.saved) txt = T("s_saved_never");
   else                txt = T("s_saved_at", { t: new Date(st.saved).toLocaleTimeString("uk-UA") });
   if (st.dirty && !st.error) txt += " · " + T("s_unsaved");
-  if (st.mode === "fallback") txt = st.error ? st.error : (st.dirty ? "Є нові зміни — збережіть файл" : "Копію передано браузеру для завантаження");
+  el('mo-save-file').classList.toggle('hidden',PI_SAVE.isReadOnly()||(!st.error&&st.mode==='file')); 
   if (st.encrypted) txt += " · зашифровано";
   if(st.casePath)txt+=" · "+st.casePath;
   el("mo-saved").textContent = txt;
@@ -4684,7 +4724,7 @@ el('b-home').addEventListener('click',async function(){
  var S=PI_FILL.session();if(S&&!S.finished&&!PI_SAVE.isReadOnly()){alert('Спочатку завершіть або припиніть поточну сесію.');return;}
  if(PI_SAVE.status().dirty&&!await PI_SAVE.now()){alert(saveError());return;}
  if(PI_CONSENT.dirty()&&!await PI_CONSENT.save()&&!confirm("Згода має незбережені зміни. Почати нову справу без їх збереження?"))return;
- PI_MON.stop();var w=PI_MON.window();if(w&&!w.closed)w.close();await PI_SAVE.reset();PI_SAVE.clearCase();PI_CONSENT.reset();PI_FILL.clearSession();
+ PI_MON.stop();var w=PI_MON.window();if(w&&!w.closed)w.close();await PI_SAVE.reset();PI_SAVE.clearCase();PI_CONSENT.reset();PI_FILL.clearSession();pendingResume=null;el('resume-actions').classList.add('hidden');
  el("b-monitor").classList.add("hidden");CASE={id:null,label:'',created:null};STATE.data=null;STATE.result=null;el('case-label').disabled=false;el('case-label').value='';el('case-path-hint').textContent='Окрема тека справи створиться автоматично всередині базової.';show('s-import');
 });
 el('norm-new').addEventListener('click',async function(){
