@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Передтестове анкетування · Intake</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%2324665f%22%2F%3E%3Cpath%20d%3D%22M22%2016h14l8%208v24H22z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M35%2016v10h9M27%2036l5%205%2010-11%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<meta name="theme-color" content="#24665f">
 <style>
 :root{
   --paper:#FAFAF7;
@@ -60,7 +62,7 @@ button{
   font:15px/1 "Segoe UI",sans-serif;background:var(--accent);color:#fff;border:0;border-radius:4px;
   padding:12px 18px;cursor:pointer;
 }
-button:hover{background:#1A3149}
+button:hover{background:var(--accent-hover);color:#fff}
 button:disabled{background:#C2C6C1;cursor:default}
 button.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule)}
 button.ghost:hover{background:#F1F1EC;border-color:var(--muted)}
@@ -510,7 +512,7 @@ button.mini{font-size:14px;padding:8px 13px;margin-top:10px}
 :root{--paper:#f3f5f7;--card:#fff;--ink:#1c2b36;--muted:#586875;--accent:#27576b;--rule:#cdd6dc;--rule-soft:#e3e9ed}
 .top .wrap{max-width:1120px;align-items:center;padding:16px 28px}.top .wrap button{margin-left:0}.top .wrap .mark{margin-right:auto}.top .ver{font-size:11px}
 .screen:not(.fill)>.wrap{max-width:1040px}.screen{padding-top:32px}h1{font-size:29px;line-height:1.3}.lede{margin-bottom:24px}
-button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{background:#1f4657}.ghost:hover{background:#e8eef1!important}
+button{border-radius:8px;min-height:42px;line-height:1.25}
 .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--accent);margin-bottom:10px}
 .field-label{display:block;font-weight:600;margin-bottom:8px}.field-label span{font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
 .text-input,select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule);padding:11px 13px;border-radius:7px;max-width:100%}.text-input{width:100%}.small-input{max-width:180px}.case-hint{font-size:13px;color:var(--muted);margin:8px 0 25px;overflow-wrap:anywhere}
@@ -543,7 +545,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
  .report-opening .fig{padding:0}.report-opening .chart{padding:0}
  .bsec{break-inside:auto}.bsec h3{break-after:avoid}
 }
-@page attention { @top-left { content:"Карта уваги для передтестової бесіди. Не висновок про достовірність."; font:8pt sans-serif; color:#303e48; } }
+@page attention { @top-left { content:"Карта уваги перед тестуванням. Не висновок про достовірність."; font:8pt sans-serif; color:#303e48; } }
 @media print{
  #s-report{page:attention}#s-doc{page:case-document}
  .banner,.dfoot{display:none!important}
@@ -562,6 +564,89 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
 @media print{.rx-important,.rx-related,.rx-link{display:none!important}.rx-fold>summary{display:block!important;font-size:12pt;margin:6mm 0 3mm;break-after:avoid}.rx-appendix .report-opening{break-after:auto}.rx-map-panel,.rx-question{border:0;padding:0;break-inside:auto}.rx-map-panel{break-inside:avoid}.rx-map-row{grid-template-columns:43mm minmax(0,1fr)}.rx-cell{min-height:11mm;font-size:9pt}.rx-map-note,.rx-legend{font-size:8pt}.rx-episode{break-inside:avoid}.rx-detail-columns{grid-template-columns:1.2fr 1fr}.rx-question-text{break-after:avoid}.rx-appendix{break-before:page}.rx-fold .ovbar{display:none!important}.rx-episode-title{font-size:10pt}.rx-episode small{font-size:9pt}.rx-log-row{break-inside:avoid}.rx-event{break-inside:avoid}.rx-event small{font-size:9pt}.rx-map-panel h2,.rx-episodes-head h2{font-size:13pt}}
 
 @media print{.rx-question{break-before:page}.rx-question-head{break-after:avoid}.rx-question h2.rx-question-text{break-inside:avoid;break-after:avoid;font-size:16pt}.rx-appendix summary{break-after:avoid}}
+.rx-mark-controls,.rx-save-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;align-items:center}.rx-save-tools{font-size:13px}.rx-save-tools .bad{color:var(--bad)}
+@media print{.rx-mark-controls,.rx-save-tools,.rx-archive-edit{display:none!important}}
+
+/* Intake 2.4 — shared palette and explicit interactive states. */
+:root{--paper:#f4f6f8;--card:#ffffff;--ink:#23323d;--muted:#596974;--accent:#24665f;--accent-hover:#1b514b;--accent-soft:#e8f3ef;--surface:#f0f3f5;--hover:#e6edf0;--selected:#dcece6;--rule:#cbd5db;--rule-soft:#e2e8ec;--ok:#246342;--ok-bg:#edf6f0;--bad:#a12e29;--bad-bg:#fbeeed;--warn:#795918;--warn-bg:#fff5df}
+button{transition:background-color .14s,border-color .14s,color .14s;box-shadow:none}
+button.ghost{background:var(--card);color:var(--ink);border-color:var(--rule)}
+button.ghost:hover:not(:disabled){background:var(--hover);color:var(--ink);border-color:#9cafb7}
+button:focus-visible,summary:focus-visible,.rx-question button:focus-visible,.rx-map-panel button:focus-visible,.rx-episode:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--surface);color:var(--muted);border-color:var(--rule-soft);cursor:not-allowed}
+.opt,.opt:hover,.opt:disabled,.opt:disabled:hover{background:transparent;color:var(--ink);border:0}
+.opt.on i{background:var(--accent);border-color:var(--accent)}
+.top{box-shadow:0 1px 6px #23323d06}.top .mark{color:var(--accent);font-weight:650}
+.drop,.title-card,.verdict,.hint,.consent,.brief,.nowq,.feedwrap,.marks,.rx-map-panel,.rx-question{border-color:var(--rule-soft);box-shadow:0 2px 8px #23323d04}
+.drop{border-color:#9cb7b4}.drop.hot{background:var(--accent-soft);border-color:var(--accent)}
+.hint p.quote,.issues h3,.more,.feedhead{background:var(--surface);color:var(--ink)}
+.fill{--paper:#fafcfc}.branch{border-color:#85aaa3}.branch .blabel{color:var(--accent)}
+.feed .row:hover,.trow:hover,.discussion-row:hover{background:var(--hover);color:var(--ink)}
+.feed .row.sel{background:var(--selected)}
+.markrow button,.markrow button.damp{background:var(--card);color:var(--ink);border-color:var(--rule)}
+.markrow button:hover:not(:disabled){background:var(--accent-soft);color:var(--ink);border-color:#8bafa5}
+.markrow button:disabled{color:var(--muted);background:var(--surface);border-color:var(--rule-soft)}
+.pad .clear:hover{background:var(--surface);color:var(--ink)}
+.savebar{background:var(--ok-bg);border-color:#b9d4c3;color:var(--ok)}
+.savebar.dirty{background:var(--warn-bg);border-color:#dfc88f;color:var(--warn)}
+.savebar.bad{background:var(--bad-bg);border-color:#dfb1ad;color:var(--bad)}
+.rx-save-tools{padding:12px 14px;border:1px solid var(--rule-soft);border-radius:10px;background:var(--card)}
+.rx-save-tools button.mini{margin:0}
+.rx-overview{background:var(--accent-soft);padding:16px 20px;border-radius:0 10px 10px 0}
+.rx-overview h2{margin-top:0}.rx-overview-text{margin-bottom:0}
+.rx-cell{background:var(--surface);color:var(--ink);border-color:var(--rule);border-radius:8px}
+.rx-cell.rx-has-event{background:#edf4f1}
+.rx-cell:hover:not(:disabled){background:var(--hover);color:var(--ink);border-color:#91aaa4}
+.rx-cell[aria-pressed=true],.rx-cell[aria-pressed=true]:hover{background:var(--selected);color:#183e38;outline:2px solid var(--accent);outline-offset:-2px}
+.rx-dot{background:#567b89}.rx-time{background:#946a24}.rx-observer{background:transparent;border-color:var(--accent)}
+.rx-important[aria-pressed=true],button.rx-important[aria-pressed=true]:hover{background:var(--selected);color:#183e38;border-color:var(--accent)}
+.rx-observation{background:var(--accent-soft);border-left:2px solid #8fb5aa;border-radius:4px 8px 8px 4px;color:var(--ink)}
+.rx-label{font-weight:650;letter-spacing:.035em}.rx-qid{font-weight:650}
+.rx-episode{background:transparent;color:var(--ink);border-radius:8px;padding:14px 12px;margin:3px 0}
+.rx-episode:hover:not(:disabled){background:var(--hover);color:var(--ink)}
+.rx-episode[aria-pressed=true],.rx-episode[aria-pressed=true]:hover{background:var(--selected);color:var(--ink)}
+.rx-mark-controls{gap:7px;padding:12px 14px;margin:12px 0 20px;border:1px solid var(--rule-soft);border-radius:10px;background:var(--surface)}
+.rx-mark-caption{flex-basis:100%;font-size:12px;font-weight:650;color:var(--muted);margin-bottom:2px}
+.rx-mark-controls button.mini{margin:0;padding:8px 12px;min-height:36px;font-size:13px;border-radius:7px}
+.rx-mark-controls button:hover:not(:disabled){background:var(--accent-soft);color:#183e38;border-color:#8bafa5}
+.rx-mark-hint{flex-basis:100%;font-size:12px;color:var(--muted);margin:4px 0 0}
+@media screen{
+ .rx-appendix>.rx-fold{padding:0;margin:10px 0;border:1px solid var(--rule);border-radius:10px;background:var(--surface);overflow:hidden}
+ .rx-appendix>.rx-fold>summary{display:block;list-style:none;padding:15px 42px 15px 16px;position:relative;color:var(--ink);background:var(--surface);font-weight:600;font-size:14px;transition:background-color .14s}
+ .rx-appendix>.rx-fold>summary::-webkit-details-marker{display:none}
+ .rx-appendix>.rx-fold>summary::after{content:'+';position:absolute;right:18px;top:11px;font-size:21px;font-weight:400;color:var(--muted)}
+ .rx-appendix>.rx-fold[open]>summary::after{content:'−'}
+ .rx-appendix>.rx-fold>summary:hover{background:var(--hover);color:var(--ink)}
+ .rx-appendix>.rx-fold>summary:focus-visible,.settings>summary:focus-visible{outline-offset:-3px}
+ .rx-appendix>.rx-fold[open]>summary{border-bottom:1px solid var(--rule)}
+ .rx-appendix>.rx-fold>.rx-fold-body{padding:16px;background:var(--card)}
+ .settings{padding:0;background:var(--surface);overflow:hidden}
+ .settings>summary{padding:15px 18px;color:var(--ink);background:var(--surface)}
+ .settings>summary:hover{background:var(--hover)}
+ .settings> :not(summary){margin-left:18px;margin-right:18px}.settings>textarea{width:calc(100% - 36px)}
+ .settings>.dirbar{margin:0;padding:14px 18px}
+ .report-state{background:var(--accent-soft)}
+}
+@media(prefers-reduced-motion:reduce){button,.rx-appendix>.rx-fold>summary{transition:none}}
+@media print{.rx-mark-controls,.rx-save-tools{display:none!important}.rx-overview,.rx-cell,.rx-observation{background:#fff;color:#111}.rx-episode,.rx-episode[aria-pressed=true]{background:#fff;color:#111}.rx-map-panel,.rx-question{box-shadow:none}.rx-appendix>.rx-fold{overflow:visible}}
+
+
+/* Workflow controls */
+.report-toolbar{position:sticky;top:0;z-index:8;background:var(--card);padding:10px 12px;margin:12px 0;border:1px solid var(--rule);border-radius:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.report-toolbar button{font-size:13px;padding:9px 12px}.print-choice{margin-left:auto;font-size:12px;display:flex;gap:7px;align-items:center}.print-choice select{padding:8px;max-width:210px;font-size:13px}
+.rx-search-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.rx-search-tools input{flex:1;min-width:180px;width:auto}.rx-search-count,.rx-nav-count{font-size:12px;color:var(--muted)}.rx-search-children button{text-align:left;line-height:1.5;margin:4px 0;width:100%}
+.rx-navigation{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.rx-navigation button.mini{margin:4px 0;font-size:12px;min-height:32px}
+.rx-question-note{border-top:1px solid var(--rule);padding-top:12px;margin-top:16px}.rx-question-note summary{cursor:pointer;font-size:14px;font-weight:600}.rx-question-note textarea{margin-top:12px}
+.rx-observation .rx-withdraw{font-size:11px;min-height:28px;margin:7px 0 0;padding:5px 8px;display:block}.rx-observation.withdrawn{background:var(--surface);border-color:var(--rule);color:var(--muted)}.rx-observation.withdrawn>span{text-decoration:line-through}
+.mark-undo{position:fixed;right:20px;bottom:18px;z-index:30;max-width:calc(100vw - 40px);background:var(--card);border:1px solid var(--accent);box-shadow:0 4px 24px #23323d22;border-radius:10px;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px}.mark-undo button.mini{margin:0}
+@media print{.report-toolbar,.rx-search-tools,.rx-search-children,.rx-navigation,.rx-withdraw,.mark-undo{display:none!important}.rx-question-note textarea{display:none}.rx-question-note{display:block}}
+
+.prep-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}.prep-status button{line-height:1.4;text-align:left;padding:12px;font-size:13px;overflow-wrap:anywhere}.recent-list{padding:4px 18px}.recent-case{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--rule)}.recent-case strong,.recent-case small{display:block;overflow-wrap:anywhere}.recent-case small{color:var(--muted);font-size:12px}.recent-case .actions{margin:0;flex-shrink:0}.recent-case button.mini{margin:0;font-size:12px}
+@media(max-width:650px){.prep-status{grid-template-columns:1fr}.recent-case{align-items:flex-start;flex-direction:column}}
+.pad-undo{font-size:.65em!important;min-height:30px;margin-top:7px;padding:6px 10px}.needs-attention{outline:2px solid var(--accent);outline-offset:5px;border-radius:4px;scroll-margin-top:170px}.follow-state{font-size:12px;color:var(--accent);padding:8px 0}.follow-state.manual{color:var(--warn);font-weight:650}.pause-state{padding:14px;border:1px solid #dfc88f;background:var(--warn-bg);color:var(--warn);border-radius:9px;margin-bottom:16px}.show-password{display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0 14px}.pwbox .show-password input{width:18px;height:18px;margin:0;accent-color:var(--accent)}.ctools #cs-undo{font-size:13px}
+@media print{.pad-undo,.follow-state,.pause-state{display:none!important}}
+.rx-short-print,.note-print{display:none}.short-question{break-inside:avoid;padding:12px 0;border-bottom:1px solid var(--rule)}.short-question h3{font-size:14px;margin:5px 0}.short-question p{font-size:12px;margin:5px 0;max-width:none}
+@media print{html,body{background:#fff!important}.rx-short-print>h2{break-after:avoid}.note-print{display:block!important}.print-short #rx-question,.print-short .rx-episodes-head,.print-short #rx-episodes,.print-short .rx-appendix{display:none!important}.print-short .rx-short-print{display:block!important}.rx-map-panel .hidden{display:flex!important}.rx-map-panel .rx-map-row.hidden{display:grid!important}.rx-map-panel .rx-search-children{display:none!important}}
 </style>
 </head>
 <body>
@@ -583,6 +668,8 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <label class="field-label" for="case-label">Позначка справи <span>необов’язково</span></label><input id="case-label" class="text-input" maxlength="90" placeholder="Наприклад: PE-Тестовий респондент" autocomplete="off">
     <p class="case-hint" id="case-path-hint">Окрема тека справи створиться автоматично всередині базової.</p>
 
+    <div class="prep-status" aria-label="Готовність справи"><button class="ghost" id="prep-template">Анкета · не обрана</button><button class="ghost" id="prep-location">Місце збереження · перевірка</button><button class="ghost" id="prep-consent">Згода · паперовий бланк</button></div>
+    <button id="b-last-template" class="ghost hidden">Використати попередню анкету</button><p id="last-template-label" class="case-hint hidden"></p>
     <div class="drop" id="drop">
       <p>Перетягніть файл сюди</p>
       <button id="b-pick">Завантажити анкету</button>
@@ -597,7 +684,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     </div>
     <div class="why" id="b-resume-why"></div>
     <div class="actions hidden" id="resume-actions"><button id="b-resume-go">Продовжити заповнення</button><button id="b-resume-file" class="ghost">Обрати файл для запису</button></div>
-    <details class="settings"><summary>Налаштування та статистика</summary><div class="dirbar">
+    <details class="settings" id="workflow-settings"><summary>Робочі налаштування</summary><div class="dirbar">
       <div class="dline">
         <span id="b-dir-state"></span>
         <button id="b-dir-grant" class="ghost mini hidden"></button>
@@ -613,6 +700,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
       <div class="dline"><label for="consent-mode">Оформлення згоди</label><select id="consent-mode"><option value="paper">Окремий паперовий бланк</option><option value="digital">Електронний бланк у програмі</option></select></div>
       <div class="dline"><button id="norm-new" class="ghost mini">Почати нову статистику</button><span class="note">Перед заміною стара статистика буде завантажена окремим файлом.</span></div>
     </div></details>
+    <details class="settings" id="recent-cases"><summary>Нещодавні справи</summary><div id="recent-list" class="recent-list"></div><p id="recent-error" class="why"></p></details>
     <details class="settings"><summary>Вставити анкету текстом</summary><textarea id="paste-json" aria-label="JSON анкети" placeholder="Вставте JSON анкети"></textarea><button id="paste-go">Перевірити анкету</button></details>
   </div>
 </div>
@@ -736,7 +824,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <div class="cpage" id="cs-page">
       <div class="ctools" id="cs-tools">
         <button id="cs-pen" class="on"></button>
-        <button id="cs-eraser"></button>
+        <button id="cs-eraser"></button><button id="cs-undo" class="ghost">Скасувати останній штрих</button>
       </div>
       <canvas id="cs-ink"></canvas>
       <div class="cdoc">
@@ -788,8 +876,8 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <div class="hsec"><h2>2. Згода та анкета</h2><p>Вкажіть позначку справи, оформіть згоду на папері або кнопкою «Згода», завантажте JSON і перевірте його склад. Інформація для респондента з JSON показується перед питаннями. Згода на поліграф і ознайомлення з попередньою анкетою — окремі записи.</p></div>
     <div class="hsec"><h2>3. Два дисплеї</h2><p>Перетягніть вікно заповнення на Samsung через SpaceDesk. Монітор лишається на ноутбуці. Миша поліграфолога не завершує штрих S Pen. Перемикання фокуса не вважається паузою. PIN, якщо заданий, перевіряється при знятті паузи й поверненні до іншого блоку; він не блокує Windows або засоби браузера.</p></div>
     <div class="hsec"><h2>4. Заповнення</h2><p>Три нейтральні відповіді: «так», «ні», «поясню». У списку «Інша відповідь» можна позначити відмову чи незастосовність. Уточнення відкриваються під своїм питанням. Письмове пояснення необов’язкове: нагадування показується один раз. Парафа — після кожного блоку, підпис — наприкінці анкети. Зміна відповіді анулює попередню парафу цього блоку.</p></div>
-    <div class="hsec"><h2>5. Збереження й пароль</h2><p>З дозволом на запис зміни записуються автоматично; запити утворюють чергу. Наприкінці блоку та сесії запис запитується негайно. Усі зміни сесії перезаписують один файл. Без базової теки оберіть файл один раз, а потім повторно натисніть «Почати заповнення». Якщо запис недоступний, початок блокується; помилка під час роботи лишає зміни незбереженими й показує кнопку вибору файла. Пароль вводиться за бажанням після завершення. До цього файл відкритий; шифрування поточного файла не видаляє попередні копії.</p></div>
-    <div class="hsec"><h2>6. Монітор і карта уваги</h2><p>П’ять позначок ставляться мишею. Технічна перешкода знімає поведінкову підсвітку, але повідомлені обставини й «поясню» залишаються в окремому списку для бесіди. Час — інтервал між діями, а не чистий час обдумування. Після письма, явної паузи та на початку блоку він не ранжується. Ковзне порівняння використовує до дев’яти попередніх придатних «ні» того самого блоку, щонайменше три.</p></div>
+    <div class="hsec"><h2>5. Збереження й пароль</h2><p>З дозволом на запис зміни записуються автоматично; запити утворюють чергу. Наприкінці блоку та сесії запис запитується негайно. Усі зміни сесії перезаписують один файл. Без базової теки натисніть «Обрати файл сесії», а після вибору — «Відкрити анкету респондента». Файл обирається один раз. Якщо запис недоступний, початок блокується; помилка під час роботи лишає зміни незбереженими й показує кнопку вибору файла. Пароль вводиться за бажанням після завершення. До цього файл відкритий; шифрування поточного файла не видаляє попередні копії.</p></div>
+    <div class="hsec"><h2>6. Монітор і карта уваги</h2><p>П’ять позначок ставляться мишею. Технічна перешкода знімає поведінкову підсвітку, але повідомлені обставини й «поясню» залишаються доступними в окремому розділі звіту. Час — інтервал між діями, а не чистий час обдумування. Після письма, явної паузи та на початку блоку він не ранжується. Ковзне порівняння використовує до дев’яти попередніх придатних «ні» того самого блоку, щонайменше три.</p></div>
     <div class="hsec"><h2>7. Звіт та архів</h2><p>Документ для справи й звіт друкуються окремо через друк браузера. Архів містить питання, відповіді, почерк, журнал, версію алгоритму та зафіксований аналіз. Старі сесії без знімка аналізуються поточною версією з відповідною позначкою. Контрольна сума підтверджує збіг вмісту з записаним значенням; вона не є електронним підписом.</p></div>
     <div class="hsec"><h2>8. Спільна статистика</h2><p>Формат norm-2 розділяє дані за відбитком анкети. Він не зберігає прізвищ, відповідей чи підписів. Порівняння починається після 15 попередніх сесій і 15 значень конкретного питання. Поточна сесія не порівнюється сама із собою. Старий norm-1 можна експортувати, але не можна надійно розподілити між різними анкетами.</p></div>
     <div class="foot">
@@ -820,18 +908,20 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <h1 id="rp-head"></h1>
     <div class="monsub" id="rp-sub"></div>
     <div class="rhash" id="rp-hash"></div>
-    <div id="rp-body"></div>
-    <div class="foot">
-      <button id="rp-doc" class="ghost"></button>
+    <div class="rx-save-tools hidden" id="rp-save-tools"><button id="rp-save-now" class="ghost mini">Зберегти мітки й нотатки</button><button id="rp-save-file" class="ghost mini hidden">Обрати файл для запису</button><span id="rp-save-state" role="status"></span></div>
+    <div class="foot report-toolbar">
+      <button id="rp-back" class="ghost"></button><button id="rp-doc" class="ghost"></button>
+      <label class="print-choice">Друк <select id="rp-print-mode"><option value="short">Короткий звіт</option><option value="full">Повний звіт</option><option value="document">Документ із відповідями</option></select></label>
       <button id="rp-print" class="ghost"></button>
-      <button id="rp-back" class="ghost"></button>
     </div>
+    <div id="rp-body"></div>
   </div>
 </div>
 
 <!-- ================= монітор поліграфолога ================= -->
 <div class="screen" id="s-monitor">
   <div class="wrap">
+    <div id="mo-pause-state" class="pause-state hidden" role="status">Пауза · заповнення респондента призупинено</div>
     <div class="monhead">
       <div>
         <h1 id="mo-title">Сесія</h1>
@@ -846,7 +936,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     </div>
 
     <div class="marks">
-      <div class="marklab" id="mo-target">Мітка ляже на: —</div>
+      <div id="mo-follow-state" class="follow-state"></div><div class="marklab" id="mo-target">Додаєте мітку до питання —</div>
       <div class="markgroup">
         <span class="glab" id="mo-glab-up"></span>
         <div class="markrow" id="mo-marks-up"></div>
@@ -867,10 +957,11 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
     <div class="pwbox hidden" id="mo-finish">
       <h2 id="mo-finish-head"></h2>
       <p id="mo-finish-body"></p>
-      <label for="mo-finish-pw">Пароль файла (необов’язково)</label><input type="password" id="mo-finish-pw" autocomplete="new-password">
+      <p id="finish-save-state" role="status"></p><label for="mo-finish-pw">Пароль файла (необов’язково)</label><input type="password" id="mo-finish-pw" autocomplete="new-password">
+      <label class="show-password"><input id="mo-show-pw" type="checkbox"> Показати пароль</label>
       <div class="row">
         <button id="mo-finish-go"></button>
-        <button id="mo-finish-skip" class="ghost"></button>
+        <button id="mo-finish-skip" class="ghost"></button><button id="finish-report" class="ghost">Перейти до звіту</button>
       </div>
     </div>
 
@@ -890,6 +981,7 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
   </div>
 </div>
 
+<div id="mark-undo" class="mark-undo hidden" role="status"><span id="mark-undo-text"></span><button id="mark-undo-go" class="ghost mini">Скасувати мітку</button><button id="mark-undo-dismiss" class="ghost mini" aria-label="Закрити повідомлення">×</button></div>
 <script>
 /* =====================================================================
    Polygraph Intake
@@ -899,7 +991,8 @@ button{border-radius:8px;min-height:42px;line-height:1.25}button:hover{backgroun
 (function(){
 "use strict";
 
-var VERSION = "2.2";
+var VERSION = "3.0";
+var ARCHIVE_MODE=false, ARCHIVE_INTEGRITY=null, ARCHIVE_HANDLE=null;
 var SCHEMA  = "1.0";
 /* Stable identities, archive validation and report snapshots. */
 var ANALYTICS_VERSION='2.0';
@@ -923,10 +1016,12 @@ function validateSaved(s){
  if(s.blockIdx!==undefined&&(!Number.isInteger(s.blockIdx)||s.blockIdx<-1||s.blockIdx>=s.questionnaire.blocks.length))throw new Error('Некоректний номер блоку');
  if(s.report_priority&&(!obj(s.report_priority)||Object.keys(s.report_priority).some(function(id){var p=s.report_priority[id];return !ix[id]||!obj(p)||typeof p.important!=='boolean';})))throw new Error('Некоректні позначки важливості');
  if(s.marks&&(!Array.isArray(s.marks)||s.marks.some(function(m){return !m||!ix[m.q]||typeof m.mark!=='string';})))throw new Error('Некоректні позначки');
+ if(s.question_notes&&(!obj(s.question_notes)||Object.keys(s.question_notes).some(function(id){return !ix[id]||typeof s.question_notes[id]!=='string';})))throw new Error('Некоректні коментарі до питань');
  return true;
 }
 function identifyCase(){if(!CASE.id){CASE={id:newId(),label:(el('case-label').value||'').trim(),created:new Date().toISOString()};el('case-label').disabled=true;}return CASE;}
 function ensureCase(){return PI_SAVE.prepareCase(identifyCase());}
+function activeMarks(S){return (S.marks||[]).filter(function(m){return !m.withdrawn_at;});}
 function analysisFor(S){return S.finished&&(S.analysis_current||S.analysis_snapshot)||PI_STAT.analyse(S);}
 function noteAudit(S,type,detail){(S.audit||(S.audit=[])).push({at:new Date().toISOString(),type:type,detail:detail});PI_SAVE.touched();}
 function questionnaireHash(q){return digest(stable({language:q.meta.language||'uk',blocks:q.blocks,period:q.meta.period||'',timing:'inter-action-v2'}));}
@@ -986,8 +1081,8 @@ uk: {
   m_session:     "Сесія {id}",
   m_waiting:     "Очікую перший дотик",
   m_mini:        "Останні 10 відповідей",
-  m_target:      "Мітка ляже на: {q}",
-  m_target_none: "Мітка ляже на: —",
+  m_target:      "Додаєте мітку до питання {q}",
+  m_target_none: "Додаєте мітку до питання —",
   m_auto:        "Повернутися до автостеження",
   m_lock:        "Заблокувати планшет",
   m_unlock:      "Зняти блокування",
@@ -1098,7 +1193,7 @@ uk: {
   r_banner:      "Карта помітних реакцій перед тестуванням. Реакція не визначає причини поведінки.",
   r_top:         "П\u02BCять точок найбільшої уваги",
   r_lonely:      "Реакція без машинного сигналу",
-  r_lonely_note: "Тут поліграфолог щось помітив, а в поведінці респондента слідів немає. Це не суперечність — це матеріал для бесіди.",
+  r_lonely_note: "Тут поліграфолог щось помітив, а в поведінці респондента слідів немає. Це окремо зафіксоване спостереження для подальшої роботи.",
   r_none:        "Точок уваги немає. Заповнення пройшло рівно.",
   r_pen:         "Сигнали пера в цій сесії",
   r_pen_types:   "типи вводу: {t}",
@@ -1146,8 +1241,8 @@ uk: {
   s_bad_pw:      "Пароль не підходить або файл пошкоджено",
   s_bad_file:    "Це не файл сесії",
   s_resumed:     "Сесію відновлено: блок {n}",
-  m_up:          "Підсилюють увагу",
-  m_down:        "Гасять сигнал",
+  m_up:          "Спостереження",
+  m_down:        "Перешкоди",
   m_help:        "Мітка лягає на питання, назване вище. Підсилювачі піднімають його у звіті; гасителі знімають підсвітку і виключають питання з розрахунку базової лінії — щоб перешкода не спотворила решту блоку.",
   m_tip_react:   "Респондент помітно відреагував: завагався, змінився в обличчі, засміявся, зітхнув",
   m_tip_asked:   "Респондент перепитав вас про зміст питання",
@@ -1262,7 +1357,7 @@ Object.assign(DICT.uk,{
  c_norm_wait:'Порівняння доступне від {n} попередніх сесій цієї анкети; наразі {have}. Для кожного питання також потрібно 15 значень.',
  v_hash_ok:'Контрольна сума збігається зі збереженою.',v_hash_bad:'Контрольна сума не збігається. Цілісність файла не підтверджена.',
  p_hash:'Контрольна сума сесії: {h}',
- d_none:'Базову теку не обрано — записи завантажуватимуться окремими файлами',d_ready:'Базова тека: {name}',d_choose:'Обрати базову теку',d_change:'Змінити базову теку',
+ d_none:'Базову теку не обрано — файл сесії можна обрати перед початком',d_ready:'Базова тека: {name}',d_choose:'Обрати базову теку',d_change:'Змінити базову теку',
  s_end_body:'Пароль необов’язковий. До цього моменту записи зберігалися відкритими. З паролем поточний файл буде перезаписано зашифрованим; попередні завантажені копії залишаться. Відновлення втраченого пароля немає.',
  s_fallback:'Прямий запис недоступний — оберіть файл для запису',
  b_calib:'Ознайомлювальний блок: {n} питань, «ні» — {no}. До ранжування не входить.',
@@ -1725,6 +1820,7 @@ function accept(raw, name){
   STATE.result = PI_VALIDATE.run(parsed.data);
   STATE.data = STATE.result.data || parsed.data;   /* може бути розгорнутим з обгортки */
 
+  if(STATE.result.ok)rememberTemplate(STATE.data);
   if (STATE.result.ok && STATE.result.warnings.length === 0) renderOverview();
   else renderIssues();
 }
@@ -1883,7 +1979,7 @@ async function selectSessionFile(resume){
  try{
   // The picker must run directly from a click, before a popup or any await.
   await PI_SAVE.chooseFile(resume?pendingResume.session_id:identifyCase().id);
-  note.textContent='Файл для запису обрано. Натисніть «'+(resume?'Продовжити заповнення':'Почати заповнення')+'».';
+  note.textContent='Файл для запису обрано. '+(resume?'Натисніть «Продовжити заповнення».':'Натисніть «Відкрити анкету респондента».');paintPreparation();
  }catch(e){note.textContent=fileChoiceError(e);}
 }
 el('b-session-file').addEventListener('click',function(){if(!starting)selectSessionFile(false);});
@@ -1909,7 +2005,7 @@ async function startSession(resume){
   }else{await PI_SAVE.usePassword('');PI_MON.begin(STATE.data);}
   note.textContent='';
  }catch(e){note.textContent='Не вдалося почати: '+e.message;}
- finally{starting=false;button.disabled=false;}
+ finally{starting=false;button.disabled=false;paintPreparation();}
 }
 el('b-resume-go').addEventListener('click',function(){startSession(true);});
 el('mo-save-file').addEventListener('click',async function(){
@@ -1933,7 +2029,7 @@ function paintDir(){
     grant.classList.toggle("hidden", st !== "prompt");
     pick.textContent = (st === "none") ? T("d_choose") : T("d_change");
     el("case-path-hint").textContent=PI_SAVE.casePath()?"Справа: "+PI_SAVE.casePath():"Тека справи створиться після початку роботи.";
-    return st;
+    paintPreparation();return st;
   });
 }
 
@@ -1981,67 +2077,31 @@ el("b-dir-grant").addEventListener("click", function(){ PI_SAVE.grantDir().then(
 el("b-resume-hint").textContent = T("v_hint");
 el("b-resume").textContent = T("v_open");
 
-el("f-resume").addEventListener("change", function(){
-  var file = this.files[0];
-  this.value = "";
-  if (!file) return;
-  var why = el("b-resume-why");
-  why.textContent = "";pendingResume=null;el("resume-actions").classList.add("hidden");
-
-  PI_SAVE.reset().then(function(){return PI_SAVE.read(file, function(){ return prompt(T("s_resume_pw")) || ""; });})
-    .then(function(saved){
-      if (!saved){ why.textContent = T("s_bad_file"); return; }
-
-      /* Той самий вхід приймає і сесію, і згоду — розрізняємо за вмістом. */
-      if (saved.schema === "consent-1" || saved.schema === "consent-2"){
-        PI_CONSENT.open(saved);
-        why.textContent = T("cs_reopened", {
-          d: new Date(saved.created).toLocaleString("uk-UA") });
-        return;
-      }
-
-      if (!saved.questionnaire){ why.textContent = T("s_bad_file"); return; }
-      STATE.data = saved.questionnaire;
-
-      if (saved.finished) return openArchive(saved);
-
-      PI_SAVE.readOnly(false);
-      CASE=saved.case_info||{id:saved.session_id,label:'Відновлена справа',created:saved.started};
-      el('case-label').value=CASE.label;el('case-label').disabled=true;
-      pendingResume=saved;el('resume-actions').classList.remove('hidden');
-      why.textContent='Сесію прочитано. Натисніть «Продовжити заповнення». За потреби спочатку оберіть файл для запису — можна вказати той самий файл.';
-    })
-    .catch(function(e){
-      why.textContent = (e && e.message === "bad_password") ? T("s_bad_pw") : (e&&e.message==="no_password"?"Відкриття скасовано":T("s_bad_file")+": "+(e.message||""));
-    });
-});
+var expectedRecentId=null;
+el('f-resume').addEventListener('change',function(){var file=this.files[0];this.value='';if(file)openSavedFile(file,null,'view',expectedRecentId);expectedRecentId=null;});
+async function openSavedFile(file,target,mode,expected){
+ var why=el('b-resume-why');why.textContent='Читання файла…';pendingResume=null;el('resume-actions').classList.add('hidden');
+ try{
+  await PI_SAVE.reset();ARCHIVE_HANDLE=target||null;
+  var saved=await PI_SAVE.read(file,function(){return prompt(T('s_resume_pw'))||'';});
+  if(expected&&saved.session_id!==expected)throw new Error('Обрано файл іншої справи. Виберіть потрібний файл зі списку ще раз.');
+  if(saved.schema==='consent-1'||saved.schema==='consent-2'){PI_CONSENT.open(saved);why.textContent=T('cs_reopened',{d:new Date(saved.created).toLocaleString('uk-UA')});paintPreparation();return;}
+  if(!saved.questionnaire)throw new Error(T('s_bad_file'));
+  STATE.data=saved.questionnaire;CASE=saved.case_info||{id:saved.session_id,label:'Відновлена справа',created:saved.started};el('case-label').value=CASE.label||'';el('case-label').disabled=true;
+  rememberSession(saved,target,file.name);
+  if(saved.finished){await openArchive(saved);if(mode==='edit'&&ARCHIVE_INTEGRITY==='ok')await enableArchiveAdditions(true);why.textContent='';return;}
+  PI_SAVE.readOnly(false);if(target&&mode==='resume')PI_SAVE.setTarget(target);
+  pendingResume=saved;el('resume-actions').classList.remove('hidden');
+  why.textContent='Сесію прочитано. '+(PI_SAVE.hasHandle()?'Натисніть «Продовжити заповнення».':'Оберіть файл для запису й продовжте заповнення.');paintPreparation();
+ }catch(e){why.textContent=e.message==='bad_password'?T('s_bad_pw'):e.message==='no_password'?'Відкриття скасовано':e.message||T('s_bad_file');el('recent-error').textContent=why.textContent;}
+}
 
 function openArchive(saved){
-  PI_SAVE.readOnly(true);
-  PI_FILL.load(saved);
-
-  var saw = saved.hash || null;
-  var copy = {};
-  for (var k in saved) copy[k] = saved[k];
-  copy.hash = null;
-
-  return sessionHash(copy).then(function(now){
-    var bar = document.createElement("div");
-    bar.className = "viewbar";
-    var l1 = document.createElement("div"); l1.textContent = T("v_view");
-    var l2 = document.createElement("div");
-    l2.textContent = T("v_finished", { d: new Date(saved.finished).toLocaleString("uk-UA") });
-    var l3 = document.createElement("div");
-    if (!saw){ l3.textContent = T("v_hash_none"); l3.className = ""; }
-    else if (saw === now){ l3.textContent = T("v_hash_ok"); l3.className = "ok"; }
-    else { l3.textContent = T("v_hash_bad"); l3.className = "bad"; }
-    bar.appendChild(l1); bar.appendChild(l2); bar.appendChild(l3);
-
+  PI_SAVE.readOnly(true);PI_FILL.load(saved);ARCHIVE_MODE=true;
+  return sessionHash(saved).then(function(now){
+    ARCHIVE_INTEGRITY=!saved.hash?'none':saved.hash===now?'ok':'bad';
     renderReport();
-    var body = el("rp-body");
-    body.insertBefore(bar, body.firstChild);
-    el("mo-doc").classList.remove("hidden");
-    el("mo-report").classList.remove("hidden");
+    el('mo-doc').classList.remove('hidden');el('mo-report').classList.remove('hidden');
   });
 }
 
@@ -2120,6 +2180,16 @@ function makePad(canvas, key){
   var ctx = canvas.getContext("2d");
   var strokes = 0, drawing = false, lx = 0, ly = 0, dpr = D.defaultView.devicePixelRatio || 1;
   var activeId = null;   /* штрих належить одному вказівнику; чужі події його не обривають */
+  var undoImage=null,undoStrokes=0;
+  var undoButton=D.createElement('button');undoButton.className='ghost pad-undo';undoButton.type='button';undoButton.textContent='Скасувати останній штрих';undoButton.dataset.undo=key;undoButton.disabled=true;canvas.closest('.pad').appendChild(undoButton);
+  function rememberInk(){undoImage=D.createElement('canvas');undoImage.width=canvas.width;undoImage.height=canvas.height;undoImage.getContext('2d').drawImage(canvas,0,0);undoStrokes=strokes;undoButton.disabled=false;}
+  function forgetUndo(){undoImage=null;undoButton.disabled=true;}
+  function clearStored(){if(key.indexOf('exp_')===0)delete S.explanations[key.slice(4)];else if(key.indexOf('sig_')===0)delete S.signatures[key.slice(4)];else if(key.indexOf('pad_')===0)delete S.identity[key.slice(4)];}
+  undoButton.addEventListener('click',function(){
+   if(!undoImage||drawing||S.finished||lockedFill||closing)return;
+   var r=canvas.getBoundingClientRect();ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(undoImage,0,0,r.width,r.height);strokes=undoStrokes;forgetUndo();
+   clearStored();if(hasInk())stash(key,canvas.toDataURL('image/png'));ev('write_undo',{field:key});timingInvalid=true;touch();PI_SAVE.touched();
+  });
 
   var tries = 0;
   function size(){
@@ -2160,7 +2230,7 @@ function makePad(canvas, key){
     if (drawing && activeId !== null && e.pointerId !== activeId) return;
     /* Захоплення може не вдатися — це не привід губити весь штрих. */
     try { canvas.setPointerCapture(e.pointerId); } catch(x){}
-    activeId = e.pointerId;
+    rememberInk();activeId = e.pointerId;
     drawing = true;
     var p = pt(e); lx = p.x; ly = p.y;
     if (!strokes) ev("write", { field: key });
@@ -2199,15 +2269,16 @@ function makePad(canvas, key){
 
   function hasInk(){if(!strokes)return false;var a=ctx.getImageData(0,0,canvas.width,canvas.height).data,n=0;for(var i=3;i<a.length;i+=4){if(a[i]>0&&++n>=12)return true;}return false;}
   var pad = {
-    key: key,
+    key: key,element:canvas,forgetUndo:forgetUndo,
     has: hasInk,
     dispose:function(){D.defaultView.removeEventListener('resize',size);},
-    clear: function(){
+    clear: function(invalidated){
       if(S.finished||lockedFill||closing)return;
+      if(invalidated)forgetUndo();else if(strokes)rememberInk();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (strokes) ev("erase", { field: key });
       touch();timingInvalid=true;
-      strokes = 0;
+      strokes = 0;PI_SAVE.touched();
       if (key.indexOf("exp_") === 0)      delete S.explanations[key.slice(4)];
       else if (key.indexOf("sig_") === 0) delete S.signatures[key.slice(4)];
       else if (key.indexOf("pad_") === 0) delete S.identity[key.slice(4)];
@@ -2258,10 +2329,22 @@ function questionText(id){
 }
 
 function addMark(qid, mark){
-  if (!S || !qid || S.finished) return null;
+  if (!S || !qid || PI_SAVE.isReadOnly() || !questionText(qid)) return null;
   var kind=({"реакція":"reaction","перепитав":"asked","сказав сам":"volunteered","перешкода":"noise","заминка з технікою":"technical"})[mark]||mark;
-  S.marks.push({ q: qid, mark: mark, kind:kind, t: now() });
-  return ev("mark", { q: qid, mark: mark });
+  if(['reaction','asked','volunteered','noise','technical'].indexOf(kind)<0)return null;
+  var added={id:crypto.randomUUID(),q:qid,mark:mark,kind:kind,t:S.finished?null:now(),added_at:new Date().toISOString()};
+  if(S.finished)added.phase='post_session';
+  S.marks.push(added);
+  if(S.finished){noteAudit(S,'mark_added_after_session',{id:added.id,question:qid,mark:mark});S.analysis_current=PI_STAT.analyse(S);S.analysis_updated=added.added_at;}
+  else ev('mark',{q:qid,mark:mark,mark_id:added.id});
+  PI_SAVE.touched();showMarkUndo(S,added);return added;
+}
+function withdrawMark(index){
+ if(!S||PI_SAVE.isReadOnly())return false;
+ var m=S.marks[index];if(!m||m.withdrawn_at)return false;
+ m.withdrawn_at=new Date().toISOString();noteAudit(S,'mark_withdrawn',{id:m.id||null,index:index,question:m.q,mark:m.mark});
+ if(S.finished){S.analysis_current=PI_STAT.analyse(S);S.analysis_updated=m.withdrawn_at;}
+ PI_SAVE.touched();return true;
 }
 
 /* ---------- побудова питання ---------- */
@@ -2274,7 +2357,7 @@ function tag(name, cls, parent){
 }
 
 function questionNode(q, kinds, onPick){
-  var wrap = tag("div", "q");
+  var wrap = tag("div", "q");wrap.dataset.question=q.id;wrap.tabIndex=-1;
 
   var num = tag("span", "qnum", wrap);
   num.textContent = q.id;
@@ -2311,7 +2394,7 @@ function questionNode(q, kinds, onPick){
         timingInvalid=false;invalidateSignature();
         touch();
         if (onPick) onPick(kind);
-        why("");
+        why("");wrap.classList.remove("needs-attention");
       });
     })(all[i]);
   }
@@ -2321,7 +2404,7 @@ function questionNode(q, kinds, onPick){
   extra.addEventListener('change',function(){if(!this.value||S.finished||lockedFill||closing)return;var kind=this.value,prev=S.answers[q.id]?S.answers[q.id].value:null;var r=S.answers[q.id]||(S.answers[q.id]={first:now(),changes:0});r.value=kind;if(prev!==null)r.changes++;Object.keys(boxes).forEach(function(k){boxes[k].classList.remove('on');boxes[k].setAttribute('aria-pressed','false');});ev(prev===null?'answer':'change',{q:q.id,value:kind,from:prev,since:now()-lastTouch,timingValid:false});touch();timingInvalid=false;invalidateSignature();if(onPick)onPick(kind);});
   return wrap;
 }
-function invalidateSignature(){if(!Q||blockIdx<0)return;var key=blockIdx===Q.blocks.length-1?'final':Q.blocks[blockIdx].id;var pad=pads['sig_'+key];if(pad&&pad.has())pad.clear();}
+function invalidateSignature(){if(!Q||blockIdx<0)return;var key=blockIdx===Q.blocks.length-1?'final':Q.blocks[blockIdx].id;var pad=pads['sig_'+key];if(pad){pad.forgetUndo();if(pad.has())pad.clear(true);}}
 
 function headRow(){
   var h = tag("div", "qhead");
@@ -2460,6 +2543,11 @@ function padNode(parent, label, kind, key){
 
 /* ---------- перехід далі ---------- */
 
+function revealMissing(id){
+ D.querySelectorAll('.needs-attention').forEach(function(n){n.classList.remove('needs-attention');});
+ var target=id.indexOf('sig_')===0?pads[id]&&pads[id].element:id.indexOf('pad_')===0?pads[id]&&pads[id].element:Array.from(D.querySelectorAll('[data-question]')).find(function(n){return n.dataset.question===id;});
+ if(!target)return;var row=target.closest('.pad')||target;row.classList.add('needs-attention');row.scrollIntoView({block:'center',behavior:'auto'});row.tabIndex=-1;row.focus({preventScroll:true});
+}
 function why(text){
   var el = D.getElementById(blockIdx === -1 ? "fb-why" : "fq-why");
   if (el) el.textContent = text || "";
@@ -2484,9 +2572,9 @@ function next(){
     why(miss.length === 1
       ? R("r_left_one", { list: miss[0] })
       : R("r_left_many", { list: miss.slice(0, 6).join(", ") + (miss.length > 6 ? R("r_and_more") : "") }));
-    return;
+    revealMissing(miss[0]);return;
   }
-  if (nodes.signPad && !nodes.signPad.has()){ why(R("r_need_sign")); return; }
+  if (nodes.signPad && !nodes.signPad.has()){ why(R("r_need_sign"));revealMissing(nodes.signPad.key);return; }
 
   var blank = [];
   for (var gid in nodes.subs){
@@ -2520,6 +2608,7 @@ async function complete(status){
  ev('session_end',{status:S.status});
  S.norm_comparison=PI_NORM.compare(S);S.analysis_snapshot=PI_STAT.analyse(S);S.analysis_version=ANALYTICS_VERSION;
  S.analysis_created=new Date().toISOString();PI_SAVE.touched();
+ D.querySelector('#s-done h1').textContent=S.status==='aborted'?'Анкетування припинено':'Анкету заповнено';
  D.getElementById('fd-note').textContent=S.status==='aborted'?'Анкетування припинено. Передайте планшет поліграфологові.':R('r_done_note');show('s-done');
  var ok=await PI_SAVE.now();if(ok&&S.status==='completed'){await PI_NORM.add(S);if(PI_SAVE.status().dirty)ok=await PI_SAVE.now();}
  PI_MON.refreshStatus();closing=false;return ok;
@@ -2607,7 +2696,7 @@ function startScreen(){
   var brief = D.getElementById("fb-brief");
   brief.innerHTML = "";
   var lines = briefing();
-  var ct=D.getElementById("fb-consent-text");ct.textContent="";var paragraphs=Q.consent&&Q.consent.paragraphs||["Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування. Відповіді та інтервали між діями зберігаються для передтестової бесіди."];paragraphs.forEach(function(text){tag("p",null,ct).textContent=text;});D.getElementById("fb-ack").checked=!!S.intake_ack;
+  var ct=D.getElementById("fb-consent-text");ct.textContent="";var paragraphs=Q.consent&&Q.consent.paragraphs||["Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування. Відповіді та інтервали між діями зберігаються для підготовки до тестування."];paragraphs.forEach(function(text){tag("p",null,ct).textContent=text;});D.getElementById("fb-ack").checked=!!S.intake_ack;
   for (var i = 0; i < lines.length; i++){
     var p = tag("p", null, brief);
     p.textContent = lines[i];
@@ -2659,7 +2748,7 @@ function stash(key, img){
 /* Знімок рукописних полів у сесію — щоб раптове закриття вікна
    заповнення не з'їло написане в поточному блоці. */
 function snapshot(){
-  if (!S) return;
+  if (!S || S.finished) return;
   for (var key in pads) stash(key, pads[key].image());
 }
 
@@ -2710,8 +2799,7 @@ function beginQuestions(){
   if(!D.getElementById("fb-ack").checked){why(R("r_ack_need"));return;}
   S.intake_ack={at:new Date().toISOString(),source:el("consent-mode").value,paragraphs:Q.consent&&Q.consent.paragraphs||[]};
   if (!pads.pad_fio.has() || !pads.pad_birth.has() || !pads.pad_doc.has()){
-    why(R("r_need_ident"));
-    return;
+    why(R('r_need_ident'));revealMissing(['pad_fio','pad_birth','pad_doc'].find(function(k){return !pads[k].has();}));return;
   }
   collectPads();
   renderBlock(0);
@@ -2729,6 +2817,7 @@ return {
   setDocument: function(doc){ D = doc; },
   onEvent: function(fn){ onEvent = fn; },
   mark: addMark,
+  withdrawMark:withdrawMark,
   textOf: questionText,
   lock: setLocked,
   resume: resume,
@@ -2809,7 +2898,7 @@ async function drain(){
    if(handle){var w=await handle.createWritable();try{await w.write(text);await w.close();}catch(e){try{await w.abort();}catch(_){}throw e;}}
    else{throw new Error('Файл для запису не обрано. Дані ще не збережено.');}
    if(obj===(source&&source())&&revision===rev)obj.hash=copy.hash;
-   savedRevision=rev;lastSaved=Date.now();lastError='';dirty=revision!==savedRevision;
+   savedRevision=rev;lastSaved=Date.now();lastError='';dirty=revision!==savedRevision;rememberSession(copy,handle,handle&&handle.name);
    if(dirty&&handle)requested=true;
   }
  }catch(e){lastError=e.message||e.name||'помилка запису';dirty=true;requested=false;success=false;}
@@ -2836,7 +2925,7 @@ async function readSession(file,ask){
  key=nk;salt=ns;return data;
 }
 async function reset(){if(running)await running;handle=null;key=null;salt=null;readOnly=false;dirty=false;lastSaved=0;lastError='';revision=0;savedRevision=0;source=null;requested=false;modeNote='';if(timer){clearTimeout(timer);timer=null;}}
-return {hasHandle:function(){return !!handle;},readOnly:function(v){readOnly=!!v;if(v)handle=null;},isReadOnly:function(){return readOnly;},usePassword:usePassword,chooseFile:chooseFile,chooseDir:chooseDir,loadDir:loadDir,grantDir:grantDir,dirState:dirState,dirName:function(){return dir?dir.name:'';},casePath:function(){return casePath;},prepareCase:prepareCase,clearCase:function(){caseDir=null;casePath='';caseId='';},fileInDir:fileInDir,readNorm:readNorm,writeNorm:writeNorm,writeFile:writeFile,bind:function(fn){source=fn;},touched:touched,now:writeNow,status:status,read:readSession,reset:reset,available:function(){return !!window.showSaveFilePicker;}};
+return {setTarget:function(h){handle=h;lastError='';},getTarget:function(){return handle;},cacheGet:function(k){return idb('readonly',function(st){return st.get(k);});},cacheSet:function(k,v){return idb('readwrite',function(st){return st.put(v,k);});},hasHandle:function(){return !!handle;},readOnly:function(v){readOnly=!!v;if(v)handle=null;},isReadOnly:function(){return readOnly;},usePassword:usePassword,chooseFile:chooseFile,chooseDir:chooseDir,loadDir:loadDir,grantDir:grantDir,dirState:dirState,dirName:function(){return dir?dir.name:'';},casePath:function(){return casePath;},prepareCase:prepareCase,clearCase:function(){caseDir=null;casePath='';caseId='';},fileInDir:fileInDir,readNorm:readNorm,writeNorm:writeNorm,writeFile:writeFile,bind:function(fn){source=fn;},touched:touched,now:writeNow,status:status,read:readSession,reset:reset,available:function(){return !!window.showSaveFilePicker;}};
 })();
 
 /* ------------------------------------------------------------------ */
@@ -2916,7 +3005,7 @@ function analyse(S){
 
   /* мітки поліграфолога */
   for (var mi = 0; mi < (S.marks || []).length; mi++){
-    var mk = S.marks[mi];
+    var mk = S.marks[mi];if(mk.withdrawn_at)continue;
     (marks[mk.q] = marks[mk.q] || []).push(mk.mark);
     if (mk.kind==="noise" || mk.kind==="technical" || mk.mark === "перешкода" || mk.mark === "заминка з технікою") damped[mk.q] = true;
   }
@@ -3124,7 +3213,7 @@ function analyse(S){
       blanks: Object.keys(blanks).length,
       reminder: !!(S.reminder && S.reminder.shown),
       damped: Object.keys(damped).length,
-      marks: (S.marks || []).length,
+      marks: activeMarks(S).length,
       /* Час до останньої дії респондента. Інакше забуте відкрите вікно
          розтягує вісь на години, і графік стає нечитабельним. */
       duration: S.elapsedMs===undefined?activeUntil(S):S.elapsedMs,
@@ -3204,7 +3293,7 @@ function childHtml(ids){
   body += '<div class="lockveil hidden" id="lockveil"><div>' + R("r_locked") + "</div></div>";
   return '<!DOCTYPE html><html lang="' + RESP_LANG + '"><head><meta charset="utf-8">' +
          '<meta name="viewport" content="width=device-width, initial-scale=1">' +
-         "<title>Передтестове анкетування · Intake</title><style>" + css + "</style></head><body>" + body + "</body></html>";
+         "<title>Передтестове анкетування · Intake</title>" + document.querySelector('link[rel="icon"]').outerHTML + "<style>" + css + "</style></head><body>" + body + "</body></html>";
 }
 
 function openWindow(){ return spawn(["s-brief", "s-block", "s-done"], "intake_fill"); }
@@ -3224,7 +3313,7 @@ function spawn(ids, name){
 
 function begin(data){
   el("b-monitor").classList.remove("hidden");
-  locked=false;following=true;sel=null;current=null;el("mo-finish").classList.add("hidden");
+  locked=false;following=true;sel=null;current=null;el('mo-pause-state').classList.add('hidden');el("mo-finish").classList.add("hidden");
   ["mo-lock","mo-reopen","mo-end"].forEach(function(id){el(id).classList.remove("hidden");});
   el("rp-hash").textContent="";el("dc-hash").textContent="";
   PI_SAVE.bind(function(){ return PI_FILL.session(); });
@@ -3265,7 +3354,7 @@ function begin(data){
 
 /* Продовження раніше збереженої сесії — те саме вікно, той самий монітор. */
 function resumeSession(saved){
-  locked=false;following=true;sel=null;current=null;el("b-monitor").classList.remove("hidden");
+  locked=false;following=true;sel=null;current=null;el('mo-pause-state').classList.add('hidden');el("b-monitor").classList.remove("hidden");
   PI_SAVE.bind(function(){ return PI_FILL.session(); });
   win = openWindow();
   PI_FILL.setDocument(win ? win.document : document);
@@ -3339,18 +3428,10 @@ function paintMini(){
 }
 
 function saveStatus(){
-  var st = PI_SAVE.status(), bar = el("mo-saved").parentNode, txt;
-  if (st.busy)        txt = "Запис…";
-  else if (st.error)       txt = T("s_err", { e: st.error });
-  else if (!st.saved) txt = T("s_saved_never");
-  else                txt = T("s_saved_at", { t: new Date(st.saved).toLocaleTimeString("uk-UA") });
-  if (st.dirty && !st.error) txt += " · " + T("s_unsaved");
-  el('mo-save-file').classList.toggle('hidden',PI_SAVE.isReadOnly()||(!st.error&&st.mode==='file')); 
-  if (st.encrypted) txt += " · зашифровано";
-  if(st.casePath)txt+=" · "+st.casePath;
-  el("mo-saved").textContent = txt;
-  bar.classList.toggle("dirty", st.dirty && !st.error);
-  bar.classList.toggle("bad", !!st.error);
+ var st=PI_SAVE.status(),bar=el('mo-saved').parentNode;
+ el('mo-saved').textContent=statusText(st)+(st.encrypted?' · зашифровано':'')+(st.casePath?' · '+st.casePath:'');
+ el('mo-save-file').classList.toggle('hidden',PI_SAVE.isReadOnly()||(!st.error&&st.mode==='file'));
+ bar.classList.toggle('dirty',st.dirty&&!st.error);bar.classList.toggle('bad',!!st.error);
 }
 
 function idle(){
@@ -3362,9 +3443,9 @@ function idle(){
   }
   var secs = Math.max(0, Math.round((Date.now() - (S.startedAt || 0) - (S.lastInteraction||last)) / 1000));
   var c = el("mo-idle");
-  c.textContent = secs;
+  c.textContent = locked?"—":secs;
   saveStatus();
-  c.parentNode.classList.toggle("warm", secs >= 30);
+  c.parentNode.classList.toggle("warm", !locked&&secs >= 30);
 }
 
 /* ---------- стрічка ---------- */
@@ -3417,10 +3498,10 @@ function onEvent(e){
   feed.appendChild(row);
   feed.scrollTop = feed.scrollHeight;
 
-  if (d.q && following && e.type !== "mark"){ current = d.q; select(d.q, row); }
+  if (d.q && e.type !== "mark"){ current = d.q;if(following)select(d.q,row); }
   if (e.type === "answer" || e.type === "change") paintMini();
   if (e.type === "session_end"){
-    stop(); finishPanel();
+    stop();el('mo-pause-state').classList.add('hidden');finishPanel();
     el("mo-report").classList.remove("hidden");
     el("mo-doc").classList.remove("hidden");
     /* Блокування й перевідкриття вікна після завершення вже нічого не роблять. */
@@ -3445,9 +3526,11 @@ function select(qid, row){
 }
 
 function target(qid){
-  el("mo-target").textContent = qid ? T("m_target", { q: qid }) : T("m_target_none");
+  el('mo-target').textContent=qid?'Додаєте мітку до питання '+qid:'Оберіть питання для мітки';
+  el('mo-follow-state').textContent=following?'Стежити за респондентом · увімкнено':'Питання вибрано вручну · автостеження призупинене';
+  el('mo-follow-state').classList.toggle('manual',!following);
   var btns = el("mo-target").parentNode.querySelectorAll(".markrow button");
-  for (var i = 0; i < btns.length; i++) btns[i].disabled = !qid;
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = !qid || PI_SAVE.isReadOnly();
 
   var now = el("mo-now");
   if (!qid){ now.textContent = T("m_waiting"); return; }
@@ -3485,7 +3568,13 @@ function buildMarks(){
       b.textContent = T(m.key);
       b.title = T(m.tip);          /* спливаюча підказка: коли тиснути */
       b.disabled = true;
-      b.addEventListener("click", function(){ if (sel) PI_FILL.mark(sel, ({m_mark_react:"реакція",m_mark_asked:"перепитав",m_mark_self:"сказав сам",m_mark_noise:"перешкода",m_mark_tech:"заминка з технікою"})[m.key]); });
+      b.addEventListener("click", async function(){
+        if(!sel)return;var added=PI_FILL.mark(sel,({m_mark_react:"реакція",m_mark_asked:"перепитав",m_mark_self:"сказав сам",m_mark_noise:"перешкода",m_mark_tech:"заминка з технікою"})[m.key]);
+        if(added&&added.phase==='post_session'){
+          note('Питання '+sel+' · '+added.mark+' · додано після анкетування');
+          await PI_SAVE.now();saveStatus();
+        }
+      });
       (m.damp ? down : up).appendChild(b);
     })(MARKS[i]);
   }
@@ -3504,7 +3593,7 @@ function finishPanel(){
   el("mo-finish-skip").textContent = T("s_end_skip");
   box.classList.remove("hidden");
   el("mo-finish-go").disabled=false;el("mo-finish-skip").disabled=false;
-  el("mo-finish-pw").value="";
+  el("mo-finish-pw").value="";el("mo-finish-pw").type="password";el("mo-show-pw").checked=false;
 }
 
 async function finish(encrypt){
@@ -3523,9 +3612,10 @@ function stop(){ if (tick){ clearInterval(tick); tick = null; } }
 
 function toggleLock(){
   if(locked&&CONTROL_PIN&&prompt("PIN поліграфолога")!==CONTROL_PIN){note("Неправильний PIN");return;}
+  if(!PI_FILL.session()||PI_FILL.session().finished)return;
   locked = !locked;
-  PI_FILL.lock(locked);
-  el("mo-lock").textContent = locked ? T("m_unlock") : T("m_lock");
+  el('mo-pause-state').classList.toggle('hidden',!locked);PI_FILL.lock(locked);
+  el("mo-lock").textContent = locked ? "Продовжити" : "Пауза";
 }
 
 function reopen(){
@@ -3718,7 +3808,7 @@ function renderDoc(){
   el("dc-report").textContent = T("r_open");
   el("dc-print").textContent  = T("r_print");
   el("dc-back").textContent   = T("r_to_mon");
-  el("dc-back").classList.toggle("hidden", PI_SAVE.isReadOnly());
+  el("dc-back").classList.toggle("hidden", PI_SAVE.isReadOnly() || ARCHIVE_MODE);
   show("s-doc");
 }
 
@@ -4074,6 +4164,7 @@ function renderReportDetails(){
   var body = el("rp-body");
   body.innerHTML = "";
   infoLine(body,(S.status==="aborted"?"Сесію припинено достроково. ":"")+(S.finished?(S.analysis_snapshot?"Збережений аналіз, версія "+(S.analysis_version||"—")+". ":"Старий архів: аналіз перераховано поточною версією. "):"Попередній аналіз незавершеної сесії. "),"report-state");
+  if(S.analysis_updated)infoLine(body,"Аналіз доповнено мітками поліграфолога "+new Date(S.analysis_updated).toLocaleString("uk-UA")+"."+(S.analysis_snapshot?" Початковий знімок аналізу збережено.":""),"report-state");
   if(S.norm_warning)infoLine(body,S.norm_warning,"report-state");
   el("rp-hash").textContent=S.hash?T("p_hash",{h:S.hash}):"Контрольна сума з’явиться після збереження";
 
@@ -4189,12 +4280,13 @@ function renderReportDetails(){
   el("rp-doc").textContent   = T("r_to_doc");
   el("rp-print").textContent = T("r_print");
   el("rp-back").textContent  = T("r_to_mon");
-  el("rp-back").classList.toggle("hidden", PI_SAVE.isReadOnly());
+  el("rp-back").classList.toggle("hidden", PI_SAVE.isReadOnly() || ARCHIVE_MODE);
   show("s-report");
 }
 
 /* Report 2.1: observable events and examiner priorities, independent of legacy scores. */
 var REACTION_VIEW=null,REACTION_SELECTED=null,REACTION_SESSION=null;
+var RX_QUERY='',RX_FILTER='all',REPORT_UI=null,LAST_MARK=null,reportScroll=0;
 function rxNode(tag,cls,parent,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;if(parent)parent.appendChild(n);return n;}
 function rxValue(v){return v?R('r_'+v):'не надано';}
 function rxImportant(S,id){return !!(S.report_priority&&S.report_priority[id]&&S.report_priority[id].important);}
@@ -4203,7 +4295,7 @@ function rxModel(S,A){
  ix.order.forEach(function(id){var m=ix.map[id];items[id]={id:id,meta:m,events:[],marks:[],changes:[],reviews:0,collapsed:0,time:null,flags:[]};});
  (A.sequence||[]).forEach(function(q){if(items[q.id])items[q.id].time=q;});
  S.events.forEach(function(e){var id=e.q;if(!id&&e.field&&e.field.indexOf('exp_')===0)id=e.field.slice(4);var x=items[id];if(!x)return;x.events.push(e);if(e.type==='change')x.changes.push(e);if(e.type==='review')x.reviews++;if(e.type==='collapse')x.collapsed++;});
- (S.marks||[]).forEach(function(m){if(items[m.q])items[m.q].marks.push(m);});
+ activeMarks(S).forEach(function(m){if(items[m.q])items[m.q].marks.push(m);});
  ix.order.forEach(function(id){var x=items[id];if(x.changes.length||x.reviews||x.collapsed)x.flags.push('route');if(x.time&&x.time.timingAvailable&&!x.time.damped&&x.time.z>=1.5)x.flags.push('time');if(x.marks.length)x.flags.push('observer');});
  return {S:S,A:A,ix:ix,items:items};
 }
@@ -4237,7 +4329,8 @@ function rxSelect(id,scroll){
  var x=M.items[id],S=M.S,head=rxNode('div','rx-question-head',box);
  rxNode('span','rx-qid',head,'ПИТАННЯ '+id+' · '+x.meta.block);
  var imp=rxNode('button','ghost rx-important',head,rxImportant(S,id)?'★ Важливе':'☆ Позначити важливим');imp.type='button';imp.setAttribute('aria-pressed',String(rxImportant(S,id)));imp.disabled=PI_SAVE.isReadOnly();if(imp.disabled)imp.title='Архів відкрито лише для перегляду';
- imp.addEventListener('click',function(){if(PI_SAVE.isReadOnly())return;var on=!rxImportant(S,id);if(!S.report_priority)S.report_priority={};if(on)S.report_priority[id]={important:true,at:new Date().toISOString()};else delete S.report_priority[id];noteAudit(S,'report_priority',{question:id,important:on});rxEpisodes(M);rxSelect(id,false);box.querySelector('.rx-important').focus();});
+ imp.addEventListener('click',function(){if(PI_SAVE.isReadOnly())return;var on=!rxImportant(S,id);if(!S.report_priority)S.report_priority={};if(on)S.report_priority[id]={important:true,at:new Date().toISOString()};else delete S.report_priority[id];noteAudit(S,'report_priority',{question:id,important:on});renderReport();var ib=el('rx-question').querySelector('.rx-important');if(ib)ib.focus({preventScroll:true});});
+ var navigation=rxNode('div','rx-navigation',box);questionNav(navigation,id);
  rxNode('h2','rx-question-text',box,x.meta.text);
  rxNode('p','rx-answer',box,'Остаточна відповідь: «'+rxValue(S.answers[id]&&S.answers[id].value)+'»');
  var columns=rxNode('div','rx-detail-columns',box),auto=rxNode('div','',columns),obs=rxNode('div','rx-observations',columns);
@@ -4250,7 +4343,32 @@ function rxSelect(id,scroll){
  events.forEach(function(e){var row=rxNode('div','rx-event',auto);rxNode('time','',row,mmss(e.t));var desc=rxNode('div','',row,rxEvent(e));if(e.type==='answer'&&Number.isFinite(e.since)){rxNode('small','',desc,'Інтервал між діями: '+(e.since/1000).toFixed(1)+' с'+(e.timingValid===false?' · виключений із часового порівняння':''));}});
  rxNode('h3','rx-label',obs,'СПОСТЕРЕЖЕННЯ ПОЛІГРАФОЛОГА');
  if(!x.marks.length)infoLine(obs,'Міток немає.');
- x.marks.forEach(function(m){rxNode('p','rx-observation',obs,mmss(m.t||0)+' · '+m.mark);});
+ (S.marks||[]).filter(function(m){return m.q===id;}).forEach(function(m){
+  var line=rxNode('div','rx-observation'+(m.withdrawn_at?' withdrawn':''),obs);
+  rxNode('span','',line,(m.phase==='post_session'?'Додано після анкетування · '+new Date(m.added_at).toLocaleString('uk-UA'):mmss(m.t||0))+' · '+m.mark+(m.withdrawn_at?' · відкликано':''));
+  if(!m.withdrawn_at&&!PI_SAVE.isReadOnly()){var undo=rxNode('button','ghost mini rx-withdraw',line,'Відкликати');undo.type='button';undo.addEventListener('click',async function(){if(PI_FILL.withdrawMark(S.marks.indexOf(m))){renderReport();await saveReportChanges();}});}
+ });
+ {
+  var controls=rxNode('div','rx-mark-controls');box.insertBefore(controls,columns);
+  rxNode('span','rx-mark-caption',controls,'Мітки поліграфолога');
+  [['реакція','Реакція'],['перепитав','Перепитав'],['сказав сам','Сказав сам'],['перешкода','Перешкода'],['заминка з технікою','Заминка з технікою']].forEach(function(pair){
+   var button=rxNode('button','ghost mini',controls,pair[1]);button.type='button';button.dataset.mark=pair[0];button.disabled=PI_SAVE.isReadOnly();
+   button.title=T(({реакція:'m_tip_react',перепитав:'m_tip_asked','сказав сам':'m_tip_self',перешкода:'m_tip_noise','заминка з технікою':'m_tip_tech'})[pair[0]]);
+   button.addEventListener('click',async function(){
+    if(!PI_FILL.mark(id,pair[0]))return;
+    var top=window.scrollY;renderReport();window.scrollTo(0,top);
+    var next=el('rx-question').querySelector('[data-mark="'+pair[0]+'"]');if(next)next.focus({preventScroll:true});
+    await saveReportChanges();
+   });
+  });
+  if(PI_SAVE.isReadOnly())infoLine(controls,ARCHIVE_INTEGRITY==='ok'?'Для додавання міток натисніть «Дозволити доповнення» над картою.':'Архів відкрито лише для перегляду.','rx-mark-hint');
+  else if(S.finished)infoLine(controls,'Нові мітки позначаються як додані після анкетування.','rx-mark-hint');
+ }
+ var noteFold=rxNode('details','rx-question-note',box),noteSummary=rxNode('summary','',noteFold,'Коментар до питання'+(S.question_notes&&S.question_notes[id]?' · є запис':''));noteFold.dataset.questionNote=id;
+ if(PI_SAVE.isReadOnly())infoLine(noteFold,S.question_notes&&S.question_notes[id]||'Коментаря немає.');
+ else{var qnote=rxNode('textarea','notes',noteFold);qnote.value=S.question_notes&&S.question_notes[id]||'';qnote.placeholder='Що саме ви помітили щодо цього питання?';qnote.setAttribute('aria-label','Коментар до питання '+id);qnote.maxLength=5000;
+ qnote.addEventListener('input',function(){if(!S.question_notes)S.question_notes={};S.question_notes[id]=qnote.value;noteSummary.textContent='Коментар до питання'+(qnote.value?' · є запис':'');PI_SAVE.touched();});
+ qnote.addEventListener('change',function(){noteAudit(S,'question_note',{question:id,text:qnote.value});});}
  if(S.report_priority&&S.report_priority[id]&&S.report_priority[id].note)infoLine(obs,S.report_priority[id].note);
  var t=x.time;
  if(t&&t.timingAvailable&&!t.damped){var base=M.A.localBases&&M.A.localBases[id];infoLine(obs,'Часове порівняння: відхилення '+t.z.toFixed(1)+(base?' · попередніх придатних інтервалів: '+base.n:'')+'. Інтервали нормовано на довжину питання.','rx-limit');}
@@ -4264,14 +4382,17 @@ function rxSelect(id,scroll){
 }
 function rxEpisodes(M){
  var list=el('rx-episodes');list.textContent='';
- var ids=M.ix.order.filter(function(id){return M.items[id].flags.length||rxImportant(M.S,id);});
+ var ids=M.ix.order.filter(function(id){return M.items[id].flags.length||rxImportant(M.S,id)||(M.S.question_notes&&M.S.question_notes[id]);});
  ids.sort(function(a,b){return Number(rxImportant(M.S,b))-Number(rxImportant(M.S,a))||M.ix.order.indexOf(a)-M.ix.order.indexOf(b);});
  el('rx-episode-count').textContent=ids.length+' питань · важливих: '+ids.filter(function(id){return rxImportant(M.S,id);}).length;
  if(!ids.length)infoLine(list,'Помітних подій за цими правилами не зафіксовано. Будь-яке питання можна переглянути на карті.');
  ids.forEach(function(id){var x=M.items[id],b=rxNode('button','rx-episode',list);b.type='button';b.setAttribute('data-rx-id',id);rxNode('span','rx-episode-id',b,id);var txt=rxNode('span','',b);rxNode('span','rx-episode-title',txt,x.meta.text);rxNode('small','',txt,rxReasons(x).join(' · ')||'Позначено вами');if(rxImportant(M.S,id))rxNode('span','rx-star',b,'★');b.addEventListener('click',function(){rxSelect(id,true);});});rxButtons(M);
 }
 function renderReport(){
- renderReportDetails();var S=PI_FILL.session();if(!S)return;
+ var S=PI_FILL.session();if(!S)return;
+ var same=REACTION_SESSION===S.session_id;
+ if(same)captureReportUi();else{RX_QUERY='';RX_FILTER='all';REPORT_UI=null;reportScroll=0;}
+ renderReportDetails();
  var A=analysisFor(S),M=rxModel(S,A);REACTION_VIEW=M;if(REACTION_SESSION!==S.session_id){REACTION_SELECTED=null;REACTION_SESSION=S.session_id;}
  var body=el('rp-body'),existing=Array.from(body.children);body.textContent='';
  el('rp-head').textContent='Карта помітних реакцій';el('rp-banner').textContent='Події програми та спостереження поліграфолога. Реакція не визначає причини поведінки.';
@@ -4297,17 +4418,70 @@ function renderReport(){
  existing.forEach(function(n){
   if(n.classList.contains('report-state')){extras.appendChild(n);return;}
   if(n.classList.contains('report-opening')){var old=rxFold(extras,'Раніше розраховані бали та теплова карта');infoLine(old,'Розрахунок за версією алгоритму '+(S.analysis_version||ANALYTICS_VERSION)+'. Ці бали не визначають порядок нової карти реакцій.');old.appendChild(n);return;}
-  if(n.tagName==='DETAILS'){n.classList.add('rx-fold');extras.appendChild(n);return;}
+  if(n.tagName==='DETAILS'){n.classList.remove('rsec');n.classList.add('rx-fold');if(!n.querySelector(':scope > .rx-fold-body')){var inner=rxNode('div','rx-fold-body');Array.from(n.childNodes).forEach(function(child){if(child.nodeName!=='SUMMARY')inner.appendChild(child);});n.appendChild(inner);}extras.appendChild(n);return;}
   var h=n.querySelector('h2,h3');if(!h){extras.appendChild(n);return;}
   var title=h.textContent;if(title===T('g_charts')||title===T('b_head'))return;
   var content=rxFold(extras,title);h.remove();content.appendChild(n);
  });
  if(S.overrides&&Object.keys(S.overrides).length){var ov=rxFold(extras,'Попередні ручні зміни балів');Object.keys(S.overrides).forEach(function(id){var v=S.overrides[id];infoLine(ov,id+' · '+(v.dir==='up'?'піднято':'опущено')+' · '+v.why);});}
  var audit=rxFold(extras,'Історія змін звіту');(S.audit||[]).forEach(function(e){infoLine(audit,e.at+' · '+e.type+' · '+JSON.stringify(e.detail));});if(!(S.audit||[]).length)infoLine(audit,'Змін не зафіксовано.');
+ paintArchiveNotice();
+ var st=PI_SAVE.status();el('rp-save-tools').classList.toggle('hidden',PI_SAVE.isReadOnly());
+ el('rp-save-file').classList.toggle('hidden',!st.error||PI_SAVE.isReadOnly());
+ el('rp-save-state').textContent=statusText(st);
+ buildReportSearch();applyReportFilter(false);restoreReportUi();
 }
-var rxPrintDetails=[];
-window.addEventListener('beforeprint',function(){rxPrintDetails=Array.from(el('rp-body').querySelectorAll('details')).map(function(d){var old=d.open;d.open=true;return [d,old];});});
-window.addEventListener('afterprint',function(){rxPrintDetails.forEach(function(p){p[0].open=p[1];});rxPrintDetails=[];});
+function paintArchiveNotice(){
+ if(!ARCHIVE_MODE||!ARCHIVE_INTEGRITY)return;
+ var S=PI_FILL.session(),bar=document.createElement('div');bar.className='viewbar';
+ infoLine(bar,PI_SAVE.isReadOnly()?T('v_view'):'Архів · доповнення поліграфолога','rx-archive-edit');
+ infoLine(bar,T('v_finished',{d:new Date(S.finished).toLocaleString('uk-UA')}));
+ infoLine(bar,'Перевірка під час відкриття: '+(ARCHIVE_INTEGRITY==='ok'?T('v_hash_ok'):ARCHIVE_INTEGRITY==='none'?T('v_hash_none'):T('v_hash_bad')),ARCHIVE_INTEGRITY==='ok'?'ok':'bad');
+ if(PI_SAVE.isReadOnly()&&ARCHIVE_INTEGRITY==='ok'){
+  var button=rxNode('button','ghost mini rx-archive-edit',bar,'Дозволити доповнення');button.type='button';
+  button.addEventListener('click',async function(){button.disabled=true;try{await enableArchiveAdditions(false);}catch(e){if(e.name!=='AbortError')infoLine(bar,e.message,'bad');}finally{button.disabled=false;}});
+  infoLine(bar,'Для додавання міток оберіть файл для запису. Можна вказати цей самий файл або зберегти окрему копію.','rx-limit rx-archive-edit');
+ }
+ el('rp-body').insertBefore(bar,el('rp-body').firstChild);
+}
+async function saveReportChanges(){
+ var note=el('rp-save-state');note.textContent='Запис…';
+ var ok=await PI_SAVE.now(),st=PI_SAVE.status();
+ note.textContent=statusText(st);
+ note.classList.toggle('bad',!ok);
+ el('rp-save-file').classList.toggle('hidden',ok||PI_SAVE.isReadOnly());
+ if(ok)el('rp-hash').textContent=T('p_hash',{h:PI_FILL.session().hash});
+ PI_MON.refreshStatus();return ok;
+}
+el('rp-save-now').addEventListener('click',saveReportChanges);
+el('rp-save-file').addEventListener('click',async function(){
+ if(PI_SAVE.isReadOnly())return;
+ try{await PI_SAVE.chooseFile(PI_FILL.session().session_id);PI_SAVE.touched();await saveReportChanges();}
+ catch(e){if(e.name!=='AbortError')el('rp-save-state').textContent=e.message;}
+});
+var rxPrintDetails=[],requestedPrintMode='full',beforePrintScroll=0;
+function buildShortReport(){
+ var old=el('rx-short-print');if(old)old.remove();var M=REACTION_VIEW;if(!M)return;
+ var root=rxNode('section','rx-short-print',el('rp-body'));root.id='rx-short-print';rxNode('h2','',root,'Короткий звіт · питання для уваги');
+ var ids=M.ix.order.filter(function(id){return M.items[id].flags.length||rxImportant(M.S,id)||(M.S.question_notes&&M.S.question_notes[id]);});
+ if(!ids.length)infoLine(root,'Помітних подій та позначених питань немає.');
+ ids.forEach(function(id){var x=M.items[id],card=rxNode('div','short-question',root);rxNode('h3','',card,id+' · '+x.meta.text);infoLine(card,'Відповідь: «'+rxValue(M.S.answers[id]&&M.S.answers[id].value)+'»'+(rxImportant(M.S,id)?' · Важливе':''));var reasons=rxReasons(x);if(reasons.length)infoLine(card,reasons.join(' · '));x.marks.forEach(function(m){infoLine(card,m.mark+(m.phase==='post_session'?' · додано після анкетування':''));});if(M.S.question_notes&&M.S.question_notes[id])infoLine(card,'Коментар: '+M.S.question_notes[id]);});
+ if(M.S.notes)infoLine(root,'Загальні нотатки: '+M.S.notes);
+}
+async function printSelectedReport(){
+ if(!PI_SAVE.isReadOnly()&&PI_SAVE.status().dirty&&!await PI_SAVE.now()){alert(saveError());return;}
+ var mode=el('rp-print-mode').value;
+ if(mode==='document'){renderDoc();await Promise.all(Array.from(el('dc-body').querySelectorAll('img')).map(function(i){return i.decode().catch(function(){});}));window.print();return;}
+ renderReport();requestedPrintMode=mode;window.print();
+}
+window.addEventListener('beforeprint',function(){
+ beforePrintScroll=window.scrollY;rxPrintDetails=Array.from(el('rp-body').querySelectorAll('details')).map(function(d){var old=d.open;d.open=true;return[d,old];});
+ if(el('s-report').classList.contains('on')){
+  document.body.classList.toggle('print-short',requestedPrintMode==='short');buildShortReport();
+  el('rp-body').querySelectorAll('.rx-question-note').forEach(function(d){var ta=d.querySelector('textarea');if(ta){var text=rxNode('p','note-print',d,ta.value||'Коментаря немає.');}});
+ }
+});
+window.addEventListener('afterprint',function(){rxPrintDetails.forEach(function(p){p[0].open=p[1];});rxPrintDetails=[];document.body.classList.remove('print-short');el('rp-body').querySelectorAll('.note-print').forEach(function(n){n.remove();});requestedPrintMode='full';window.scrollTo(0,beforePrintScroll);});
 
 /* Компактний список п'яти головних — один рядок на точку. */
 function topList(root, A){
@@ -4452,7 +4626,7 @@ function setOverride(id, dir){
 }
 
 el("rp-back").addEventListener("click",  function(){ show("s-monitor"); });
-el("rp-print").addEventListener("click", async function(){if(!PI_SAVE.isReadOnly()&&PI_SAVE.status().dirty&&!await PI_SAVE.now()){alert(saveError());return;}renderReport();window.print();});
+el('rp-print').addEventListener('click',printSelectedReport);
 el("mo-report").addEventListener("click", function(){ renderReport(); });
 el("mo-doc").addEventListener("click",    function(){ renderDoc(); });
 el("dc-back").addEventListener("click",   function(){ show("s-monitor"); });
@@ -4478,6 +4652,7 @@ var strokes = 0, drawing = false, activeId = null, lx = 0, ly = 0, eraser = fals
 var auto = false, timer = null;   /* автозапис після першого збереження */
 var record = null, penSeen = false;
 var consentSaving=null,consentRevision=0,savedConsentRevision=0;
+var consentUndo=null,consentUndoStrokes=0,consentLastError="";
 function consentDirty(){return consentRevision!==savedConsentRevision||drawing;}
 
 function id(){
@@ -4495,7 +4670,7 @@ function mount(doc, saved){
   canvas = D.getElementById("cs-ink");
   var page = D.getElementById("cs-page");
   ctx = canvas.getContext("2d");
-  strokes = 0; drawing = false; activeId = null; penSeen = false;
+  strokes = 0; drawing = false; activeId = null; penSeen = false;consentUndo=null;consentLastError="";
 
   var tries = 0;
   function size(){
@@ -4551,7 +4726,7 @@ function mount(doc, saved){
     if (e.pointerType === "pen"){
       e.preventDefault();
       try { canvas.setPointerCapture(e.pointerId); } catch(x){}
-      activeId = e.pointerId; drawing = true; consentRevision++;
+      rememberConsentInk();activeId = e.pointerId; drawing = true; consentRevision++;consentLastError="";
       var p = pt(e); lx = p.x; ly = p.y; strokes++;
       brush(e);
       /* крапка на місці дотику, щоб коротке торкання лишало слід */
@@ -4597,7 +4772,7 @@ function mount(doc, saved){
     bEr.textContent  = T("cs_eraser");
     bPen.addEventListener("click", function(){ setEraser(false); });
     bEr.addEventListener("click",  function(){ setEraser(true); });
-    setEraser(false);
+    var ub=D.getElementById('cs-undo');if(ub){ub.disabled=true;ub.addEventListener('click',undoConsentInk);}setEraser(false);
   }
 
   function setEraser(on){
@@ -4609,9 +4784,12 @@ function mount(doc, saved){
   }
 }
 
+function rememberConsentInk(){if(!canvas)return;consentUndo=D.createElement('canvas');consentUndo.width=canvas.width;consentUndo.height=canvas.height;consentUndo.getContext('2d').drawImage(canvas,0,0);consentUndoStrokes=strokes;var b=D.getElementById('cs-undo');if(b)b.disabled=false;}
+function undoConsentInk(){if(!consentUndo||drawing)return;var r=canvas.getBoundingClientRect();ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(consentUndo,0,0,r.width,r.height);strokes=consentUndoStrokes;consentUndo=null;consentRevision++;var b=D.getElementById('cs-undo');if(b)b.disabled=true;paint();autosave();}
 function ink(){if(!strokes||!canvas)return null;var a=ctx.getImageData(0,0,canvas.width,canvas.height).data,n=0;for(var i=3;i<a.length;i+=4){if(a[i]>0&&++n>=12)return canvas.toDataURL("image/png");}return null;}
 
 function clear(){
+  rememberConsentInk();
   if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   strokes = 0;consentRevision++;
@@ -4622,13 +4800,9 @@ function clear(){
 /* ---------- збереження ---------- */
 
 function paint(pending){
-  var st = document.getElementById("cs-state");
-  if (!st) return;
-  if (!record || !record.savedAt){ st.textContent = T("cs_new"); return; }
-  var t = new Date(record.savedAt).toLocaleTimeString("uk-UA");
-  st.textContent = auto
-    ? (pending ? T("cs_auto_wait") : T("cs_auto", { t: t }))
-    : T("cs_saved", { t: t });
+ var st=document.getElementById('cs-state');if(!st)return;
+ st.textContent=statusText({error:consentLastError,busy:!!consentSaving,dirty:consentDirty()||pending,saved:record&&record.savedAt?new Date(record.savedAt).getTime():0});
+ st.classList.toggle('bad',!!consentLastError);
 }
 
 /* Після першого збереження всі подальші правки лягають у той самий
@@ -4643,7 +4817,7 @@ function autosave(){
 
 async function save(silent){
  if(consentSaving){await consentSaving;return save(silent);}
- var img=ink(),rev=consentRevision,st=document.getElementById('cs-state');if(!img){st.textContent=T('cs_no_ink')+". Попередній збережений файл не змінено.";return false;}
+ var img=ink(),rev=consentRevision,st=document.getElementById('cs-state');if(!img){consentLastError=T('cs_no_ink')+". Попередній збережений файл не змінено.";paint();return false;}
  consentSaving=(async function(){
   try{
    await ensureCase();
@@ -4652,10 +4826,10 @@ async function save(silent){
    var S=PI_FILL.session();if(S&&S.case_info&&S.case_info.id===CASE.id)copy.session_id=S.session_id;
    delete copy.hash;copy.savedAt=new Date().toISOString();copy.hash=await digest(stable(copy));
    if(!await PI_SAVE.writeFile('zgoda_'+copy.id+'.json',JSON.stringify(copy)))throw new Error(T('cs_err'));
-   record=copy;savedConsentRevision=rev;el("consent-mode").value="digital";if(S&&S.intake_ack&&S.case_info&&S.case_info.id===CASE.id)S.intake_ack.source="digital";
+   record=copy;savedConsentRevision=rev;consentLastError="";writePreference("intake_consent_mode","digital");el("consent-mode").value="digital";if(S&&S.intake_ack&&S.case_info&&S.case_info.id===CASE.id)S.intake_ack.source="digital";
    if(S&&S.case_info&&S.case_info.id===CASE.id&&!PI_SAVE.isReadOnly()){S.consent=JSON.parse(JSON.stringify(copy));noteAudit(S,"consent_saved",{id:copy.id});}
    document.getElementById('cs-hash').textContent=T('cs_hash',{h:copy.hash});auto=!!PI_SAVE.casePath();paint();return true;
-  }catch(e){st.textContent=e.message;return false;}finally{consentSaving=null;}
+  }catch(e){consentLastError=e.message;return false;}finally{consentSaving=null;paint();paintPreparation();}
  })();return consentSaving;
 }
 
@@ -4689,7 +4863,7 @@ function paintLabels(){
   document.getElementById("cs-save").textContent  = T("cs_save");
   document.getElementById("cs-print").textContent = T("cs_print");
   document.getElementById("cs-clear").textContent = T("cs_clear");
-  document.getElementById("cs-back").textContent  = T("r_to_mon");
+  document.getElementById("cs-back").textContent  = "До підготовки справи";
 }
 
 /* Друк іде з головного вікна: переносимо чорнило з планшета сюди. */
@@ -4710,12 +4884,13 @@ function printHere(){
   im.src = img;
 }
 
-return { open: open, save: save, clear: clear, print: printHere,
+return { open: open, save: save, clear: clear, print: printHere,refreshStatus:paint,
          current: function(){ return record; },dirty:consentDirty,reset:function(){record=null;auto=false;consentRevision=0;savedConsentRevision=0;canvas=null;ctx=null;drawing=false;if(timer){clearTimeout(timer);timer=null;}if(win&&!win.closed)win.close();} };
 
 })();
 
 
+Object.assign(DICT.uk,{m_lock:'Пауза',m_unlock:'Продовжити',m_end:'Припинити анкетування',m_up:'Спостереження',m_down:'Перешкоди',r_locked:'Пауза. Зачекайте, поки поліграфолог продовжить анкетування.',m_auto:'Стежити за респондентом',m_help:'Мітка додається до питання, зазначеного над кнопками.',r_lonely_note:'Спостереження поліграфолога, для яких не зафіксовано окремої автоматичної ознаки.'});
 var CONTROL_PIN='';
 el("b-monitor").addEventListener("click",function(){if(CONTROL_PIN&&prompt("PIN поліграфолога")!==CONTROL_PIN)return;show("s-monitor");});
 el('control-pin').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,8);CONTROL_PIN=this.value;});
@@ -4724,8 +4899,8 @@ el('b-home').addEventListener('click',async function(){
  var S=PI_FILL.session();if(S&&!S.finished&&!PI_SAVE.isReadOnly()){alert('Спочатку завершіть або припиніть поточну сесію.');return;}
  if(PI_SAVE.status().dirty&&!await PI_SAVE.now()){alert(saveError());return;}
  if(PI_CONSENT.dirty()&&!await PI_CONSENT.save()&&!confirm("Згода має незбережені зміни. Почати нову справу без їх збереження?"))return;
- PI_MON.stop();var w=PI_MON.window();if(w&&!w.closed)w.close();await PI_SAVE.reset();PI_SAVE.clearCase();PI_CONSENT.reset();PI_FILL.clearSession();pendingResume=null;el('resume-actions').classList.add('hidden');
- el("b-monitor").classList.add("hidden");CASE={id:null,label:'',created:null};STATE.data=null;STATE.result=null;el('case-label').disabled=false;el('case-label').value='';el('case-path-hint').textContent='Окрема тека справи створиться автоматично всередині базової.';show('s-import');
+ PI_MON.stop();var w=PI_MON.window();if(w&&!w.closed)w.close();await PI_SAVE.reset();PI_SAVE.clearCase();PI_CONSENT.reset();PI_FILL.clearSession();pendingResume=null;ARCHIVE_MODE=false;ARCHIVE_INTEGRITY=null;ARCHIVE_HANDLE=null;REPORT_UI=null;LAST_MARK=null;el('mark-undo').classList.add('hidden');el('resume-actions').classList.add('hidden');
+ el("b-monitor").classList.add("hidden");CASE={id:null,label:'',created:null};STATE.data=null;STATE.result=null;el('case-label').disabled=false;el('case-label').value='';el('case-path-hint').textContent='Окрема тека справи створиться автоматично всередині базової.';show('s-import');paintPreparation();paintRecent();
 });
 el('norm-new').addEventListener('click',async function(){
  var d=PI_NORM.state();var blob=new Blob([JSON.stringify(d.legacy||d)],{type:'application/json'}),a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download='norm_backup_'+Date.now()+'.json';a.click();setTimeout(function(){URL.revokeObjectURL(u);},3000);
@@ -4733,12 +4908,135 @@ el('norm-new').addEventListener('click',async function(){
 });
 el('mo-block-go').addEventListener('click',function(){var S=PI_FILL.session();if(!S||S.finished)return;if(CONTROL_PIN&&prompt('PIN поліграфолога')!==CONTROL_PIN)return;PI_FILL.goto(Number(el('mo-block-select').value));});
 
+
+/* Workflow 3.0 — examiner annotations and persistent report view. */
+function statusText(st){
+ if(st.error)return 'Помилка запису: '+st.error;
+ if(st.busy)return 'Запис…';
+ if(st.dirty)return 'Є незбережені зміни';
+ return st.saved?'Збережено о '+new Date(st.saved).toLocaleTimeString('uk-UA'):'Ще не збережено';
+}
+function showMarkUndo(S,m){
+ LAST_MARK={session:S.session_id,id:m.id};
+ var toast=el('mark-undo');if(!toast)return;toast.classList.remove('hidden');el('mark-undo-text').textContent=m.q+' · '+m.mark+' додано.';
+}
+function reportDetailsKey(d){var parts=[];for(var n=d;n&&n!==el('rp-body');n=n.parentElement){if(n.tagName==='DETAILS'){var h=n.querySelector(':scope > summary');parts.unshift(n.dataset.questionNote?'question:'+n.dataset.questionNote:h?h.textContent:'');}}return parts.join(' / ');}
+function captureReportUi(){
+ if(!REACTION_VIEW)return;var open={};Array.from(el('rp-body').querySelectorAll('details')).forEach(function(d){open[reportDetailsKey(d)]=d.open;});
+ if(el('s-report').classList.contains('on'))reportScroll=window.scrollY;
+ REPORT_UI={session:REACTION_VIEW.S.session_id,open:open,scroll:reportScroll};
+}
+function restoreReportUi(){
+ if(!REPORT_UI||REPORT_UI.session!==PI_FILL.session().session_id)return;
+ Array.from(el('rp-body').querySelectorAll('details')).forEach(function(d){if(Object.prototype.hasOwnProperty.call(REPORT_UI.open,reportDetailsKey(d)))d.open=REPORT_UI.open[reportDetailsKey(d)];});
+ window.scrollTo(0,REPORT_UI.scroll);
+}
+function filteredQuestions(){
+ var M=REACTION_VIEW;if(!M)return[];var query=RX_QUERY.trim().toLocaleLowerCase('uk-UA');
+ return M.ix.order.filter(function(id){var x=M.items[id];return (!query||(id+' '+x.meta.text).toLocaleLowerCase('uk-UA').includes(query))&&(RX_FILTER==='all'||RX_FILTER==='important'&&rxImportant(M.S,id)||RX_FILTER==='marks'&&x.marks.length);});
+}
+function questionNav(root,id){
+ var ids=filteredQuestions(),at=ids.indexOf(id);
+ [['Попереднє питання',at-1,'rx-prev'],['Наступне питання',at+1,'rx-next']].forEach(function(v){var b=rxNode('button','ghost mini',root,v[0]);b.id=v[2];b.type='button';b.disabled=at<0||v[1]<0||v[1]>=ids.length;b.addEventListener('click',function(){rxSelect(ids[v[1]],false);});});
+ rxNode('span','rx-nav-count',root,at<0?'Поза поточним фільтром':(at+1)+' / '+ids.length);
+}
+function buildReportSearch(){
+ var table=el('rp-body').querySelector('.rx-map-panel'),tools=rxNode('div','rx-search-tools');table.insertBefore(tools,table.children[1]||null);
+ var input=rxNode('input','text-input',tools);input.id='rx-search';input.type='search';input.placeholder='Номер питання або слова з тексту';input.setAttribute('aria-label','Пошук питання');input.value=RX_QUERY;
+ var filter=rxNode('select','',tools);filter.id='rx-filter';filter.setAttribute('aria-label','Фільтр питань');[['all','Усі питання'],['important','Важливі'],['marks','З моїми мітками']].forEach(function(v){var o=rxNode('option','',filter,v[1]);o.value=v[0];});filter.value=RX_FILTER;
+ rxNode('span','rx-search-count',tools).id='rx-search-count';rxNode('div','rx-search-children',table).id='rx-search-children';
+ input.addEventListener('input',function(){RX_QUERY=input.value;applyReportFilter(true);});filter.addEventListener('change',function(){RX_FILTER=filter.value;applyReportFilter(true);});
+}
+function applyReportFilter(selectMatch){
+ if(!REACTION_VIEW||!el('rx-search-count'))return;var M=REACTION_VIEW,ids=filteredQuestions(),filtered=!!RX_QUERY.trim()||RX_FILTER!=='all';
+ el('rx-search-count').textContent='Знайдено: '+ids.length;
+ el('rp-body').querySelectorAll('.rx-map-row').forEach(function(row){var any=false;row.querySelectorAll('.rx-cell').forEach(function(b){var id=b.dataset.rxId,show=!filtered||rxFamily(M,id).some(function(k){return ids.includes(k);});b.classList.toggle('hidden',!show);any=any||show;});row.classList.toggle('hidden',!any);});
+ var subs=el('rx-search-children');subs.textContent='';if(filtered)ids.filter(function(id){return M.ix.map[id].gate;}).forEach(function(id){var b=rxNode('button','ghost mini',subs,id+' · '+M.ix.map[id].text);b.type='button';b.addEventListener('click',function(){rxSelect(id,false);});});
+ el('rx-episodes').querySelectorAll('[data-rx-id]').forEach(function(b){b.classList.toggle('hidden',filtered&&!ids.includes(b.dataset.rxId));});
+ if(selectMatch&&ids.length)rxSelect(ids.includes(REACTION_SELECTED)?REACTION_SELECTED:ids[0],false);
+ else if(selectMatch&&!ids.length){REACTION_SELECTED=null;el('rx-question').textContent='За цим пошуком і фільтром питань немає.';}
+ if(!selectMatch&&REACTION_SELECTED){var nav=el('rx-question').querySelector('.rx-navigation');if(nav){nav.textContent='';questionNav(nav,REACTION_SELECTED);}}
+}
+window.addEventListener('scroll',function(){if(el('s-report').classList.contains('on'))reportScroll=window.scrollY;},{passive:true});
+el('mark-undo-go').addEventListener('click',async function(){var S=PI_FILL.session();if(!S||!LAST_MARK||LAST_MARK.session!==S.session_id)return;var i=S.marks.findIndex(function(m){return m.id===LAST_MARK.id;});if(PI_FILL.withdrawMark(i)){el('mark-undo').classList.add('hidden');if(el('s-report').classList.contains('on'))renderReport();await PI_SAVE.now();PI_MON.refreshStatus();}});
+el('mark-undo-dismiss').addEventListener('click',function(){el('mark-undo').classList.add('hidden');});
+setInterval(function(){if(!window.PI)return;var st=PI_SAVE.status();PI_MON.refreshStatus();PI_CONSENT.refreshStatus();var rs=el('rp-save-state');if(rs){rs.textContent=PI_SAVE.isReadOnly()?'Архів · лише перегляд':statusText(st);rs.classList.toggle('bad',!!st.error);}var fin=el('finish-save-state');if(fin)fin.textContent=statusText(st);el('rp-save-file').classList.toggle('hidden',PI_SAVE.isReadOnly()||!st.error);},400);
+
+
+/* Preparation and local recent-file handles. No respondent answers are cached here. */
+var RECENT_HANDLES={},RECENT_META=[],recentSignature='',templateCache=null,prepReady='none';
+function readPreference(key,fallback){try{var raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
+function writePreference(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true;}catch(e){return false;}}
+function rememberTemplate(q){
+ templateCache={questionnaire:JSON.parse(JSON.stringify(q)),name:STATE.fileName||'',saved:new Date().toISOString()};writePreference('intake_last_template',templateCache);paintLastTemplate();
+}
+function paintLastTemplate(){
+ var b=el('b-last-template'),label=el('last-template-label');b.classList.toggle('hidden',!templateCache);label.classList.toggle('hidden',!templateCache);
+ if(templateCache){var m=templateCache.questionnaire.meta||{};label.textContent=(m.title||templateCache.name||'Анкета')+' · редакція '+(m.revision||m.version||templateCache.questionnaire.schema_version||'не вказана');}
+}
+function paintPreparation(){
+ if(!window.PI)return;
+ el('prep-template').textContent=STATE.data?'Анкета · '+((STATE.data.meta||{}).title||'обрана'):'Анкета · не обрана';
+ PI_SAVE.dirState().then(function(st){prepReady=st;el('prep-location').textContent=PI_SAVE.hasHandle()?'Місце збереження · файл обрано':st==='granted'?'Місце збереження · тека готова':st==='prompt'?'Місце збереження · підтвердіть доступ':'Місце збереження · оберіть теку або файл';});
+ var consent=PI_CONSENT.current(),digital=el('consent-mode').value==='digital';
+ el('prep-consent').textContent=digital?'Згода · електронна '+(consent&&consent.savedAt&&!PI_CONSENT.dirty()?'збережена':'потребує збереження'):'Згода · паперовий бланк';
+ el('b-consent').textContent=digital?'Відкрити електронну згоду':'Оформити електронну згоду';
+ el('b-start').textContent=PI_SAVE.hasHandle()||PI_SAVE.dirName()?'Відкрити анкету респондента':'Обрати файл сесії';
+ el('b-session-file').textContent=PI_SAVE.hasHandle()?'Змінити файл сесії':'Обрати інше місце збереження';
+ el('b-resume-go').textContent=PI_SAVE.hasHandle()||PI_SAVE.dirName()?'Продовжити заповнення':'Обрати файл і підготувати продовження';
+}
+function rememberSession(S,target,fileName){
+ if(!S||!S.session_id)return;
+ var previous=RECENT_META.find(function(r){return r.id===S.session_id;});
+ var rec={id:S.session_id,label:S.case_info&&S.case_info.label||S.session_id,date:S.started,status:S.finished?(S.status==='aborted'?'aborted':'completed'):'active',fileName:fileName||previous&&previous.fileName||'',last:Date.now()};
+ RECENT_META=[rec].concat(RECENT_META.filter(function(r){return r.id!==rec.id;})).slice(0,20);writePreference('intake_recent_meta',RECENT_META);
+ if(target&&RECENT_HANDLES[rec.id]!==target){RECENT_HANDLES[rec.id]=target;PI_SAVE.cacheSet('recent:'+rec.id,target).catch(function(){});}
+ var sig=RECENT_META.map(function(x){return x.id+x.status+x.label+!!RECENT_HANDLES[x.id];}).join('|');if(sig!==recentSignature){recentSignature=sig;paintRecent();}
+}
+function paintRecent(){
+ var root=el('recent-list');root.textContent='';
+ if(!RECENT_META.length){infoLine(root,'Нещодавніх справ ще немає. Тут з’являться відкриті та збережені сесії.');return;}
+ RECENT_META.forEach(function(rec){var row=rxNode('div','recent-case',root),title=rxNode('div','',row);rxNode('strong','',title,rec.label);rxNode('small','',title,new Date(rec.date).toLocaleDateString('uk-UA')+' · '+(rec.status==='active'?'Незавершена':rec.status==='aborted'?'Припинена':'Завершена')+(rec.fileName?' · '+rec.fileName:''));
+ var buttons=rxNode('div','actions',row),target=RECENT_HANDLES[rec.id];
+ var modes=rec.status==='active'?[['resume','Продовжити']]:[['view','Переглянути'],['edit','Доповнити мітками']];
+ modes.forEach(function(v){var b=rxNode('button','ghost mini',buttons,v[1]);b.type='button';b.addEventListener('click',async function(){
+  if(!target){expectedRecentId=rec.id;el('f-resume').click();el('recent-error').textContent='Оберіть файл '+(rec.fileName||rec.label)+'. Браузер не зберіг доступ до нього.';return;}
+  b.disabled=true;try{var permission=target.requestPermission?await target.requestPermission({mode:v[0]==='view'?'read':'readwrite'}):'granted';if(permission!=='granted')throw new Error('Доступ не надано. Відкрийте файл кнопкою «Відкрити файл».');var file=await target.getFile();await openSavedFile(file,target,v[0],rec.id);}catch(e){el('recent-error').textContent=e.message;}finally{b.disabled=false;}
+ });});
+ });
+}
+async function enableArchiveAdditions(alreadyGranted){
+ if(!ARCHIVE_MODE||ARCHIVE_INTEGRITY!=='ok')return false;var S=PI_FILL.session();
+ if(ARCHIVE_HANDLE){var permission=alreadyGranted?'granted':ARCHIVE_HANDLE.requestPermission?await ARCHIVE_HANDLE.requestPermission({mode:'readwrite'}):'granted';if(permission!=='granted')throw new Error('Доступ до запису не надано.');PI_SAVE.setTarget(ARCHIVE_HANDLE);}
+ else await PI_SAVE.chooseFile(S.session_id);
+ PI_SAVE.readOnly(false);PI_SAVE.bind(function(){return PI_FILL.session();});
+ if(S.integrity_version!==2){var prior=S.hash;S.integrity_version=2;noteAudit(S,'integrity_upgraded',{previous_hash:prior});}
+ renderReport();return true;
+}
+function initPreparation(){
+ var norm=el('b-norm-state').closest('.dline'),reset=el('norm-new').closest('.dline'),settings=rxNode('details','settings'),sum=rxNode('summary','',settings,'Обслуговування статистики');settings.id='statistics-settings';var inner=rxNode('div','dirbar',settings);inner.appendChild(norm);inner.appendChild(reset);el('workflow-settings').after(settings);
+ var cached=readPreference('intake_last_template',null);if(cached&&cached.questionnaire&&PI_VALIDATE.run(cached.questionnaire).ok)templateCache=cached;paintLastTemplate();
+ el('consent-mode').value=readPreference('intake_consent_mode','paper')==='digital'?'digital':'paper';
+ el('consent-mode').addEventListener('change',function(){writePreference('intake_consent_mode',this.value);paintPreparation();});
+ el('b-last-template').addEventListener('click',function(){if(templateCache)accept(JSON.stringify(templateCache.questionnaire),templateCache.name||'Попередня анкета');});
+ el('prep-template').addEventListener('click',function(){if(STATE.data)renderOverview();else el('b-pick').click();});
+ el('prep-location').addEventListener('click',function(){el('workflow-settings').open=true;el('workflow-settings').scrollIntoView({block:'center'});(prepReady==='prompt'?el('b-dir-grant'):el('b-dir')).focus();});
+ el('prep-consent').addEventListener('click',function(){if(el('consent-mode').value==='digital')el('b-consent').click();else{el('workflow-settings').open=true;el('consent-mode').focus();}});
+ RECENT_META=readPreference('intake_recent_meta',[]);if(!Array.isArray(RECENT_META))RECENT_META=[];RECENT_META=RECENT_META.filter(function(r){return r&&typeof r.id==='string'&&typeof r.label==='string';}).slice(0,20);paintRecent();
+ Promise.all(RECENT_META.map(async function(r){try{var h=await PI_SAVE.cacheGet('recent:'+r.id);if(h)RECENT_HANDLES[r.id]=h;}catch(e){}})).then(paintRecent);
+ setInterval(paintPreparation,1500);
+}
+
+el('mo-show-pw').addEventListener('change',function(){el('mo-finish-pw').type=this.checked?'text':'password';});
+el('finish-report').addEventListener('click',async function(){if(PI_SAVE.status().dirty&&!await PI_SAVE.now()){el('mo-why').textContent=saveError();return;}renderReport();});
 /* Модулі оголошені нижче за обробники, тому стан теки читаємо тут,
    коли PI_SAVE вже існує. */
 PI_SAVE.loadDir().then(paintDir).then(function(){ return PI_NORM.load(); }).then(paintNorm);
 
 /* доступ ззовні — для наступних кроків і для перевірки */
+initPreparation();
 window.PI = { validate: PI_VALIDATE, parse: parseJson, fill: PI_FILL, mon: PI_MON, save: PI_SAVE, stat: PI_STAT, norm: PI_NORM, report: renderReport, doc: renderDoc, override: setOverride, consent: PI_CONSENT, state: STATE, version: VERSION,hash:sessionHash,validateSaved:validateSaved,questionnaireHash:questionnaireHash };
+paintPreparation();
 
 })();
 </script>
