@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Передтестове анкетування · Intake</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%2324665f%22%2F%3E%3Cpath%20d%3D%22M22%2016h14l8%208v24H22z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M35%2016v10h9M27%2036l5%205%2010-11%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta name="theme-color" content="#24665f">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23F4DA4E%22%2F%3E%3Cpath%20d%3D%22M19%2016h26v8H35v24h-8V24h-8z%22%20fill%3D%22%23172F2E%22%2F%3E%3C%2Fsvg%3E">
+<meta name="theme-color" content="#F6F6F1">
 <style>
 :root{
   --paper:#FAFAF7;
@@ -252,6 +252,13 @@ h2.sec{font-size:16px;font-weight:600;margin:32px 0 8px}
 .veil p{margin:0 0 18px;color:var(--muted);font-size:15px}
 .veil .row{display:flex;gap:10px;flex-wrap:wrap}
 .veil button{font-size:15px;padding:11px 17px}
+.review-box{max-width:760px!important;max-height:min(82vh,820px);display:flex;flex-direction:column}
+.review-box>p{margin-bottom:12px}.review-list{overflow:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:8px 0;margin-bottom:16px}
+.review-block{border:0;border-bottom:1px solid var(--rule);padding:0}.review-block:last-child{border-bottom:0}
+.review-block>summary{cursor:pointer;padding:13px 8px;font-weight:750}.review-block>summary:hover{background:var(--hover);color:var(--ink)}
+.review-question{display:grid!important;grid-template-columns:3.5em minmax(0,1fr);gap:10px;width:100%;text-align:left;margin:0 0 7px;background:var(--card)!important;color:var(--ink)!important;border:1px solid var(--rule)!important;border-radius:10px!important;padding:11px 12px!important}
+.review-question:hover{background:var(--accent-soft)!important;border-color:#9bb6ac!important}.review-question b{color:var(--accent)}
+.review-current-note{font-size:13px;color:var(--muted);margin-left:auto}
 
 @media (max-width:700px){
   .q, .qhead, .branch .q{grid-template-columns:38px 1fr 108px;column-gap:6px}
@@ -647,6 +654,271 @@ button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--sur
 @media print{.pad-undo,.follow-state,.pause-state{display:none!important}}
 .rx-short-print,.note-print{display:none}.short-question{break-inside:avoid;padding:12px 0;border-bottom:1px solid var(--rule)}.short-question h3{font-size:14px;margin:5px 0}.short-question p{font-size:12px;margin:5px 0;max-width:none}
 @media print{html,body{background:#fff!important}.rx-short-print>h2{break-after:avoid}.note-print{display:block!important}.print-short #rx-question,.print-short .rx-episodes-head,.print-short #rx-episodes,.print-short .rx-appendix{display:none!important}.print-short .rx-short-print{display:block!important}.rx-map-panel .hidden{display:flex!important}.rx-map-panel .rx-map-row.hidden{display:grid!important}.rx-map-panel .rx-search-children{display:none!important}}
+
+/* Intake 3.2 — attention episodes, respondent review and wording safeguards. */
+:root{
+  --paper:#f6f6f1;
+  --card:#ffffff;
+  --ink:#172f2e;
+  --muted:#60726e;
+  --accent:#2e665c;
+  --accent-hover:#25564e;
+  --accent-soft:#e1f1e7;
+  --surface:#eef1ed;
+  --hover:#e7f1eb;
+  --selected:#dff17b;
+  --primary:#f4da4e;
+  --primary-hover:#e5c935;
+  --blue-soft:#e0edf4;
+  --peach-soft:#f6e4d9;
+  --rose-soft:#f4dcda;
+  --rule:#d9e0da;
+  --rule-soft:#e8ece7;
+  --ok:#2e665c;
+  --ok-bg:#e1f1e7;
+  --warn:#755b12;
+  --warn-bg:#fff4cf;
+  --bad:#983b35;
+  --bad-bg:#f8e8e6;
+  --soft-shadow:0 14px 42px rgba(23,47,46,.07);
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:Inter,"Segoe UI",system-ui,sans-serif;letter-spacing:-.005em}
+.wrap{max-width:980px}
+.screen:not(.fill)>.wrap{max-width:1080px}
+.screen{padding:38px 0 92px}
+h1{font-size:34px;line-height:1.14;font-weight:750;letter-spacing:-.035em;margin-bottom:10px}
+h2,h3{letter-spacing:-.015em}
+.lede{font-size:16px;line-height:1.55;max-width:72ch;color:var(--muted)}
+.eyebrow{color:var(--accent);font-size:11px;font-weight:850;letter-spacing:.13em}
+
+/* App bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);border-bottom-color:var(--rule);box-shadow:none;backdrop-filter:blur(14px)}
+.top .wrap{max-width:1240px;min-height:72px;padding:12px 28px;gap:10px;align-items:center}
+.top .mark{display:flex;align-items:center;gap:11px;margin-right:auto;color:var(--ink);font-size:20px;font-weight:800;letter-spacing:-.02em}
+.top .mark::before{content:"I";width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:var(--primary);color:var(--ink);font-size:18px;font-weight:900}
+.top .mark span{padding-left:16px;margin-left:3px;border-left:1px solid var(--rule);font-size:12px;line-height:1.3;font-weight:500;color:var(--muted);letter-spacing:0}
+.top .wrap button.mini{min-height:38px;padding:9px 13px;border-radius:11px;font-size:13px;font-weight:700}
+.top .ver{margin-left:6px;padding:6px 9px;border-radius:999px;background:var(--surface);color:var(--muted);white-space:nowrap}
+
+/* Controls */
+button{min-height:44px;padding:12px 18px;border-radius:12px;background:var(--primary);color:var(--ink);font-weight:750;box-shadow:none}
+button:hover:not(:disabled){background:var(--primary-hover);color:var(--ink)}
+button.ghost{background:var(--card);color:var(--ink);border:1px solid var(--rule)}
+button.ghost:hover:not(:disabled){background:var(--hover);color:var(--ink);border-color:#a8bcb4}
+button:focus-visible,summary:focus-visible,.rx-question button:focus-visible,.rx-map-panel button:focus-visible,.rx-episode:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--surface);color:#8b9995;border-color:var(--rule-soft)}
+.text-input,select,textarea,.notes,.pwbox input{border-radius:11px;border-color:var(--rule);background:var(--card);min-height:44px}
+.text-input:focus,select:focus,textarea:focus,.notes:focus,.pwbox input:focus{outline:3px solid rgba(46,102,92,.23);outline-offset:1px;border-color:var(--accent)}
+.actions{gap:9px}
+
+/* Preparation and questionnaire overview */
+#s-import .wrap{max-width:980px}
+.prep-status{gap:12px;margin:18px 0 22px}
+.prep-status button{min-height:74px;padding:14px 15px;border:0;background:var(--accent-soft);border-radius:15px;font-weight:750}
+.prep-status button:nth-child(2){background:var(--blue-soft)}
+.prep-status button:nth-child(3){background:var(--peach-soft)}
+.prep-status button:hover:not(:disabled){background:var(--selected);border-color:transparent}
+.drop{padding:36px 28px;border:1.5px dashed #a9bbb4;border-radius:19px;background:var(--card);box-shadow:var(--soft-shadow)}
+.drop.hot{background:var(--accent-soft);border-color:var(--accent)}
+.drop #b-pick{min-width:190px}
+.case-hint{margin-bottom:22px}
+.settings{border-radius:16px;border-color:var(--rule);background:var(--surface);box-shadow:none;padding:0;overflow:hidden}
+.settings>summary{padding:16px 18px;background:var(--surface);font-weight:700;list-style:none;position:relative}
+.settings>summary::after{content:"+";position:absolute;right:18px;top:11px;font-size:24px;font-weight:400;color:var(--muted)}
+.settings[open]>summary::after{content:"−"}
+.settings>summary:hover{background:var(--hover);color:var(--ink)}
+.settings[open]>summary{border-bottom:1px solid var(--rule)}
+.settings> :not(summary){margin-left:18px;margin-right:18px}
+.settings>.dirbar{margin:0;padding:14px 18px;background:var(--card)}
+.recent-list{background:var(--card);padding:4px 18px}
+.title-card,.consent,.verdict,.hint,.issues,.brief{border-radius:18px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+.title-card{padding:24px 26px;background:var(--card)}
+.figures{gap:14px}
+.fig{border-radius:16px;padding:18px;background:var(--card);border-color:var(--rule);box-shadow:0 8px 26px rgba(23,47,46,.04)}
+.fig:nth-child(1){background:var(--accent-soft)}
+.fig:nth-child(2){background:var(--blue-soft)}
+.fig:nth-child(3){background:var(--peach-soft)}
+.fig:nth-child(4){background:#f1efcf}
+.fig .num{color:var(--ink);font-weight:800}
+#ov-blocks{background:var(--card);border:1px solid var(--rule);border-radius:16px;border-collapse:separate;border-spacing:0;overflow:hidden}
+#ov-blocks th,#ov-blocks td{padding:12px 16px}
+#ov-blocks th{background:var(--surface)}
+
+/* Respondent window */
+.fill{--paper:#fbfbf7;background:var(--paper);font-size:var(--fill-fs,17px)}
+.fill .wrap{padding:0 3.5%}
+.blockhead{top:0;padding:14px 0 6px;background:rgba(251,251,247,.96);backdrop-filter:blur(10px)}
+.blockbar{padding-bottom:8px}
+.blockbar .step{font-weight:800;color:var(--accent);letter-spacing:.05em;text-transform:uppercase}
+.blockbar .name{font-weight:750;color:var(--ink)}
+.bprog{gap:6px;margin-bottom:12px}
+.bprog span{height:5px;border-radius:99px;background:var(--rule)}
+.bprog span.done{background:#9db0a9}
+.bprog span.now{background:var(--primary)}
+.qhead{box-shadow:none;border-bottom:1px solid var(--rule);padding:.6em .75em;color:var(--muted)}
+.q{margin:.48em 0;padding:.92em .75em;border:1px solid var(--rule-soft);border-radius:14px;background:var(--card);box-shadow:0 5px 18px rgba(23,47,46,.035)}
+#fq-list > *:first-child .q:first-child,#fq-list > .q:first-child{padding-top:.92em}
+.q:last-child{border-bottom:1px solid var(--rule-soft)}
+.qnum{font-weight:750;color:var(--accent)}
+.opt,.opt:hover,.opt:disabled,.opt:disabled:hover{background:transparent;color:var(--ink);border:0;box-shadow:none}
+.opt i{border-radius:7px;border:2px solid #b6c2bd;background:#fff}
+.opt:hover:not(:disabled) i{border-color:var(--accent);background:var(--accent-soft)}
+.opt.on i{background:var(--accent);border-color:var(--accent)}
+.branch{margin:.45em 0 .65em 2.8em;padding:.2em 0 .2em 1em;border-left:3px solid var(--primary)}
+.branch .blabel{display:inline-block;padding:.45em .7em;margin-bottom:.15em;border-radius:9px;background:#fff4cf;color:var(--ink);font-weight:700}
+.branch .q{background:#fffef9}
+.pad .padbox{border-radius:14px;border-color:var(--rule);box-shadow:0 5px 18px rgba(23,47,46,.035)}
+.pad .clear{border-radius:9px;background:rgba(246,246,241,.94)}
+.brief,.consent-read{border-radius:16px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+.consent-read{background:var(--card)}
+.ack{padding:13px 15px;border-radius:13px;background:var(--accent-soft)}
+.fill .foot{position:sticky;bottom:0;z-index:4;margin:22px -3.5vw 0;padding:14px 3.5vw;background:rgba(251,251,247,.96);backdrop-filter:blur(10px)}
+.fill .foot button{min-width:120px}
+.veil{background:rgba(23,47,46,.52);backdrop-filter:blur(3px)}
+.veil .box{border-radius:20px;box-shadow:0 24px 70px rgba(23,47,46,.24)}
+
+/* Examiner monitor */
+#s-monitor>.wrap{max-width:1180px}
+.monhead{align-items:center;margin-bottom:22px}
+.monhead h1{font-size:30px;font-weight:800}
+.clock{padding:12px 16px;border-radius:15px;background:var(--surface);color:var(--ink);font-size:32px;font-weight:800}
+.clock::after{color:var(--muted)}
+.nowrow{gap:16px}
+.nowq{border:0;border-radius:18px;background:var(--blue-soft);padding:22px 24px;box-shadow:none;font-size:20px}
+.nowq .who{color:#4e7180;font-size:12px;font-weight:850;letter-spacing:.08em}
+.nowrow .mini{border-radius:18px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+.marks{padding:20px;border-radius:18px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+.marklab{font-size:15px;font-weight:800}
+.markgroup{align-items:stretch;gap:13px;margin-bottom:10px}
+.markgroup .glab{display:flex;align-items:center;flex-basis:142px;font-weight:700;color:var(--ink)}
+.markrow{flex:1;display:grid;grid-template-columns:repeat(3,minmax(140px,1fr));gap:9px}
+.markrow button,.markrow button.damp{min-height:64px;padding:12px 14px;border-radius:13px;background:var(--card);color:var(--ink);border-color:var(--rule);text-align:left;line-height:1.25}
+.markrow button.damp{background:var(--peach-soft)}
+.markrow button:hover:not(:disabled),.markrow button.damp:hover:not(:disabled){background:var(--accent-soft);color:var(--ink);border-color:#a2bbb1}
+.feedwrap{border-radius:18px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+.feedhead{padding:13px 17px;background:var(--surface);font-size:15px;font-weight:800}
+.feed .row{padding:10px 17px}
+.feed .row:hover{background:var(--hover);color:var(--ink)}
+.feed .row.sel{background:var(--blue-soft);box-shadow:inset 4px 0 0 var(--accent)}
+.savebar{border:0;border-radius:14px;padding:12px 15px;background:var(--ok-bg);color:var(--ok);box-shadow:none}
+.savebar.dirty{background:var(--warn-bg);color:var(--warn)}
+.savebar.bad{background:var(--bad-bg);color:var(--bad)}
+.pause-state{border:0;border-radius:14px;background:var(--warn-bg)}
+.pwbox{border:1px solid var(--rule);border-radius:18px;background:var(--card);padding:22px;box-shadow:var(--soft-shadow)}
+.monitor-more[open]{border-radius:15px;border-color:var(--rule);box-shadow:var(--soft-shadow)}
+
+/* Report */
+#s-report>.wrap{max-width:1180px}
+.banner{border:0;border-left:4px solid var(--primary);border-radius:4px 14px 14px 4px;background:var(--card);padding:14px 18px;box-shadow:var(--soft-shadow)}
+.report-toolbar{top:72px;padding:10px 12px;border-radius:15px;border-color:var(--rule);background:rgba(255,255,255,.96);box-shadow:0 10px 30px rgba(23,47,46,.06);backdrop-filter:blur(10px)}
+.report-toolbar button{border-radius:10px}
+.print-choice select{border-radius:9px}
+.rx-save-tools{border:0;border-radius:14px;background:var(--accent-soft);padding:12px 14px}
+.rx-overview{border-left:0;border-radius:16px;background:var(--accent-soft);padding:18px 20px}
+.rx-map-panel,.rx-question{padding:24px;border-radius:20px;border-color:var(--rule);box-shadow:var(--soft-shadow);background:var(--card)}
+.rx-map-panel h2{font-size:22px;font-weight:800}
+.rx-map-row{grid-template-columns:190px minmax(0,1fr);gap:14px;margin:9px 0}
+.rx-topic{display:flex;align-items:center;padding:10px 12px;border-radius:11px;background:var(--surface);color:var(--ink);font-weight:750}
+.rx-cells{gap:7px}
+.rx-cell{min-height:54px;max-width:none;border:0;border-radius:11px;background:var(--surface);color:var(--ink);font-weight:800}
+.rx-cell.rx-has-event{background:var(--blue-soft)}
+.rx-cell:hover:not(:disabled){background:var(--accent-soft);color:var(--ink);border-color:transparent}
+.rx-cell[aria-pressed=true],.rx-cell[aria-pressed=true]:hover{background:var(--primary);color:var(--ink);outline:3px solid var(--accent);outline-offset:-3px}
+.rx-dot{width:8px;height:8px;background:#c98255}
+.rx-route{background:#c98255}
+.rx-attention{background:#4f8f7d}
+.rx-time{background:var(--primary-hover);border-radius:2px}
+.rx-observer{background:var(--blue-soft);border:2px solid #568399}
+.rx-legend{padding-top:14px}
+.rx-question{scroll-margin-top:145px}
+.rx-question-head{align-items:flex-start}
+.rx-qid{display:inline-block;padding:6px 9px;border-radius:999px;background:var(--accent-soft);font-size:11px;font-weight:850;letter-spacing:.06em;color:var(--accent)}
+.rx-important{border-radius:999px;background:var(--card)}
+.rx-important[aria-pressed=true],button.rx-important[aria-pressed=true]:hover{background:var(--primary);color:var(--ink);border-color:var(--primary-hover)}
+.rx-navigation{margin-top:12px}
+.rx-question h2.rx-question-text{font-size:25px;font-weight:800;line-height:1.28;margin:17px 0}
+.rx-answer{padding:15px 16px;border:0;border-radius:13px;background:var(--surface);font-weight:700}
+.rx-mark-controls{padding:14px;border:0;border-radius:14px;background:#f8f9f6;gap:8px}
+.rx-mark-controls button.mini{min-height:40px;border-radius:11px;background:var(--card)}
+.rx-mark-controls button:hover:not(:disabled){background:var(--accent-soft);color:var(--ink);border-color:#a4bcb3}
+.rx-mark-caption{color:var(--ink);font-weight:800}
+.rx-detail-columns{gap:22px}
+.rx-label{color:var(--accent);font-weight:850;letter-spacing:.07em}
+.rx-observations{border-left-color:var(--rule)}
+.rx-observation{padding:13px 14px;border:0;border-left:3px solid #6f9bad;border-radius:4px 12px 12px 4px;background:var(--blue-soft)}
+.rx-limit{padding:12px;border:0;border-radius:11px;background:var(--surface)}
+.rx-question-note{padding-top:14px}
+.rx-question-note>summary{padding:11px 13px;border-radius:11px;background:var(--surface)}
+.rx-episodes-head{padding:0 4px}
+.rx-episode{padding:14px;border:1px solid transparent;border-radius:13px;background:transparent}
+.rx-episode:hover:not(:disabled){background:var(--hover);color:var(--ink)}
+.rx-episode[aria-pressed=true],.rx-episode[aria-pressed=true]:hover{background:var(--blue-soft);border-color:#b9d0da;color:var(--ink)}
+.rx-appendix>.rx-fold{border-radius:15px!important;border-color:var(--rule)!important;background:var(--surface)!important}
+.rx-appendix>.rx-fold>summary{padding:16px 46px 16px 18px!important;background:var(--surface)!important}
+.rx-appendix>.rx-fold>summary:hover{background:var(--hover)!important;color:var(--ink)}
+.rx-appendix>.rx-fold>.rx-fold-body{padding:18px!important}
+.rsec,.bsec,.toplist,.chart{border-radius:16px;border-color:var(--rule);box-shadow:none}
+.trow:hover,.discussion-row:hover,.plainlist li:hover{background:var(--hover);color:var(--ink)}
+.pt{border-radius:13px;border-color:var(--rule)}
+.pt.flash{outline-color:var(--accent)}
+.mark-undo{border:0;border-radius:15px;box-shadow:0 18px 55px rgba(23,47,46,.18)}
+
+/* Consent, help and case document */
+.cbar{border-radius:15px;background:var(--surface);padding:12px}
+.cpage{border-radius:3px;box-shadow:0 18px 55px rgba(23,47,46,.12)}
+.ctools{border-radius:13px;background:rgba(255,255,255,.95)}
+.ctools button.on{background:var(--primary);color:var(--ink)}
+.hsec{border-radius:17px!important;border-color:var(--rule)!important;background:var(--card)!important;box-shadow:var(--soft-shadow)}
+.dsec{padding:20px;border:1px solid var(--rule);border-radius:16px;background:var(--card)}
+
+@media(max-width:900px){
+  .top .wrap{min-height:64px;padding:11px 14px;flex-wrap:wrap}
+  .top .mark span{display:none}
+  .top .ver{order:2;margin-left:auto}
+  .top .wrap button.mini{font-size:12px;min-height:36px;padding:8px 10px}
+  .screen{padding-top:26px}
+  h1{font-size:28px}
+  .figures{grid-template-columns:repeat(2,1fr)}
+  .markgroup{display:block}
+  .markgroup .glab{margin-bottom:8px}
+  .markrow{grid-template-columns:1fr 1fr}
+  .report-toolbar{top:64px}
+  .rx-map-row{grid-template-columns:1fr}
+  .rx-topic{min-height:42px}
+  .rx-question{scroll-margin-top:205px}
+}
+@media(max-width:520px){
+  .wrap{padding-left:14px;padding-right:14px}
+  .top .mark{font-size:18px}
+  .top .mark::before{width:32px;height:32px}
+  .top .ver{display:none}
+  .prep-status{grid-template-columns:1fr}
+  .figures{grid-template-columns:1fr 1fr}
+  .q,.qhead,.branch .q{grid-template-columns:2em minmax(0,1fr) 7.9em}
+  .q{padding:.8em .5em}
+  .branch{margin-left:0;padding-left:.5em}
+  .fill .foot{margin-left:-3.5vw;margin-right:-3.5vw}
+  .nowrow{display:block}
+  .nowrow>.mini{margin-top:10px}
+  .markrow{grid-template-columns:1fr}
+  .savebar{display:block}
+  .savebar button{width:100%;margin-top:10px}
+  .report-toolbar{position:static}
+  .report-toolbar .print-choice{width:100%;margin-left:0;justify-content:space-between}
+  .rx-cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rx-cell{max-width:none;min-width:0}
+  .rx-question{scroll-margin-top:12px;padding:18px}
+  .rx-question h2.rx-question-text{font-size:21px}
+  .rx-mark-controls button.mini{flex:1 1 calc(50% - 8px)}
+  .rx-observations{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+}
+@media print{
+  :root{--paper:#fff;--card:#fff;--ink:#111;--muted:#444;--accent:#243d39;--surface:#fff;--selected:#fff;--primary:#fff;--blue-soft:#fff;--peach-soft:#fff;--accent-soft:#fff}
+  .top{display:none!important}
+  .screen,.rx-map-panel,.rx-question,.rsec,.bsec,.dsec{box-shadow:none!important}
+  .rx-cell[aria-pressed=true]{outline:2px solid #222}
+}
 </style>
 </head>
 <body>
@@ -792,6 +1064,7 @@ button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--sur
     <div id="fq-list"></div>
     <div class="foot">
       <button id="fq-next">Далі</button>
+      <button id="fq-review" class="ghost hidden">Переглянути попередні відповіді</button>
       <span class="why" id="fq-why"></span>
     </div>
   </div>
@@ -875,9 +1148,9 @@ button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--sur
     <div class="hsec"><h2>1. Базова тека та справа</h2><p>У налаштуваннях один раз оберіть базову теку. Після перезапуску Edge може знадобитися підтвердження доступу. Для кожної справи програма створює підтеки за роком, місяцем, датою, вашою позначкою та унікальним номером. Згода й сесія потрапляють у теку справи; спільна статистика лишається в базовій.</p></div>
     <div class="hsec"><h2>2. Згода та анкета</h2><p>Вкажіть позначку справи, оформіть згоду на папері або кнопкою «Згода», завантажте JSON і перевірте його склад. Інформація для респондента з JSON показується перед питаннями. Згода на поліграф і ознайомлення з попередньою анкетою — окремі записи.</p></div>
     <div class="hsec"><h2>3. Два дисплеї</h2><p>Перетягніть вікно заповнення на Samsung через SpaceDesk. Монітор лишається на ноутбуці. Миша поліграфолога не завершує штрих S Pen. Перемикання фокуса не вважається паузою. PIN, якщо заданий, перевіряється при знятті паузи й поверненні до іншого блоку; він не блокує Windows або засоби браузера.</p></div>
-    <div class="hsec"><h2>4. Заповнення</h2><p>Три нейтральні відповіді: «так», «ні», «поясню». У списку «Інша відповідь» можна позначити відмову чи незастосовність. Уточнення відкриваються під своїм питанням. Письмове пояснення необов’язкове: нагадування показується один раз. Парафа — після кожного блоку, підпис — наприкінці анкети. Зміна відповіді анулює попередню парафу цього блоку.</p></div>
+    <div class="hsec"><h2>4. Заповнення</h2><p>Три нейтральні відповіді: «так», «ні», «поясню». У списку «Інша відповідь» можна позначити відмову чи незастосовність. Уточнення відкриваються під своїм питанням. Письмове пояснення необов’язкове: нагадування показується один раз. Кнопка «Переглянути попередні відповіді» дає респонденту змогу самостійно повернутися до вже пройденого питання; після підтвердження він повертається до місця, де зупинився. Парафа — після кожного блоку, підпис — наприкінці анкети. Сам перегляд не анулює підпис, але зміна відповіді або рукописного пояснення анулює підпис відповідного блоку.</p></div>
     <div class="hsec"><h2>5. Збереження й пароль</h2><p>З дозволом на запис зміни записуються автоматично; запити утворюють чергу. Наприкінці блоку та сесії запис запитується негайно. Усі зміни сесії перезаписують один файл. Без базової теки натисніть «Обрати файл сесії», а після вибору — «Відкрити анкету респондента». Файл обирається один раз. Якщо запис недоступний, початок блокується; помилка під час роботи лишає зміни незбереженими й показує кнопку вибору файла. Пароль вводиться за бажанням після завершення. До цього файл відкритий; шифрування поточного файла не видаляє попередні копії.</p></div>
-    <div class="hsec"><h2>6. Монітор і карта уваги</h2><p>П’ять позначок ставляться мишею. Технічна перешкода знімає поведінкову підсвітку, але повідомлені обставини й «поясню» залишаються доступними в окремому розділі звіту. Час — інтервал між діями, а не чистий час обдумування. Після письма, явної паузи та на початку блоку він не ранжується. Ковзне порівняння використовує до дев’яти попередніх придатних «ні» того самого блоку, щонайменше три.</p></div>
+    <div class="hsec"><h2>6. Монітор і карта уваги</h2><p>П’ять позначок ставляться мишею. Технічна перешкода знімає поведінкову підсвітку, але повідомлені обставини й «поясню» залишаються доступними в окремому розділі звіту. Програма окремо фіксує самостійне повернення респондента та повторне наведення пера над текстом уже відповіданого питання. Наведення зараховується лише для стилуса, після короткого порога тривалості; координати руху не зберігаються. Це допоміжний патерн уваги, а не відстеження погляду й не доказ нещирості. Повернення, ініційоване поліграфологом, записується в журналі, але не підвищує ранг питання. Час — інтервал між діями, а не чистий час обдумування. Після письма, явної паузи та на початку блоку він не ранжується. Ковзне порівняння використовує до дев’яти попередніх придатних «ні» того самого блоку, щонайменше три.</p></div>
     <div class="hsec"><h2>7. Звіт та архів</h2><p>Документ для справи й звіт друкуються окремо через друк браузера. Архів містить питання, відповіді, почерк, журнал, версію алгоритму та зафіксований аналіз. Старі сесії без знімка аналізуються поточною версією з відповідною позначкою. Контрольна сума підтверджує збіг вмісту з записаним значенням; вона не є електронним підписом.</p></div>
     <div class="hsec"><h2>8. Спільна статистика</h2><p>Формат norm-2 розділяє дані за відбитком анкети. Він не зберігає прізвищ, відповідей чи підписів. Порівняння починається після 15 попередніх сесій і 15 значень конкретного питання. Поточна сесія не порівнюється сама із собою. Старий norm-1 можна експортувати, але не можна надійно розподілити між різними анкетами.</p></div>
     <div class="foot">
@@ -975,7 +1248,7 @@ button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--sur
       <button id="mo-doc" class="ghost hidden">Документ для справи</button>
       <button id="mo-report" class="ghost hidden">Звіт</button>
       <button id="mo-lock" class="ghost">Заблокувати планшет</button>
-      <details class="monitor-more"><summary>Керування сесією</summary><div class="actions"><button id="mo-reopen" class="ghost">Перевідкрити вікно</button><button id="mo-end" class="ghost">Припинити анкетування</button></div><label for="mo-block-select">Повернути респондента до блоку</label><select id="mo-block-select"></select><button id="mo-block-go" class="ghost">Відкрити блок</button><p class="note">Доступно під час заповнення. Зміни відповідей фіксуються, підпис зміненого блоку потрібно поставити повторно.</p></details>
+      <details class="monitor-more"><summary>Керування сесією</summary><div class="actions"><button id="mo-reopen" class="ghost">Перевідкрити вікно</button><button id="mo-end" class="ghost">Припинити анкетування</button></div><label for="mo-block-select">Повернути респондента до блоку</label><select id="mo-block-select"></select><button id="mo-block-go" class="ghost">Відкрити блок</button><p class="note">Це повернення позначається як ініційоване поліграфологом і не підвищує поведінковий ранг. Підпис потрібно повторити лише після фактичної зміни відповіді або пояснення.</p></details>
       <span class="why" id="mo-why"></span>
     </div>
   </div>
@@ -991,11 +1264,11 @@ button:disabled,button.ghost:disabled,button:disabled:hover{background:var(--sur
 (function(){
 "use strict";
 
-var VERSION = "3.0";
+var VERSION = "3.2";
 var ARCHIVE_MODE=false, ARCHIVE_INTEGRITY=null, ARCHIVE_HANDLE=null;
 var SCHEMA  = "1.0";
 /* Stable identities, archive validation and report snapshots. */
-var ANALYTICS_VERSION='2.0';
+var ANALYTICS_VERSION='2.1';
 var CASE={id:null,label:'',created:null};
 function newId(){var d=new Date(),day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return day+'_'+crypto.randomUUID();}
 function stable(value){if(Array.isArray(value))return '['+value.map(stable).join(',')+']';if(value&&typeof value==='object')return '{'+Object.keys(value).filter(function(k){return value[k]!==undefined;}).sort().map(function(k){return JSON.stringify(k)+':'+stable(value[k]);}).join(',')+'}';return JSON.stringify(value);}
@@ -1030,6 +1303,7 @@ function saveError(){return PI_SAVE.status().error||'Не вдалося збе�
 function consentDocument(html){var t=document.createElement('template');t.innerHTML=html;var allowed=['H1','P','I','OL','LI','B','STRONG','SPAN','BR'];Array.from(t.content.querySelectorAll('*')).forEach(function(n){if(allowed.indexOf(n.tagName)<0){n.remove();return;}Array.from(n.attributes).forEach(function(a){if(a.name!=='class')n.removeAttribute(a.name);});});return t.innerHTML;}
 
 var PEN_INK = "#5B2C8F";   /* колір пера */
+function penWidth(e){return 1+(e.pressure||0.5)*4.5;}
 
 /* ------------------------------------------------------------------ */
 /*  МОВИ                                                               */
@@ -1061,6 +1335,11 @@ uk: {
   r_sign_final:  "Підпис до анкети в цілому",
   r_next:        "Далі",
   r_finish:      "Завершити",
+  r_review:      "Переглянути попередні відповіді",
+  r_review_head: "До якого питання Ви бажаєте повернутися?",
+  r_review_body: "Оберіть уже пройдений блок і питання. Повернення буде зафіксовано, попередня відповідь збережеться в історії.",
+  r_review_cancel:"Залишитися в поточному блоці",
+  r_return_here: "Підтвердити блок і повернутися",
   r_left_one:    "Залишилось питання {list}",
   r_left_many:   "Залишились питання: {list}",
   r_and_more:    " та інші",
@@ -1103,6 +1382,8 @@ uk: {
   w_run:         "після першого розкриття пішли суцільні «ні» ({n} шлюзів поспіль)",
   w_yes:         "«так» там, де воно не є звичайною відповіддю",
   w_relevant:    "питання позначене як кандидат у релевантні",
+  w_attention:   "повторно зосереджував стилус на тексті після відповіді ({n} еп.)",
+  w_return:      "самостійно повернувся до цього питання",
   w_mark_only:   "спостереження поліграфолога: {m}",
   w_mark_confirm: "підтверджено спостереженням: {m}",
   w_damped:      "погашено поліграфологом: {m}",
@@ -1287,6 +1568,11 @@ en: {
   r_sign_final:  "Signature for the whole questionnaire",
   r_next:        "Next",
   r_finish:      "Finish",
+  r_review:      "Review previous answers",
+  r_review_head: "Which question would you like to review?",
+  r_review_body: "Choose a completed block and question. The return will be logged and the previous answer will remain in the history.",
+  r_review_cancel:"Stay in the current block",
+  r_return_here: "Confirm this block and return",
   r_left_one:    "Question {list} is still unanswered",
   r_left_many:   "Still unanswered: {list}",
   r_and_more:    " and others",
@@ -1322,6 +1608,11 @@ es: {
   r_sign_final:  "Firma del cuestionario completo",
   r_next:        "Siguiente",
   r_finish:      "Finalizar",
+  r_review:      "Revisar respuestas anteriores",
+  r_review_head: "¿A qué pregunta desea volver?",
+  r_review_body: "Elija un bloque y una pregunta ya completados. El regreso quedará registrado y la respuesta anterior permanecerá en el historial.",
+  r_review_cancel:"Permanecer en el bloque actual",
+  r_return_here: "Confirmar el bloque y volver",
   r_left_one:    "Queda la pregunta {list}",
   r_left_many:   "Quedan las preguntas: {list}",
   r_and_more:    " y otras",
@@ -1504,7 +1795,7 @@ var PI_VALIDATE = (function(){
   function run(data){
     var errors = [], warnings = [];
     var ids = Object.create(null);                       /* усі ідентифікатори питань у файлі */
-    var style = { vy:[], mark:[], long:[] };   /* накопичувач стилістичних зауважень */
+    var style = { vy:[], mark:[], long:[], negative:[] };   /* накопичувач стилістичних зауважень */
     var hint = "";                            /* що робити людині, яка файл не писала */
     var stats = {
       blocks:0, calibration:0, gates:0, expansions:0, closings:0,
@@ -1712,6 +2003,9 @@ var PI_VALIDATE = (function(){
       if (["__proto__","prototype","constructor"].indexOf(id)>=0) err(loc,"Зарезервований ідентифікатор");
       if (t.length > 300) style.long.push(ref);
       if (t.slice(-1) !== "?") style.mark.push(ref);
+      /* Заперечення основної дії робить відповідь «так/ні» двозначною:
+         «так, не робив» і «ні, не робив» можуть означати те саме. */
+      if (/(^|[?.!\s])(чи\s+не|ви\s+(?:ніколи\s+)?не|вам\s+не|вас\s+не)\s+/i.test(t)) style.negative.push(ref);
       /* межа слова \b у JavaScript не працює з кирилицею, тому явно
          перевіряємо, що перед звертанням стоїть не літера */
       if (strict && data.meta && data.meta.language === "uk" && !/(^|[^А-Яа-яЁёЇїІіЄєҐґ'])В(и|ам|ас|ами|аш)/.test(t)) style.vy.push(ref);
@@ -1721,6 +2015,7 @@ var PI_VALIDATE = (function(){
       emit(style.vy,   "не звертаються до респондента на «Ви»");
       emit(style.mark, "не закінчуються знаком питання");
       emit(style.long, "довші за 300 символів і на планшеті займуть кілька рядків");
+      emit(style.negative, "містять заперечення основної дії; перевірте, чи «так» однозначно означає наявність події");
 
       function emit(list, what){
         if (!list.length) return;
@@ -2137,6 +2432,7 @@ var pads = {}, nodes = {};
 var blockIdx = 0, t0 = 0, lastTouch = 0;
 var penSeen = false;
 var closing=false, lockedFill=false, lastNow=0, timingInvalid=false;
+var attentionCleanups=[];
 
 function LB(kind){ return R("r_" + kind); }
 
@@ -2168,7 +2464,7 @@ function ev(type, data){
   var e = { t: now(), type: type };
   for (var k in data) if (Object.prototype.hasOwnProperty.call(data, k)) e[k] = data[k];
   S.events.push(e);
-  if (["answer","change","write","write_end","erase","block_open","review"].indexOf(type)>=0) S.lastInteraction=e.t;
+  if (["answer","change","write","write_end","erase","block_open","review","attention"].indexOf(type)>=0 || (type==="block_return"&&e.initiator==="respondent")) S.lastInteraction=e.t;
   if (onEvent){ try { onEvent(e); } catch(x){} }
   PI_SAVE.touched();
   return e;
@@ -2230,6 +2526,7 @@ function makePad(canvas, key){
     if (drawing && activeId !== null && e.pointerId !== activeId) return;
     /* Захоплення може не вдатися — це не привід губити весь штрих. */
     try { canvas.setPointerCapture(e.pointerId); } catch(x){}
+    if(key.indexOf("exp_")===0)invalidateSignature(key.slice(4));
     rememberInk();activeId = e.pointerId;
     drawing = true;
     var p = pt(e); lx = p.x; ly = p.y;
@@ -2242,7 +2539,7 @@ function makePad(canvas, key){
   canvas.addEventListener("pointermove", function(e){
     if (!drawing || ignore(e) || e.pointerId !== activeId || S.finished || lockedFill) return;
     var p = pt(e);
-    ctx.lineWidth = 1 + (e.pressure || 0.5) * 4.5;
+    ctx.lineWidth = penWidth(e);
     ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y); ctx.stroke();
     if(Math.hypot(p.x-lx,p.y-ly)>0.2) strokes++;
     touch();
@@ -2274,6 +2571,7 @@ function makePad(canvas, key){
     dispose:function(){D.defaultView.removeEventListener('resize',size);},
     clear: function(invalidated){
       if(S.finished||lockedFill||closing)return;
+      if(!invalidated&&strokes&&key.indexOf("exp_")===0)invalidateSignature(key.slice(4));
       if(invalidated)forgetUndo();else if(strokes)rememberInk();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (strokes) ev("erase", { field: key });
@@ -2312,6 +2610,47 @@ function mark(e){
 }
 
 function touch(){ lastTouch = now(); }
+
+/* Повторна увага до тексту вже після відповіді. Зберігаємо лише
+   агрегований епізод, без траєкторії пера й без координат. */
+function lastAnswerAt(id){
+  for(var i=S.events.length-1;i>=0;i--){var e=S.events[i];if(e.q===id&&(e.type==="answer"||e.type==="change"))return e.t;}
+  return -Infinity;
+}
+function wireAttention(target,id){
+  var active=false,started=0,last=0,moves=0,entries=0,timer=null;
+  function isHover(e){return e.pointerType==="pen"&&e.buttons===0&&(!e.pressure||e.pressure===0);}
+  function begin(e){
+    if(!isHover(e)||!S||S.finished||lockedFill||closing)return;
+    if(!S.answers[id]||now()-lastAnswerAt(id)<700)return;
+    S.pen.hoverObserved=true;PI_SAVE.touched();
+    if(timer){D.defaultView.clearTimeout(timer);timer=null;}else{started=now();moves=0;entries=0;}
+    active=true;entries++;last=now();
+  }
+  function move(e){
+    if(!isHover(e))return;
+    if(!active)begin(e);
+    if(active){last=now();moves++;}
+  }
+  function finish(){
+    if(timer){D.defaultView.clearTimeout(timer);timer=null;}
+    var duration=Math.max(0,last-started);
+    if(started&&duration>=1500&&moves>=2){
+      ev("attention",{q:id,duration:Math.round(duration),entries:entries,moves:moves,source:"pen_hover"});
+      timingInvalid=true;touch();
+    }
+    active=false;started=0;last=0;moves=0;entries=0;
+  }
+  function leave(e){
+    if(!active||e.pointerType!=="pen")return;
+    active=false;timer=D.defaultView.setTimeout(finish,500);
+  }
+  target.addEventListener("pointerenter",begin);
+  target.addEventListener("pointermove",move);
+  target.addEventListener("pointerleave",leave);
+  target.addEventListener("pointercancel",leave);
+  attentionCleanups.push(function(){if(active||timer)finish();});
+}
 
 function questionText(id){
   for (var i = 0; i < Q.blocks.length; i++){
@@ -2363,6 +2702,7 @@ function questionNode(q, kinds, onPick){
   num.textContent = q.id;
   var txt = tag("span", "qtext", wrap);
   txt.textContent = q.text;
+  wireAttention(txt,q.id);
 
   var row = tag("span", "opts", wrap);
   var boxes = {};
@@ -2391,7 +2731,7 @@ function questionNode(q, kinds, onPick){
         if (rec.first === null) rec.first = now(); else rec.changes++;
         ev(prev === null ? "answer" : "change",
            { q: q.id, value: kind, from: prev, since: now() - lastTouch, timingValid:!timingInvalid });
-        timingInvalid=false;invalidateSignature();
+        timingInvalid=false;invalidateSignature(q.id);
         touch();
         if (onPick) onPick(kind);
         why("");wrap.classList.remove("needs-attention");
@@ -2401,10 +2741,17 @@ function questionNode(q, kinds, onPick){
   var extra=tag('select','answer-extra',wrap);extra.setAttribute('aria-label',q.id+' — інший статус відповіді');
   [['',R('r_other')],['declined',R('r_declined')],['na',R('r_na')]].forEach(function(v){var o=tag('option',null,extra);o.value=v[0];o.textContent=v[1];});
   if(S.answers[q.id]&&['declined','na'].indexOf(S.answers[q.id].value)>=0)extra.value=S.answers[q.id].value;
-  extra.addEventListener('change',function(){if(!this.value||S.finished||lockedFill||closing)return;var kind=this.value,prev=S.answers[q.id]?S.answers[q.id].value:null;var r=S.answers[q.id]||(S.answers[q.id]={first:now(),changes:0});r.value=kind;if(prev!==null)r.changes++;Object.keys(boxes).forEach(function(k){boxes[k].classList.remove('on');boxes[k].setAttribute('aria-pressed','false');});ev(prev===null?'answer':'change',{q:q.id,value:kind,from:prev,since:now()-lastTouch,timingValid:false});touch();timingInvalid=false;invalidateSignature();if(onPick)onPick(kind);});
+  extra.addEventListener('change',function(){if(!this.value||S.finished||lockedFill||closing)return;var kind=this.value,prev=S.answers[q.id]?S.answers[q.id].value:null;var r=S.answers[q.id]||(S.answers[q.id]={first:now(),changes:0});r.value=kind;if(prev!==null)r.changes++;Object.keys(boxes).forEach(function(k){boxes[k].classList.remove('on');boxes[k].setAttribute('aria-pressed','false');});ev(prev===null?'answer':'change',{q:q.id,value:kind,from:prev,since:now()-lastTouch,timingValid:false});touch();timingInvalid=false;invalidateSignature(q.id);if(onPick)onPick(kind);});
   return wrap;
 }
-function invalidateSignature(){if(!Q||blockIdx<0)return;var key=blockIdx===Q.blocks.length-1?'final':Q.blocks[blockIdx].id;var pad=pads['sig_'+key];if(pad){pad.forgetUndo();if(pad.has())pad.clear(true);}}
+function invalidateSignature(cause){
+ if(!Q||blockIdx<0)return;
+ var key=blockIdx===Q.blocks.length-1?'final':Q.blocks[blockIdx].id,pad=pads['sig_'+key],changed=false;
+ if(pad&&pad.has()){pad.forgetUndo();pad.clear(true);changed=true;}
+ else if(S.signatures[key]){delete S.signatures[key];changed=true;}
+ if(blockIdx!==Q.blocks.length-1&&S.signatures.final){delete S.signatures.final;ev('signature_invalidated',{scope:'final',q:cause||null});}
+ if(changed)ev('signature_invalidated',{scope:key,q:cause||null});
+}
 
 function headRow(){
   var h = tag("div", "qhead");
@@ -2471,7 +2818,10 @@ function renderBlock(i){
       : padNode(list, R("r_sign"), "sign", "sig_" + b.id);
   }
   var storedSign=S.signatures[last?"final":b.id];if(storedSign)nodes.signPad.restore(storedSign);
-  D.getElementById("fq-next").textContent = last ? R("r_finish") : R("r_next");
+  var returning=S.return_context&&blockIdx!==S.return_context.returnTo;
+  D.getElementById("fq-next").textContent = returning ? R("r_return_here") : (last ? R("r_finish") : R("r_next"));
+  var reviewButton=D.getElementById("fq-review");
+  if(reviewButton){reviewButton.textContent=R("r_review");reviewButton.classList.toggle("hidden",blockIdx<=0||!!S.finished);}
 
   why("");
   S.blockIdx = i;
@@ -2479,6 +2829,43 @@ function renderBlock(i){
   timingInvalid=true;
   touch();
   D.defaultView.scrollTo(0, 0);
+}
+
+function blockQuestions(block){
+ var out=[];
+ (block.questions||[]).forEach(function(q){if(S.answers[q.id])out.push(q);});
+ (block.gates||[]).forEach(function(g){
+  if(S.answers[g.id])out.push(g);
+  (g.expansion||[]).forEach(function(q){if(S.answers[q.id])out.push(q);});
+ });
+ if(block.closing&&S.answers[block.closing.id])out.push(block.closing);
+ return out;
+}
+function gotoBlock(i,initiator,qid){
+ if(!S||S.finished||closing||lockedFill||!Number.isInteger(i)||i<0||i>=Q.blocks.length||i===blockIdx)return false;
+ if(!S.events.some(function(e){return e.type==="block_open"&&e.block===Q.blocks[i].id;})){alert("Цей блок ще не відкривався. Пройдіть попередні блоки кнопкою «Далі».");return false;}
+ var from=blockIdx;
+ collectPads();
+ if(i<from&&!S.return_context)S.return_context={returnTo:from,initiator:initiator||"examiner",started:now()};
+ ev("block_return",{from:Q.blocks[from].id,to:Q.blocks[i].id,q:qid||null,initiator:initiator||"examiner"});
+ renderBlock(i);
+ if(qid)D.defaultView.requestAnimationFrame(function(){var n=D.querySelector('[data-question="'+qid+'"]');if(n){n.classList.add('needs-attention');n.scrollIntoView({block:'center',behavior:'auto'});n.focus({preventScroll:true});}});
+ return true;
+}
+function openReview(){
+ if(!S||S.finished||closing||lockedFill||blockIdx<=0)return;
+ var limit=S.return_context?S.return_context.returnTo:blockIdx;
+ var visited=[];
+ for(var i=0;i<limit;i++)if(S.events.some(function(e){return e.type==="block_open"&&e.block===Q.blocks[i].id;}))visited.push(i);
+ if(!visited.length)return;
+ var veil=tag("div","veil"),box=tag("div","box review-box",veil),head=tag("h2",null,box),body=tag("p",null,box),list=tag("div","review-list",box),row=tag("div","row",box);
+ head.textContent=R("r_review_head");body.textContent=R("r_review_body");
+ visited.forEach(function(index){
+  var block=Q.blocks[index],fold=tag("details","review-block",list),summary=tag("summary",null,fold);summary.textContent=block.id+" · "+block.title;
+  blockQuestions(block).forEach(function(q){var b=tag("button","review-question",fold),id=tag("b",null,b),label=tag("span",null,b);b.type="button";id.textContent=q.id;label.textContent=q.text+" · «"+LB(S.answers[q.id].value)+"»";b.addEventListener("click",function(){D.body.removeChild(veil);gotoBlock(index,"respondent",q.id);});});
+ });
+ var cancel=tag("button","ghost",row);cancel.type="button";cancel.textContent=R("r_review_cancel");cancel.addEventListener("click",function(){D.body.removeChild(veil);});
+ D.body.appendChild(veil);if(veil.querySelector('details'))veil.querySelector('details').open=true;
 }
 
 function gateNode(gate){
@@ -2590,6 +2977,11 @@ function next(){
 async function closeBlock(){
  if(closing||S.finished)return;closing=true;
  var b=Q.blocks[blockIdx];collectPads();ev('block_done',{block:b.id});
+ if(S.return_context&&blockIdx!==S.return_context.returnTo){
+  var backTo=S.return_context.returnTo,initiator=S.return_context.initiator;
+  ev('return_complete',{from:b.id,to:Q.blocks[backTo].id,initiator:initiator});delete S.return_context;
+  closing=false;renderBlock(backTo);await PI_SAVE.now();return;
+ }
  if(blockIdx+1<Q.blocks.length){closing=false;renderBlock(blockIdx+1);await PI_SAVE.now();return;}
  closing=false;await complete('completed');
 }
@@ -2615,6 +3007,7 @@ async function complete(status){
 }
 
 function collectPads(){
+  attentionCleanups.splice(0).forEach(function(done){try{done();}catch(e){}});
   for (var key in pads) stash(key, pads[key].image());
   for (var k2 in pads) if (k2.indexOf("pad_") !== 0){pads[k2].dispose();delete pads[k2];}
 }
@@ -2664,7 +3057,7 @@ function sessionId(){return CASE.id||newId();}
 function start(data){
   Q = data;
   RESP_LANG = pickLang((data.meta || {}).language) || UI_LANG;
-  t0 = Date.now();lastNow=0;lockedFill=false;closing=false;timingInvalid=true;
+  t0 = Date.now();lastNow=0;lockedFill=false;closing=false;timingInvalid=true;attentionCleanups=[];
   S = {
     schema_version: "1.1", app_version:VERSION, analysis_version:ANALYTICS_VERSION, integrity_version:2,
     status:"active", case_info:JSON.parse(JSON.stringify(CASE)), questionnaire_hash:STATE.questionnaireHash||null,
@@ -2680,7 +3073,7 @@ function start(data){
     reminder: { shown: false, at: null, gates: [] },
     pen: { types: {}, pressureMin: 1, pressureMax: 0, tilt: false }
   };
-  pads = {};
+  pads = {};attentionCleanups=[];
   blockIdx = -1;
   penSeen = false;
 
@@ -2755,7 +3148,7 @@ function snapshot(){
 /* Перемонтування в новий документ після перевідкриття вікна. */
 function remount(){
   if (!S) return;
-  pads = {};
+  attentionCleanups.splice(0).forEach(function(done){try{done();}catch(e){}});pads = {};attentionCleanups=[];
   if(S.finished){show("s-done");return;}
   if (blockIdx < 0){
     startScreen();
@@ -2786,7 +3179,7 @@ function resume(saved){
   last=Math.max(last,Number.isFinite(S.elapsedMs)?S.elapsedMs:0);t0 = Date.now() - last;lastNow=last;timingInvalid=true;
   S.startedAt = t0;
   lastTouch = last;
-  pads = {};
+  pads = {};attentionCleanups=[];
   penSeen = false;
   blockIdx = (typeof S.blockIdx === "number") ? S.blockIdx : -1;
   ev("resume", { block: blockIdx });
@@ -2809,8 +3202,8 @@ return {
   start: start,
   complete:complete,
   currentBlock:function(){return blockIdx;},
-  clearSession:function(){S=null;Q=null;pads={};nodes={};blockIdx=-1;},
-  goto:function(i){if(!S||S.finished||closing||lockedFill||!Number.isInteger(i)||i<0||i>=Q.blocks.length)return false;if(!S.events.some(function(e){return e.type==="block_open"&&e.block===Q.blocks[i].id;})){alert("Цей блок ще не відкривався. Пройдіть попередні блоки кнопкою «Далі».");return false;}collectPads();renderBlock(i);return true;},
+  clearSession:function(){S=null;Q=null;pads={};nodes={};attentionCleanups=[];blockIdx=-1;},
+  goto:function(i){return gotoBlock(i,"examiner",null);},
   begin: beginQuestions,
   next: next,
   session: function(){ return S; },
@@ -2828,9 +3221,10 @@ return {
   snapshot: snapshot,
   remount: remount,
   wire: function(){
-    var go = D.getElementById("fb-go"), nx = D.getElementById("fq-next");
+    var go = D.getElementById("fb-go"), nx = D.getElementById("fq-next"),review=D.getElementById("fq-review");
     if (go && !go.__wired){ go.__wired = true; go.addEventListener("click", beginQuestions); }
     if (nx && !nx.__wired){ nx.__wired = true; nx.addEventListener("click", next); }
+    if (review && !review.__wired){review.__wired=true;review.addEventListener("click",openReview);}
   }
 };
 
@@ -2978,12 +3372,12 @@ function index(Q){
 
 /* ---------- головний розрахунок ---------- */
 
-var ACTIVE = { answer:1, change:1, write:1, write_end:1, erase:1, expand:1, collapse:1, review:1 };
+var ACTIVE = { answer:1, change:1, write:1, write_end:1, erase:1, expand:1, collapse:1, review:1, attention:1, block_return:1 };
 
 function activeUntil(S){
   var t = 0;
   for (var i = 0; i < S.events.length; i++)
-    if (ACTIVE[S.events[i].type] && S.events[i].t > t) t = S.events[i].t;
+    if (ACTIVE[S.events[i].type] && !(S.events[i].type==="block_return"&&S.events[i].initiator!=="respondent") && S.events[i].t > t) t = S.events[i].t;
   return t;
 }
 function lastEvent(S){
@@ -2999,7 +3393,7 @@ function countCollapsedEmpty(c){ var n = 0; for (var k in c) if (!c[k].answered)
 
 function analyse(S){
   var Q = S.questionnaire, ix = index(Q), map = ix.map;
-  var rec = {}, expandAt = {}, collapsed = {}, marks = {}, damped = {};
+  var rec = {}, expandAt = {}, collapsed = {}, marks = {}, damped = {}, attention = {}, returns = {};
   var seq = [], blanks = {}, firstOfBlock = {};
   var reminderAt = (S.reminder && S.reminder.shown) ? S.reminder.at : Infinity;
 
@@ -3030,9 +3424,12 @@ function analyse(S){
     }
     else if (e.type === "expand")   expandAt[e.q] = e.t;
     else if (e.type === "collapse") collapsed[e.q] = { answered: e.answered, wrote: e.wrote, t: e.t };
-    else if (e.type === "no_explanation")
+    else if (e.type === "no_explanation"){
       for (var k = 0; k < (e.gates || []).length; k++)
         if(blanks[e.gates[k]]!=="before")blanks[e.gates[k]] = e.afterReminder ? "after" : "before";
+    }
+    else if(e.type==="attention"&&map[e.q]) (attention[e.q]=attention[e.q]||[]).push(e);
+    else if(e.type==="block_return"&&e.initiator==="respondent"&&map[e.q]) (returns[e.q]=returns[e.q]||[]).push(e);
   }
 
   /* нормована латентність: без нормування довгі охоплюючі шлюзи
@@ -3117,6 +3514,9 @@ function analyse(S){
     }
 
     if (jumps[id]){ machine += 1; why.push(T("w_jump")); }
+
+    if(attention[id]&&attention[id].length){machine+=1;why.push(T("w_attention",{n:attention[id].length}));}
+    if(returns[id]&&returns[id].length){machine+=1;why.push(T("w_return"));}
 
     if (runFlag[id]){ machine += 2; why.push(T("w_run", { n: runFlag[id] })); }
 
@@ -3204,6 +3604,9 @@ function analyse(S){
     stats: {
       answered: seq.length,
       reviews:S.events.filter(function(e){return e.type==="review";}).length,
+      attention:S.events.filter(function(e){return e.type==="attention";}).length,
+      respondentReturns:S.events.filter(function(e){return e.type==="block_return"&&e.initiator==="respondent";}).length,
+      examinerReturns:S.events.filter(function(e){return e.type==="block_return"&&e.initiator!=="respondent";}).length,
       declined:countValue(rec,"declined"),na:countValue(rec,"na"),
       yes: countValue(rec, "yes"), explain: countValue(rec, "explain"), no: countValue(rec, "no"),
       expands: Object.keys(expandAt).length,
@@ -3458,6 +3861,10 @@ function describeEvent(e){
     case "collapse":   return { q:e.q, what:T("e_collapse"), cls:"flag" };
     case "write_end":  return {q:"",what:"Завершено штрих"};
     case "review": return {q:e.q,what:"Повторний вибір тієї самої відповіді"};
+    case "attention": return {q:e.q,what:"Повторна увага стилусом · "+(e.duration/1000).toFixed(1)+" с",cls:"flag"};
+    case "block_return": return {q:e.q||"",what:(e.initiator==="respondent"?"Самостійно повернувся до попереднього питання":"Повернення ініційоване поліграфологом"),cls:e.initiator==="respondent"?"flag":""};
+    case "return_complete": return {q:"",what:"Повернувся до місця зупинки"};
+    case "signature_invalidated": return {q:e.q||"",what:"Підпис потрібно поставити повторно"};
     case "lock": return {q:"",what:"Пауза поліграфолога"};
     case "unlock": return {q:"",what:"Продовжено після паузи"};
     case "resume": return {q:"",what:"Відновлено сесію"};
@@ -3849,6 +4256,9 @@ function narrative(A){
 
   if(st.declined||st.na)out.push("Відмов від відповіді: "+(st.declined||0)+"; позначок «не стосується»: "+(st.na||0)+". Вони не прирівнюються до «ні».");
   if(st.reviews)out.push("Повторних виборів тієї самої відповіді: "+st.reviews+". Це зафіксовані дотики, а не відстеження погляду.");
+  if(st.attention)out.push("Епізодів повторної уваги стилусом після відповіді: "+st.attention+". Це наведення пера над текстом, а не відстеження погляду.");
+  if(st.respondentReturns)out.push("Самостійних повернень респондента до попередніх питань: "+st.respondentReturns+".");
+  if(st.examinerReturns)out.push("Повернень, ініційованих поліграфологом: "+st.examinerReturns+". Вони не підвищують поведінковий ранг питань.");
   if (st.expands) out.push(T("n_expands", { n: st.expands, empty: st.collapsedEmpty }));
   else out.push("Уточнення не відкривалися. Це опис маршруту заповнення, а не оцінка відповідей.");
 
@@ -4292,11 +4702,11 @@ function rxValue(v){return v?R('r_'+v):'не надано';}
 function rxImportant(S,id){return !!(S.report_priority&&S.report_priority[id]&&S.report_priority[id].important);}
 function rxModel(S,A){
  var ix=PI_STAT.index(S.questionnaire),items={};
- ix.order.forEach(function(id){var m=ix.map[id];items[id]={id:id,meta:m,events:[],marks:[],changes:[],reviews:0,collapsed:0,time:null,flags:[]};});
+ ix.order.forEach(function(id){var m=ix.map[id];items[id]={id:id,meta:m,events:[],marks:[],changes:[],reviews:0,collapsed:0,attention:[],returns:[],time:null,flags:[]};});
  (A.sequence||[]).forEach(function(q){if(items[q.id])items[q.id].time=q;});
- S.events.forEach(function(e){var id=e.q;if(!id&&e.field&&e.field.indexOf('exp_')===0)id=e.field.slice(4);var x=items[id];if(!x)return;x.events.push(e);if(e.type==='change')x.changes.push(e);if(e.type==='review')x.reviews++;if(e.type==='collapse')x.collapsed++;});
+ S.events.forEach(function(e){var id=e.q;if(!id&&e.field&&e.field.indexOf('exp_')===0)id=e.field.slice(4);var x=items[id];if(!x)return;x.events.push(e);if(e.type==='change')x.changes.push(e);if(e.type==='review')x.reviews++;if(e.type==='collapse')x.collapsed++;if(e.type==='attention')x.attention.push(e);if(e.type==='block_return'&&e.initiator==='respondent')x.returns.push(e);});
  activeMarks(S).forEach(function(m){if(items[m.q])items[m.q].marks.push(m);});
- ix.order.forEach(function(id){var x=items[id];if(x.changes.length||x.reviews||x.collapsed)x.flags.push('route');if(x.time&&x.time.timingAvailable&&!x.time.damped&&x.time.z>=1.5)x.flags.push('time');if(x.marks.length)x.flags.push('observer');});
+ ix.order.forEach(function(id){var x=items[id];if(x.changes.length||x.reviews||x.collapsed||x.returns.length)x.flags.push('route');if(x.attention.length)x.flags.push('attention');if(x.time&&x.time.timingAvailable&&!x.time.damped&&x.time.z>=1.5)x.flags.push('time');if(x.marks.length)x.flags.push('observer');});
  return {S:S,A:A,ix:ix,items:items};
 }
 function rxEvent(e){
@@ -4305,6 +4715,10 @@ function rxEvent(e){
  if(e.type==='expand')return 'Відкрито уточнення';
  if(e.type==='collapse')return 'Уточнення згорнуто'+(e.answered?' після відповідей':' без відповідей');
  if(e.type==='review')return 'Повторний вибір тієї самої відповіді';
+ if(e.type==='attention')return 'Повторна увага стилусом після відповіді · '+(e.duration/1000).toFixed(1)+' с';
+ if(e.type==='block_return')return e.initiator==='respondent'?'Самостійне повернення до попереднього питання':'Повернення ініційоване поліграфологом';
+ if(e.type==='return_complete')return 'Повернення до місця зупинки';
+ if(e.type==='signature_invalidated')return 'Попередній підпис анульовано після зміни';
  if(e.type==='write')return 'Початок рукописного пояснення';
  if(e.type==='write_end')return 'Завершено штрих у поясненні';
  if(e.type==='erase')return 'Рукописне поле очищено';
@@ -4316,7 +4730,7 @@ function rxEvent(e){
  if(e.type==='resume')return 'Сесію відновлено';
  return e.type+(e.q?' · '+e.q:'');
 }
-function rxReasons(x){var a=[];if(x.changes.length)a.push('Змін відповіді: '+x.changes.length);if(x.reviews)a.push('Повторних виборів: '+x.reviews);if(x.collapsed)a.push('Згортань уточнень: '+x.collapsed);if(x.flags.indexOf('time')>=0)a.push('Довший інтервал між діями');if(x.marks.length)a.push('Ваших міток: '+x.marks.length);return a;}
+function rxReasons(x){var a=[];if(x.changes.length)a.push('Змін відповіді: '+x.changes.length);if(x.returns.length)a.push('Самостійних повернень: '+x.returns.length);if(x.attention.length)a.push('Епізодів уваги стилусом: '+x.attention.length);if(x.reviews)a.push('Повторних виборів: '+x.reviews);if(x.collapsed)a.push('Згортань уточнень: '+x.collapsed);if(x.flags.indexOf('time')>=0)a.push('Довший інтервал між діями');if(x.marks.length)a.push('Ваших міток: '+x.marks.length);return a;}
 function rxFamily(M,id){return M.ix.order.filter(function(k){return k===id||M.ix.map[k].gate===id;});}
 function rxFlags(M,id){var f=[];rxFamily(M,id).forEach(function(k){M.items[k].flags.forEach(function(t){if(f.indexOf(t)<0)f.push(t);});});return f;}
 function rxFold(parent,label){var d=rxNode('details','rx-fold',parent);rxNode('summary','',d,label);return rxNode('div','rx-fold-body',d);}
@@ -4399,17 +4813,19 @@ function renderReport(){
  var overview=rxNode('div','rx-overview',body);rxNode('h2','',overview,'Що виділяється в цій сесії');
  var changes=M.ix.order.filter(function(id){return M.items[id].changes.length;}),observed=M.ix.order.filter(function(id){return M.items[id].marks.length;});
  function compactIds(ids){return ids.slice(0,8).join(', ')+(ids.length>8?' та ще '+(ids.length-8):'');}
- var timeIds=M.ix.order.filter(function(id){return M.items[id].flags.indexOf('time')>=0;}),reviewIds=M.ix.order.filter(function(id){return M.items[id].reviews>0;}),summary=[];
+ var timeIds=M.ix.order.filter(function(id){return M.items[id].flags.indexOf('time')>=0;}),reviewIds=M.ix.order.filter(function(id){return M.items[id].reviews>0;}),attentionIds=M.ix.order.filter(function(id){return M.items[id].attention.length>0;}),returnIds=M.ix.order.filter(function(id){return M.items[id].returns.length>0;}),summary=[];
  if(changes.length)summary.push('Зміни відповідей: '+compactIds(changes)+'.');
  if(timeIds.length)summary.push('Довші інтервали між діями: '+compactIds(timeIds)+'.');
  if(reviewIds.length)summary.push('Повторні вибори: '+compactIds(reviewIds)+'.');
+ if(attentionIds.length)summary.push('Повторна увага стилусом: '+compactIds(attentionIds)+'.');
+ if(returnIds.length)summary.push('Самостійні повернення: '+compactIds(returnIds)+'.');
  if(observed.length)summary.push('Ваші спостереження: '+compactIds(observed)+'.');
  if(!summary.length)summary.push('Змін відповідей, часових особливостей і міток за поточними правилами не зафіксовано.');
  infoLine(overview,summary.join(' '),'rx-overview-text');
  if(!S.finished||S.status==='aborted')infoLine(overview,S.status==='aborted'?'Сесію припинено достроково. Незаповнені питання не є відповідями «ні».':'Попередній звіт: анкетування ще триває.');
  var table=rxNode('section','rx-map-panel',body);rxNode('h2','',table,'Теми та питання');
  S.questionnaire.blocks.forEach(function(block){var qs=block.gates||block.questions||[];var row=rxNode('div','rx-map-row',table);rxNode('div','rx-topic',row,block.id+' · '+block.title);var cells=rxNode('div','rx-cells',row);qs.concat(block.closing?[block.closing]:[]).forEach(function(q){var f=rxFlags(M,q.id),b=rxNode('button','rx-cell'+(f.length?' rx-has-event':''),cells);b.type='button';b.setAttribute('data-rx-id',q.id);b.setAttribute('aria-label',q.id+' — '+q.text);rxNode('span','',b,q.id);var dots=rxNode('span','rx-dots',b);f.forEach(function(t){rxNode('i','rx-dot rx-'+t,dots);});b.addEventListener('click',function(){rxSelect(q.id,false);});});});
- var legend=rxNode('div','rx-legend',table);[['route','Зміна / повернення'],['time','Часова подія'],['observer','Ваше спостереження']].forEach(function(pair){var n=rxNode('span','',legend);rxNode('i','rx-dot rx-'+pair[0],n);n.appendChild(document.createTextNode(pair[1]));});infoLine(table,'Позначки основного питання враховують також події його уточнень. Без позначок — помітних подій не зафіксовано.','rx-map-note');
+ var legend=rxNode('div','rx-legend',table);[['route','Зміна / повернення'],['attention','Увага стилусом'],['time','Часова подія'],['observer','Ваше спостереження']].forEach(function(pair){var n=rxNode('span','',legend);rxNode('i','rx-dot rx-'+pair[0],n);n.appendChild(document.createTextNode(pair[1]));});infoLine(table,'Позначки основного питання враховують також події його уточнень. Наведення стилуса є допоміжною подією уваги, а не відстеженням погляду.','rx-map-note');
  var question=rxNode('section','rx-question',body);question.id='rx-question';question.setAttribute('aria-live','polite');
  var ephead=rxNode('div','rx-episodes-head',body);rxNode('h2','',ephead,'Помітні епізоди');rxNode('span','',ephead).id='rx-episode-count';rxNode('div','',body).id='rx-episodes';
  rxEpisodes(M);var initial=REACTION_SELECTED&&M.items[REACTION_SELECTED]?REACTION_SELECTED:(M.ix.order.find(function(id){return rxImportant(S,id);})||M.ix.order.find(function(id){return M.items[id].flags.length;})||M.ix.order[0]);if(initial)rxSelect(initial,false);
@@ -4718,7 +5134,7 @@ function mount(doc, saved){
     } else {
       ctx.globalCompositeOperation = "source-over";
       ctx.strokeStyle = PEN;
-      ctx.lineWidth = 1 + (e.pressure || 0.5) * 3.5;
+      ctx.lineWidth = penWidth(e);
     }
   }
 
