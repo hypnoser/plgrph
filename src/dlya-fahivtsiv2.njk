@@ -87,16 +87,6 @@ extraHead: |
         <p>Спільнота фахівців у межах PLGRPH — обмін досвідом, спільне вирішення складних кейсів.</p>
       </div>
 
-      <div class="case-card">
-        <div class="case-card__icon" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 7H21M5 11H21M5 15H21M5 19H21M11 3H15C16.1 3 17 3.9 17 5V21C17 22.1 16.1 23 15 23H11C9.9 23 9 22.1 9 21V5C9 3.9 9.9 3 11 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Intake</h3>
-        <p>Інтерактивне передтестове анкетування — карта уваги перед дослідженням.</p>
-      </div>
-
     </div>
   </div>
 </section>
@@ -114,28 +104,6 @@ extraHead: |
     <a href="/ps/" class="btn btn--primary">Спробувати калькулятор →</a>
     <a href="https://plgrph.com/ps/pr/index.html" class="calculator-promo__presentation">Дізнатися більше про можливості калькулятора →</a>
     <p class="calculator-promo__note">тільки для поліграфологів</p>
-  </div>
-</section>
-
-<section class="intake-info">
-  <div class="intake-info__inner">
-    <div class="intake-info__text">
-      <h2>Intake: інтерактивне передтестове анкетування</h2>
-      <p>Спеціалізований сервіс для роботи з респондентом перед поліграфним дослідженням. Інтерактивне анкетування в реальному часі допомагає респондентові актуалізувати інформацію про ключові теми, а поліграфологу — визначити питання, що привернули увагу.</p>
-      
-      <h3>Що отримує поліграфолог</h3>
-      <ul class="intake-info__list">
-        <li>Остаточні відповіді й зміни, які респондент зробив</li>
-        <li>Рукописні пояснення та зауваження</li>
-        <li>Карта уваги — де саме виникли помітні епізоди</li>
-        <li>Контекст кожного питання для інформованого дослідження</li>
-      </ul>
-      
-      <div class="intake-info__actions">
-        <a href="/intake/" class="btn btn--primary">Відкрити Intake →</a>
-        <a href="https://plgrph.com/intake/intake-presentation.html" class="intake-info__link">Дізнатися більше про можливості →</a>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -314,79 +282,6 @@ extraHead: |
 
   .calculator-promo__presentation:hover {
     color: rgba(255, 255, 255, 0.85);
-  }
-
-  .intake-info {
-    padding: 48px 24px;
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .intake-info__inner {
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  .intake-info__text h2 {
-    font-size: 22px;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-
-  .intake-info__text > p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-
-  .intake-info__text h3 {
-    font-size: 16px;
-    color: var(--text);
-    margin-bottom: 12px;
-    margin-top: 20px;
-  }
-
-  .intake-info__list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
-  }
-
-  .intake-info__list li {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    padding-left: 20px;
-    position: relative;
-  }
-
-  .intake-info__list li::before {
-    content: "✓ ";
-    color: #D98E2F;
-    font-weight: 600;
-    position: absolute;
-    left: 0;
-  }
-
-  .intake-info__actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .intake-info__link {
-    display: inline-block;
-    padding: 10px 16px;
-    font-size: 14px;
-    color: #D98E2F;
-    text-decoration: none;
-    border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius);
-  }
-
-  .intake-info__link:hover {
-    background: var(--bg);
   }
 
   @media (max-width: 720px) {
