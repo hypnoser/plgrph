@@ -1,0 +1,389 @@
+<header class="top">
+  <div class="wrap">
+    <div class="mark"><span class="mark-thin">Polygraph</span> <span class="mark-bold">Intake</span></div>
+    <div class="spacer"></div>
+    <button id="b-help" class="icon" aria-label="Довідка" title="Як користуватись">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+    </button>
+    <button id="b-settings" class="icon" aria-label="Налаштування" title="Налаштування">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ================= СТАРТ (єдиний екран поліграфолога до початку сесії) ================= -->
+<div class="screen on" id="s-start">
+  <div class="wrap">
+
+    <div class="case-row">
+      <input type="text" id="case-pib" placeholder="Прізвище, ім'я та по батькові респондента">
+      <button id="case-open" class="icon-only" type="button" aria-label="Відкрити справу" title="Відкрити справу з файлу">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
+      </button>
+      <input type="file" id="f-case" accept=".json,.pgi,application/json" class="hidden">
+      <button id="case-save" class="icon-only" type="button" aria-label="Зберегти справу" title="Зберегти справу">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      </button>
+    </div>
+
+    <div class="step-list">
+
+      <button type="button" class="step-card" id="step-consent">
+        <span class="badge todo" id="step-consent-badge">1</span>
+        <span class="body">
+          <span class="title" id="step-consent-title">Згода</span>
+          <span class="sub" id="step-consent-sub">Натисніть, щоб оформити згоду на анкетування</span>
+        </span>
+        <span class="sub" id="step-consent-action">Оформити</span>
+      </button>
+
+      <button type="button" class="step-card" id="step-quest" disabled>
+        <span class="badge todo" id="step-quest-badge">2</span>
+        <span class="body">
+          <span class="title" id="step-quest-title">Анкета</span>
+          <span class="sub" id="step-quest-sub">Спочатку збережіть справу</span>
+        </span>
+        <span class="sub" id="step-quest-action"></span>
+        <input type="file" id="f-quest" accept=".json,application/json" class="hidden">
+      </button>
+
+    </div>
+
+    <div class="case-line hidden" id="case-line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
+      <span id="case-line-text"></span>
+      <span style="margin-left:auto;display:flex;gap:8px">
+        <button type="button" class="mini ghost hidden" id="case-report-btn">Звіт</button>
+        <button type="button" class="mini ghost hidden" id="case-answersheet-btn">Анкета</button>
+      </span>
+    </div>
+
+    <button id="start-go" class="start-cta" disabled>Почати анкетування</button>
+
+    <div class="start-hint" id="start-hint">Завантажте анкету, щоб почати</div>
+
+    <div class="save-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+      <span id="start-save-state">Дані збережено локально</span>
+    </div>
+  </div>
+
+  <div class="veil hidden" id="case-pw-veil">
+    <div class="box">
+      <h2>Файл захищено паролем</h2>
+      <p>Введіть пароль, яким зашифровано цей файл сесії.</p>
+      <input type="password" id="case-pw-input" autocomplete="current-password" class="text-input" style="width:100%;margin-bottom:6px">
+      <p id="case-pw-why" style="color:var(--bad);font-size:13px;margin:0 0 12px"></p>
+      <div class="row">
+        <button type="button" id="case-pw-go">Відкрити</button>
+        <button type="button" class="ghost" id="case-pw-cancel">Скасувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ПОМИЛКА ФАЙЛУ АНКЕТИ ================= -->
+<div class="screen" id="s-issue">
+  <div class="wrap">
+    <button type="button" class="back-link" id="issue-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Назад
+    </button>
+    <h1 id="issue-title">Файл не відкрився</h1>
+    <p class="lede" id="issue-message"></p>
+    <details id="issue-details-wrap">
+      <summary>Деталі</summary>
+      <div id="issue-details" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
+    </details>
+  </div>
+</div>
+
+<!-- ================= ПЕРЕГЛЯДАЧ/РЕДАКТОР АНКЕТИ ================= -->
+<div class="screen" id="s-quest-viewer">
+  <div class="wrap">
+    <button type="button" class="back-link" id="qv-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      До старту
+    </button>
+    <div class="qv-toolbar">
+      <span class="title" id="qv-title"></span>
+    </div>
+    <div class="qv-bulkbar hidden" id="qv-bulkbar">
+      <span class="lbl" id="qv-bulk-count"></span>
+      <button type="button" class="mini ghost" id="qv-bulk-delete" style="color:var(--bad)">Видалити позначені</button>
+    </div>
+    <div id="qv-body"></div>
+    <div class="qv-footer">
+      <span class="count" id="qv-footer-count"></span>
+      <button type="button" class="mini ghost" id="qv-save">Зберегти у файл</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== Нижче — екрани, що монтуються у ДРУГЕ вікно (респондент) ============== -->
+
+<div class="screen fill" id="s-brief">
+  <div class="wrap">
+    <h1>Перед початком</h1>
+    <div class="brief" id="fb-brief"></div>
+    <details class="consent-read" open><summary id="fb-consent-title">Ознайомлення перед анкетуванням</summary><div id="fb-consent-text"></div></details>
+    <label class="ack"><input type="checkbox" id="fb-ack"> <span id="fb-ack-label">Я прочитав(-ла) інформацію та бажаю почати анкетування</span></label>
+
+    <div class="pad wide">
+      <div class="padbox"><canvas id="pad-fio"></canvas><div class="placeholder" data-lab="fio">Прізвище, ім'я та по батькові</div><button class="clear" data-clear="pad-fio" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div>
+    </div>
+    <div class="ident">
+      <div class="pad line">
+        <div class="padbox"><canvas id="pad-birth"></canvas><div class="placeholder" data-lab="birth">Дата народження</div><button class="clear" data-clear="pad-birth" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div>
+      </div>
+      <div class="pad line">
+        <div class="padbox"><canvas id="pad-doc"></canvas><div class="placeholder" data-lab="doc">Серія і номер документа, що засвідчує особу</div><button class="clear" data-clear="pad-doc" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div>
+      </div>
+    </div>
+    <div class="pad line"><div class="padbox"><canvas id="pad-position"></canvas><div class="placeholder">Посада (за потреби)</div><button class="clear" data-clear="pad-position" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div></div>
+
+    <div class="foot">
+      <button id="fb-go">Почати</button>
+      <span class="why" id="fb-why"></span>
+    </div>
+  </div>
+</div>
+
+<div class="screen fill" id="s-block">
+  <div class="wrap">
+    <div class="blockhead">
+      <div class="blockbar">
+        <span class="step" id="fq-step"></span>
+        <span class="name" id="fq-name"></span>
+      </div>
+      <div class="bprog" id="fq-prog"></div>
+      <div class="blockctx" id="fq-ctx"></div>
+      <div id="fq-head"></div>
+    </div>
+    <div id="fq-list"></div>
+    <div class="foot">
+      <button id="fq-next">Далі</button>
+      <button id="fq-review" class="ghost hidden">Переглянути попередні відповіді</button>
+      <span class="why" id="fq-why"></span>
+    </div>
+  </div>
+</div>
+
+<div class="screen fill" id="s-done">
+  <div class="wrap">
+    <h1>Анкету заповнено</h1>
+    <p class="lede" id="fd-note">Дякуємо. Передайте планшет поліграфологу.</p>
+    <p class="lede" style="font-size:.8em;color:var(--faint)" id="fd-autoclose"></p>
+  </div>
+</div>
+
+<div class="screen" id="s-consent">
+  <div class="consent-wrap">
+    <div class="cpage" id="cs-page">
+      <div class="ctools" id="cs-tools">
+        <button id="cs-pen" class="on" type="button" title="Писати" aria-label="Писати">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        </button>
+        <button id="cs-eraser" type="button" title="Стерти" aria-label="Стерти">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg>
+        </button>
+        <button id="cs-clear" type="button" title="Очистити" aria-label="Очистити">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+        </button>
+        <button id="cs-print" type="button" title="Друкувати" aria-label="Друкувати">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        </button>
+      </div>
+      <canvas id="cs-canvas"></canvas>
+      <div class="cdoc" id="cs-doc">
+        <h1>ЗГОДА</h1>
+
+        <p class="cl row">я,<i class="ln grow"></i></p>
+        <p class="cap">(прізвище, ім'я та по батькові)</p>
+
+        <p class="cl">«<i class="ln xs"></i>»<i class="ln m"></i> <i class="ln s"></i> року народження, документ, що засвідчує</p>
+        <p class="cl">особу: серія <i class="ln s"></i> номер <i class="ln m"></i>, виданий <i class="ln l"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cap">(ким виданий та коли)</p>
+
+      <p>даю добровільну згоду на проведення опитування з використанням поліграфа без застосування
+      погроз, насильства чи інших незаконних засобів впливу на мене від будь-кого.</p>
+
+      <p class="ind">Я ознайомлений(-на) з умовами проведення опитування з використанням поліграфа, а саме:</p>
+
+      <ol class="cterms">
+        <li>Відмова від проведення опитування не може бути підставою до прямого або непрямого
+        обмеження моїх законних прав та інтересів або вважатися свідченням ухилення від надання
+        інформації.</li>
+        <li>При проведенні опитування питання не можуть бути задані без їх попереднього
+        обговорення зі мною.</li>
+        <li>Я маю право відмовитись від опитування на будь-якому етапі його проведення.</li>
+        <li>Поінформований(-на), що дослідження не зашкодить моєму здоров'ю.</li>
+      </ol>
+
+      <p class="ind">Я даю добровільну згоду на здійснення аудіо та відео фіксації процесу опитування
+      з використанням поліграфа та подальшого їх використання в службовій діяльності.</p>
+
+      <p class="csign">Особистий підпис <i class="ln l"></i></p>
+      <p class="cl">«<i class="ln xs"></i>»<i class="ln l"></i>20<i class="ln xs"></i> року</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ============== Екрани поліграфолога: монітор, звіт, налаштування ============== -->
+
+<div class="screen" id="s-monitor">
+  <div class="mon-wrap">
+    <div class="mon-header">
+      <span class="title" id="mo-blockname">Блок</span>
+    </div>
+
+    <div class="mon-card">
+      <div class="qmeta">
+        <span class="qid" id="mo-qid">—</span>
+        <span class="mon-dot" id="mo-dot"></span>
+      </div>
+      <div class="qtext" id="mo-qtext">Очікую перший дотик</div>
+    </div>
+
+    <div class="mon-marks">
+      <div class="label">Спостереження</div>
+      <div class="row up" id="mo-marks-up"></div>
+      <div class="label">Перешкоди</div>
+      <div class="row down" id="mo-marks-down"></div>
+    </div>
+
+    <div class="mon-footer">
+      <span class="mon-savestate" id="mo-savestate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        <span id="mo-savestate-text">Збережено</span>
+      </span>
+      <span style="display:flex;gap:8px">
+        <button id="mo-reopen" class="mini ghost hidden" style="color:var(--bad);border-color:var(--bad)">Перевідкрити вікно</button>
+        <button id="mo-end" class="mini">Завершити анкетування</button>
+      </span>
+    </div>
+
+    <div id="mo-finish" class="hidden">
+      <div class="mon-finish">
+        <h2 id="mo-finish-head"></h2>
+        <p class="lede" id="mo-finish-body"></p>
+        <p id="finish-save-state" role="status" style="color:var(--bad);font-size:13px"></p>
+        <label for="mo-finish-pw">Пароль файла (необов'язково)</label>
+        <input type="password" id="mo-finish-pw" autocomplete="new-password">
+        <label class="show-password"><input id="mo-show-pw" type="checkbox"> Показати пароль</label>
+        <div class="row">
+          <button id="mo-finish-go"></button>
+          <button id="mo-finish-skip" class="ghost"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s-report">
+  <div class="rep-wrap">
+    <button type="button" class="back-link" id="rp-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      До старту
+    </button>
+    <div class="mon-header">
+      <span class="title" id="rp-title">Звіт</span>
+    </div>
+
+    <div class="rep-summary">
+      <div class="label">На що звернути увагу</div>
+      <div class="text" id="rp-summary-text"></div>
+    </div>
+
+    <div class="rep-map-label">Карта питань</div>
+    <div id="rp-map"></div>
+
+    <div id="rp-detail"></div>
+    <div id="rp-fulllog" class="hidden"></div>
+
+    <div class="foot" style="margin-top:20px">
+      <button id="rp-back-monitor" class="ghost mini">До монітора</button>
+      <button id="rp-answersheet" class="ghost mini">Анкета</button>
+      <button id="rp-print" class="ghost mini">Друкувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ДРУКОВАНА "АНКЕТА" (питання+відповіді, у форматі згоди) ================= -->
+<div class="screen" id="s-answersheet">
+  <div class="wrap">
+    <button type="button" class="back-link" id="as-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Назад
+    </button>
+    <div class="foot" style="margin-top:0;margin-bottom:16px">
+      <button id="as-print" class="ghost mini">Друкувати</button>
+    </div>
+    <div class="asheet" id="as-doc"></div>
+  </div>
+</div>
+
+<div class="screen" id="s-settings-gate">
+  <div class="wrap">
+    <button type="button" class="back-link" id="settings-gate-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Назад
+    </button>
+    <div class="pin-gate">
+      <h1>Налаштування</h1>
+      <p class="lede">Введіть PIN</p>
+      <input type="password" id="settings-pin-input" inputmode="numeric" maxlength="8" autocomplete="off">
+      <button id="settings-pin-go" style="width:100%">Увійти</button>
+      <p class="why" id="settings-pin-why" style="color:var(--bad);font-size:13px;margin-top:10px"></p>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s-settings">
+  <div class="wrap">
+    <button type="button" class="back-link" id="settings-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Назад
+    </button>
+    <h1>Налаштування</h1>
+
+    <div class="settings-section">
+      <div class="h">Справа</div>
+      <div class="settings-row"><span class="lbl">Робоча тека</span><span class="val" id="set-dir-state"></span><button class="mini ghost" id="set-dir-btn">Обрати</button></div>
+      <div class="settings-row"><span class="lbl">PIN входу в налаштування</span><input class="text-input small-input" id="set-pin" type="password" inputmode="numeric" maxlength="8"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="h">Поточна сесія</div>
+      <div class="settings-row"><span class="lbl">Файл для запису</span><button class="mini ghost" id="set-file-btn">Обрати файл</button></div>
+      <div class="settings-row"><span class="lbl">Повернути респондента до блоку</span>
+        <select id="set-block-select"></select>
+        <button class="mini ghost" id="set-block-go">Відкрити</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="h">Документи</div>
+      <div class="settings-row"><span class="lbl">Друк звіту</span><button class="mini ghost" id="set-print-btn">Друкувати</button></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="h">Дані</div>
+      <div class="settings-row"><span class="lbl">Видалити всі дані з цього браузера</span><button class="mini ghost" id="set-clear-data" style="color:var(--bad)">Видалити</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s-help">
+  <div class="wrap">
+    <button type="button" class="back-link" id="help-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Назад
+    </button>
+    <h1>Як користуватись</h1>
+    <div id="help-body"></div>
+  </div>
+</div>
