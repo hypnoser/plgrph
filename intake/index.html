@@ -128,6 +128,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .blockbar .step{color:var(--muted);font-size:.8em;white-space:nowrap}
 .blockbar .name{font-size:1.1em;font-weight:600;line-height:1.3}
 .blockctx{color:var(--muted);font-size:.8em;margin:0;padding-bottom:2px}
+.fq-recap{color:var(--muted);font-size:.9em;font-style:italic;padding:.6em 0;border-top:1px solid var(--rule-soft)}
 .q,.qhead{display:grid;grid-template-columns:2.8em 1fr 7.6em;align-items:start;column-gap:.6em}
 .qhead{padding:.5em 0 .4em;color:var(--muted);box-shadow:inset 0 -1px 0 var(--rule)}
 .qhead .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;font-size:1.05em}
@@ -228,6 +229,10 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-summary{border-radius:var(--radius-lg);background:var(--rule-soft);padding:18px 20px;margin-bottom:20px}
 .rep-summary .label{font-size:13px;color:var(--muted);margin-bottom:10px}
 .rep-summary .text{font-size:15px;line-height:1.7}
+.rep-dataquality{border-radius:var(--radius-lg);background:var(--sev-1,#8A8F2E);background:color-mix(in srgb, var(--sev-1,#8A8F2E) 18%, transparent);border:1px solid var(--sev-1,#8A8F2E);padding:14px 18px;margin-bottom:16px}
+.rep-dataquality.hidden{display:none}
+.rep-dataquality .label{font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em}
+.rep-dataquality .text{font-size:14px;line-height:1.6}
 .rep-map-label{font-size:13px;color:var(--muted);margin-bottom:10px}
 .rep-row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:start;margin-bottom:10px}
 .rep-topic{font-size:13px;font-weight:500;padding-top:10px;color:var(--muted)}
@@ -674,6 +679,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
       <span class="title" id="rp-title">Звіт</span>
     </div>
 
+    <div class="rep-dataquality hidden" id="rp-dataquality"></div>
     <div class="rep-summary">
       <div class="label">На що звернути увагу</div>
       <div class="text" id="rp-summary-text"></div>
@@ -905,17 +911,19 @@ function briefing(){
 }
 
 /* ------------------------------------------------------------------ */
-/*  ВАЛІДАТОР СХЕМИ 1.0                                                */
+/*  ВАЛІДАТОР СХЕМИ 1.x (мажорна версія 1)                             */
 /*  Логіка ідентична 3.2. Обов'язкові умови валідності описані в        */
 /*  промпті генерації анкети — тут вони лише перевіряються.             */
 /* ------------------------------------------------------------------ */
 
 var PI_VALIDATE = (function(){
-  var SCHEMA = "1.0";
+  var SCHEMA = "1.1";
+  var SCHEMA_MAJOR = SCHEMA.split(".")[0];
   var ROOT_KEYS = ["schema_version","meta","consent","blocks"];
   var META_KEYS = ["title","language","created","period","respondent_context","assessment_type","instructions"];
   var BLOCK_TYPES = ["calibration","topic"];
   var BASELINE = ["high","medium","low"];
+  var CALIB_ROLES = ["motor_floor","reading_rate","enumeration_load","recall_load","explain_format","engagement_check"];
   var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.0. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
   var HINT_EMPTY = "Файл порожній або майже порожній.";
 
@@ -946,8 +954,8 @@ var PI_VALIDATE = (function(){
     }
     if (!("schema_version" in data)) err("schema_version", "поле відсутнє");
     else if (!isStr(data.schema_version)) err("schema_version", "має бути рядком");
-    else if (data.schema_version !== SCHEMA)
-      err("schema_version", "файл заявляє схему " + data.schema_version + ", двигун підтримує " + SCHEMA);
+    else if (data.schema_version.split(".")[0] !== SCHEMA_MAJOR)
+      err("schema_version", "файл заявляє схему " + data.schema_version + ", двигун підтримує " + SCHEMA_MAJOR + ".x");
 
     if (!isObj(data.meta)) err("meta", "розділ відсутній або не є об'єктом");
     else {
@@ -990,6 +998,10 @@ var PI_VALIDATE = (function(){
           if (!isObj(qu)){ err(QL, "питання не є об'єктом"); continue; }
           claimId(QL + ".id", qu.id, "калібрувальне питання");
           checkText(QL, qu.id, qu.text, false);
+          if ("calibration_role" in qu && CALIB_ROLES.indexOf(qu.calibration_role) === -1)
+            wrn(QL + ".calibration_role", "значення «" + qu.calibration_role + "» не з очікуваного набору — ігнорується аналізом");
+          if ("load_profile" in qu && !isObj(qu.load_profile))
+            wrn(QL + ".load_profile", "має бути об'єктом — ігнорується аналізом");
           stats.calibration++; entry.plain++;
         }
       } else {
@@ -1003,6 +1015,8 @@ var PI_VALIDATE = (function(){
           else if (BASELINE.indexOf(ga.baseline_yes) === -1) err(GL + ".baseline_yes", "значення «" + ga.baseline_yes + "» неприпустиме");
           if (typeof ga.relevant_candidate !== "boolean") wrn(GL + ".relevant_candidate", "ознаку не вказано, вважаю false");
           else if (ga.relevant_candidate) stats.relevant++;
+          if ("load_profile" in ga && !isObj(ga.load_profile))
+            wrn(GL + ".load_profile", "має бути об'єктом — ігнорується аналізом");
           stats.gates++; entry.gates++;
           if (!isArr(ga.expansion) || ga.expansion.length === 0) err(GL + ".expansion", "шлюз без уточнень");
           else for (var e = 0; e < ga.expansion.length; e++){
@@ -1015,7 +1029,18 @@ var PI_VALIDATE = (function(){
         }
         if (!isObj(b.closing)) err(L + ".closing", "тематичний блок без закриваючого питання");
         else { claimId(L + ".closing.id", b.closing.id, "закриваюче питання"); entry.closing = 1;
-               checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++; }
+               checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++;
+               if ("recap" in b.closing && !filled(b.closing.recap)) wrn(L + ".closing.recap", "поле присутнє, але порожнє"); }
+        if ("anchors" in b){
+          if (!isArr(b.anchors)) wrn(L + ".anchors", "має бути масивом — ігнорується аналізом");
+          else for (var a = 0; a < b.anchors.length; a++){
+            var an = b.anchors[a], AL = L + ".anchors[" + a + "]";
+            if (!isObj(an)){ wrn(AL, "запис не є об'єктом — ігнорується"); continue; }
+            claimId(AL + ".id", an.id, "якір");
+            checkText(AL, an.id, an.text, true);
+            if (!filled(an.after_gate)) wrn(AL + ".after_gate", "не вказано, після якого шлюзу ставити якір");
+          }
+        }
       }
       stats.blockList.push(entry);
     }
@@ -1295,13 +1320,7 @@ function validateSaved(s){
     });
   }
   if (["1.0","1.1","2.0"].indexOf(s.schema_version) < 0) throw new Error("Непідтримувана версія сесії");
-  /* questionnaire може бути null — це проміжний стан "справу створено,
-     анкету ще не завантажено" (файл сесії існує й пишеться на диск
-     одразу після збереження ПІБ, ще до вибору анкети). Якщо анкета
-     є — вона все одно має бути валідною за схемою. */
-  if (s.questionnaire !== null){
-    var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
-  }
+  var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
   if (typeof s.session_id !== "string" || !s.session_id || !/^[a-zA-Z0-9_.-]+$/.test(s.session_id) ||
       !Array.isArray(s.events) || s.events.length > 100000 || !obj(s.answers) || !obj(s.identity) ||
       !obj(s.explanations) || !obj(s.signatures)) throw new Error("Неповний файл сесії");
@@ -1912,7 +1931,20 @@ var PI_FILL = (function(){
         nodes.gates.push({ q:b.questions[k], node:qn, branch:null, pad:null });
       }
     } else {
-      for (var g = 0; g < b.gates.length; g++) list.appendChild(gateNode(b.gates[g]));
+      var anchorsAfter = {};
+      (b.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
+      for (var g = 0; g < b.gates.length; g++){
+        list.appendChild(gateNode(b.gates[g]));
+        var afterId = b.gates[g].id;
+        if (anchorsAfter[afterId]) anchorsAfter[afterId].forEach(function(anchor){
+          var an = questionNode(anchor, ["yes","no","explain"]);
+          list.appendChild(an);
+          nodes.gates.push({ q:anchor, node:an, branch:null, pad:null });
+        });
+      }
+      if (b.closing && b.closing.recap){
+        var recapEl = tag("div", "fq-recap", list); recapEl.textContent = b.closing.recap;
+      }
       var cl = questionNode(b.closing, ["yes","no"]);
       list.appendChild(cl); nodes.closing = b.closing;
       nodes.closingPad = padNode(list, R("r_addendum"), "wide", "exp_"+b.closing.id);
@@ -2092,6 +2124,7 @@ var PI_FILL = (function(){
     if (status !== "aborted"){
       for (var bi = 0; bi < Q.blocks.length; bi++){
         var b = Q.blocks[bi], required = (b.questions||b.gates||[]).slice(); if (b.closing) required.push(b.closing);
+        if (b.anchors) required = required.concat(b.anchors);
         (b.gates||[]).forEach(function(g){ var a = S.answers[g.id]; if (a && (a.value==="yes"||a.value==="explain")) required = required.concat(g.expansion); });
         var miss = required.some(function(q){ return !S.answers[q.id]; });
         if (miss || !S.signatures[bi===Q.blocks.length-1 ? "final" : b.id]){
@@ -2329,6 +2362,32 @@ var PI_STAT = (function(){
     return median(d) * 1.4826;
   }
 
+  /* Індивідуальна нормалізація за B0: перетин (моторна підлога) і мс/символ
+     з калібрувального блоку. Лінійна регресія since ~ intercept + rate*len
+     по калібрувальних питаннях (kind:"plain") з валідним timing. Якщо точок
+     менше двох або рахунок вироджений — повертає null, і виклик норми
+     відкочується на стару формулу Math.max(24,len). */
+  function calibrationFit(S){
+    var Q = S.questionnaire, ix = index(Q), map = ix.map;
+    var xs = [], ys = [];
+    for (var i=0;i<S.events.length;i++){
+      var e = S.events[i];
+      if (e.type!=="answer") continue;
+      var q = map[e.q]; if (!q || q.kind!=="plain") continue;
+      if (e.timingValid===false || !e.since) continue;
+      xs.push(q.text.length); ys.push(e.since);
+    }
+    if (xs.length < 2) return null;
+    var n = xs.length, sx=0, sy=0, sxx=0, sxy=0;
+    for (i=0;i<n;i++){ sx+=xs[i]; sy+=ys[i]; sxx+=xs[i]*xs[i]; sxy+=xs[i]*ys[i]; }
+    var denom = n*sxx - sx*sx;
+    if (Math.abs(denom) < 1e-6) return null;
+    var rate = (n*sxy - sx*sy) / denom;
+    var intercept = (sy - rate*sx) / n;
+    if (rate <= 0 || intercept < 0) return null;
+    return { intercept:intercept, rate:rate, n:n };
+  }
+
   function index(Q){
     var map = {}, order = [], blockOf = {};
     for (var i=0;i<Q.blocks.length;i++){
@@ -2343,6 +2402,7 @@ var PI_STAT = (function(){
         put(b.gates[j],"gate");
         for (k=0;k<b.gates[j].expansion.length;k++) put(b.gates[j].expansion[k],"expansion",b.gates[j].id);
       }
+      if (b.anchors) for (j=0;j<b.anchors.length;j++) put(b.anchors[j],"anchor");
       if (b.closing) put(b.closing,"closing");
     }
     return { map:map, order:order, blockOf:blockOf };
@@ -2397,10 +2457,17 @@ var PI_STAT = (function(){
       else if (e.type==="block_return" && e.initiator==="respondent" && map[e.q]) (returns[e.q]=returns[e.q]||[]).push(e);
     }
 
+    var fit = calibrationFit(S);
     var norm = {};
     for (var qid in rec){
       var q = map[qid]; if (!q) continue;
-      norm[qid] = rec[qid].timingValid && !damped[qid] ? rec[qid].since / Math.max(24, q.text.length) : 0;
+      if (!rec[qid].timingValid || damped[qid]){ norm[qid] = 0; continue; }
+      if (fit) {
+        var expected = fit.intercept + fit.rate * q.text.length;
+        norm[qid] = rec[qid].since / Math.max(expected, fit.intercept*FLOOR + 1, 1);
+      } else {
+        norm[qid] = rec[qid].since / Math.max(24, q.text.length);
+      }
     }
     var base = {};
     for (var bi=0;bi<Q.blocks.length;bi++){
@@ -2440,7 +2507,7 @@ var PI_STAT = (function(){
 
     var out = [];
     for (var id in rec){
-      var m = map[id]; if (!m || m.kind==="plain") continue;
+      var m = map[id]; if (!m || m.kind==="plain" || m.kind==="anchor") continue;
       var r = rec[id], why = [], score = 0, machine = 0, ov = null;
 
       if (damped[id]){
@@ -2500,8 +2567,12 @@ var PI_STAT = (function(){
     var lonely = [];
     for (var oi=0;oi<out.length;oi++) if (out[oi].marks.length && out[oi].machine===0 && !out[oi].damped) lonely.push(out[oi]);
 
+    var basesLowN = [];
+    for (var bnid in bases) if (bases[bnid].n < 3) basesLowN.push(bnid);
+
     return {
       records:rec, index:map, localBases:bases,
+      dataQuality: { calibrationFit: fit ? { intercept:fit.intercept, rate:fit.rate, n:fit.n } : null, lowBaseQuestions: basesLowN },
       sequence:sequence,
       blocks: Q.blocks.map(function(b){
         var gates = (b.gates||[]).map(function(g){
@@ -2531,7 +2602,7 @@ var PI_STAT = (function(){
       lonely: lonely, base: base, pen: S.pen||{}, counted: Object.keys(rec).length
     };
   }
-  return { analyse:analyse, index:index };
+  return { analyse:analyse, index:index, calibrationFit:calibrationFit };
 })();
 
 /* ======================================================================
@@ -2851,6 +2922,23 @@ function shortReason(w){
   return w.split(" ").slice(0,3).join(" ");
 }
 
+function renderDataQuality(A){
+  var box = el("rp-dataquality"); if (!box) return;
+  box.innerHTML = "";
+  var notes = [];
+  var dq = A.dataQuality || {};
+  if (!dq.calibrationFit) notes.push("Індивідуальну норму читання не вдалося визначити з калібрувального блоку — латентність оцінюється за спрощеною формулою.");
+  if (dq.lowBaseQuestions && dq.lowBaseQuestions.length >= 3)
+    notes.push("У кількох блоках недостатньо відповідей «ні» для порівняння часу реакції (потрібно щонайменше 3) — латентнісний аналіз там вимкнений.");
+  var straightLine = (A.sequence||[]).length >= 6 && A.sequence.every(function(p){ return p.value === "no"; });
+  if (straightLine) notes.push("Усі відповіді — «ні» поспіль; перевірте, чи респондент читав питання уважно.");
+  if (!notes.length){ box.classList.add("hidden"); return; }
+  box.classList.remove("hidden");
+  tag("div", "label", box, "Якість даних");
+  var text = tag("div", "text", box);
+  text.textContent = notes.join(" ");
+}
+
 function renderReport(){
   var S = PI_FILL.session(); if (!S) return;
   var A = (S.finished && (S.analysis_current || S.analysis_snapshot)) || PI_STAT.analyse(S);
@@ -2858,6 +2946,7 @@ function renderReport(){
 
   el("rp-title").textContent = "Звіт" + (S.case_info && S.case_info.label ? " · " + S.case_info.label : "");
   el("rp-summary-text").textContent = buildSummaryText(A);
+  renderDataQuality(A);
 
   var byId = {}; A.points.forEach(function(p){ byId[p.id] = p; });
   var map = A.index;

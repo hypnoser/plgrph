@@ -23,6 +23,32 @@ var PI_STAT = (function(){
     return median(d) * 1.4826;
   }
 
+  /* Індивідуальна нормалізація за B0: перетин (моторна підлога) і мс/символ
+     з калібрувального блоку. Лінійна регресія since ~ intercept + rate*len
+     по калібрувальних питаннях (kind:"plain") з валідним timing. Якщо точок
+     менше двох або рахунок вироджений — повертає null, і виклик норми
+     відкочується на стару формулу Math.max(24,len). */
+  function calibrationFit(S){
+    var Q = S.questionnaire, ix = index(Q), map = ix.map;
+    var xs = [], ys = [];
+    for (var i=0;i<S.events.length;i++){
+      var e = S.events[i];
+      if (e.type!=="answer") continue;
+      var q = map[e.q]; if (!q || q.kind!=="plain") continue;
+      if (e.timingValid===false || !e.since) continue;
+      xs.push(q.text.length); ys.push(e.since);
+    }
+    if (xs.length < 2) return null;
+    var n = xs.length, sx=0, sy=0, sxx=0, sxy=0;
+    for (i=0;i<n;i++){ sx+=xs[i]; sy+=ys[i]; sxx+=xs[i]*xs[i]; sxy+=xs[i]*ys[i]; }
+    var denom = n*sxx - sx*sx;
+    if (Math.abs(denom) < 1e-6) return null;
+    var rate = (n*sxy - sx*sy) / denom;
+    var intercept = (sy - rate*sx) / n;
+    if (rate <= 0 || intercept < 0) return null;
+    return { intercept:intercept, rate:rate, n:n };
+  }
+
   function index(Q){
     var map = {}, order = [], blockOf = {};
     for (var i=0;i<Q.blocks.length;i++){
@@ -37,6 +63,7 @@ var PI_STAT = (function(){
         put(b.gates[j],"gate");
         for (k=0;k<b.gates[j].expansion.length;k++) put(b.gates[j].expansion[k],"expansion",b.gates[j].id);
       }
+      if (b.anchors) for (j=0;j<b.anchors.length;j++) put(b.anchors[j],"anchor");
       if (b.closing) put(b.closing,"closing");
     }
     return { map:map, order:order, blockOf:blockOf };
@@ -91,10 +118,17 @@ var PI_STAT = (function(){
       else if (e.type==="block_return" && e.initiator==="respondent" && map[e.q]) (returns[e.q]=returns[e.q]||[]).push(e);
     }
 
+    var fit = calibrationFit(S);
     var norm = {};
     for (var qid in rec){
       var q = map[qid]; if (!q) continue;
-      norm[qid] = rec[qid].timingValid && !damped[qid] ? rec[qid].since / Math.max(24, q.text.length) : 0;
+      if (!rec[qid].timingValid || damped[qid]){ norm[qid] = 0; continue; }
+      if (fit) {
+        var expected = fit.intercept + fit.rate * q.text.length;
+        norm[qid] = rec[qid].since / Math.max(expected, fit.intercept*FLOOR + 1, 1);
+      } else {
+        norm[qid] = rec[qid].since / Math.max(24, q.text.length);
+      }
     }
     var base = {};
     for (var bi=0;bi<Q.blocks.length;bi++){
@@ -134,7 +168,7 @@ var PI_STAT = (function(){
 
     var out = [];
     for (var id in rec){
-      var m = map[id]; if (!m || m.kind==="plain") continue;
+      var m = map[id]; if (!m || m.kind==="plain" || m.kind==="anchor") continue;
       var r = rec[id], why = [], score = 0, machine = 0, ov = null;
 
       if (damped[id]){
@@ -194,8 +228,12 @@ var PI_STAT = (function(){
     var lonely = [];
     for (var oi=0;oi<out.length;oi++) if (out[oi].marks.length && out[oi].machine===0 && !out[oi].damped) lonely.push(out[oi]);
 
+    var basesLowN = [];
+    for (var bnid in bases) if (bases[bnid].n < 3) basesLowN.push(bnid);
+
     return {
       records:rec, index:map, localBases:bases,
+      dataQuality: { calibrationFit: fit ? { intercept:fit.intercept, rate:fit.rate, n:fit.n } : null, lowBaseQuestions: basesLowN },
       sequence:sequence,
       blocks: Q.blocks.map(function(b){
         var gates = (b.gates||[]).map(function(g){
@@ -225,5 +263,5 @@ var PI_STAT = (function(){
       lonely: lonely, base: base, pen: S.pen||{}, counted: Object.keys(rec).length
     };
   }
-  return { analyse:analyse, index:index };
+  return { analyse:analyse, index:index, calibrationFit:calibrationFit };
 })();

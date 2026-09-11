@@ -99,6 +99,23 @@ function shortReason(w){
   return w.split(" ").slice(0,3).join(" ");
 }
 
+function renderDataQuality(A){
+  var box = el("rp-dataquality"); if (!box) return;
+  box.innerHTML = "";
+  var notes = [];
+  var dq = A.dataQuality || {};
+  if (!dq.calibrationFit) notes.push("Індивідуальну норму читання не вдалося визначити з калібрувального блоку — латентність оцінюється за спрощеною формулою.");
+  if (dq.lowBaseQuestions && dq.lowBaseQuestions.length >= 3)
+    notes.push("У кількох блоках недостатньо відповідей «ні» для порівняння часу реакції (потрібно щонайменше 3) — латентнісний аналіз там вимкнений.");
+  var straightLine = (A.sequence||[]).length >= 6 && A.sequence.every(function(p){ return p.value === "no"; });
+  if (straightLine) notes.push("Усі відповіді — «ні» поспіль; перевірте, чи респондент читав питання уважно.");
+  if (!notes.length){ box.classList.add("hidden"); return; }
+  box.classList.remove("hidden");
+  tag("div", "label", box, "Якість даних");
+  var text = tag("div", "text", box);
+  text.textContent = notes.join(" ");
+}
+
 function renderReport(){
   var S = PI_FILL.session(); if (!S) return;
   var A = (S.finished && (S.analysis_current || S.analysis_snapshot)) || PI_STAT.analyse(S);
@@ -106,6 +123,7 @@ function renderReport(){
 
   el("rp-title").textContent = "Звіт" + (S.case_info && S.case_info.label ? " · " + S.case_info.label : "");
   el("rp-summary-text").textContent = buildSummaryText(A);
+  renderDataQuality(A);
 
   var byId = {}; A.points.forEach(function(p){ byId[p.id] = p; });
   var map = A.index;

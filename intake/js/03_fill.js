@@ -314,7 +314,20 @@ var PI_FILL = (function(){
         nodes.gates.push({ q:b.questions[k], node:qn, branch:null, pad:null });
       }
     } else {
-      for (var g = 0; g < b.gates.length; g++) list.appendChild(gateNode(b.gates[g]));
+      var anchorsAfter = {};
+      (b.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
+      for (var g = 0; g < b.gates.length; g++){
+        list.appendChild(gateNode(b.gates[g]));
+        var afterId = b.gates[g].id;
+        if (anchorsAfter[afterId]) anchorsAfter[afterId].forEach(function(anchor){
+          var an = questionNode(anchor, ["yes","no","explain"]);
+          list.appendChild(an);
+          nodes.gates.push({ q:anchor, node:an, branch:null, pad:null });
+        });
+      }
+      if (b.closing && b.closing.recap){
+        var recapEl = tag("div", "fq-recap", list); recapEl.textContent = b.closing.recap;
+      }
       var cl = questionNode(b.closing, ["yes","no"]);
       list.appendChild(cl); nodes.closing = b.closing;
       nodes.closingPad = padNode(list, R("r_addendum"), "wide", "exp_"+b.closing.id);
@@ -494,6 +507,7 @@ var PI_FILL = (function(){
     if (status !== "aborted"){
       for (var bi = 0; bi < Q.blocks.length; bi++){
         var b = Q.blocks[bi], required = (b.questions||b.gates||[]).slice(); if (b.closing) required.push(b.closing);
+        if (b.anchors) required = required.concat(b.anchors);
         (b.gates||[]).forEach(function(g){ var a = S.answers[g.id]; if (a && (a.value==="yes"||a.value==="explain")) required = required.concat(g.expansion); });
         var miss = required.some(function(q){ return !S.answers[q.id]; });
         if (miss || !S.signatures[bi===Q.blocks.length-1 ? "final" : b.id]){

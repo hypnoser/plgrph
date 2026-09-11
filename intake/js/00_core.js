@@ -133,17 +133,19 @@ function briefing(){
 }
 
 /* ------------------------------------------------------------------ */
-/*  ВАЛІДАТОР СХЕМИ 1.0                                                */
+/*  ВАЛІДАТОР СХЕМИ 1.x (мажорна версія 1)                             */
 /*  Логіка ідентична 3.2. Обов'язкові умови валідності описані в        */
 /*  промпті генерації анкети — тут вони лише перевіряються.             */
 /* ------------------------------------------------------------------ */
 
 var PI_VALIDATE = (function(){
-  var SCHEMA = "1.0";
+  var SCHEMA = "1.1";
+  var SCHEMA_MAJOR = SCHEMA.split(".")[0];
   var ROOT_KEYS = ["schema_version","meta","consent","blocks"];
   var META_KEYS = ["title","language","created","period","respondent_context","assessment_type","instructions"];
   var BLOCK_TYPES = ["calibration","topic"];
   var BASELINE = ["high","medium","low"];
+  var CALIB_ROLES = ["motor_floor","reading_rate","enumeration_load","recall_load","explain_format","engagement_check"];
   var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.0. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
   var HINT_EMPTY = "Файл порожній або майже порожній.";
 
@@ -174,8 +176,8 @@ var PI_VALIDATE = (function(){
     }
     if (!("schema_version" in data)) err("schema_version", "поле відсутнє");
     else if (!isStr(data.schema_version)) err("schema_version", "має бути рядком");
-    else if (data.schema_version !== SCHEMA)
-      err("schema_version", "файл заявляє схему " + data.schema_version + ", двигун підтримує " + SCHEMA);
+    else if (data.schema_version.split(".")[0] !== SCHEMA_MAJOR)
+      err("schema_version", "файл заявляє схему " + data.schema_version + ", двигун підтримує " + SCHEMA_MAJOR + ".x");
 
     if (!isObj(data.meta)) err("meta", "розділ відсутній або не є об'єктом");
     else {
@@ -218,6 +220,10 @@ var PI_VALIDATE = (function(){
           if (!isObj(qu)){ err(QL, "питання не є об'єктом"); continue; }
           claimId(QL + ".id", qu.id, "калібрувальне питання");
           checkText(QL, qu.id, qu.text, false);
+          if ("calibration_role" in qu && CALIB_ROLES.indexOf(qu.calibration_role) === -1)
+            wrn(QL + ".calibration_role", "значення «" + qu.calibration_role + "» не з очікуваного набору — ігнорується аналізом");
+          if ("load_profile" in qu && !isObj(qu.load_profile))
+            wrn(QL + ".load_profile", "має бути об'єктом — ігнорується аналізом");
           stats.calibration++; entry.plain++;
         }
       } else {
@@ -231,6 +237,8 @@ var PI_VALIDATE = (function(){
           else if (BASELINE.indexOf(ga.baseline_yes) === -1) err(GL + ".baseline_yes", "значення «" + ga.baseline_yes + "» неприпустиме");
           if (typeof ga.relevant_candidate !== "boolean") wrn(GL + ".relevant_candidate", "ознаку не вказано, вважаю false");
           else if (ga.relevant_candidate) stats.relevant++;
+          if ("load_profile" in ga && !isObj(ga.load_profile))
+            wrn(GL + ".load_profile", "має бути об'єктом — ігнорується аналізом");
           stats.gates++; entry.gates++;
           if (!isArr(ga.expansion) || ga.expansion.length === 0) err(GL + ".expansion", "шлюз без уточнень");
           else for (var e = 0; e < ga.expansion.length; e++){
@@ -243,7 +251,18 @@ var PI_VALIDATE = (function(){
         }
         if (!isObj(b.closing)) err(L + ".closing", "тематичний блок без закриваючого питання");
         else { claimId(L + ".closing.id", b.closing.id, "закриваюче питання"); entry.closing = 1;
-               checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++; }
+               checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++;
+               if ("recap" in b.closing && !filled(b.closing.recap)) wrn(L + ".closing.recap", "поле присутнє, але порожнє"); }
+        if ("anchors" in b){
+          if (!isArr(b.anchors)) wrn(L + ".anchors", "має бути масивом — ігнорується аналізом");
+          else for (var a = 0; a < b.anchors.length; a++){
+            var an = b.anchors[a], AL = L + ".anchors[" + a + "]";
+            if (!isObj(an)){ wrn(AL, "запис не є об'єктом — ігнорується"); continue; }
+            claimId(AL + ".id", an.id, "якір");
+            checkText(AL, an.id, an.text, true);
+            if (!filled(an.after_gate)) wrn(AL + ".after_gate", "не вказано, після якого шлюзу ставити якір");
+          }
+        }
       }
       stats.blockList.push(entry);
     }
