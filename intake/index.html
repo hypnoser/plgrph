@@ -1319,6 +1319,26 @@ function validateSaved(s){
       if (typeof o[k] !== "string" || !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(o[k])) throw new Error("Рукописні поля мають бути вбудованими PNG");
     });
   }
+  /* signatures — змішаний об'єкт з версії, де підпис нефінальних блоків
+     замінено на чекбокс підтвердження (confirmNode): S.signatures[block.id]
+     для КОЖНОГО блоку, крім останнього, зберігає ISO-timestamp моменту
+     підтвердження, не зображення. Лише signatures.final лишається
+     рукописним PNG-підписом (останній блок і далі підписується стилусом).
+     images() тут перевіряла б усі значення як PNG і хибно відхиляла б
+     будь-яку реальну завершену сесію з підтвердженими нефінальними
+     блоками — тому перевіряємо кожен ключ за його власним форматом. */
+  function signatures(o){
+    if (!obj(o)) throw new Error("Пошкоджено підписи блоків");
+    Object.keys(o).forEach(function(k){
+      var v = o[k];
+      if (typeof v !== "string") throw new Error("Підпис «" + k + "» пошкоджено");
+      if (k === "final"){
+        if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(v)) throw new Error("Підсумковий підпис має бути вбудованим PNG");
+      } else {
+        if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(v)) throw new Error("Підтвердження блоку «" + k + "» має бути часовою міткою");
+      }
+    });
+  }
   if (["1.0","1.1","2.0"].indexOf(s.schema_version) < 0) throw new Error("Непідтримувана версія сесії");
   /* questionnaire може бути null — це проміжний стан "справу створено,
      анкету ще не завантажено" (файл сесії існує й пишеться на диск
@@ -1330,7 +1350,7 @@ function validateSaved(s){
   if (typeof s.session_id !== "string" || !s.session_id || !/^[a-zA-Z0-9_.-]+$/.test(s.session_id) ||
       !Array.isArray(s.events) || s.events.length > 100000 || !obj(s.answers) || !obj(s.identity) ||
       !obj(s.explanations) || !obj(s.signatures)) throw new Error("Неповний файл сесії");
-  images(s.identity); images(s.explanations); images(s.signatures);
+  images(s.identity); images(s.explanations); signatures(s.signatures);
   return true;
 }
 function legacyCanonical(S){
