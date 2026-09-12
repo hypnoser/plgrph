@@ -146,7 +146,9 @@ var PI_VALIDATE = (function(){
   var BLOCK_TYPES = ["calibration","topic"];
   var BASELINE = ["high","medium","low"];
   var CALIB_ROLES = ["motor_floor","reading_rate","enumeration_load","recall_load","explain_format","engagement_check"];
-  var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.0. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
+  var CATEGORIES = ["fact","circumstances","content","initiative","own_action","reward","declined","repetition","nondisclosure","concealment","third_parties"];
+  var LANGUAGES = ["uk","ru"];
+  var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.x. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
   var HINT_EMPTY = "Файл порожній або майже порожній.";
 
   function isObj(v){ return v && typeof v === "object" && !Array.isArray(v); }
@@ -183,6 +185,8 @@ var PI_VALIDATE = (function(){
     else {
       if (!filled(data.meta.title)) err("meta.title", "назва обстеження обов'язкова");
       if (!("created" in data.meta)) wrn("meta.created", "дату створення не вказано");
+      if (!("language" in data.meta)) wrn("meta.language", "мову не вказано, інтерфейс двигуна однаково лишається українським");
+      else if (LANGUAGES.indexOf(data.meta.language) === -1) err("meta.language", "значення «" + data.meta.language + "» неприпустиме, очікується uk або ru");
     }
     if (data.consent && (!isObj(data.consent) || !isArr(data.consent.paragraphs) || data.consent.paragraphs.some(function(p){ return !filled(p); })))
       err("consent", "Потрібен розділ із масивом текстових абзаців paragraphs");
@@ -227,12 +231,24 @@ var PI_VALIDATE = (function(){
           stats.calibration++; entry.plain++;
         }
       } else {
+        var isFinalRecapBlock = (i === data.blocks.length - 1);
         if (!isArr(b.gates) || b.gates.length === 0) err(L + ".gates", "тематичний блок без шлюзів");
-        else for (var g = 0; g < b.gates.length; g++){
+        else { var seenCategories = Object.create(null); for (var g = 0; g < b.gates.length; g++){
           var ga = b.gates[g], GL = L + ".gates[" + g + "]";
           if (!isObj(ga)){ err(GL, "шлюз не є об'єктом"); continue; }
           claimId(GL + ".id", ga.id, "шлюз");
           checkText(GL, ga.id, ga.text, true);
+          if (!filled(ga.category)) err(GL + ".category", "категорію не вказано");
+          else if (CATEGORIES.indexOf(ga.category) === -1) err(GL + ".category", "значення «" + ga.category + "» не з таксономії 11 категорій");
+          /* Фінальний блок пригадування (останній блок анкети) — кожен
+             шлюз там повертає до вже пройденої теми і за задумом промпту
+             семантично однаковий ("факт пригадування" per темі), тому
+             повторення однієї category на кожному шлюзі там — правильна,
+             задокументована поведінка, не помилка генерації. Перевірка
+             неповторності застосовується лише до звичайних тематичних
+             блоків. */
+          else if (!isFinalRecapBlock && seenCategories[ga.category]) err(GL + ".category", "категорія «" + ga.category + "» вже використана в цьому блоці (" + seenCategories[ga.category] + ")");
+          else seenCategories[ga.category] = ga.id || GL;
           if (!("baseline_yes" in ga)) wrn(GL + ".baseline_yes", "вагу не вказано, вважаю medium");
           else if (BASELINE.indexOf(ga.baseline_yes) === -1) err(GL + ".baseline_yes", "значення «" + ga.baseline_yes + "» неприпустиме");
           if (typeof ga.relevant_candidate !== "boolean") wrn(GL + ".relevant_candidate", "ознаку не вказано, вважаю false");
@@ -248,7 +264,7 @@ var PI_VALIDATE = (function(){
             checkText(EL, ex.id, ex.text, true);
             stats.expansions++; entry.exp++;
           }
-        }
+        }}
         if (!isObj(b.closing)) err(L + ".closing", "тематичний блок без закриваючого питання");
         else { claimId(L + ".closing.id", b.closing.id, "закриваюче питання"); entry.closing = 1;
                checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++;

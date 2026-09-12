@@ -91,12 +91,23 @@ function buildSummaryText(A){
   return parts.join(" ") + " Решта блоків без відхилень від очікуваного.";
 }
 function shortReason(w){
-  if (/зміну?вав відповідь/.test(w)) return "зміна відповіді";
+  if (/після того, як побачив/.test(w)) return "зміна після уточнення";
+  if (/зміню?вав відповідь|змінив відповідь/.test(w)) return "зміна відповіді";
+  if (/довга пауза на початку блоку/.test(w)) return "пауза на старті блоку";
+  if (/помітно довша пауза/.test(w)) return "довга пауза";
   if (/пауза/.test(w)) return "уповільнення";
+  if (/відкрив уточнення й згорнув/.test(w)) return "відкрив і згорнув без відповіді";
+  if (/лишив пояснення порожнім/.test(w)) return "порожнє пояснення";
+  if (/відповів не по порядку/.test(w)) return "відповідь не по порядку";
+  if (/суцільні «ні»/.test(w)) return "серія автоматичних «ні»";
+  if (/повідомлена обставина для уточнення/.test(w)) return "повідомив обставину";
+  if (/позначене як кандидат у релевантні/.test(w)) return "кандидат у релевантні";
+  if (/повторно зосереджував стилус/.test(w)) return "повторна увага";
   if (/стилус/.test(w)) return "повторна увага";
-  if (/повернувся/.test(w)) return "самостійне повернення";
-  if (/спостереження поліграфолога/.test(w)) return "ваша мітка";
-  return w.split(" ").slice(0,3).join(" ");
+  if (/самостійно повернувся|повернувся/.test(w)) return "самостійне повернення";
+  if (/також є спостереження поліграфолога|спостереження поліграфолога/.test(w)) return "ваша мітка";
+  if (/поведінкову підсвітку знято/.test(w)) return "підсвітку знято";
+  return w.length > 40 ? w.slice(0, 40).trim() + "…" : w;
 }
 
 function renderDataQuality(A){
@@ -132,22 +143,25 @@ function renderReport(){
   S.questionnaire.blocks.forEach(function(block){
     var qs = block.type === "calibration"
       ? (block.questions||[])
-      : (block.gates||[]).concat(block.closing ? [block.closing] : []);
+      : (block.gates||[]).concat(block.anchors||[]).concat(block.closing ? [block.closing] : []);
     var row = tag("div", "rep-row", mapRoot);
     tag("div", "rep-topic", row, block.id + " · " + block.title);
     var cells = tag("div", "rep-cells", row);
     qs.forEach(function(q){
       var p = byId[q.id];
-      var cell = tag("button", "rep-cell", cells);
+      var isAnchor = (block.anchors||[]).indexOf(q) !== -1;
+      var cell = tag("button", "rep-cell" + (isAnchor ? " rep-cell-anchor" : ""), cells);
       cell.type = "button";
       cell.setAttribute("data-qid", q.id);
-      cell.setAttribute("aria-label", q.id + " — " + q.text);
-      if (p && p.score) cell.setAttribute("style", heatStyle(p.score));
+      cell.setAttribute("aria-label", q.id + " — " + q.text + (isAnchor ? " (якір, нейтральна контрольна точка)" : ""));
+      if (!isAnchor && p && p.score) cell.setAttribute("style", heatStyle(p.score));
       tag("span", "rep-cell-id", cell, q.id);
-      var flags = eventFlags(p);
-      if (flags.length){
-        var dots = tag("span", "rep-cell-dots", cell);
-        flags.forEach(function(f){ tag("i", "rep-dot rep-dot-"+f, dots); });
+      if (!isAnchor){
+        var flags = eventFlags(p);
+        if (flags.length){
+          var dots = tag("span", "rep-cell-dots", cell);
+          flags.forEach(function(f){ tag("i", "rep-dot rep-dot-"+f, dots); });
+        }
       }
       cell.addEventListener("click", function(){ selectQuestion(q.id); });
     });
@@ -341,6 +355,8 @@ function renderAnswerSheet(){
     if (block.type === "calibration"){
       (block.questions||[]).forEach(function(q){ renderQuestion(q, false); });
     } else {
+      var anchorsAfter = {};
+      (block.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
       (block.gates||[]).forEach(function(g){
         renderQuestion(g, false);
         var ga = S.answers[g.id];
@@ -352,6 +368,7 @@ function renderAnswerSheet(){
           var e = tag("p", "as-exp", wrap); e.textContent = "Пояснення:";
           var eimg = tag("img", null, e); eimg.src = exp; eimg.style.display = "block"; eimg.style.maxWidth = "100%"; eimg.style.maxHeight = "4em";
         }
+        if (anchorsAfter[g.id]) anchorsAfter[g.id].forEach(function(a){ renderQuestion(a, false); });
       });
       if (block.closing) renderQuestion(block.closing, false);
     }

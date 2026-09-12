@@ -11,7 +11,7 @@
    ====================================================================== */
 "use strict";
 
-var VERSION = "4.0";
+var VERSION = "4.1";
 var ANALYTICS_VERSION = "2.1";
 var PEN_INK = "#5B2C8F";
 function penWidth(e){ return 0.5 + (e.pressure || 0.5) * 2.25; }
@@ -362,6 +362,7 @@ var PI_FILL = (function(){
       if (S.answers[g.id]) out.push(g);
       (g.expansion||[]).forEach(function(q){ if (S.answers[q.id]) out.push(q); });
     });
+    (block.anchors||[]).forEach(function(a){ if (S.answers[a.id]) out.push(a); });
     if (block.closing && S.answers[block.closing.id]) out.push(block.closing);
     return out;
   }

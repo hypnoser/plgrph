@@ -52,10 +52,27 @@ var QV = (function(){
     return null;
   }
 
+  function anchorsPointingAt(gateIds){
+    var q = questionnaire(), hits = [];
+    q.blocks.forEach(function(b){
+      (b.anchors||[]).forEach(function(a){ if (gateIds.indexOf(a.after_gate) !== -1) hits.push(a); });
+    });
+    return hits;
+  }
+
   function deleteSelected(){
     if (!selectedCount()) return;
-    if (!confirm("Видалити позначені питання? Дію не можна скасувати після збереження у файл.")) return;
     var q = questionnaire();
+    var selectedGateIds = Object.keys(selected).filter(function(id){ return selected[id] && findGateAndBlock(id); });
+    var affectedAnchors = anchorsPointingAt(selectedGateIds);
+    var msg = "Видалити позначені питання? Дію не можна скасувати після збереження у файл.";
+    if (affectedAnchors.length){
+      msg += "\n\nУвага: " + affectedAnchors.length + " " +
+        (affectedAnchors.length === 1 ? "якір посилається" : "якорі/якорів посилаються") +
+        " на видалювані шлюзи (after_gate: " + affectedAnchors.map(function(a){ return a.after_gate; }).join(", ") +
+        "). Ці якорі будуть переміщені на початок свого блоку, щоб не лишити биту прив'язку.";
+    }
+    if (!confirm(msg)) return;
     q.blocks.forEach(function(b){
       if (!b.gates) return;
       b.gates = b.gates.filter(function(g){
@@ -63,6 +80,17 @@ var QV = (function(){
         g.expansion = g.expansion.filter(function(x){ return !selected[x.id]; });
         return true;
       });
+      /* Якір, чий after_gate більше не існує (шлюз видалено вище) —
+         переносимо на перший шлюз блоку, що лишився, аби не тримати
+         посилання в нікуди. Якщо шлюзів у блоці більше нема — after_gate
+         лишається null, двигун рендерингу тоді просто не покаже якір
+         (безпечніше за помилку рендеру на неіснуючому id). */
+      if (b.anchors && b.anchors.length){
+        var stillExists = {}; (b.gates||[]).forEach(function(g){ stillExists[g.id] = true; });
+        b.anchors.forEach(function(a){
+          if (a.after_gate && !stillExists[a.after_gate]) a.after_gate = b.gates.length ? b.gates[0].id : null;
+        });
+      }
     });
     selected = {};
     render();
@@ -190,6 +218,9 @@ var QV = (function(){
       addBtn.type = "button";
       addBtn.addEventListener("click", function(){ addGate(bi); });
 
+      var anchorsAfter = {};
+      (b.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
+
       (b.gates || []).forEach(function(g){
         var isSel = !!selected[g.id];
         var row = tag("div", "qv-gate" + (isSel ? " selected" : ""), body);
@@ -204,6 +235,11 @@ var QV = (function(){
 
         row.appendChild(renderTextOrEdit(g.id + " · " + g.text, g.id, true));
 
+        if (!g.category){
+          var catWarn = tag("span", "qv-cat-warn", row, "без категорії");
+          catWarn.title = "Полю category не присвоєно значення з таксономії 11 категорій — валідатор відхилить файл при генерації JSON двигуном. Задайте category вручну в текстовому редакторі файлу.";
+        }
+
         var editBtn = tag("button", "icon-btn", row);
         editBtn.type = "button";
         editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>';
@@ -214,6 +250,17 @@ var QV = (function(){
         delBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>';
         delBtn.addEventListener("click", function(){
           selected = {}; selected[g.id] = true; deleteSelected();
+        });
+
+        /* Якорі — лише перегляд і редагування тексту (як звичайне
+           inline-редагування), без чекбоксів масового вибору: вони не
+           є "питаннями теми" в тому ж сенсі, що шлюзи, а прив'язані до
+           конкретного after_gate. Видаляються лише разом з переміщенням
+           after_gate у deleteSelected(), не окремою кнопкою тут. */
+        if (anchorsAfter[g.id]) anchorsAfter[g.id].forEach(function(a){
+          var arow = tag("div", "qv-anchor", body);
+          tag("span", "qv-anchor-label", arow, "якір");
+          arow.appendChild(renderTextOrEdit(a.id + " · " + a.text, a.id, false));
         });
 
         if (expanded[g.id]){
@@ -257,3 +304,16 @@ var QV = (function(){
 el("qv-back").addEventListener("click", function(){ navBack("s-start"); });
 el("qv-bulk-delete").addEventListener("click", function(){ QV.deleteSelected(); });
 el("qv-save").addEventListener("click", function(){ QV.saveToFile(); });
+/* Заміна анкети іншим файлом — окремо від інлайн-редагування поточної.
+   Якщо сесія вже має відповіді (заповнення почалось), заміна анкети
+   під час активної сесії небезпечна: відповіді лишаться прив'язані до id
+   зі старої структури, тому явно попереджаємо саме в цьому випадку;
+   якщо тест ще не починався (S.answers порожній) — попередження зайве. */
+el("qv-replace").addEventListener("click", function(){
+  var S = PI_FILL.session();
+  var hasAnswers = S && Object.keys(S.answers||{}).length > 0;
+  if (hasAnswers && !confirm("Замінити анкету? Сесія вже має відповіді на поточну анкету — вони не будуть автоматично перенесені на нову структуру."))
+    return;
+  navBack("s-start");
+  el("f-quest").click();
+});

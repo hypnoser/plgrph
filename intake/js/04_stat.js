@@ -240,7 +240,10 @@ var PI_STAT = (function(){
           return { id:g.id, text:g.text, value: rec[g.id]?rec[g.id].value:null, opened: expandAt[g.id]!==undefined,
             expansion: g.expansion.map(function(x){ return { id:x.id, text:x.text, value: rec[x.id]?rec[x.id].value:null }; }) };
         });
-        return { id:b.id, title:b.title, type:b.type, gates:gates.length, list:gates,
+        var anchors = (b.anchors||[]).map(function(a){
+          return { id:a.id, text:a.text, value: rec[a.id]?rec[a.id].value:null, after_gate:a.after_gate||null };
+        });
+        return { id:b.id, title:b.title, type:b.type, gates:gates.length, list:gates, anchors:anchors,
           closing: b.closing ? { id:b.closing.id, value: rec[b.closing.id]?rec[b.closing.id].value:null } : null };
       }),
       stats: {

@@ -99,6 +99,11 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .qv-gate .txt{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .qv-gate .icon-btn{background:none;border:0;color:var(--faint);padding:3px;min-height:auto;cursor:pointer}
 .qv-gate .icon-btn:hover{color:var(--ink);background:none}
+.qv-cat-warn{font-size:10px;color:var(--bad);background:var(--bad-bg);border-radius:6px;padding:2px 6px;flex-shrink:0;white-space:nowrap}
+.qv-anchor{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 30px;border-radius:8px;
+  background:transparent;border:1px dashed var(--rule);margin-bottom:4px;opacity:.8}
+.qv-anchor-label{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.03em;flex-shrink:0}
+.qv-anchor .txt{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-style:italic}
 .qv-exp-list{display:flex;flex-direction:column;gap:3px;margin:4px 0 6px 30px}
 .qv-exp{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:var(--rule-soft)}
 .qv-exp.selected{background:var(--accent-soft)}
@@ -245,6 +250,8 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-cell-id{font-size:13px;font-weight:600}
 .rep-cell-dots{display:flex;gap:3px}
 .rep-cell.selected{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.rep-cell-anchor{border-style:dashed;opacity:.72}
+.rep-cell-anchor:hover{opacity:1}
 .rep-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
 .rep-dot-route{background:#B3690B}
 .rep-dot-attention{background:#4C7A3D}
@@ -493,6 +500,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
     </button>
     <div class="qv-toolbar">
       <span class="title" id="qv-title"></span>
+      <button type="button" class="mini ghost" id="qv-replace">Завантажити іншу анкету</button>
     </div>
     <div class="qv-bulkbar hidden" id="qv-bulkbar">
       <span class="lbl" id="qv-bulk-count"></span>
@@ -928,7 +936,9 @@ var PI_VALIDATE = (function(){
   var BLOCK_TYPES = ["calibration","topic"];
   var BASELINE = ["high","medium","low"];
   var CALIB_ROLES = ["motor_floor","reading_rate","enumeration_load","recall_load","explain_format","engagement_check"];
-  var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.0. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
+  var CATEGORIES = ["fact","circumstances","content","initiative","own_action","reward","declined","repetition","nondisclosure","concealment","third_parties"];
+  var LANGUAGES = ["uk","ru"];
+  var HINT_REGENERATE = "Файл пошкоджено або він не відповідає схемі 1.x. Поверніться до чату, де готувалась анкета, і завантажте файл заново.";
   var HINT_EMPTY = "Файл порожній або майже порожній.";
 
   function isObj(v){ return v && typeof v === "object" && !Array.isArray(v); }
@@ -965,6 +975,8 @@ var PI_VALIDATE = (function(){
     else {
       if (!filled(data.meta.title)) err("meta.title", "назва обстеження обов'язкова");
       if (!("created" in data.meta)) wrn("meta.created", "дату створення не вказано");
+      if (!("language" in data.meta)) wrn("meta.language", "мову не вказано, інтерфейс двигуна однаково лишається українським");
+      else if (LANGUAGES.indexOf(data.meta.language) === -1) err("meta.language", "значення «" + data.meta.language + "» неприпустиме, очікується uk або ru");
     }
     if (data.consent && (!isObj(data.consent) || !isArr(data.consent.paragraphs) || data.consent.paragraphs.some(function(p){ return !filled(p); })))
       err("consent", "Потрібен розділ із масивом текстових абзаців paragraphs");
@@ -1009,12 +1021,24 @@ var PI_VALIDATE = (function(){
           stats.calibration++; entry.plain++;
         }
       } else {
+        var isFinalRecapBlock = (i === data.blocks.length - 1);
         if (!isArr(b.gates) || b.gates.length === 0) err(L + ".gates", "тематичний блок без шлюзів");
-        else for (var g = 0; g < b.gates.length; g++){
+        else { var seenCategories = Object.create(null); for (var g = 0; g < b.gates.length; g++){
           var ga = b.gates[g], GL = L + ".gates[" + g + "]";
           if (!isObj(ga)){ err(GL, "шлюз не є об'єктом"); continue; }
           claimId(GL + ".id", ga.id, "шлюз");
           checkText(GL, ga.id, ga.text, true);
+          if (!filled(ga.category)) err(GL + ".category", "категорію не вказано");
+          else if (CATEGORIES.indexOf(ga.category) === -1) err(GL + ".category", "значення «" + ga.category + "» не з таксономії 11 категорій");
+          /* Фінальний блок пригадування (останній блок анкети) — кожен
+             шлюз там повертає до вже пройденої теми і за задумом промпту
+             семантично однаковий ("факт пригадування" per темі), тому
+             повторення однієї category на кожному шлюзі там — правильна,
+             задокументована поведінка, не помилка генерації. Перевірка
+             неповторності застосовується лише до звичайних тематичних
+             блоків. */
+          else if (!isFinalRecapBlock && seenCategories[ga.category]) err(GL + ".category", "категорія «" + ga.category + "» вже використана в цьому блоці (" + seenCategories[ga.category] + ")");
+          else seenCategories[ga.category] = ga.id || GL;
           if (!("baseline_yes" in ga)) wrn(GL + ".baseline_yes", "вагу не вказано, вважаю medium");
           else if (BASELINE.indexOf(ga.baseline_yes) === -1) err(GL + ".baseline_yes", "значення «" + ga.baseline_yes + "» неприпустиме");
           if (typeof ga.relevant_candidate !== "boolean") wrn(GL + ".relevant_candidate", "ознаку не вказано, вважаю false");
@@ -1030,7 +1054,7 @@ var PI_VALIDATE = (function(){
             checkText(EL, ex.id, ex.text, true);
             stats.expansions++; entry.exp++;
           }
-        }
+        }}
         if (!isObj(b.closing)) err(L + ".closing", "тематичний блок без закриваючого питання");
         else { claimId(L + ".closing.id", b.closing.id, "закриваюче питання"); entry.closing = 1;
                checkText(L + ".closing", b.closing.id, b.closing.text, false); stats.closings++;
@@ -1439,10 +1463,27 @@ var QV = (function(){
     return null;
   }
 
+  function anchorsPointingAt(gateIds){
+    var q = questionnaire(), hits = [];
+    q.blocks.forEach(function(b){
+      (b.anchors||[]).forEach(function(a){ if (gateIds.indexOf(a.after_gate) !== -1) hits.push(a); });
+    });
+    return hits;
+  }
+
   function deleteSelected(){
     if (!selectedCount()) return;
-    if (!confirm("Видалити позначені питання? Дію не можна скасувати після збереження у файл.")) return;
     var q = questionnaire();
+    var selectedGateIds = Object.keys(selected).filter(function(id){ return selected[id] && findGateAndBlock(id); });
+    var affectedAnchors = anchorsPointingAt(selectedGateIds);
+    var msg = "Видалити позначені питання? Дію не можна скасувати після збереження у файл.";
+    if (affectedAnchors.length){
+      msg += "\n\nУвага: " + affectedAnchors.length + " " +
+        (affectedAnchors.length === 1 ? "якір посилається" : "якорі/якорів посилаються") +
+        " на видалювані шлюзи (after_gate: " + affectedAnchors.map(function(a){ return a.after_gate; }).join(", ") +
+        "). Ці якорі будуть переміщені на початок свого блоку, щоб не лишити биту прив'язку.";
+    }
+    if (!confirm(msg)) return;
     q.blocks.forEach(function(b){
       if (!b.gates) return;
       b.gates = b.gates.filter(function(g){
@@ -1450,6 +1491,17 @@ var QV = (function(){
         g.expansion = g.expansion.filter(function(x){ return !selected[x.id]; });
         return true;
       });
+      /* Якір, чий after_gate більше не існує (шлюз видалено вище) —
+         переносимо на перший шлюз блоку, що лишився, аби не тримати
+         посилання в нікуди. Якщо шлюзів у блоці більше нема — after_gate
+         лишається null, двигун рендерингу тоді просто не покаже якір
+         (безпечніше за помилку рендеру на неіснуючому id). */
+      if (b.anchors && b.anchors.length){
+        var stillExists = {}; (b.gates||[]).forEach(function(g){ stillExists[g.id] = true; });
+        b.anchors.forEach(function(a){
+          if (a.after_gate && !stillExists[a.after_gate]) a.after_gate = b.gates.length ? b.gates[0].id : null;
+        });
+      }
     });
     selected = {};
     render();
@@ -1577,6 +1629,9 @@ var QV = (function(){
       addBtn.type = "button";
       addBtn.addEventListener("click", function(){ addGate(bi); });
 
+      var anchorsAfter = {};
+      (b.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
+
       (b.gates || []).forEach(function(g){
         var isSel = !!selected[g.id];
         var row = tag("div", "qv-gate" + (isSel ? " selected" : ""), body);
@@ -1591,6 +1646,11 @@ var QV = (function(){
 
         row.appendChild(renderTextOrEdit(g.id + " · " + g.text, g.id, true));
 
+        if (!g.category){
+          var catWarn = tag("span", "qv-cat-warn", row, "без категорії");
+          catWarn.title = "Полю category не присвоєно значення з таксономії 11 категорій — валідатор відхилить файл при генерації JSON двигуном. Задайте category вручну в текстовому редакторі файлу.";
+        }
+
         var editBtn = tag("button", "icon-btn", row);
         editBtn.type = "button";
         editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>';
@@ -1601,6 +1661,17 @@ var QV = (function(){
         delBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>';
         delBtn.addEventListener("click", function(){
           selected = {}; selected[g.id] = true; deleteSelected();
+        });
+
+        /* Якорі — лише перегляд і редагування тексту (як звичайне
+           inline-редагування), без чекбоксів масового вибору: вони не
+           є "питаннями теми" в тому ж сенсі, що шлюзи, а прив'язані до
+           конкретного after_gate. Видаляються лише разом з переміщенням
+           after_gate у deleteSelected(), не окремою кнопкою тут. */
+        if (anchorsAfter[g.id]) anchorsAfter[g.id].forEach(function(a){
+          var arow = tag("div", "qv-anchor", body);
+          tag("span", "qv-anchor-label", arow, "якір");
+          arow.appendChild(renderTextOrEdit(a.id + " · " + a.text, a.id, false));
         });
 
         if (expanded[g.id]){
@@ -1644,6 +1715,19 @@ var QV = (function(){
 el("qv-back").addEventListener("click", function(){ navBack("s-start"); });
 el("qv-bulk-delete").addEventListener("click", function(){ QV.deleteSelected(); });
 el("qv-save").addEventListener("click", function(){ QV.saveToFile(); });
+/* Заміна анкети іншим файлом — окремо від інлайн-редагування поточної.
+   Якщо сесія вже має відповіді (заповнення почалось), заміна анкети
+   під час активної сесії небезпечна: відповіді лишаться прив'язані до id
+   зі старої структури, тому явно попереджаємо саме в цьому випадку;
+   якщо тест ще не починався (S.answers порожній) — попередження зайве. */
+el("qv-replace").addEventListener("click", function(){
+  var S = PI_FILL.session();
+  var hasAnswers = S && Object.keys(S.answers||{}).length > 0;
+  if (hasAnswers && !confirm("Замінити анкету? Сесія вже має відповіді на поточну анкету — вони не будуть автоматично перенесені на нову структуру."))
+    return;
+  navBack("s-start");
+  el("f-quest").click();
+});
 
 /* ======================================================================
    Intake v4 — 03_fill.js
@@ -1658,7 +1742,7 @@ el("qv-save").addEventListener("click", function(){ QV.saveToFile(); });
    ====================================================================== */
 "use strict";
 
-var VERSION = "4.0";
+var VERSION = "4.1";
 var ANALYTICS_VERSION = "2.1";
 var PEN_INK = "#5B2C8F";
 function penWidth(e){ return 0.5 + (e.pressure || 0.5) * 2.25; }
@@ -2009,6 +2093,7 @@ var PI_FILL = (function(){
       if (S.answers[g.id]) out.push(g);
       (g.expansion||[]).forEach(function(q){ if (S.answers[q.id]) out.push(q); });
     });
+    (block.anchors||[]).forEach(function(a){ if (S.answers[a.id]) out.push(a); });
     if (block.closing && S.answers[block.closing.id]) out.push(block.closing);
     return out;
   }
@@ -2609,7 +2694,10 @@ var PI_STAT = (function(){
           return { id:g.id, text:g.text, value: rec[g.id]?rec[g.id].value:null, opened: expandAt[g.id]!==undefined,
             expansion: g.expansion.map(function(x){ return { id:x.id, text:x.text, value: rec[x.id]?rec[x.id].value:null }; }) };
         });
-        return { id:b.id, title:b.title, type:b.type, gates:gates.length, list:gates,
+        var anchors = (b.anchors||[]).map(function(a){
+          return { id:a.id, text:a.text, value: rec[a.id]?rec[a.id].value:null, after_gate:a.after_gate||null };
+        });
+        return { id:b.id, title:b.title, type:b.type, gates:gates.length, list:gates, anchors:anchors,
           closing: b.closing ? { id:b.closing.id, value: rec[b.closing.id]?rec[b.closing.id].value:null } : null };
       }),
       stats: {
@@ -2944,12 +3032,23 @@ function buildSummaryText(A){
   return parts.join(" ") + " Решта блоків без відхилень від очікуваного.";
 }
 function shortReason(w){
-  if (/зміну?вав відповідь/.test(w)) return "зміна відповіді";
+  if (/після того, як побачив/.test(w)) return "зміна після уточнення";
+  if (/зміню?вав відповідь|змінив відповідь/.test(w)) return "зміна відповіді";
+  if (/довга пауза на початку блоку/.test(w)) return "пауза на старті блоку";
+  if (/помітно довша пауза/.test(w)) return "довга пауза";
   if (/пауза/.test(w)) return "уповільнення";
+  if (/відкрив уточнення й згорнув/.test(w)) return "відкрив і згорнув без відповіді";
+  if (/лишив пояснення порожнім/.test(w)) return "порожнє пояснення";
+  if (/відповів не по порядку/.test(w)) return "відповідь не по порядку";
+  if (/суцільні «ні»/.test(w)) return "серія автоматичних «ні»";
+  if (/повідомлена обставина для уточнення/.test(w)) return "повідомив обставину";
+  if (/позначене як кандидат у релевантні/.test(w)) return "кандидат у релевантні";
+  if (/повторно зосереджував стилус/.test(w)) return "повторна увага";
   if (/стилус/.test(w)) return "повторна увага";
-  if (/повернувся/.test(w)) return "самостійне повернення";
-  if (/спостереження поліграфолога/.test(w)) return "ваша мітка";
-  return w.split(" ").slice(0,3).join(" ");
+  if (/самостійно повернувся|повернувся/.test(w)) return "самостійне повернення";
+  if (/також є спостереження поліграфолога|спостереження поліграфолога/.test(w)) return "ваша мітка";
+  if (/поведінкову підсвітку знято/.test(w)) return "підсвітку знято";
+  return w.length > 40 ? w.slice(0, 40).trim() + "…" : w;
 }
 
 function renderDataQuality(A){
@@ -2985,22 +3084,25 @@ function renderReport(){
   S.questionnaire.blocks.forEach(function(block){
     var qs = block.type === "calibration"
       ? (block.questions||[])
-      : (block.gates||[]).concat(block.closing ? [block.closing] : []);
+      : (block.gates||[]).concat(block.anchors||[]).concat(block.closing ? [block.closing] : []);
     var row = tag("div", "rep-row", mapRoot);
     tag("div", "rep-topic", row, block.id + " · " + block.title);
     var cells = tag("div", "rep-cells", row);
     qs.forEach(function(q){
       var p = byId[q.id];
-      var cell = tag("button", "rep-cell", cells);
+      var isAnchor = (block.anchors||[]).indexOf(q) !== -1;
+      var cell = tag("button", "rep-cell" + (isAnchor ? " rep-cell-anchor" : ""), cells);
       cell.type = "button";
       cell.setAttribute("data-qid", q.id);
-      cell.setAttribute("aria-label", q.id + " — " + q.text);
-      if (p && p.score) cell.setAttribute("style", heatStyle(p.score));
+      cell.setAttribute("aria-label", q.id + " — " + q.text + (isAnchor ? " (якір, нейтральна контрольна точка)" : ""));
+      if (!isAnchor && p && p.score) cell.setAttribute("style", heatStyle(p.score));
       tag("span", "rep-cell-id", cell, q.id);
-      var flags = eventFlags(p);
-      if (flags.length){
-        var dots = tag("span", "rep-cell-dots", cell);
-        flags.forEach(function(f){ tag("i", "rep-dot rep-dot-"+f, dots); });
+      if (!isAnchor){
+        var flags = eventFlags(p);
+        if (flags.length){
+          var dots = tag("span", "rep-cell-dots", cell);
+          flags.forEach(function(f){ tag("i", "rep-dot rep-dot-"+f, dots); });
+        }
       }
       cell.addEventListener("click", function(){ selectQuestion(q.id); });
     });
@@ -3194,6 +3296,8 @@ function renderAnswerSheet(){
     if (block.type === "calibration"){
       (block.questions||[]).forEach(function(q){ renderQuestion(q, false); });
     } else {
+      var anchorsAfter = {};
+      (block.anchors||[]).forEach(function(a){ (anchorsAfter[a.after_gate] = anchorsAfter[a.after_gate]||[]).push(a); });
       (block.gates||[]).forEach(function(g){
         renderQuestion(g, false);
         var ga = S.answers[g.id];
@@ -3205,6 +3309,7 @@ function renderAnswerSheet(){
           var e = tag("p", "as-exp", wrap); e.textContent = "Пояснення:";
           var eimg = tag("img", null, e); eimg.src = exp; eimg.style.display = "block"; eimg.style.maxWidth = "100%"; eimg.style.maxHeight = "4em";
         }
+        if (anchorsAfter[g.id]) anchorsAfter[g.id].forEach(function(a){ renderQuestion(a, false); });
       });
       if (block.closing) renderQuestion(block.closing, false);
     }
@@ -3691,6 +3796,15 @@ el("mo-back").addEventListener("click", function(){
 
 el("start-go").addEventListener("click", async function(){
   if (!STATE.data || !CASE.label) return;
+  /* Якщо тест уже реально розпочато (status "active") — це не перший
+     старт, а повернення після "До старту" на моніторі. PI_MON.begin()
+     викликає PI_FILL.start(), який для сесії без blockIdx веде на
+     startScreen() (екран підпису) і візуально скидає прогрес на "з
+     нуля", хоча відповіді фізично лишаються в S.answers. Замість
+     цього — resumeSession(), яка викликає PI_FILL.resume() і повертає
+     респондента рівно туди, де він зупинився. */
+  var S = PI_FILL.session();
+  if (S && S.status === "active" && !S.finished){ PI_MON.resume(S); return; }
   PI_MON.begin(STATE.data, PI_CONSENT.current());
 });
 
@@ -3748,9 +3862,10 @@ var HELP_STEPS = [
   { h:"3. Почніть анкетування", p:"Кнопка «Почати анкетування» стає активною, щойно анкета завантажена. Згода не є обов'язковою умовою — можна почати і без неї." },
   { h:"4. Ведіть сесію", p:"На моніторі видно поточне питання респондента. Кольорова крапка в куті картки засвічується, коли на цьому питанні щось помічено автоматично. Кнопками під питанням додавайте власні мітки: три «Спостереження» підсилюють увагу до питання, дві «Перешкоди» — гасять хибний сигнал." },
   { h:"5. Якщо вікно респондента закрилось", p:"Якщо друге вікно було випадково закрито (браузер завжди попереджає про незавершену сесію, але дозволяє підтвердити), на моніторі з'явиться кнопка «Перевідкрити вікно» — вона відновить сесію рівно з того місця, де респондент зупинився." },
-  { h:"6. Завершіть і перегляньте звіт", p:"Кнопка «Завершити анкетування» відкриває вибір: зашифрувати файл сесії паролем чи лишити відкритим. Вікно респондента закриється автоматично. Після цього одразу показується звіт." },
-  { h:"7. Читайте звіт", p:"Зверху — короткий висновок, на що звернути увагу. Нижче — карта питань кольором за рівнем значущості: чим темніший колір, тим важливіше. Клік по питанню відкриває розбір патернів, які сформували цю оцінку." },
-  { h:"8. Налаштування", p:"Кнопка з шестернею в шапці веде в розділ «Налаштування» — робоча тека, файл для запису, друк, видалення даних. Якщо задано PIN, розділ запитає його при вході." }
+  { h:"6. «До старту» посеред тесту", p:"Кнопка «До старту» вгорі монітора повертає вас на стартовий екран, НЕ завершуючи анкетування — дані й далі пишуться, друге вікно респондента лишається відкритим. Щоб продовжити сесію звідти, натисніть «Почати анкетування» ще раз — програма сама впізнає незавершену сесію і поверне на той блок, де респондент зупинився, а не почне заново." },
+  { h:"7. Завершіть і перегляньте звіт", p:"Кнопка «Завершити анкетування» відкриває вибір: зашифрувати файл сесії паролем чи лишити відкритим. Вікно респондента закриється автоматично. Після цього одразу показується звіт." },
+  { h:"8. Читайте звіт", p:"Зверху — короткий висновок, на що звернути увагу. Нижче — карта питань кольором за рівнем значущості: чим темніший колір, тим важливіше. Пунктирні картки — нейтральні контрольні питання (якорі), вони не оцінюються за значущістю. Клік по питанню відкриває розбір патернів, які сформували цю оцінку." },
+  { h:"9. Налаштування", p:"Кнопка з шестернею в шапці веде в розділ «Налаштування» — робоча тека, файл для запису, друк, видалення даних. Якщо задано PIN, розділ запитає його при вході." }
 ];
 function renderHelp(){
   var body = el("help-body"); body.innerHTML = "";
