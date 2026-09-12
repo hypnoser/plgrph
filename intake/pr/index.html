@@ -3,10 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Polygraph Intake — анкета попереднього опитування, що працює на бесіду</title>
+<title>Polygraph Intake — анкета попереднього опитування для поліграфологів</title>
+<meta name="description" content="Polygraph Intake — застосунок для передтестового анкетування: автоматичне розгортання питань, індивідуальна калібровка, живий монітор і кольорова карта уваги для поліграфолога. Працює офлайн.">
+<meta name="keywords" content="анкета попереднього опитування, поліграф, поліграфолог, передтестова бесіда, скринінг поліграф, Polygraph Intake, PLGRPH">
+<meta name="author" content="PLGRPH">
+<link rel="canonical" href="https://plgrph.com/intake/intake-presentation.html">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Polygraph Intake · PLGRPH">
+<meta property="og:title" content="Polygraph Intake — анкета попереднього опитування для поліграфологів">
+<meta property="og:description" content="Автоматичне розгортання питань, індивідуальна калібровка, живий монітор і карта уваги — замість формального паперового бланку.">
+<meta property="og:image" content="https://plgrph.com/intake/screenshot_04_report.png">
+<meta property="og:url" content="https://plgrph.com/intake/intake-presentation.html">
+<meta property="og:locale" content="uk_UA">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Polygraph Intake — анкета попереднього опитування для поліграфологів">
+<meta name="twitter:description" content="Автоматичне розгортання питань, індивідуальна калібровка, живий монітор і карта уваги — замість формального паперового бланку.">
+<meta name="twitter:image" content="https://plgrph.com/intake/screenshot_04_report.png">
+
+<meta name="robots" content="index, follow">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Polygraph Intake",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Windows, Android (планшет)",
+  "description": "Застосунок для підготовки й проведення анкети попереднього опитування перед поліграфологічним дослідженням: автоматичне розгортання питань, індивідуальна калібровка респондента, живий монітор поліграфолога та кольорова карта уваги після завершення.",
+  "url": "https://plgrph.com/intake/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "PLGRPH",
+    "url": "https://plgrph.com/",
+    "email": "plgrph@protonmail.com"
+  },
+  "inLanguage": "uk"
+}
+</script>
+
 <style>
 
   :root{
@@ -283,7 +326,7 @@
     grid-template-columns: 64px 1fr 1fr;
     gap: 40px;
     padding: 44px 0;
-    align-items: center;
+    align-items: start;
   }
   .step + .step{ border-top: 1px solid var(--rule); }
 
@@ -311,26 +354,41 @@
     line-height: 1.6;
   }
 
-  .step-shot .shot{
-    box-shadow: 0 1px 2px rgba(25,28,26,.04), 0 12px 28px -16px rgba(25,28,26,.22);
-    max-height: 420px;
-    overflow: hidden;
+  .step-shot{
     display: flex;
     justify-content: center;
   }
-  .step-shot .shot img{
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 420px;
-    object-fit: contain;
+  .step-shot .shot{
+    box-shadow: 0 1px 2px rgba(25,28,26,.04), 0 12px 28px -16px rgba(25,28,26,.22);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
-  /* The fill-screen screenshot is tall and narrow (portrait tablet capture);
-     let it keep its own aspect ratio and sit centered rather than being
-     stretched or cropped to the wide landscape screenshots' shape. */
+  .step-shot .shot img{
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* Landscape (desktop) screenshots fill the column at their natural ratio.
+     The portrait (tablet fill-in) screenshot is much taller per pixel of
+     width, so it is capped by height instead and centered, to keep it from
+     towering over the row while still reading at a comparable visual size. */
+  .step-shot.portrait .shot{
+    width: auto;
+    max-height: 460px;
+  }
+  .step-shot.portrait .shot img{
+    width: auto;
+    height: 460px;
+    max-width: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
 
-  .step:nth-child(even) .step-shot{ order: -1; }
-  .step:nth-child(even){ grid-template-columns: 64px 1fr 1fr; }
+  /* All steps keep the same left-to-right order (number, text, screenshot) —
+     alternating sides added visual noise without a payoff once screenshots
+     of mixed aspect ratios are in the mix. */
 
   /* ---------- Method ---------- */
 
@@ -576,6 +634,24 @@
 
   /* ---------- Footer ---------- */
 
+.cta-contacts{
+    margin-top: 28px;
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-contacts a{
+    color: #C9D6E1;
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,.25);
+    padding-bottom: 2px;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .cta-contacts a:hover{ color: #fff; border-color: rgba(255,255,255,.6); }
+
   footer{
     padding: 40px 0;
     border-top: 1px solid var(--rule);
@@ -584,6 +660,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
   }
   footer .f-brand{
     font-family: var(--font-display);
@@ -597,6 +675,17 @@
     max-width: 44ch;
     text-align: right;
   }
+  footer .f-links{
+    display: flex;
+    gap: 18px;
+  }
+  footer .f-links a{
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  footer .f-links a:hover{ color: var(--accent); }
 
   /* ---------- Reveal on scroll (single orchestrated pattern, not per-card) ---------- */
 
@@ -628,9 +717,8 @@
     .hero .wrap{ grid-template-columns: 1fr; }
     h1.hero-title{ max-width: none; }
     .problem-grid{ grid-template-columns: 1fr; }
-    .step, .step:nth-child(even){ grid-template-columns: 1fr; }
+    .step{ grid-template-columns: 1fr; }
     .step-num{ display: none; }
-    .step:nth-child(even) .step-shot{ order: 0; }
     .method-columns{ grid-template-columns: 1fr; }
     .method-col + .method-col{ border-left: none; border-top: 1px solid var(--rule); }
     .feature-grid{ grid-template-columns: 1fr 1fr; }
@@ -644,7 +732,7 @@
     h1.hero-title{ font-size: 32px; }
     h2.section-title{ font-size: 26px; }
     .feature-grid{ grid-template-columns: 1fr; }
-    footer .wrap{ flex-direction: column; align-items: flex-start; gap: 12px; }
+    footer .wrap{ flex-direction: column; align-items: flex-start; gap: 14px; }
     footer .f-note{ text-align: left; }
     .top .wrap{ height: auto; padding-top: 14px; padding-bottom: 14px; }
     .brand{ font-size: 16px; }
@@ -664,10 +752,11 @@
       <a href="#features">Можливості</a>
       <a href="#report">Приклад звіту</a>
     </nav>
-    <a href="#cta" class="btn btn-primary btn-sm">Дізнатись більше</a>
+    <a href="https://plgrph.com/intake/" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Перейти до програми</a>
   </div>
 </header>
 
+<main>
 <section class="hero">
   <div class="wrap">
     <div>
@@ -675,7 +764,7 @@
       <h1 class="hero-title">Передтестова бесіда наосліп забирає час, який анкета мала заощадити</h1>
       <p class="hero-sub">Polygraph Intake перетворює анкету попереднього опитування з формальності на робочий інструмент: респондент проходить продуману послідовність питань на планшеті, а поліграфолог отримує карту, з чого почати розмову.</p>
       <div class="hero-cta">
-        <a href="#cta" class="btn btn-primary">Дізнатись більше</a>
+        <a href="https://plgrph.com/intake/" class="btn btn-primary" target="_blank" rel="noopener">Перейти до програми</a>
         <a href="#how" class="btn btn-ghost">Як це працює</a>
       </div>
       <p class="hero-note">Працює офлайн. Дані респондента лишаються локально на пристрої поліграфолога.</p>
@@ -731,7 +820,7 @@
           <h3>Респондент заповнює, система розгортає далі</h3>
           <p>Відповідь «так» чи «поясню» автоматично відкриває додаткові уточнювальні питання. Наприкінці кожного блоку — коротке нагадування-recap і закриваюче питання, яке дає ще один шанс щось пригадати.</p>
         </div>
-        <div class="step-shot"><div class="shot"><img src="screenshot_02_fill.png" alt="Екран заповнення тематичного блоку анкети"></div></div>
+        <div class="step-shot portrait"><div class="shot"><img src="screenshot_02_fill.png" alt="Екран заповнення тематичного блоку анкети"></div></div>
       </div>
 
       <div class="step">
@@ -749,7 +838,7 @@
           <h3>Готова карта уваги для бесіди</h3>
           <p>Після завершення — текстове зведення й кольорова карта всіх питань за рівнем значущості. Клік по будь-якій плашці розкриває деталі: що саме привернуло увагу і чому.</p>
         </div>
-        <div class="step-shot"><div class="shot"><img src="screenshot_04_report.png" alt="Звіт з картою питань після завершення анкетування"></div></div>
+        <div class="step-shot portrait"><div class="shot"><img src="screenshot_04_report.png" alt="Звіт з картою питань після завершення анкетування"></div></div>
       </div>
     </div>
   </div>
@@ -901,17 +990,28 @@
 <section class="cta-section" id="cta">
   <div class="wrap">
     <h2>Спробуйте Polygraph Intake на наступному скринінгу</h2>
-    <p>Напишіть нам, щоб дізнатись більше про впровадження, налаштування анкет під вашу практику і доступ до застосунку.</p>
+    <p>Перейдіть до застосунку або напишіть нам, щоб дізнатись більше про впровадження й налаштування анкет під вашу практику.</p>
     <div class="hero-cta">
-      <a href="#" class="btn btn-primary">Написати нам</a>
+      <a href="https://plgrph.com/intake/" class="btn btn-primary" target="_blank" rel="noopener">Перейти до програми</a>
       <a href="#how" class="btn btn-ghost">Переглянути ще раз, як це працює</a>
+    </div>
+    <div class="cta-contacts">
+      <a href="mailto:plgrph@protonmail.com">plgrph@protonmail.com</a>
+      <a href="https://t.me/plgrph_ukr" target="_blank" rel="noopener">Telegram: @plgrph_ukr</a>
     </div>
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap">
     <div class="f-brand">Polygraph Intake</div>
+    <div class="f-links">
+      <a href="https://plgrph.com/intake/" target="_blank" rel="noopener">Програма</a>
+      <a href="https://plgrph.com/" target="_blank" rel="noopener">PLGRPH</a>
+      <a href="mailto:plgrph@protonmail.com">plgrph@protonmail.com</a>
+    </div>
     <div class="f-note">2026 · Інструмент підготовки поліграфолога до бесіди. Не є діагностикою приховування і не замінює тест на поліграфі.</div>
   </div>
 </footer>
