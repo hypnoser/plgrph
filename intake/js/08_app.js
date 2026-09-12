@@ -145,25 +145,34 @@ async function openCaseFile(file, pw, handle){
       if (handle) PI_SAVE.setTarget(handle); else PI_SAVE.setTarget(null);
       CASE = { id: saved.session_id, label: (saved.case_info && saved.case_info.label) || "Відкрита справа", created: saved.started || new Date().toISOString() };
       el("case-pib").value = CASE.label;
-      if (saved.questionnaire){
-        /* Анкету вже завантажено раніше — це справжнє продовження
-           заповнення, відкриваємо монітор і друге вікно. */
+      if (saved.questionnaire && saved.status !== "draft"){
+        /* Анкету вже завантажено, І тестування вже реально розпочиналось
+           (status стає "active" лише в PI_FILL.start(), яку викликає
+           beginQuestions() по кліку "Почати анкетування" — не сам факт
+           наявності анкети). Це справжнє продовження заповнення після
+           аварійного закриття посеред тесту — відкриваємо монітор і
+           друге вікно, як і мало бути. */
         STATE.data = saved.questionnaire; STATE.result = null; STATE.fileName = "";
         updateStartCard();
         PI_MON.resume(saved);
       } else {
-        /* Справу створено (initEmpty), але анкету ще не завантажено —
-           це не "продовження заповнення", а проміжний стан. НЕ можна
-           викликати PI_MON.resume()/PI_FILL.resume() тут: вони самі
-           відкривають друге вікно ДО перевірки наявності анкети,
-           і воно лишається порожнім (видима "пуста сторінка анкети"),
-           а resume() однаково поверне false. Просто завантажуємо S
-           у PI_FILL і лишаємось на стартовому екрані — картка "Анкета"
-           стане активною (CASE.label вже є), як і при першому
-           збереженні справи. */
+        /* Або анкету ще не завантажено (questionnaire:null), або вона
+           вже прикріплена (attachQuestionnaire), але тестування ще НЕ
+           починалось (status лишається "draft" — respondent жодного разу
+           не натиснув "Почати анкетування"). В обох випадках це не
+           "продовження заповнення", а стан ДО старту: поліграфолог мав
+           побачити стартовий екран (ПІБ, теку, картки Згода/Анкета,
+           кнопку "Почати анкетування") і сам вирішити, коли починати —
+           а не миттєво потрапляти в монітор/друге вікно respondent'а.
+           НЕ можна викликати PI_MON.resume()/PI_FILL.resume() тут: вони
+           самі відкривають друге вікно ДО перевірки стану, і воно
+           лишається порожнім, а resume() для questionnaire:null однаково
+           поверне false. Просто завантажуємо S у PI_FILL і лишаємось на
+           стартовому екрані — картки "Анкета"/"Почати анкетування"
+           стають доступними за фактичним станом S. */
         PI_FILL.load(saved);
         PI_SAVE.bind(function(){ return PI_FILL.session(); });
-        STATE.data = null; STATE.result = null; STATE.fileName = "";
+        STATE.data = saved.questionnaire || null; STATE.result = null; STATE.fileName = "";
         updateStartCard();
       }
     }
@@ -244,6 +253,21 @@ function showIssue(message, details){
 }
 el("issue-back").addEventListener("click", function(){ navBack("s-start"); });
 el("rp-back").addEventListener("click", function(){ navBack("s-start"); });
+/* "До старту" з монітора — НЕ завершує анкетування (на відміну від
+   mo-end) і НЕ закриває друге вікно респондента: PI_MON.stop() лише
+   припиняє опитування статусу на екрані поліграфолога. Дані вже
+   постійно пишуться в PI_SAVE незалежно від того, який екран відкрито,
+   тож нічого не втрачається. Поліграфолог повертається на стартовий
+   екран (ПІБ/тека/картки Згода-Анкета вже заповнені за фактичним
+   станом), може там, наприклад, ще раз відкрити Згоду, і повернутись
+   до монітора пізніше через "Відкрити справу" (questionnaire+status
+   вже "active" на цей момент, тому відкриється саме монітор, не
+   стартовий екран знову — розгалуження в openCaseFile). */
+el("mo-back").addEventListener("click", function(){
+  PI_MON.stop();
+  updateStartCard();
+  navBack("s-start");
+});
 
 el("start-go").addEventListener("click", async function(){
   if (!STATE.data || !CASE.label) return;
