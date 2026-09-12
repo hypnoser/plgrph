@@ -262,6 +262,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-sev-badge.sev-3{background:var(--sev-3-bg);color:var(--sev-3)}
 .rep-sev-badge.sev-2{background:var(--sev-2-bg);color:var(--sev-2)}
 .rep-sev-badge.sev-1{background:var(--sev-1-bg);color:var(--sev-1)}
+.rep-sev-badge.sev-anchor{background:var(--rule-soft);color:var(--muted);border:1px dashed var(--rule)}
 .rep-detail .qtext{font-size:14px;line-height:1.45;margin-bottom:6px}
 .rep-detail .answer{font-size:12px;color:var(--muted);margin-bottom:12px}
 .rep-detail .answer b{color:var(--ink);font-weight:500}

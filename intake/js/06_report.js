@@ -189,6 +189,7 @@ function selectQuestion(id, silent){
   if (!meta) return;
   var byId = {}; A.points.forEach(function(p){ byId[p.id] = p; });
   var point = byId[id];
+  var isAnchor = meta.kind === "anchor";
   var sev = point ? severityOf(point.score) : 0;
 
   document.querySelectorAll(".rep-cell").forEach(function(c){ c.classList.remove("selected"); });
@@ -198,7 +199,13 @@ function selectQuestion(id, silent){
   var card = tag("div", "rep-detail", root);
   var head = tag("div", "head", card);
   tag("span", "qid", head, id);
-  tag("span", "rep-sev-badge sev-"+(sev||1), head, severityLabel(sev));
+  /* Якір — нейтральна контрольна точка (Рівень 3 калібрування), не
+     шлюз: вона свідомо не потрапляє в аналіз значущості (analyse()
+     виключає kind:"anchor" з points), тому звичайний бейдж 1..4
+     тут показував би оманливе "Без подій", ніби якір міг мати
+     значущість, просто не отримав. Окрема нейтральна позначка. */
+  if (isAnchor) tag("span", "rep-sev-badge sev-anchor", head, "Контрольне питання");
+  else tag("span", "rep-sev-badge sev-"+(sev||1), head, severityLabel(sev));
   tag("div", "qtext", card, meta.text);
   var answerText = S.answers[id] ? S.answers[id].value : null;
   var answerLabel = { yes:"так", no:"ні", explain:"поясню", declined:"відмова", na:"не стосується" }[answerText] || "—";
@@ -206,7 +213,9 @@ function selectQuestion(id, silent){
   ans.appendChild(document.createTextNode("Відповідь: "));
   tag("b", "", ans, answerLabel);
 
-  if (point && point.why && point.why.length){
+  if (isAnchor){
+    tag("div", "foot-row", card, "Нейтральне контрольне питання — не оцінюється за значущістю, використовується двигуном лише для порівняння часу реакції всередині блоку.");
+  } else if (point && point.why && point.why.length){
     var pills = tag("div", "rep-pills", card);
     point.why.forEach(function(w){
       var weight = reasonWeight(w);
