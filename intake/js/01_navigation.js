@@ -223,7 +223,13 @@ function validateSaved(s){
     });
   }
   if (["1.0","1.1","2.0"].indexOf(s.schema_version) < 0) throw new Error("Непідтримувана версія сесії");
-  var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
+  /* questionnaire може бути null — це проміжний стан "справу створено,
+     анкету ще не завантажено" (файл сесії існує й пишеться на диск
+     одразу після збереження ПІБ, ще до вибору анкети). Якщо анкета
+     є — вона все одно має бути валідною за схемою. */
+  if (s.questionnaire !== null){
+    var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
+  }
   if (typeof s.session_id !== "string" || !s.session_id || !/^[a-zA-Z0-9_.-]+$/.test(s.session_id) ||
       !Array.isArray(s.events) || s.events.length > 100000 || !obj(s.answers) || !obj(s.identity) ||
       !obj(s.explanations) || !obj(s.signatures)) throw new Error("Неповний файл сесії");

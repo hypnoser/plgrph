@@ -222,7 +222,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-summary{border-radius:var(--radius-lg);background:var(--rule-soft);padding:18px 20px;margin-bottom:20px}
 .rep-summary .label{font-size:13px;color:var(--muted);margin-bottom:10px}
 .rep-summary .text{font-size:15px;line-height:1.7}
-.rep-dataquality{border-radius:var(--radius-lg);background:var(--sev-1,#8A8F2E);background:color-mix(in srgb, var(--sev-1,#8A8F2E) 18%, transparent);border:1px solid var(--sev-1,#8A8F2E);padding:14px 18px;margin-bottom:16px}
+.rep-dataquality{border-radius:var(--radius-lg);background:color-mix(in srgb, var(--sev-1,#8A8F2E) 18%, transparent);border:1px solid var(--sev-1,#8A8F2E);padding:14px 18px;margin-bottom:16px}
 .rep-dataquality.hidden{display:none}
 .rep-dataquality .label{font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em}
 .rep-dataquality .text{font-size:14px;line-height:1.6}

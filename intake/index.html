@@ -229,7 +229,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-summary{border-radius:var(--radius-lg);background:var(--rule-soft);padding:18px 20px;margin-bottom:20px}
 .rep-summary .label{font-size:13px;color:var(--muted);margin-bottom:10px}
 .rep-summary .text{font-size:15px;line-height:1.7}
-.rep-dataquality{border-radius:var(--radius-lg);background:var(--sev-1,#8A8F2E);background:color-mix(in srgb, var(--sev-1,#8A8F2E) 18%, transparent);border:1px solid var(--sev-1,#8A8F2E);padding:14px 18px;margin-bottom:16px}
+.rep-dataquality{border-radius:var(--radius-lg);background:color-mix(in srgb, var(--sev-1,#8A8F2E) 18%, transparent);border:1px solid var(--sev-1,#8A8F2E);padding:14px 18px;margin-bottom:16px}
 .rep-dataquality.hidden{display:none}
 .rep-dataquality .label{font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em}
 .rep-dataquality .text{font-size:14px;line-height:1.6}
@@ -1320,7 +1320,13 @@ function validateSaved(s){
     });
   }
   if (["1.0","1.1","2.0"].indexOf(s.schema_version) < 0) throw new Error("Непідтримувана версія сесії");
-  var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
+  /* questionnaire може бути null — це проміжний стан "справу створено,
+     анкету ще не завантажено" (файл сесії існує й пишеться на диск
+     одразу після збереження ПІБ, ще до вибору анкети). Якщо анкета
+     є — вона все одно має бути валідною за схемою. */
+  if (s.questionnaire !== null){
+    var v = PI_VALIDATE.run(s.questionnaire); if (!v.ok) throw new Error("Некоректна анкета всередині сесії");
+  }
   if (typeof s.session_id !== "string" || !s.session_id || !/^[a-zA-Z0-9_.-]+$/.test(s.session_id) ||
       !Array.isArray(s.events) || s.events.length > 100000 || !obj(s.answers) || !obj(s.identity) ||
       !obj(s.explanations) || !obj(s.signatures)) throw new Error("Неповний файл сесії");
