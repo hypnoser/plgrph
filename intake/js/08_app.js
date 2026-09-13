@@ -64,6 +64,11 @@ el("case-save").addEventListener("click", async function(){
   }
   PI_FILL.initEmpty(CASE);
   PI_SAVE.bind(function(){ return PI_FILL.session(); });
+  /* Нова справа — новий респондент: мова екрана респондента не має
+     мовчки успадковуватись від попередньої сесії в тому самому вікні
+     браузера. Скидаємо на дефолт (UK), поліграфолог обирає заново
+     за потреби для цього конкретного респондента. */
+  setRespondentLangUI("uk");
   /* Якщо до створення справи вже намальована згода — переносимо її
      чернетку у щойно створений об'єкт сесії одразу, без очікування
      старту заповнення. */
@@ -154,6 +159,12 @@ async function openCaseFile(file, pw, handle){
            друге вікно, як і мало бути. */
         STATE.data = saved.questionnaire; STATE.result = null; STATE.fileName = "";
         updateStartCard();
+        /* Синхронізуємо візуальний стан тумблера з мовою, яку реально
+           встановить PI_FILL.resume() (див. коментар у resume() —
+           respondent_lang із файлу сесії) — інакше тумблер показував
+           би "UK" навіть коли респондент насправді продовжує сесію,
+           розпочату російською. */
+        if (saved.respondent_lang) setRespondentLangUI(saved.respondent_lang);
         PI_MON.resume(saved);
       } else {
         /* Або анкету ще не завантажено (questionnaire:null), або вона
@@ -268,6 +279,27 @@ el("mo-back").addEventListener("click", function(){
   updateStartCard();
   navBack("s-start");
 });
+
+/* Мова екрана респондента — незалежно від questionnaire.meta.language
+   (те поле стосується мови тексту питань у самому файлі анкети, не
+   інтерфейсу). Панель поліграфолога (цей екран, монітор, звіт,
+   налаштування) цей вибір не зачіпає — вона й далі виключно
+   українською через T()/R(); тумблер керує лише T_R()/R_R(), які
+   03_fill.js застосовує до кнопок так/ні/поясню, брифінгу, підпису
+   полів ідентифікації тощо на екрані, що бачить сам респондент. */
+function setRespondentLangUI(lang){
+  setRespondentLang(lang);
+  el("resp-lang-uk").classList.toggle("on", lang !== "ru");
+  el("resp-lang-ru").classList.toggle("on", lang === "ru");
+  /* Якщо справа вже створена (S існує), записуємо вибір у саму сесію —
+     інакше при аварійному перезапуску програми посеред тесту мова
+     відновиться на дефолт (UK) незалежно від того, що реально бачив
+     респондент до цього моменту (див. коментар у PI_FILL.resume()). */
+  var S = PI_FILL.session();
+  if (S){ S.respondent_lang = lang; PI_SAVE.touched(); }
+}
+el("resp-lang-uk").addEventListener("click", function(){ setRespondentLangUI("uk"); });
+el("resp-lang-ru").addEventListener("click", function(){ setRespondentLangUI("ru"); });
 
 el("start-go").addEventListener("click", async function(){
   if (!STATE.data || !CASE.label) return;

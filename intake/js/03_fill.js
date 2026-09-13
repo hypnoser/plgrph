@@ -31,7 +31,7 @@ var PI_FILL = (function(){
   var attentionCleanups = [];
   var onEvent = null;
 
-  function LB(kind){ return R("r_" + kind); }
+  function LB_R(kind){ return R_R("r_" + kind); }
   function now(){ var n = Date.now() - t0; lastNow = Math.max(lastNow, n); return lastNow; }
 
   function scaleFill(){
@@ -203,6 +203,15 @@ var PI_FILL = (function(){
     if (!S || !qid || PI_SAVE.isReadOnly() || !questionText(qid)) return null;
     var kind = ({"реакція":"reaction","перепитав":"asked","сказав сам":"volunteered","перешкода":"noise","заминка з технікою":"technical"})[markText] || markText;
     if (["reaction","asked","volunteered","noise","technical"].indexOf(kind) < 0) return null;
+    /* Захист від дублів на рівні даних, не лише UI: якщо на це саме
+       питання вже стоїть активна (не відкликана) мітка того самого
+       kind, повторний виклик — це, найімовірніше, подвійний клік або
+       забутий disabled-стан кнопки в моніторі, а не два окремі
+       спостереження поліграфолога. Кожна зайва мітка додає +3 до ваги
+       питання в PI_STAT.analyse() і штучно завищує значущість — тому
+       мовчазна відмова тут прямо стосується достовірності звіту. */
+    var dup = S.marks.some(function(m){ return m.q === qid && m.kind === kind && !m.withdrawn_at; });
+    if (dup) return null;
     var added = { id:crypto.randomUUID(), q:qid, mark:markText, kind:kind, t:S.finished?null:now(), added_at:new Date().toISOString() };
     if (S.finished) added.phase = "post_session";
     S.marks.push(added);
@@ -237,8 +246,8 @@ var PI_FILL = (function(){
         var mark = tag("i", null, b);
         mark.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
         if (!active){ b.disabled = true; b.setAttribute("aria-hidden","true"); return; }
-        b.type = "button"; b.title = LB(kind);
-        b.setAttribute("aria-label", q.id + " — " + LB(kind));
+        b.type = "button"; b.title = LB_R(kind);
+        b.setAttribute("aria-label", q.id + " — " + LB_R(kind));
         b.setAttribute("aria-pressed", String(!!S.answers[q.id] && S.answers[q.id].value===kind));
         boxes[kind] = b;
         if (S.answers[q.id] && S.answers[q.id].value === kind) b.classList.add("on");
@@ -262,7 +271,7 @@ var PI_FILL = (function(){
   function confirmNode(parent, key){
     var wrap = tag("label", "block-confirm", parent);
     var cb = tag("input", null, wrap); cb.type = "checkbox";
-    var span = tag("span", null, wrap); span.textContent = R("r_block_confirm");
+    var span = tag("span", null, wrap); span.textContent = R_R("r_block_confirm");
     if (S.signatures[key]) cb.checked = true;
     cb.addEventListener("change", function(){
       if (S.finished || lockedFill || closing) return;
@@ -286,7 +295,7 @@ var PI_FILL = (function(){
   function headRow(){
     var h = tag("div","qhead"); tag("span",null,h); tag("span",null,h);
     var cols = tag("span","cols",h);
-    [R("r_yes"),R("r_no"),R("r_explain")].forEach(function(name){ tag("span",null,cols).textContent = name; });
+    [R_R("r_yes"),R_R("r_no"),R_R("r_explain")].forEach(function(name){ tag("span",null,cols).textContent = name; });
     return h;
   }
 
@@ -294,7 +303,7 @@ var PI_FILL = (function(){
   function renderBlock(i){
     blockIdx = i;
     var b = Q.blocks[i];
-    D.getElementById("fq-step").textContent = R("r_block", { n:i+1, of:Q.blocks.length });
+    D.getElementById("fq-step").textContent = R_R("r_block", { n:i+1, of:Q.blocks.length });
     D.getElementById("fq-name").textContent = b.title;
     var ctxEl = D.getElementById("fq-ctx");
     ctxEl.textContent = b.context || ""; ctxEl.style.display = b.context ? "" : "none";
@@ -330,13 +339,13 @@ var PI_FILL = (function(){
       }
       var cl = questionNode(b.closing, ["yes","no"]);
       list.appendChild(cl); nodes.closing = b.closing;
-      nodes.closingPad = padNode(list, R("r_addendum"), "wide", "exp_"+b.closing.id);
+      nodes.closingPad = padNode(list, R_R("r_addendum"), "wide", "exp_"+b.closing.id);
       if (S.explanations[b.closing.id]) nodes.closingPad.restore(S.explanations[b.closing.id]);
     }
 
     var last = (i === Q.blocks.length - 1);
     if (last){
-      nodes.signPad = padNode(list, R("r_sign_final"), "sign", "sig_final");
+      nodes.signPad = padNode(list, R_R("r_sign_final"), "sign", "sig_final");
       var storedSign = S.signatures.final; if (storedSign) nodes.signPad.restore(storedSign);
       nodes.confirmBox = null;
     } else {
@@ -344,9 +353,9 @@ var PI_FILL = (function(){
       nodes.confirmBox = confirmNode(list, b.id);
     }
     var returning = S.return_context && blockIdx !== S.return_context.returnTo;
-    D.getElementById("fq-next").textContent = returning ? R("r_return_here") : (last ? R("r_finish") : R("r_next"));
+    D.getElementById("fq-next").textContent = returning ? R_R("r_return_here") : (last ? R_R("r_finish") : R_R("r_next"));
     var reviewButton = D.getElementById("fq-review");
-    if (reviewButton){ reviewButton.textContent = R("r_review"); reviewButton.classList.toggle("hidden", blockIdx<=0 || !!S.finished); }
+    if (reviewButton){ reviewButton.textContent = R_R("r_review"); reviewButton.classList.toggle("hidden", blockIdx<=0 || !!S.finished); }
 
     why("");
     S.blockIdx = i;
@@ -390,17 +399,17 @@ var PI_FILL = (function(){
     if (!visited.length) return;
     var veil = tag("div","veil"), box = tag("div","box review-box",veil), head = tag("h2",null,box), body = tag("p",null,box);
     var list = tag("div","review-list",box), row = tag("div","row",box);
-    head.textContent = R("r_review_head"); body.textContent = R("r_review_body");
+    head.textContent = R_R("r_review_head"); body.textContent = R_R("r_review_body");
     visited.forEach(function(index){
       var block = Q.blocks[index], fold = tag("details","review-block",list), summary = tag("summary",null,fold);
       summary.textContent = block.id + " · " + block.title;
       blockQuestions(block).forEach(function(q){
         var b = tag("button","review-question",fold), idn = tag("b",null,b), label = tag("span",null,b);
-        b.type = "button"; idn.textContent = q.id; label.textContent = q.text + " · «" + LB(S.answers[q.id].value) + "»";
+        b.type = "button"; idn.textContent = q.id; label.textContent = q.text + " · «" + LB_R(S.answers[q.id].value) + "»";
         b.addEventListener("click", function(){ D.body.removeChild(veil); gotoBlock(index,"respondent",q.id); });
       });
     });
-    var cancel = tag("button","ghost",row); cancel.type = "button"; cancel.textContent = R("r_review_cancel");
+    var cancel = tag("button","ghost",row); cancel.type = "button"; cancel.textContent = R_R("r_review_cancel");
     cancel.addEventListener("click", function(){ D.body.removeChild(veil); });
     D.body.appendChild(veil);
     if (veil.querySelector("details")) veil.querySelector("details").open = true;
@@ -416,12 +425,12 @@ var PI_FILL = (function(){
     function openBranch(kind, silent){
       branch = tag("div","branch"); subs = [];
       var lab = tag("div","blabel",branch);
-      lab.textContent = R("r_expanded", { id:gate.id, answer:LB(kind) });
+      lab.textContent = R_R("r_expanded", { id:gate.id, answer:LB_R(kind) });
       for (var e = 0; e < gate.expansion.length; e++){
         branch.appendChild(questionNode(gate.expansion[e], ["yes","no"]));
         subs.push(gate.expansion[e]);
       }
-      var pad = padNode(branch, R("r_explanation", { id:gate.id }), "wide", "exp_"+gate.id);
+      var pad = padNode(branch, R_R("r_explanation", { id:gate.id }), "wide", "exp_"+gate.id);
       if (S.explanations[gate.id]) pad.restore(S.explanations[gate.id]);
       holder.appendChild(branch);
       nodes.subs[gate.id] = subs;
@@ -453,7 +462,7 @@ var PI_FILL = (function(){
     if (kind === "wide") tag("div","rules",box);
     var cv = tag("canvas",null,box);
     var ph = tag("div","placeholder",box); ph.textContent = label;
-    var btn = tag("button","clear",box); btn.setAttribute("aria-label", R("r_erase")); btn.title = R("r_erase");
+    var btn = tag("button","clear",box); btn.setAttribute("aria-label", R_R("r_erase")); btn.title = R_R("r_erase");
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg>';
     var made = makePad(cv, key);
     btn.addEventListener("click", function(){ made.clear(); });
@@ -482,11 +491,11 @@ var PI_FILL = (function(){
     if (closing || S.finished || lockedFill) return;
     var miss = missing();
     if (miss.length){
-      why(miss.length===1 ? R("r_left_one",{list:miss[0]}) : R("r_left_many",{list:miss.slice(0,6).join(", ")}));
+      why(miss.length===1 ? R_R("r_left_one",{list:miss[0]}) : R_R("r_left_many",{list:miss.slice(0,6).join(", ")}));
       revealMissing(miss[0]); return;
     }
-    if (nodes.signPad && !nodes.signPad.has()){ why("Поставте підпис унизу сторінки"); revealMissing(nodes.signPad.key); return; }
-    if (nodes.confirmBox && !nodes.confirmBox.has()){ why("Підтвердіть відповіді цього блоку"); nodes.confirmBox.element.closest(".block-confirm").classList.add("needs-attention"); return; }
+    if (nodes.signPad && !nodes.signPad.has()){ why(R_R("r_why_sign")); revealMissing(nodes.signPad.key); return; }
+    if (nodes.confirmBox && !nodes.confirmBox.has()){ why(R_R("r_why_confirm")); nodes.confirmBox.element.closest(".block-confirm").classList.add("needs-attention"); return; }
     return closeBlock();
   }
 
@@ -512,7 +521,7 @@ var PI_FILL = (function(){
         (b.gates||[]).forEach(function(g){ var a = S.answers[g.id]; if (a && (a.value==="yes"||a.value==="explain")) required = required.concat(g.expansion); });
         var miss = required.some(function(q){ return !S.answers[q.id]; });
         if (miss || !S.signatures[bi===Q.blocks.length-1 ? "final" : b.id]){
-          closing = false; collectPads(); renderBlock(bi); why(miss ? "Заповніть усі відповіді цього блоку." : "Поставте підпис цього блоку.");
+          closing = false; collectPads(); renderBlock(bi); why(miss ? R_R("r_why_fill_all") : R_R("r_why_sign_block"));
           return false;
         }
       }
@@ -521,8 +530,8 @@ var PI_FILL = (function(){
     ev("session_end", { status:S.status });
     S.analysis_snapshot = PI_STAT.analyse(S); S.analysis_version = ANALYTICS_VERSION;
     S.analysis_created = new Date().toISOString(); PI_SAVE.touched();
-    D.querySelector("#s-done h1").textContent = S.status==="aborted" ? "Анкетування припинено" : "Анкету заповнено";
-    D.getElementById("fd-note").textContent = S.status==="aborted" ? "Анкетування припинено. Передайте планшет поліграфологові." : R("r_done_note");
+    D.querySelector("#s-done h1").textContent = S.status==="aborted" ? R_R("r_aborted_head") : R_R("r_done_head");
+    D.getElementById("fd-note").textContent = S.status==="aborted" ? R_R("r_aborted_note") : R_R("r_done_note");
     fillShow("s-done");
     var ok = await PI_SAVE.now();
     scheduleAutoClose();
@@ -540,7 +549,7 @@ var PI_FILL = (function(){
     var note = D.getElementById("fd-autoclose");
     function tick(){
       if (!note) return;
-      note.textContent = seconds > 0 ? "Вікно закриється автоматично через " + seconds + " с…" : "";
+      note.textContent = seconds > 0 ? R_R("r_autoclose", {n:seconds}) : "";
       if (seconds <= 0){ try { D.defaultView.close(); } catch(e){} return; }
       seconds--;
       D.defaultView.setTimeout(tick, 1000);
@@ -566,7 +575,7 @@ var PI_FILL = (function(){
     S = {
       schema_version: "2.0", app_version:VERSION, analysis_version:ANALYTICS_VERSION, integrity_version:2,
       status: "draft", case_info: JSON.parse(JSON.stringify(caseInfo)),
-      consent_record: null,
+      consent_record: null, respondent_lang: getRespondentLang(),
       session_id: caseInfo.id || newId(), started: new Date().toISOString(), startedAt: Date.now(), finished: null,
       questionnaire: null, identity:{}, answers:{}, explanations:{}, signatures:{},
       events:[], marks:[], reminder:{ shown:false, at:null, gates:[] },
@@ -619,7 +628,7 @@ var PI_FILL = (function(){
     var brief = D.getElementById("fb-brief"); brief.innerHTML = "";
     var lines = briefing();
     var ct = D.getElementById("fb-consent-text"); ct.textContent = "";
-    var paragraphs = (Q.consent && Q.consent.paragraphs) || ["Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування."];
+    var paragraphs = (Q.consent && Q.consent.paragraphs) || [R_R("r_consent_default")];
     paragraphs.forEach(function(text){ tag("p",null,ct).textContent = text; });
     D.getElementById("fb-ack").checked = !!S.intake_ack;
     lines.forEach(function(line){ tag("p",null,brief).textContent = line; });
@@ -632,14 +641,17 @@ var PI_FILL = (function(){
 
   function paintStatic(){
     function set(sel, text){ var n = D.querySelector(sel); if (n) n.textContent = text; }
-    set('.pad [data-lab="fio"]', R("r_fio")||"Прізвище, ім'я та по батькові");
-    set('.pad [data-lab="birth"]', R("r_birth")||"Дата народження");
-    set('.pad [data-lab="doc"]', R("r_doc")||"Серія і номер документа, що засвідчує особу");
-    set("#fb-go", "Почати");
-    set("#fb-ack-label", R("r_ack"));
+    set("#fb-title", R_R("r_brief_title"));
+    set("#fb-consent-title", R_R("r_consent_title"));
+    set('.pad [data-lab="fio"]', R_R("r_fio")||"Прізвище, ім'я та по батькові");
+    set('.pad [data-lab="birth"]', R_R("r_birth")||"Дата народження");
+    set('.pad [data-lab="doc"]', R_R("r_doc")||"Серія і номер документа, що засвідчує особу");
+    set("#fb-position-label", R_R("r_position"));
+    set("#fb-go", R_R("r_go"));
+    set("#fb-ack-label", R_R("r_ack"));
     var cl = D.querySelectorAll("#s-brief .clear");
     for (var i=0;i<cl.length;i++){
-      cl[i].setAttribute("aria-label", R("r_erase")); cl[i].title = R("r_erase");
+      cl[i].setAttribute("aria-label", R_R("r_erase")); cl[i].title = R_R("r_erase");
       (function(btn){
         if (btn.__wired) return; btn.__wired = true;
         btn.addEventListener("click", function(){ var key = "pad_"+btn.getAttribute("data-clear").replace("pad-",""); if (pads[key]) pads[key].clear(); });
@@ -671,6 +683,15 @@ var PI_FILL = (function(){
     if (!saved || !saved.questionnaire) return false;
     S = saved; S.status = "active"; S.integrity_version = 2; S.app_version = VERSION; S.analysis_version = ANALYTICS_VERSION;
     closing = false; lockedFill = false; Q = saved.questionnaire;
+    /* Мова екрана респондента — RESPONDENT_LANG — глобальна змінна UI,
+       що не переживає перезапуск програми. Якщо файл сесії був
+       записаний уже з обраною мовою (respondent_lang), відновлюємо її
+       тут, ДО remount()/renderBlock(), інакше респондент, що заповнював
+       анкету, наприклад, російською, після аварійного перезапуску
+       побачив би кнопки й підказки, що раптово стали українськими
+       посеред тесту — сам текст питань з файлу не постраждав би, але
+       інтерфейс навколо нього змінився б непомітно для поліграфолога. */
+    if (saved.respondent_lang) setRespondentLang(saved.respondent_lang);
     if (!S.marks) S.marks = [];
     S.reminder = S.reminder || { shown:false, at:null, gates:[] };
     S.pen = S.pen || { types:{}, pressureMin:1, pressureMax:0 };
@@ -687,10 +708,10 @@ var PI_FILL = (function(){
 
   function beginQuestions(){
     if (S.finished || lockedFill || closing) return;
-    if (!D.getElementById("fb-ack").checked){ why("Підтвердіть ознайомлення перед початком"); return; }
+    if (!D.getElementById("fb-ack").checked){ why(R_R("r_why_ack")); return; }
     S.intake_ack = { at:new Date().toISOString(), paragraphs:(Q.consent&&Q.consent.paragraphs)||[] };
     if (!pads.pad_fio.has() || !pads.pad_birth.has() || !pads.pad_doc.has()){
-      why("Заповніть усі три поля вгорі");
+      why(R_R("r_why_identity"));
       revealMissing(["pad_fio","pad_birth","pad_doc"].find(function(k){ return !pads[k].has(); }));
       return;
     }

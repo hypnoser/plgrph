@@ -79,6 +79,13 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .step-card:disabled .title{color:var(--faint)}
 .step-card:disabled .sub{color:#B9BDB7}
 .case-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--faint);margin:14px 2px 0}
+.respondent-lang-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 2px 0;padding:10px 12px;border-radius:var(--radius);background:var(--card);border:1px solid var(--rule)}
+.respondent-lang-row .lbl{font-size:13px;color:var(--muted)}
+.seg{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--rule)}
+.seg-opt{border:0;background:var(--card);color:var(--muted);font-size:12px;font-weight:600;padding:6px 14px;cursor:pointer;min-height:auto}
+.seg-opt+.seg-opt{border-left:1px solid var(--rule)}
+.seg-opt.on{background:var(--accent);color:#fff}
+.seg-opt:hover:not(.on){background:var(--rule-soft)}
 .start-cta{width:100%;margin-top:16px;padding:14px;font-size:16px;font-weight:500}
 .start-hint{font-size:12px;color:var(--faint);text-align:center;margin-top:6px}
 .save-row{display:flex;align-items:center;gap:6px;margin-top:20px;font-size:12px;color:var(--faint)}
@@ -454,6 +461,14 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
       </span>
     </div>
 
+    <div class="respondent-lang-row" id="respondent-lang-row">
+      <span class="lbl">Мова екрана респондента</span>
+      <div class="seg" role="group" aria-label="Мова екрана респондента">
+        <button type="button" class="seg-opt on" id="resp-lang-uk" data-lang="uk">UA</button>
+        <button type="button" class="seg-opt" id="resp-lang-ru" data-lang="ru">RU</button>
+      </div>
+    </div>
+
     <button id="start-go" class="start-cta" disabled>Почати анкетування</button>
 
     <div class="start-hint" id="start-hint">Завантажте анкету, щоб почати</div>
@@ -521,7 +536,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 
 <div class="screen fill" id="s-brief">
   <div class="wrap">
-    <h1>Перед початком</h1>
+    <h1 id="fb-title">Перед початком</h1>
     <div class="brief" id="fb-brief"></div>
     <details class="consent-read" open><summary id="fb-consent-title">Ознайомлення перед анкетуванням</summary><div id="fb-consent-text"></div></details>
     <label class="ack"><input type="checkbox" id="fb-ack"> <span id="fb-ack-label">Я прочитав(-ла) інформацію та бажаю почати анкетування</span></label>
@@ -537,7 +552,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
         <div class="padbox"><canvas id="pad-doc"></canvas><div class="placeholder" data-lab="doc">Серія і номер документа, що засвідчує особу</div><button class="clear" data-clear="pad-doc" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div>
       </div>
     </div>
-    <div class="pad line"><div class="padbox"><canvas id="pad-position"></canvas><div class="placeholder">Посада (за потреби)</div><button class="clear" data-clear="pad-position" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div></div>
+    <div class="pad line"><div class="padbox"><canvas id="pad-position"></canvas><div class="placeholder" id="fb-position-label">Посада (за потреби)</div><button class="clear" data-clear="pad-position" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div></div>
 
     <div class="foot">
       <button id="fb-go">Почати</button>
@@ -870,12 +885,26 @@ var DICT = {
   r_birth: "Дата народження",
   r_doc: "Серія і номер документа, що засвідчує особу",
   r_ack: "Я прочитав(-ла) інформацію та бажаю почати анкетування",
+  r_brief_title: "Перед початком",
+  r_consent_title: "Ознайомлення перед анкетуванням",
   r_brief_1: "Відповідайте стилусом, торкаючись одного з квадратів під питанням.",
   r_brief_2: "«так» — це було. «ні» — цього не було. «поясню» — хочете уточнити усно.",
   r_brief_3: "Після «так» або «поясню» відкриються додаткові питання того самого блоку.",
   r_brief_4: "Якщо питання незрозуміле — запитайте вголос, поліграфолог поруч.",
   r_brief_5: "Поставте парафу наприкінці кожного блоку та підпис наприкінці анкети.",
+  r_go: "Почати",
+  r_consent_default: "Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування.",
+  r_why_sign: "Поставте підпис унизу сторінки",
+  r_why_confirm: "Підтвердіть відповіді цього блоку",
+  r_why_fill_all: "Заповніть усі відповіді цього блоку.",
+  r_why_sign_block: "Поставте підпис цього блоку.",
+  r_why_ack: "Підтвердіть ознайомлення перед початком",
+  r_why_identity: "Заповніть усі три поля вгорі",
+  r_autoclose: "Вікно закриється автоматично через {n} с…",
   r_done_note: "Дякуємо. Передайте планшет поліграфологу.",
+  r_done_head: "Анкету заповнено",
+  r_aborted_head: "Анкетування припинено",
+  r_aborted_note: "Анкетування припинено. Передайте планшет поліграфологові.",
   s_end_head: "Анкету завершено",
   s_end_body: "Можна захистити файл сесії паролем. Файл перезапишеться зашифрованим на тому самому місці. Відновлення пароля не існує: втрачений пароль означає втрачений архів.",
   s_end_go: "Зашифрувати файл",
@@ -908,6 +937,90 @@ var DICT = {
   o_up_word: "вгору", o_down_word: "вниз",
   o_applied: "ручне перевизначення {dir}: {why}"
 };
+
+/* ------------------------------------------------------------------ */
+/*  МОВА ЕКРАНА РЕСПОНДЕНТА (окремо від панелі поліграфолога)          */
+/* ------------------------------------------------------------------ */
+/* Панель поліграфолога (стартовий екран, монітор, звіт, налаштування)
+   лишається виключно українською — DICT вище її й обслуговує без змін.
+   Респондент може не володіти українською, тож для екрана заповнення
+   (03_fill.js: кнопки так/ні/поясню, брифінг r_brief_1..5, підтвердження
+   блоку, підписи полів ідентифікації тощо) є окремий, явно обраний
+   поліграфологом перемикач — незалежно від questionnaire.meta.language
+   (те поле стосується мови ТЕКСТУ ПИТАНЬ у самому JSON, не інтерфейсу).
+   DICT_RESPONDENT_RU містить лише ті ключі, які реально використовує
+   03_fill.js/briefing() — підмножина, встановлена статичним аналізом
+   викликів R()/T() у коді (жоден із цих ключів не використовується на
+   панелі поліграфолога, тому переклад тут нічого іншого не зачіпає). */
+var DICT_RESPONDENT_RU = {
+  r_yes: "да", r_no: "нет", r_explain: "поясню",
+  r_erase: "стереть",
+  r_block: "Блок {n} из {of}",
+  r_expanded: "Раскрытие {id} · открыто ответом «{answer}»",
+  r_explanation: "Пояснение к шлюзу {id}",
+  r_sign_final: "Подпись под анкетой в целом",
+  r_block_confirm: "Я подтверждаю, что на вышеуказанные вопросы мною даны правдивые ответы.",
+  r_next: "Далее", r_finish: "Завершить",
+  r_review: "Просмотреть предыдущие ответы",
+  r_review_head: "К какому вопросу Вы хотите вернуться?",
+  r_review_body: "Выберите уже пройденный блок и вопрос. Возврат будет зафиксирован.",
+  r_review_cancel: "Остаться в текущем блоке",
+  r_return_here: "Подтвердить блок и вернуться",
+  r_left_one: "Остался вопрос {list}",
+  r_left_many: "Остались вопросы: {list}",
+  r_addendum: "Дополнение к блоку (по желанию)",
+  r_fio: "Фамилия, имя и отчество",
+  r_birth: "Дата рождения",
+  r_doc: "Серия и номер документа, удостоверяющего личность",
+  r_position: "Должность (при необходимости)",
+  r_ack: "Я прочитал(-а) информацию и хочу начать анкетирование",
+  r_brief_title: "Перед началом",
+  r_consent_title: "Ознакомление перед анкетированием",
+  r_brief_1: "Отвечайте стилусом, касаясь одного из квадратов под вопросом.",
+  r_brief_2: "«да» — это было. «нет» — этого не было. «поясню» — хотите уточнить устно.",
+  r_brief_3: "После «да» или «поясню» откроются дополнительные вопросы того же блока.",
+  r_brief_4: "Если вопрос непонятен — спросите вслух, полиграфолог рядом.",
+  r_brief_5: "Поставьте парафу в конце каждого блока и подпись в конце анкеты.",
+  r_go: "Начать",
+  r_consent_default: "Участие добровольное. Вы можете попросить разъяснение, отказаться от отдельного ответа или прекратить анкетирование.",
+  r_why_sign: "Поставьте подпись внизу страницы",
+  r_why_confirm: "Подтвердите ответы этого блока",
+  r_why_fill_all: "Заполните все ответы этого блока.",
+  r_why_sign_block: "Поставьте подпись этого блока.",
+  r_why_ack: "Подтвердите ознакомление перед началом",
+  r_why_identity: "Заполните все три поля вверху",
+  r_autoclose: "Окно закроется автоматически через {n} с…",
+  r_done_note: "Спасибо. Передайте планшет полиграфологу.",
+  r_done_head: "Анкета заполнена",
+  r_aborted_head: "Анкетирование прекращено",
+  r_aborted_note: "Анкетирование прекращено. Передайте планшет полиграфологу."
+};
+/* Ключі DICT, яких DICT_RESPONDENT_RU свідомо НЕ перекладає (лишаються
+   українською навіть при увімкненому тумблері respondent-мови):
+   r_sign — ніде не використовується (мертвий рядок в оригінальному
+   DICT). r_position раніше теж вважався мертвим при першому статичному
+   аналізі викликів R()/T(), але насправді застосовується до плейсхолдера
+   поля "Посада" в body.html (id="fb-position-label") через окремий
+   виклик у paintStatic() — виправлено, тепер входить у
+   DICT_RESPONDENT_RU нижче. Усі інші ключі DICT
+   (s_end_*, m_mark_*, m_tip_*, w_*, o_up_word/o_down_word, o_applied)
+   належать виключно панелі поліграфолога (05_monitor.js, 06_report.js,
+   04_stat.js, 08_app.js) і в цей словник свідомо не входять. */
+
+var RESPONDENT_LANG = "uk"; /* "uk" | "ru" — встановлюється тумблером на стартовому екрані */
+function setRespondentLang(lang){ RESPONDENT_LANG = (lang === "ru") ? "ru" : "uk"; }
+function getRespondentLang(){ return RESPONDENT_LANG; }
+/* T_R()/R_R() — те саме, що T()/R(), але для екрана респондента:
+   якщо RESPONDENT_LANG === "ru" і ключ є в DICT_RESPONDENT_RU, береться
+   переклад; інакше — як і раніше, з основного DICT. Панель поліграфолога
+   і надалі використовує лише T()/R() напряму й ніколи не бачить цей
+   вибір. */
+function T_R(key, vars){
+  var src = (RESPONDENT_LANG === "ru" && Object.prototype.hasOwnProperty.call(DICT_RESPONDENT_RU, key)) ? DICT_RESPONDENT_RU : DICT;
+  return fill(Object.prototype.hasOwnProperty.call(src, key) ? src[key] : key, vars);
+}
+function R_R(key, vars){ return T_R(key, vars); }
+
 function fill(str, vars){
   if (!vars) return str;
   return str.replace(/\{(\w+)\}/g, function(all, k){
@@ -919,7 +1032,7 @@ function R(key, vars){ return T(key, vars); }
 
 function briefing(){
   var out = [];
-  for (var i = 1; i <= 5; i++) out.push(R("r_brief_" + i));
+  for (var i = 1; i <= 5; i++) out.push(R_R("r_brief_" + i));
   var q = STATE.data || (window.PI_FILL && PI_FILL.session() && PI_FILL.session().questionnaire);
   if (q && q.meta && Array.isArray(q.meta.instructions)) out = out.concat(q.meta.instructions);
   return out;
@@ -978,7 +1091,7 @@ var PI_VALIDATE = (function(){
     else {
       if (!filled(data.meta.title)) err("meta.title", "назва обстеження обов'язкова");
       if (!("created" in data.meta)) wrn("meta.created", "дату створення не вказано");
-      if (!("language" in data.meta)) wrn("meta.language", "мову не вказано, інтерфейс двигуна однаково лишається українським");
+      if (!("language" in data.meta)) wrn("meta.language", "мову не вказано — це поле стосується лише мови ТЕКСТУ ПИТАНЬ у файлі; мова кнопок і підказок на екрані респондента обирається окремим тумблером у двигуні, незалежно від цього поля");
       else if (LANGUAGES.indexOf(data.meta.language) === -1) err("meta.language", "значення «" + data.meta.language + "» неприпустиме, очікується uk або ru");
     }
     if (data.consent && (!isObj(data.consent) || !isArr(data.consent.paragraphs) || data.consent.paragraphs.some(function(p){ return !filled(p); })))
@@ -1765,7 +1878,7 @@ var PI_FILL = (function(){
   var attentionCleanups = [];
   var onEvent = null;
 
-  function LB(kind){ return R("r_" + kind); }
+  function LB_R(kind){ return R_R("r_" + kind); }
   function now(){ var n = Date.now() - t0; lastNow = Math.max(lastNow, n); return lastNow; }
 
   function scaleFill(){
@@ -1937,6 +2050,15 @@ var PI_FILL = (function(){
     if (!S || !qid || PI_SAVE.isReadOnly() || !questionText(qid)) return null;
     var kind = ({"реакція":"reaction","перепитав":"asked","сказав сам":"volunteered","перешкода":"noise","заминка з технікою":"technical"})[markText] || markText;
     if (["reaction","asked","volunteered","noise","technical"].indexOf(kind) < 0) return null;
+    /* Захист від дублів на рівні даних, не лише UI: якщо на це саме
+       питання вже стоїть активна (не відкликана) мітка того самого
+       kind, повторний виклик — це, найімовірніше, подвійний клік або
+       забутий disabled-стан кнопки в моніторі, а не два окремі
+       спостереження поліграфолога. Кожна зайва мітка додає +3 до ваги
+       питання в PI_STAT.analyse() і штучно завищує значущість — тому
+       мовчазна відмова тут прямо стосується достовірності звіту. */
+    var dup = S.marks.some(function(m){ return m.q === qid && m.kind === kind && !m.withdrawn_at; });
+    if (dup) return null;
     var added = { id:crypto.randomUUID(), q:qid, mark:markText, kind:kind, t:S.finished?null:now(), added_at:new Date().toISOString() };
     if (S.finished) added.phase = "post_session";
     S.marks.push(added);
@@ -1971,8 +2093,8 @@ var PI_FILL = (function(){
         var mark = tag("i", null, b);
         mark.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
         if (!active){ b.disabled = true; b.setAttribute("aria-hidden","true"); return; }
-        b.type = "button"; b.title = LB(kind);
-        b.setAttribute("aria-label", q.id + " — " + LB(kind));
+        b.type = "button"; b.title = LB_R(kind);
+        b.setAttribute("aria-label", q.id + " — " + LB_R(kind));
         b.setAttribute("aria-pressed", String(!!S.answers[q.id] && S.answers[q.id].value===kind));
         boxes[kind] = b;
         if (S.answers[q.id] && S.answers[q.id].value === kind) b.classList.add("on");
@@ -1996,7 +2118,7 @@ var PI_FILL = (function(){
   function confirmNode(parent, key){
     var wrap = tag("label", "block-confirm", parent);
     var cb = tag("input", null, wrap); cb.type = "checkbox";
-    var span = tag("span", null, wrap); span.textContent = R("r_block_confirm");
+    var span = tag("span", null, wrap); span.textContent = R_R("r_block_confirm");
     if (S.signatures[key]) cb.checked = true;
     cb.addEventListener("change", function(){
       if (S.finished || lockedFill || closing) return;
@@ -2020,7 +2142,7 @@ var PI_FILL = (function(){
   function headRow(){
     var h = tag("div","qhead"); tag("span",null,h); tag("span",null,h);
     var cols = tag("span","cols",h);
-    [R("r_yes"),R("r_no"),R("r_explain")].forEach(function(name){ tag("span",null,cols).textContent = name; });
+    [R_R("r_yes"),R_R("r_no"),R_R("r_explain")].forEach(function(name){ tag("span",null,cols).textContent = name; });
     return h;
   }
 
@@ -2028,7 +2150,7 @@ var PI_FILL = (function(){
   function renderBlock(i){
     blockIdx = i;
     var b = Q.blocks[i];
-    D.getElementById("fq-step").textContent = R("r_block", { n:i+1, of:Q.blocks.length });
+    D.getElementById("fq-step").textContent = R_R("r_block", { n:i+1, of:Q.blocks.length });
     D.getElementById("fq-name").textContent = b.title;
     var ctxEl = D.getElementById("fq-ctx");
     ctxEl.textContent = b.context || ""; ctxEl.style.display = b.context ? "" : "none";
@@ -2064,13 +2186,13 @@ var PI_FILL = (function(){
       }
       var cl = questionNode(b.closing, ["yes","no"]);
       list.appendChild(cl); nodes.closing = b.closing;
-      nodes.closingPad = padNode(list, R("r_addendum"), "wide", "exp_"+b.closing.id);
+      nodes.closingPad = padNode(list, R_R("r_addendum"), "wide", "exp_"+b.closing.id);
       if (S.explanations[b.closing.id]) nodes.closingPad.restore(S.explanations[b.closing.id]);
     }
 
     var last = (i === Q.blocks.length - 1);
     if (last){
-      nodes.signPad = padNode(list, R("r_sign_final"), "sign", "sig_final");
+      nodes.signPad = padNode(list, R_R("r_sign_final"), "sign", "sig_final");
       var storedSign = S.signatures.final; if (storedSign) nodes.signPad.restore(storedSign);
       nodes.confirmBox = null;
     } else {
@@ -2078,9 +2200,9 @@ var PI_FILL = (function(){
       nodes.confirmBox = confirmNode(list, b.id);
     }
     var returning = S.return_context && blockIdx !== S.return_context.returnTo;
-    D.getElementById("fq-next").textContent = returning ? R("r_return_here") : (last ? R("r_finish") : R("r_next"));
+    D.getElementById("fq-next").textContent = returning ? R_R("r_return_here") : (last ? R_R("r_finish") : R_R("r_next"));
     var reviewButton = D.getElementById("fq-review");
-    if (reviewButton){ reviewButton.textContent = R("r_review"); reviewButton.classList.toggle("hidden", blockIdx<=0 || !!S.finished); }
+    if (reviewButton){ reviewButton.textContent = R_R("r_review"); reviewButton.classList.toggle("hidden", blockIdx<=0 || !!S.finished); }
 
     why("");
     S.blockIdx = i;
@@ -2124,17 +2246,17 @@ var PI_FILL = (function(){
     if (!visited.length) return;
     var veil = tag("div","veil"), box = tag("div","box review-box",veil), head = tag("h2",null,box), body = tag("p",null,box);
     var list = tag("div","review-list",box), row = tag("div","row",box);
-    head.textContent = R("r_review_head"); body.textContent = R("r_review_body");
+    head.textContent = R_R("r_review_head"); body.textContent = R_R("r_review_body");
     visited.forEach(function(index){
       var block = Q.blocks[index], fold = tag("details","review-block",list), summary = tag("summary",null,fold);
       summary.textContent = block.id + " · " + block.title;
       blockQuestions(block).forEach(function(q){
         var b = tag("button","review-question",fold), idn = tag("b",null,b), label = tag("span",null,b);
-        b.type = "button"; idn.textContent = q.id; label.textContent = q.text + " · «" + LB(S.answers[q.id].value) + "»";
+        b.type = "button"; idn.textContent = q.id; label.textContent = q.text + " · «" + LB_R(S.answers[q.id].value) + "»";
         b.addEventListener("click", function(){ D.body.removeChild(veil); gotoBlock(index,"respondent",q.id); });
       });
     });
-    var cancel = tag("button","ghost",row); cancel.type = "button"; cancel.textContent = R("r_review_cancel");
+    var cancel = tag("button","ghost",row); cancel.type = "button"; cancel.textContent = R_R("r_review_cancel");
     cancel.addEventListener("click", function(){ D.body.removeChild(veil); });
     D.body.appendChild(veil);
     if (veil.querySelector("details")) veil.querySelector("details").open = true;
@@ -2150,12 +2272,12 @@ var PI_FILL = (function(){
     function openBranch(kind, silent){
       branch = tag("div","branch"); subs = [];
       var lab = tag("div","blabel",branch);
-      lab.textContent = R("r_expanded", { id:gate.id, answer:LB(kind) });
+      lab.textContent = R_R("r_expanded", { id:gate.id, answer:LB_R(kind) });
       for (var e = 0; e < gate.expansion.length; e++){
         branch.appendChild(questionNode(gate.expansion[e], ["yes","no"]));
         subs.push(gate.expansion[e]);
       }
-      var pad = padNode(branch, R("r_explanation", { id:gate.id }), "wide", "exp_"+gate.id);
+      var pad = padNode(branch, R_R("r_explanation", { id:gate.id }), "wide", "exp_"+gate.id);
       if (S.explanations[gate.id]) pad.restore(S.explanations[gate.id]);
       holder.appendChild(branch);
       nodes.subs[gate.id] = subs;
@@ -2187,7 +2309,7 @@ var PI_FILL = (function(){
     if (kind === "wide") tag("div","rules",box);
     var cv = tag("canvas",null,box);
     var ph = tag("div","placeholder",box); ph.textContent = label;
-    var btn = tag("button","clear",box); btn.setAttribute("aria-label", R("r_erase")); btn.title = R("r_erase");
+    var btn = tag("button","clear",box); btn.setAttribute("aria-label", R_R("r_erase")); btn.title = R_R("r_erase");
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg>';
     var made = makePad(cv, key);
     btn.addEventListener("click", function(){ made.clear(); });
@@ -2216,11 +2338,11 @@ var PI_FILL = (function(){
     if (closing || S.finished || lockedFill) return;
     var miss = missing();
     if (miss.length){
-      why(miss.length===1 ? R("r_left_one",{list:miss[0]}) : R("r_left_many",{list:miss.slice(0,6).join(", ")}));
+      why(miss.length===1 ? R_R("r_left_one",{list:miss[0]}) : R_R("r_left_many",{list:miss.slice(0,6).join(", ")}));
       revealMissing(miss[0]); return;
     }
-    if (nodes.signPad && !nodes.signPad.has()){ why("Поставте підпис унизу сторінки"); revealMissing(nodes.signPad.key); return; }
-    if (nodes.confirmBox && !nodes.confirmBox.has()){ why("Підтвердіть відповіді цього блоку"); nodes.confirmBox.element.closest(".block-confirm").classList.add("needs-attention"); return; }
+    if (nodes.signPad && !nodes.signPad.has()){ why(R_R("r_why_sign")); revealMissing(nodes.signPad.key); return; }
+    if (nodes.confirmBox && !nodes.confirmBox.has()){ why(R_R("r_why_confirm")); nodes.confirmBox.element.closest(".block-confirm").classList.add("needs-attention"); return; }
     return closeBlock();
   }
 
@@ -2246,7 +2368,7 @@ var PI_FILL = (function(){
         (b.gates||[]).forEach(function(g){ var a = S.answers[g.id]; if (a && (a.value==="yes"||a.value==="explain")) required = required.concat(g.expansion); });
         var miss = required.some(function(q){ return !S.answers[q.id]; });
         if (miss || !S.signatures[bi===Q.blocks.length-1 ? "final" : b.id]){
-          closing = false; collectPads(); renderBlock(bi); why(miss ? "Заповніть усі відповіді цього блоку." : "Поставте підпис цього блоку.");
+          closing = false; collectPads(); renderBlock(bi); why(miss ? R_R("r_why_fill_all") : R_R("r_why_sign_block"));
           return false;
         }
       }
@@ -2255,8 +2377,8 @@ var PI_FILL = (function(){
     ev("session_end", { status:S.status });
     S.analysis_snapshot = PI_STAT.analyse(S); S.analysis_version = ANALYTICS_VERSION;
     S.analysis_created = new Date().toISOString(); PI_SAVE.touched();
-    D.querySelector("#s-done h1").textContent = S.status==="aborted" ? "Анкетування припинено" : "Анкету заповнено";
-    D.getElementById("fd-note").textContent = S.status==="aborted" ? "Анкетування припинено. Передайте планшет поліграфологові." : R("r_done_note");
+    D.querySelector("#s-done h1").textContent = S.status==="aborted" ? R_R("r_aborted_head") : R_R("r_done_head");
+    D.getElementById("fd-note").textContent = S.status==="aborted" ? R_R("r_aborted_note") : R_R("r_done_note");
     fillShow("s-done");
     var ok = await PI_SAVE.now();
     scheduleAutoClose();
@@ -2274,7 +2396,7 @@ var PI_FILL = (function(){
     var note = D.getElementById("fd-autoclose");
     function tick(){
       if (!note) return;
-      note.textContent = seconds > 0 ? "Вікно закриється автоматично через " + seconds + " с…" : "";
+      note.textContent = seconds > 0 ? R_R("r_autoclose", {n:seconds}) : "";
       if (seconds <= 0){ try { D.defaultView.close(); } catch(e){} return; }
       seconds--;
       D.defaultView.setTimeout(tick, 1000);
@@ -2300,7 +2422,7 @@ var PI_FILL = (function(){
     S = {
       schema_version: "2.0", app_version:VERSION, analysis_version:ANALYTICS_VERSION, integrity_version:2,
       status: "draft", case_info: JSON.parse(JSON.stringify(caseInfo)),
-      consent_record: null,
+      consent_record: null, respondent_lang: getRespondentLang(),
       session_id: caseInfo.id || newId(), started: new Date().toISOString(), startedAt: Date.now(), finished: null,
       questionnaire: null, identity:{}, answers:{}, explanations:{}, signatures:{},
       events:[], marks:[], reminder:{ shown:false, at:null, gates:[] },
@@ -2353,7 +2475,7 @@ var PI_FILL = (function(){
     var brief = D.getElementById("fb-brief"); brief.innerHTML = "";
     var lines = briefing();
     var ct = D.getElementById("fb-consent-text"); ct.textContent = "";
-    var paragraphs = (Q.consent && Q.consent.paragraphs) || ["Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування."];
+    var paragraphs = (Q.consent && Q.consent.paragraphs) || [R_R("r_consent_default")];
     paragraphs.forEach(function(text){ tag("p",null,ct).textContent = text; });
     D.getElementById("fb-ack").checked = !!S.intake_ack;
     lines.forEach(function(line){ tag("p",null,brief).textContent = line; });
@@ -2366,14 +2488,17 @@ var PI_FILL = (function(){
 
   function paintStatic(){
     function set(sel, text){ var n = D.querySelector(sel); if (n) n.textContent = text; }
-    set('.pad [data-lab="fio"]', R("r_fio")||"Прізвище, ім'я та по батькові");
-    set('.pad [data-lab="birth"]', R("r_birth")||"Дата народження");
-    set('.pad [data-lab="doc"]', R("r_doc")||"Серія і номер документа, що засвідчує особу");
-    set("#fb-go", "Почати");
-    set("#fb-ack-label", R("r_ack"));
+    set("#fb-title", R_R("r_brief_title"));
+    set("#fb-consent-title", R_R("r_consent_title"));
+    set('.pad [data-lab="fio"]', R_R("r_fio")||"Прізвище, ім'я та по батькові");
+    set('.pad [data-lab="birth"]', R_R("r_birth")||"Дата народження");
+    set('.pad [data-lab="doc"]', R_R("r_doc")||"Серія і номер документа, що засвідчує особу");
+    set("#fb-position-label", R_R("r_position"));
+    set("#fb-go", R_R("r_go"));
+    set("#fb-ack-label", R_R("r_ack"));
     var cl = D.querySelectorAll("#s-brief .clear");
     for (var i=0;i<cl.length;i++){
-      cl[i].setAttribute("aria-label", R("r_erase")); cl[i].title = R("r_erase");
+      cl[i].setAttribute("aria-label", R_R("r_erase")); cl[i].title = R_R("r_erase");
       (function(btn){
         if (btn.__wired) return; btn.__wired = true;
         btn.addEventListener("click", function(){ var key = "pad_"+btn.getAttribute("data-clear").replace("pad-",""); if (pads[key]) pads[key].clear(); });
@@ -2405,6 +2530,15 @@ var PI_FILL = (function(){
     if (!saved || !saved.questionnaire) return false;
     S = saved; S.status = "active"; S.integrity_version = 2; S.app_version = VERSION; S.analysis_version = ANALYTICS_VERSION;
     closing = false; lockedFill = false; Q = saved.questionnaire;
+    /* Мова екрана респондента — RESPONDENT_LANG — глобальна змінна UI,
+       що не переживає перезапуск програми. Якщо файл сесії був
+       записаний уже з обраною мовою (respondent_lang), відновлюємо її
+       тут, ДО remount()/renderBlock(), інакше респондент, що заповнював
+       анкету, наприклад, російською, після аварійного перезапуску
+       побачив би кнопки й підказки, що раптово стали українськими
+       посеред тесту — сам текст питань з файлу не постраждав би, але
+       інтерфейс навколо нього змінився б непомітно для поліграфолога. */
+    if (saved.respondent_lang) setRespondentLang(saved.respondent_lang);
     if (!S.marks) S.marks = [];
     S.reminder = S.reminder || { shown:false, at:null, gates:[] };
     S.pen = S.pen || { types:{}, pressureMin:1, pressureMax:0 };
@@ -2421,10 +2555,10 @@ var PI_FILL = (function(){
 
   function beginQuestions(){
     if (S.finished || lockedFill || closing) return;
-    if (!D.getElementById("fb-ack").checked){ why("Підтвердіть ознайомлення перед початком"); return; }
+    if (!D.getElementById("fb-ack").checked){ why(R_R("r_why_ack")); return; }
     S.intake_ack = { at:new Date().toISOString(), paragraphs:(Q.consent&&Q.consent.paragraphs)||[] };
     if (!pads.pad_fio.has() || !pads.pad_birth.has() || !pads.pad_doc.has()){
-      why("Заповніть усі три поля вгорі");
+      why(R_R("r_why_identity"));
       revealMissing(["pad_fio","pad_birth","pad_doc"].find(function(k){ return !pads[k].has(); }));
       return;
     }
@@ -2748,6 +2882,11 @@ var PI_MON = (function(){
     { key:"m_mark_tech", tip:"m_tip_tech" }
   ];
   var MARK_TEXT = { m_mark_react:"реакція", m_mark_asked:"перепитав", m_mark_self:"сказав сам", m_mark_noise:"перешкода", m_mark_tech:"заминка з технікою" };
+  /* Той самий мапінг тексту мітки на внутрішній kind, що й у addMark()
+     (03_fill.js) — потрібен тут лише для data-kind атрибута кнопки,
+     щоб target() міг звірити активні мітки на питанні з конкретною
+     кнопкою без окремого виклику через PI_FILL. */
+  var MARK_TO_KIND = { m_mark_react:"reaction", m_mark_asked:"asked", m_mark_self:"volunteered", m_mark_noise:"noise", m_mark_tech:"technical" };
 
   function styleContent(){
     var s = document.querySelector("style");
@@ -2868,7 +3007,18 @@ var PI_MON = (function(){
     var qmeta = el("mo-qid"), qtext = el("mo-qtext");
     if (!qid){ qmeta.textContent = "—"; qtext.textContent = "Очікую перший дотик"; return; }
     qmeta.textContent = qid; qtext.textContent = PI_FILL.textOf(qid);
-    document.querySelectorAll("#mo-marks-up button, #mo-marks-down button").forEach(function(b){ b.disabled = false; });
+    /* Кнопка мітки стає disabled, якщо на ЦЕ питання вже стоїть активна
+       (не відкликана) мітка того самого kind — узгоджено з тим, що
+       addMark() у 03_fill.js тепер відмовляє в такому дублі на рівні
+       даних (див. коментар там); тут лише синхронізуємо видимий стан
+       кнопки з фактичним станом S.marks, щоб поліграфолог одразу бачив,
+       що саме вже позначено на поточному питанні. */
+    var S = PI_FILL.session();
+    var activeKinds = {};
+    if (S) S.marks.forEach(function(m){ if (m.q === qid && !m.withdrawn_at) activeKinds[m.kind] = true; });
+    document.querySelectorAll("#mo-marks-up button, #mo-marks-down button").forEach(function(b){
+      b.disabled = !!activeKinds[b.getAttribute("data-kind")];
+    });
   }
 
   function buildMarks(){
@@ -2876,12 +3026,14 @@ var PI_MON = (function(){
     up.innerHTML = ""; down.innerHTML = "";
     MARKS_UP.forEach(function(m){
       var b = document.createElement("button"); b.type = "button"; b.textContent = T(m.key); b.title = T(m.tip); b.disabled = true;
-      b.addEventListener("click", function(){ if (!current) return; PI_FILL.mark(current, MARK_TEXT[m.key]); });
+      b.setAttribute("data-kind", MARK_TO_KIND[m.key]);
+      b.addEventListener("click", function(){ if (!current) return; if (PI_FILL.mark(current, MARK_TEXT[m.key])) target(current); });
       up.appendChild(b);
     });
     MARKS_DOWN.forEach(function(m){
       var b = document.createElement("button"); b.type = "button"; b.className = "damp"; b.textContent = T(m.key); b.title = T(m.tip); b.disabled = true;
-      b.addEventListener("click", function(){ if (!current) return; PI_FILL.mark(current, MARK_TEXT[m.key]); el("mo-dot").classList.remove("hot"); });
+      b.setAttribute("data-kind", MARK_TO_KIND[m.key]);
+      b.addEventListener("click", function(){ if (!current) return; if (PI_FILL.mark(current, MARK_TEXT[m.key])){ el("mo-dot").classList.remove("hot"); target(current); } });
       down.appendChild(b);
     });
   }
@@ -3601,6 +3753,11 @@ el("case-save").addEventListener("click", async function(){
   }
   PI_FILL.initEmpty(CASE);
   PI_SAVE.bind(function(){ return PI_FILL.session(); });
+  /* Нова справа — новий респондент: мова екрана респондента не має
+     мовчки успадковуватись від попередньої сесії в тому самому вікні
+     браузера. Скидаємо на дефолт (UK), поліграфолог обирає заново
+     за потреби для цього конкретного респондента. */
+  setRespondentLangUI("uk");
   /* Якщо до створення справи вже намальована згода — переносимо її
      чернетку у щойно створений об'єкт сесії одразу, без очікування
      старту заповнення. */
@@ -3691,6 +3848,12 @@ async function openCaseFile(file, pw, handle){
            друге вікно, як і мало бути. */
         STATE.data = saved.questionnaire; STATE.result = null; STATE.fileName = "";
         updateStartCard();
+        /* Синхронізуємо візуальний стан тумблера з мовою, яку реально
+           встановить PI_FILL.resume() (див. коментар у resume() —
+           respondent_lang із файлу сесії) — інакше тумблер показував
+           би "UK" навіть коли респондент насправді продовжує сесію,
+           розпочату російською. */
+        if (saved.respondent_lang) setRespondentLangUI(saved.respondent_lang);
         PI_MON.resume(saved);
       } else {
         /* Або анкету ще не завантажено (questionnaire:null), або вона
@@ -3805,6 +3968,27 @@ el("mo-back").addEventListener("click", function(){
   updateStartCard();
   navBack("s-start");
 });
+
+/* Мова екрана респондента — незалежно від questionnaire.meta.language
+   (те поле стосується мови тексту питань у самому файлі анкети, не
+   інтерфейсу). Панель поліграфолога (цей екран, монітор, звіт,
+   налаштування) цей вибір не зачіпає — вона й далі виключно
+   українською через T()/R(); тумблер керує лише T_R()/R_R(), які
+   03_fill.js застосовує до кнопок так/ні/поясню, брифінгу, підпису
+   полів ідентифікації тощо на екрані, що бачить сам респондент. */
+function setRespondentLangUI(lang){
+  setRespondentLang(lang);
+  el("resp-lang-uk").classList.toggle("on", lang !== "ru");
+  el("resp-lang-ru").classList.toggle("on", lang === "ru");
+  /* Якщо справа вже створена (S існує), записуємо вибір у саму сесію —
+     інакше при аварійному перезапуску програми посеред тесту мова
+     відновиться на дефолт (UK) незалежно від того, що реально бачив
+     респондент до цього моменту (див. коментар у PI_FILL.resume()). */
+  var S = PI_FILL.session();
+  if (S){ S.respondent_lang = lang; PI_SAVE.touched(); }
+}
+el("resp-lang-uk").addEventListener("click", function(){ setRespondentLangUI("uk"); });
+el("resp-lang-ru").addEventListener("click", function(){ setRespondentLangUI("ru"); });
 
 el("start-go").addEventListener("click", async function(){
   if (!STATE.data || !CASE.label) return;

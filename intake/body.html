@@ -58,6 +58,14 @@
       </span>
     </div>
 
+    <div class="respondent-lang-row" id="respondent-lang-row">
+      <span class="lbl">Мова екрана респондента</span>
+      <div class="seg" role="group" aria-label="Мова екрана респондента">
+        <button type="button" class="seg-opt on" id="resp-lang-uk" data-lang="uk">UA</button>
+        <button type="button" class="seg-opt" id="resp-lang-ru" data-lang="ru">RU</button>
+      </div>
+    </div>
+
     <button id="start-go" class="start-cta" disabled>Почати анкетування</button>
 
     <div class="start-hint" id="start-hint">Завантажте анкету, щоб почати</div>
@@ -125,7 +133,7 @@
 
 <div class="screen fill" id="s-brief">
   <div class="wrap">
-    <h1>Перед початком</h1>
+    <h1 id="fb-title">Перед початком</h1>
     <div class="brief" id="fb-brief"></div>
     <details class="consent-read" open><summary id="fb-consent-title">Ознайомлення перед анкетуванням</summary><div id="fb-consent-text"></div></details>
     <label class="ack"><input type="checkbox" id="fb-ack"> <span id="fb-ack-label">Я прочитав(-ла) інформацію та бажаю почати анкетування</span></label>
@@ -141,7 +149,7 @@
         <div class="padbox"><canvas id="pad-doc"></canvas><div class="placeholder" data-lab="doc">Серія і номер документа, що засвідчує особу</div><button class="clear" data-clear="pad-doc" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div>
       </div>
     </div>
-    <div class="pad line"><div class="padbox"><canvas id="pad-position"></canvas><div class="placeholder">Посада (за потреби)</div><button class="clear" data-clear="pad-position" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div></div>
+    <div class="pad line"><div class="padbox"><canvas id="pad-position"></canvas><div class="placeholder" id="fb-position-label">Посада (за потреби)</div><button class="clear" data-clear="pad-position" aria-label="Стерти" title="Стерти"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/></svg></button></div></div>
 
     <div class="foot">
       <button id="fb-go">Почати</button>

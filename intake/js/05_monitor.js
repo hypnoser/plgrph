@@ -20,6 +20,11 @@ var PI_MON = (function(){
     { key:"m_mark_tech", tip:"m_tip_tech" }
   ];
   var MARK_TEXT = { m_mark_react:"реакція", m_mark_asked:"перепитав", m_mark_self:"сказав сам", m_mark_noise:"перешкода", m_mark_tech:"заминка з технікою" };
+  /* Той самий мапінг тексту мітки на внутрішній kind, що й у addMark()
+     (03_fill.js) — потрібен тут лише для data-kind атрибута кнопки,
+     щоб target() міг звірити активні мітки на питанні з конкретною
+     кнопкою без окремого виклику через PI_FILL. */
+  var MARK_TO_KIND = { m_mark_react:"reaction", m_mark_asked:"asked", m_mark_self:"volunteered", m_mark_noise:"noise", m_mark_tech:"technical" };
 
   function styleContent(){
     var s = document.querySelector("style");
@@ -140,7 +145,18 @@ var PI_MON = (function(){
     var qmeta = el("mo-qid"), qtext = el("mo-qtext");
     if (!qid){ qmeta.textContent = "—"; qtext.textContent = "Очікую перший дотик"; return; }
     qmeta.textContent = qid; qtext.textContent = PI_FILL.textOf(qid);
-    document.querySelectorAll("#mo-marks-up button, #mo-marks-down button").forEach(function(b){ b.disabled = false; });
+    /* Кнопка мітки стає disabled, якщо на ЦЕ питання вже стоїть активна
+       (не відкликана) мітка того самого kind — узгоджено з тим, що
+       addMark() у 03_fill.js тепер відмовляє в такому дублі на рівні
+       даних (див. коментар там); тут лише синхронізуємо видимий стан
+       кнопки з фактичним станом S.marks, щоб поліграфолог одразу бачив,
+       що саме вже позначено на поточному питанні. */
+    var S = PI_FILL.session();
+    var activeKinds = {};
+    if (S) S.marks.forEach(function(m){ if (m.q === qid && !m.withdrawn_at) activeKinds[m.kind] = true; });
+    document.querySelectorAll("#mo-marks-up button, #mo-marks-down button").forEach(function(b){
+      b.disabled = !!activeKinds[b.getAttribute("data-kind")];
+    });
   }
 
   function buildMarks(){
@@ -148,12 +164,14 @@ var PI_MON = (function(){
     up.innerHTML = ""; down.innerHTML = "";
     MARKS_UP.forEach(function(m){
       var b = document.createElement("button"); b.type = "button"; b.textContent = T(m.key); b.title = T(m.tip); b.disabled = true;
-      b.addEventListener("click", function(){ if (!current) return; PI_FILL.mark(current, MARK_TEXT[m.key]); });
+      b.setAttribute("data-kind", MARK_TO_KIND[m.key]);
+      b.addEventListener("click", function(){ if (!current) return; if (PI_FILL.mark(current, MARK_TEXT[m.key])) target(current); });
       up.appendChild(b);
     });
     MARKS_DOWN.forEach(function(m){
       var b = document.createElement("button"); b.type = "button"; b.className = "damp"; b.textContent = T(m.key); b.title = T(m.tip); b.disabled = true;
-      b.addEventListener("click", function(){ if (!current) return; PI_FILL.mark(current, MARK_TEXT[m.key]); el("mo-dot").classList.remove("hot"); });
+      b.setAttribute("data-kind", MARK_TO_KIND[m.key]);
+      b.addEventListener("click", function(){ if (!current) return; if (PI_FILL.mark(current, MARK_TEXT[m.key])){ el("mo-dot").classList.remove("hot"); target(current); } });
       down.appendChild(b);
     });
   }
