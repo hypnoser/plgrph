@@ -79,13 +79,16 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .step-card:disabled .title{color:var(--faint)}
 .step-card:disabled .sub{color:#B9BDB7}
 .case-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--faint);margin:14px 2px 0}
-.respondent-lang-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 2px 0;padding:10px 12px;border-radius:var(--radius);background:var(--card);border:1px solid var(--rule)}
-.respondent-lang-row .lbl{font-size:13px;color:var(--muted)}
-.seg{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--rule)}
-.seg-opt{border:0;background:var(--card);color:var(--muted);font-size:12px;font-weight:600;padding:6px 14px;cursor:pointer;min-height:auto}
-.seg-opt+.seg-opt{border-left:1px solid var(--rule)}
-.seg-opt.on{background:var(--accent);color:#fff}
-.seg-opt:hover:not(.on){background:var(--rule-soft)}
+.consent-row{display:flex;align-items:stretch;gap:8px}
+.consent-row .step-card.compact{width:auto;flex:1;min-width:0;padding:0 12px;height:44px}
+.consent-row .step-card.compact .body{overflow:hidden}
+.consent-row .step-card.compact .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.consent-row .step-card.compact .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang-toggle{display:flex;gap:8px;flex-shrink:0}
+.lang-opt{width:44px;height:44px;padding:0;border-radius:var(--radius);border:1px solid var(--rule);
+  background:var(--card);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;min-height:auto;flex-shrink:0}
+.lang-opt.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lang-opt:hover:not(.on){background:var(--rule-soft)}
 .start-cta{width:100%;margin-top:16px;padding:14px;font-size:16px;font-weight:500}
 .start-hint{font-size:12px;color:var(--faint);text-align:center;margin-top:6px}
 .save-row{display:flex;align-items:center;gap:6px;margin-top:20px;font-size:12px;color:var(--faint)}
@@ -431,24 +434,26 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 
     <div class="step-list">
 
-      <button type="button" class="step-card" id="step-consent">
-        <span class="badge todo" id="step-consent-badge">1</span>
-        <span class="body">
-          <span class="title" id="step-consent-title">Згода</span>
-          <span class="sub" id="step-consent-sub">Натисніть, щоб оформити згоду на анкетування</span>
-        </span>
-        <span class="sub" id="step-consent-action">Оформити</span>
-      </button>
-
-      <button type="button" class="step-card" id="step-quest" disabled>
-        <span class="badge todo" id="step-quest-badge">2</span>
-        <span class="body">
-          <span class="title" id="step-quest-title">Анкета</span>
-          <span class="sub" id="step-quest-sub">Спочатку збережіть справу</span>
-        </span>
-        <span class="sub" id="step-quest-action"></span>
-        <input type="file" id="f-quest" accept=".json,application/json" class="hidden">
-      </button>
+      <div class="consent-row">
+        <button type="button" class="step-card compact" id="step-consent">
+          <span class="badge todo" id="step-consent-badge">1</span>
+          <span class="body">
+            <span class="title" id="step-consent-title">Згода</span>
+            <span class="sub" id="step-consent-sub">Оформити</span>
+          </span>
+        </button>
+        <button type="button" class="step-card compact" id="step-quest" disabled>
+          <span class="badge todo" id="step-quest-badge">2</span>
+          <span class="body">
+            <span class="title" id="step-quest-title">Анкета</span>
+            <span class="sub" id="step-quest-sub">Не завантажена</span>
+          </span>
+          <input type="file" id="f-quest" accept=".json,application/json" class="hidden">
+        </button>
+        <div class="lang-toggle" id="respondent-lang-row" role="group" aria-label="Мова екрана респондента">
+          <button type="button" class="lang-opt on" id="resp-lang-uk" data-lang="uk" title="Мова екрана респондента: українська">UA</button>
+          <button type="button" class="lang-opt" id="resp-lang-ru" data-lang="ru" title="Мова екрана респондента: російська">RU</button>
+        </div>      </div>
 
     </div>
 
@@ -459,14 +464,6 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
         <button type="button" class="mini ghost hidden" id="case-report-btn">Звіт</button>
         <button type="button" class="mini ghost hidden" id="case-answersheet-btn">Анкета</button>
       </span>
-    </div>
-
-    <div class="respondent-lang-row" id="respondent-lang-row">
-      <span class="lbl">Мова екрана респондента</span>
-      <div class="seg" role="group" aria-label="Мова екрана респондента">
-        <button type="button" class="seg-opt on" id="resp-lang-uk" data-lang="uk">UA</button>
-        <button type="button" class="seg-opt" id="resp-lang-ru" data-lang="ru">RU</button>
-      </div>
     </div>
 
     <button id="start-go" class="start-cta" disabled>Почати анкетування</button>
@@ -607,7 +604,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
         </button>
       </div>
       <canvas id="cs-canvas"></canvas>
-      <div class="cdoc" id="cs-doc">
+      <div class="cdoc" id="cs-doc-uk">
         <h1>ЗГОДА</h1>
 
         <p class="cl row">я,<i class="ln grow"></i></p>
@@ -639,7 +636,40 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 
       <p class="csign">Особистий підпис <i class="ln l"></i></p>
       <p class="cl">«<i class="ln xs"></i>»<i class="ln l"></i>20<i class="ln xs"></i> року</p>
-    </div>
+      </div>
+      <div class="cdoc hidden" id="cs-doc-ru">
+        <h1>СОГЛАСИЕ</h1>
+
+        <p class="cl row">я,<i class="ln grow"></i></p>
+        <p class="cap">(фамилия, имя и отчество)</p>
+
+        <p class="cl">«<i class="ln xs"></i>»<i class="ln m"></i> <i class="ln s"></i> года рождения, документ, удостоверяющий</p>
+        <p class="cl">личность: серия <i class="ln s"></i> номер <i class="ln m"></i>, выдан <i class="ln l"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cap">(кем выдан и когда)</p>
+
+      <p>даю добровольное согласие на проведение опроса с использованием полиграфа без применения
+      угроз, насилия или иных незаконных средств воздействия на меня со стороны кого-либо.</p>
+
+      <p class="ind">Я ознакомлен(-а) с условиями проведения опроса с использованием полиграфа, а именно:</p>
+
+      <ol class="cterms">
+        <li>Отказ от проведения опроса не может быть основанием для прямого или косвенного
+        ограничения моих законных прав и интересов или считаться свидетельством уклонения от
+        предоставления информации.</li>
+        <li>При проведении опроса вопросы не могут быть заданы без их предварительного
+        обсуждения со мной.</li>
+        <li>Я имею право отказаться от опроса на любом этапе его проведения.</li>
+        <li>Проинформирован(-а), что исследование не причинит вреда моему здоровью.</li>
+      </ol>
+
+      <p class="ind">Я даю добровольное согласие на осуществление аудио- и видеофиксации процесса
+      опроса с использованием полиграфа и дальнейшего их использования в служебной деятельности.</p>
+
+      <p class="csign">Личная подпись <i class="ln l"></i></p>
+      <p class="cl">«<i class="ln xs"></i>»<i class="ln l"></i>20<i class="ln xs"></i> года</p>
+      </div>
   </div>
   </div>
 </div>
@@ -894,6 +924,7 @@ var DICT = {
   r_brief_5: "Поставте парафу наприкінці кожного блоку та підпис наприкінці анкети.",
   r_go: "Почати",
   r_consent_default: "Участь добровільна. Ви можете попросити пояснення, відмовитися від окремої відповіді або припинити анкетування.",
+  r_cs_pen: "Писати", r_cs_eraser: "Стерти", r_cs_clear: "Очистити", r_cs_print: "Друкувати",
   r_why_sign: "Поставте підпис унизу сторінки",
   r_why_confirm: "Підтвердіть відповіді цього блоку",
   r_why_fill_all: "Заповніть усі відповіді цього блоку.",
@@ -983,6 +1014,7 @@ var DICT_RESPONDENT_RU = {
   r_brief_5: "Поставьте парафу в конце каждого блока и подпись в конце анкеты.",
   r_go: "Начать",
   r_consent_default: "Участие добровольное. Вы можете попросить разъяснение, отказаться от отдельного ответа или прекратить анкетирование.",
+  r_cs_pen: "Писать", r_cs_eraser: "Стереть", r_cs_clear: "Очистить", r_cs_print: "Печать",
   r_why_sign: "Поставьте подпись внизу страницы",
   r_why_confirm: "Подтвердите ответы этого блока",
   r_why_fill_all: "Заполните все ответы этого блока.",
@@ -3490,10 +3522,11 @@ el("as-print").addEventListener("click", function(){ window.print(); });
 
 /* ======================================================================
    Intake v4.1 — 07_consent.js
-   Точний текст документа "ЗГОДА" (з бланкованими полями ПІБ, дати
-   народження, документа, умов) відновлено з попередньої версії 3.2 —
-   він фіксований у розмітці (body.html, #cs-doc), не генерується з
-   consent.paragraphs анкети.
+   Точний текст документа "ЗГОДА"/"СОГЛАСИЕ" (з бланкованими полями ПІБ,
+   дати народження, документа, умов) — дві повні, наперед написані мовні
+   версії, фіксовані в розмітці (body.html, #cs-doc-uk / #cs-doc-ru),
+   перемикаються за RESPONDENT_LANG (той самий тумблер, що для екрана
+   заповнення анкети), не генеруються з consent.paragraphs анкети.
 
    Перо пише, палець гортає сторінку: touch-action:none на canvas
    потрібен, щоб перо не смикало сторінку під час письма, тому
@@ -3526,8 +3559,25 @@ var PI_CONSENT = (function(){
     var page = D.getElementById("cs-page");
     ctx = canvas.getContext("2d");
     strokes = 0; drawing = false; activeId = null;
-    /* Текст документа фіксований у розмітці (cs-doc) — так само, як
-       у попередній версії програми. Тут його не підмінюємо. */
+    /* Текст документа фіксований у розмітці (cs-doc-uk / cs-doc-ru) —
+       дві повні, наперед написані версії, не переклад "на льоту".
+       Показуємо ту, що відповідає RESPONDENT_LANG на момент відкриття
+       вікна згоди — той самий тумблер, що керує екраном заповнення
+       (03_fill.js), бо для респондента це одна суцільна мовна картина:
+       підписав згоду і заповнює анкету однією й тією ж мовою кнопок
+       і службового тексту. */
+    var docUk = D.getElementById("cs-doc-uk"), docRu = D.getElementById("cs-doc-ru");
+    if (docUk && docRu){
+      var ru = getRespondentLang() === "ru";
+      docUk.classList.toggle("hidden", ru);
+      docRu.classList.toggle("hidden", !ru);
+    }
+    var bPenLbl = D.getElementById("cs-pen"), bErLbl = D.getElementById("cs-eraser"),
+        bClLbl = D.getElementById("cs-clear"), bPrLbl = D.getElementById("cs-print");
+    if (bPenLbl){ bPenLbl.title = R_R("r_cs_pen"); bPenLbl.setAttribute("aria-label", R_R("r_cs_pen")); }
+    if (bErLbl){ bErLbl.title = R_R("r_cs_eraser"); bErLbl.setAttribute("aria-label", R_R("r_cs_eraser")); }
+    if (bClLbl){ bClLbl.title = R_R("r_cs_clear"); bClLbl.setAttribute("aria-label", R_R("r_cs_clear")); }
+    if (bPrLbl){ bPrLbl.title = R_R("r_cs_print"); bPrLbl.setAttribute("aria-label", R_R("r_cs_print")); }
 
     var tries = 0;
     function size(){
@@ -3702,18 +3752,16 @@ function updateStartCard(){
   var questDone = !!STATE.data;
   var caseDone = !!CASE.label;
 
-  var cBadge = el("step-consent-badge"), cSub = el("step-consent-sub"), cAction = el("step-consent-action");
+  var cBadge = el("step-consent-badge"), cSub = el("step-consent-sub");
   cBadge.className = "badge " + (consentDone ? "done" : "todo");
   cBadge.innerHTML = consentDone ? checkIcon() : "1";
-  cSub.textContent = consentDone ? "Оформлено" : "Натисніть, щоб оформити згоду на анкетування";
-  cAction.textContent = consentDone ? "Змінити" : "Оформити";
+  cSub.textContent = consentDone ? "Оформлено" : "Оформити";
 
-  var questCard = el("step-quest"), qBadge = el("step-quest-badge"), qSub = el("step-quest-sub"), qAction = el("step-quest-action");
+  var questCard = el("step-quest"), qBadge = el("step-quest-badge"), qSub = el("step-quest-sub");
   questCard.disabled = !caseDone;
   qBadge.className = "badge " + (questDone ? "done" : "todo");
   qBadge.innerHTML = questDone ? checkIcon() : "2";
-  qSub.textContent = !caseDone ? "Спочатку збережіть справу" : (questDone ? ((STATE.data.meta||{}).title || "Анкету завантажено") : "Не завантажена");
-  qAction.textContent = !caseDone ? "" : (questDone ? "Змінити" : "Завантажити");
+  qSub.textContent = !caseDone ? "Спочатку збережіть справу" : (questDone ? ((STATE.data.meta||{}).title || "Завантажено") : "Завантажити");
 
   var goBtn = el("start-go"), hint = el("start-hint");
   goBtn.disabled = !questDone || !caseDone;

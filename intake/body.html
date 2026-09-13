@@ -28,24 +28,26 @@
 
     <div class="step-list">
 
-      <button type="button" class="step-card" id="step-consent">
-        <span class="badge todo" id="step-consent-badge">1</span>
-        <span class="body">
-          <span class="title" id="step-consent-title">Згода</span>
-          <span class="sub" id="step-consent-sub">Натисніть, щоб оформити згоду на анкетування</span>
-        </span>
-        <span class="sub" id="step-consent-action">Оформити</span>
-      </button>
-
-      <button type="button" class="step-card" id="step-quest" disabled>
-        <span class="badge todo" id="step-quest-badge">2</span>
-        <span class="body">
-          <span class="title" id="step-quest-title">Анкета</span>
-          <span class="sub" id="step-quest-sub">Спочатку збережіть справу</span>
-        </span>
-        <span class="sub" id="step-quest-action"></span>
-        <input type="file" id="f-quest" accept=".json,application/json" class="hidden">
-      </button>
+      <div class="consent-row">
+        <button type="button" class="step-card compact" id="step-consent">
+          <span class="badge todo" id="step-consent-badge">1</span>
+          <span class="body">
+            <span class="title" id="step-consent-title">Згода</span>
+            <span class="sub" id="step-consent-sub">Оформити</span>
+          </span>
+        </button>
+        <button type="button" class="step-card compact" id="step-quest" disabled>
+          <span class="badge todo" id="step-quest-badge">2</span>
+          <span class="body">
+            <span class="title" id="step-quest-title">Анкета</span>
+            <span class="sub" id="step-quest-sub">Не завантажена</span>
+          </span>
+          <input type="file" id="f-quest" accept=".json,application/json" class="hidden">
+        </button>
+        <div class="lang-toggle" id="respondent-lang-row" role="group" aria-label="Мова екрана респондента">
+          <button type="button" class="lang-opt on" id="resp-lang-uk" data-lang="uk" title="Мова екрана респондента: українська">UA</button>
+          <button type="button" class="lang-opt" id="resp-lang-ru" data-lang="ru" title="Мова екрана респондента: російська">RU</button>
+        </div>      </div>
 
     </div>
 
@@ -56,14 +58,6 @@
         <button type="button" class="mini ghost hidden" id="case-report-btn">Звіт</button>
         <button type="button" class="mini ghost hidden" id="case-answersheet-btn">Анкета</button>
       </span>
-    </div>
-
-    <div class="respondent-lang-row" id="respondent-lang-row">
-      <span class="lbl">Мова екрана респондента</span>
-      <div class="seg" role="group" aria-label="Мова екрана респондента">
-        <button type="button" class="seg-opt on" id="resp-lang-uk" data-lang="uk">UA</button>
-        <button type="button" class="seg-opt" id="resp-lang-ru" data-lang="ru">RU</button>
-      </div>
     </div>
 
     <button id="start-go" class="start-cta" disabled>Почати анкетування</button>
@@ -204,7 +198,7 @@
         </button>
       </div>
       <canvas id="cs-canvas"></canvas>
-      <div class="cdoc" id="cs-doc">
+      <div class="cdoc" id="cs-doc-uk">
         <h1>ЗГОДА</h1>
 
         <p class="cl row">я,<i class="ln grow"></i></p>
@@ -236,7 +230,40 @@
 
       <p class="csign">Особистий підпис <i class="ln l"></i></p>
       <p class="cl">«<i class="ln xs"></i>»<i class="ln l"></i>20<i class="ln xs"></i> року</p>
-    </div>
+      </div>
+      <div class="cdoc hidden" id="cs-doc-ru">
+        <h1>СОГЛАСИЕ</h1>
+
+        <p class="cl row">я,<i class="ln grow"></i></p>
+        <p class="cap">(фамилия, имя и отчество)</p>
+
+        <p class="cl">«<i class="ln xs"></i>»<i class="ln m"></i> <i class="ln s"></i> года рождения, документ, удостоверяющий</p>
+        <p class="cl">личность: серия <i class="ln s"></i> номер <i class="ln m"></i>, выдан <i class="ln l"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cl row"><i class="ln grow"></i></p>
+        <p class="cap">(кем выдан и когда)</p>
+
+      <p>даю добровольное согласие на проведение опроса с использованием полиграфа без применения
+      угроз, насилия или иных незаконных средств воздействия на меня со стороны кого-либо.</p>
+
+      <p class="ind">Я ознакомлен(-а) с условиями проведения опроса с использованием полиграфа, а именно:</p>
+
+      <ol class="cterms">
+        <li>Отказ от проведения опроса не может быть основанием для прямого или косвенного
+        ограничения моих законных прав и интересов или считаться свидетельством уклонения от
+        предоставления информации.</li>
+        <li>При проведении опроса вопросы не могут быть заданы без их предварительного
+        обсуждения со мной.</li>
+        <li>Я имею право отказаться от опроса на любом этапе его проведения.</li>
+        <li>Проинформирован(-а), что исследование не причинит вреда моему здоровью.</li>
+      </ol>
+
+      <p class="ind">Я даю добровольное согласие на осуществление аудио- и видеофиксации процесса
+      опроса с использованием полиграфа и дальнейшего их использования в служебной деятельности.</p>
+
+      <p class="csign">Личная подпись <i class="ln l"></i></p>
+      <p class="cl">«<i class="ln xs"></i>»<i class="ln l"></i>20<i class="ln xs"></i> года</p>
+      </div>
   </div>
   </div>
 </div>

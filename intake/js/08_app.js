@@ -13,18 +13,16 @@ function updateStartCard(){
   var questDone = !!STATE.data;
   var caseDone = !!CASE.label;
 
-  var cBadge = el("step-consent-badge"), cSub = el("step-consent-sub"), cAction = el("step-consent-action");
+  var cBadge = el("step-consent-badge"), cSub = el("step-consent-sub");
   cBadge.className = "badge " + (consentDone ? "done" : "todo");
   cBadge.innerHTML = consentDone ? checkIcon() : "1";
-  cSub.textContent = consentDone ? "Оформлено" : "Натисніть, щоб оформити згоду на анкетування";
-  cAction.textContent = consentDone ? "Змінити" : "Оформити";
+  cSub.textContent = consentDone ? "Оформлено" : "Оформити";
 
-  var questCard = el("step-quest"), qBadge = el("step-quest-badge"), qSub = el("step-quest-sub"), qAction = el("step-quest-action");
+  var questCard = el("step-quest"), qBadge = el("step-quest-badge"), qSub = el("step-quest-sub");
   questCard.disabled = !caseDone;
   qBadge.className = "badge " + (questDone ? "done" : "todo");
   qBadge.innerHTML = questDone ? checkIcon() : "2";
-  qSub.textContent = !caseDone ? "Спочатку збережіть справу" : (questDone ? ((STATE.data.meta||{}).title || "Анкету завантажено") : "Не завантажена");
-  qAction.textContent = !caseDone ? "" : (questDone ? "Змінити" : "Завантажити");
+  qSub.textContent = !caseDone ? "Спочатку збережіть справу" : (questDone ? ((STATE.data.meta||{}).title || "Завантажено") : "Завантажити");
 
   var goBtn = el("start-go"), hint = el("start-hint");
   goBtn.disabled = !questDone || !caseDone;

@@ -1,9 +1,10 @@
 /* ======================================================================
    Intake v4.1 — 07_consent.js
-   Точний текст документа "ЗГОДА" (з бланкованими полями ПІБ, дати
-   народження, документа, умов) відновлено з попередньої версії 3.2 —
-   він фіксований у розмітці (body.html, #cs-doc), не генерується з
-   consent.paragraphs анкети.
+   Точний текст документа "ЗГОДА"/"СОГЛАСИЕ" (з бланкованими полями ПІБ,
+   дати народження, документа, умов) — дві повні, наперед написані мовні
+   версії, фіксовані в розмітці (body.html, #cs-doc-uk / #cs-doc-ru),
+   перемикаються за RESPONDENT_LANG (той самий тумблер, що для екрана
+   заповнення анкети), не генеруються з consent.paragraphs анкети.
 
    Перо пише, палець гортає сторінку: touch-action:none на canvas
    потрібен, щоб перо не смикало сторінку під час письма, тому
@@ -36,8 +37,25 @@ var PI_CONSENT = (function(){
     var page = D.getElementById("cs-page");
     ctx = canvas.getContext("2d");
     strokes = 0; drawing = false; activeId = null;
-    /* Текст документа фіксований у розмітці (cs-doc) — так само, як
-       у попередній версії програми. Тут його не підмінюємо. */
+    /* Текст документа фіксований у розмітці (cs-doc-uk / cs-doc-ru) —
+       дві повні, наперед написані версії, не переклад "на льоту".
+       Показуємо ту, що відповідає RESPONDENT_LANG на момент відкриття
+       вікна згоди — той самий тумблер, що керує екраном заповнення
+       (03_fill.js), бо для респондента це одна суцільна мовна картина:
+       підписав згоду і заповнює анкету однією й тією ж мовою кнопок
+       і службового тексту. */
+    var docUk = D.getElementById("cs-doc-uk"), docRu = D.getElementById("cs-doc-ru");
+    if (docUk && docRu){
+      var ru = getRespondentLang() === "ru";
+      docUk.classList.toggle("hidden", ru);
+      docRu.classList.toggle("hidden", !ru);
+    }
+    var bPenLbl = D.getElementById("cs-pen"), bErLbl = D.getElementById("cs-eraser"),
+        bClLbl = D.getElementById("cs-clear"), bPrLbl = D.getElementById("cs-print");
+    if (bPenLbl){ bPenLbl.title = R_R("r_cs_pen"); bPenLbl.setAttribute("aria-label", R_R("r_cs_pen")); }
+    if (bErLbl){ bErLbl.title = R_R("r_cs_eraser"); bErLbl.setAttribute("aria-label", R_R("r_cs_eraser")); }
+    if (bClLbl){ bClLbl.title = R_R("r_cs_clear"); bClLbl.setAttribute("aria-label", R_R("r_cs_clear")); }
+    if (bPrLbl){ bPrLbl.title = R_R("r_cs_print"); bPrLbl.setAttribute("aria-label", R_R("r_cs_print")); }
 
     var tries = 0;
     function size(){
