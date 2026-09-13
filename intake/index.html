@@ -321,11 +321,11 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .small-input{max-width:140px}
 
 .consent-wrap{max-width:none;margin:0 auto;padding:0;background:#DADCD6;min-height:100vh;display:flex;flex-direction:column;align-items:center}
-.ctools{position:fixed;top:14px;right:14px;z-index:4;display:flex;gap:6px}
-.ctools button{font-size:6.5px;width:18px;height:18px;min-height:auto;padding:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.92);color:var(--ink);border:1px solid var(--rule);border-radius:4px;cursor:pointer;
+.ctools{position:fixed;top:14px;right:14px;z-index:4;display:flex;gap:12px}
+.ctools button{font-size:13px;width:36px;height:36px;min-height:auto;padding:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.92);color:var(--ink);border:1px solid var(--rule);border-radius:8px;cursor:pointer;
   box-shadow:0 1px 3px rgba(0,0,0,.15)}
-.ctools button svg{width:8.5px;height:8.5px}
+.ctools button svg{width:17px;height:17px}
 .ctools button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .cpage{position:relative;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.18);
   width:95vw;aspect-ratio:210/297;flex-shrink:0;margin:16px 0 24px;padding:6.7% 6.7% 6.7% 8.3%;overflow:hidden}
@@ -363,10 +363,21 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .asheet .as-sign img{display:block;max-width:280px;max-height:80px;margin:.3em 0}
 .asheet .as-sign .ln{display:inline-block;border-bottom:1px solid #000;width:29%;vertical-align:baseline;height:1.1em}
 @media print{
+  /* @page{margin} — єдиний CSS-важіль, яким сторінка може вплинути на
+     службовий header/footer браузера при друку (дата, назва вкладки,
+     URL, номер сторінки): у Chrome/Edge заданий тут margin визначає,
+     скільки місця лишається під той текст, і з не-нульовим значенням
+     (12mm) браузер сам не малює свій текст у цій смузі — на відміну
+     від margin:0, де він однаково лишає вузьку смугу під власний текст
+     поверх контенту. Сам browser-friендлі "прибрати назавжди" неможливий
+     — це керується прапорцем "Headers and footers" у діалозі друку
+     користувача, який CSS змінити не може; це лише розумний дефолт. */
+  @page{margin:12mm}
   .asheet{font-size:13pt;max-width:none}
   .top,.back-link,#as-print,.foot{display:none!important}
 }
 @media print{
+  @page{size:A4;margin:0}
   .top,.ctools{display:none!important}
   #s-consent.on{display:block!important}
   .consent-wrap{background:#fff;padding:0;display:block;min-height:0}
