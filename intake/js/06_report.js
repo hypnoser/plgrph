@@ -100,6 +100,7 @@ function shortReason(w){
   if (/лишив пояснення порожнім/.test(w)) return "порожнє пояснення";
   if (/відповів не по порядку/.test(w)) return "відповідь не по порядку";
   if (/суцільні «ні»/.test(w)) return "серія автоматичних «ні»";
+  if (/повідомлена обставина, яка для цього шлюзу очікувалась рідкісною/.test(w)) return "рідкісне «так»";
   if (/повідомлена обставина для уточнення/.test(w)) return "повідомив обставину";
   if (/позначене як кандидат у релевантні/.test(w)) return "кандидат у релевантні";
   if (/повторно зосереджував стилус/.test(w)) return "повторна увага";
@@ -190,6 +191,7 @@ function selectQuestion(id, silent){
   var byId = {}; A.points.forEach(function(p){ byId[p.id] = p; });
   var point = byId[id];
   var isAnchor = meta.kind === "anchor";
+  var isQuietCandidate = !isAnchor && point && point.relevantCandidate && point.score === 0;
   var sev = point ? severityOf(point.score) : 0;
 
   document.querySelectorAll(".rep-cell").forEach(function(c){ c.classList.remove("selected"); });
@@ -203,8 +205,13 @@ function selectQuestion(id, silent){
      шлюз: вона свідомо не потрапляє в аналіз значущості (analyse()
      виключає kind:"anchor" з points), тому звичайний бейдж 1..4
      тут показував би оманливе "Без подій", ніби якір міг мати
-     значущість, просто не отримав. Окрема нейтральна позначка. */
+     значущість, просто не отримав. Окрема нейтральна позначка.
+     Той самий підхід — для шлюзу, позначеного relevant_candidate у
+     файлі анкети, але без жодного поведінкового сигналу: це не "0
+     балів через відсутність аналізу" (як у якоря), а "0 балів, хоча
+     аналіз відбувся" — тому текст і позначка інші. */
   if (isAnchor) tag("span", "rep-sev-badge sev-anchor", head, "Контрольне питання");
+  else if (isQuietCandidate) tag("span", "rep-sev-badge sev-anchor", head, "Кандидат · спокійно");
   else tag("span", "rep-sev-badge sev-"+(sev||1), head, severityLabel(sev));
   tag("div", "qtext", card, meta.text);
   var answerText = S.answers[id] ? S.answers[id].value : null;
@@ -215,6 +222,8 @@ function selectQuestion(id, silent){
 
   if (isAnchor){
     tag("div", "foot-row", card, "Нейтральне контрольне питання — не оцінюється за значущістю, використовується двигуном лише для порівняння часу реакції всередині блоку.");
+  } else if (isQuietCandidate){
+    tag("div", "foot-row", card, "Анкета позначила це питання як кандидата в релевантні для самого тесту на поліграфі — але саме анкетування не виявило на ньому жодного поведінкового відхилення. Це нейтральна інформація для передтестової бесіди, не сигнал тривоги.");
   } else if (point && point.why && point.why.length){
     var pills = tag("div", "rep-pills", card);
     point.why.forEach(function(w){

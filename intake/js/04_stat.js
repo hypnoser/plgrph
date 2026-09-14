@@ -55,7 +55,8 @@ var PI_STAT = (function(){
       var b = Q.blocks[i], j, k;
       function put(q, kind, gate){
         map[q.id] = { id:q.id, text:q.text, kind:kind, block:b.id, blockIndex:i, gate:gate||null,
-          baseline:q.baseline_yes||(kind==="gate"?"medium":"high"), relevant:!!q.relevant_candidate };
+          baseline:q.baseline_yes||(kind==="gate"?"medium":"high"), relevant:!!q.relevant_candidate,
+          loadProfile:q.load_profile||null };
         blockOf[q.id] = b.id; order.push(q.id);
       }
       if (b.questions) for (j=0;j<b.questions.length;j++) put(b.questions[j],"plain");
@@ -81,6 +82,14 @@ var PI_STAT = (function(){
   function countChanges(rec){ var n=0; for (var k in rec) n+=rec[k].changes; return n; }
   function countAfter(rec){ var n=0; for (var k in rec) if (rec[k].afterExpand) n++; return n; }
   function countCollapsedEmpty(c){ var n=0; for (var k in c) if (!c[k].answered) n++; return n; }
+
+  /* Ефективний spread бази з поправкою на малу вибірку — див. коментар
+     біля першого використання в analyse(). Винесено в спільну функцію,
+     щоб points[] і sequence[] завжди рахували z однаково. */
+  function effectiveSpread(bl){
+    var sampleCorrection = 1 - 3/(4*bl.n - 5);
+    return bl.spread / Math.max(sampleCorrection, 0.5);
+  }
 
   function analyse(S){
     var Q = S.questionnaire, ix = index(Q), map = ix.map;
@@ -146,22 +155,80 @@ var PI_STAT = (function(){
       var a = ix.order.indexOf(seq[si-1]), b2 = ix.order.indexOf(seq[si]);
       if (b2<a) jumps[seq[si]] = true;
     }
+    /* Виявлення "автоматичного клацання ні поспіль" після першого
+       розкриття блоку. Раніше: (а) спрацьовувало лише коли АБСОЛЮТНО
+       всі залишкові шлюзи блоку до єдиного стали "ні" — часткова серія
+       (респондент почав клацати автоматично не з першого, а, скажімо,
+       з п'ятого залишкового питання) взагалі не виявлялась; (б) навіть
+       коли спрацьовувало, позначало бал і причину лише на ПЕРШОМУ
+       питанні знайденої серії, хоча однаковою мірою бездумною
+       поведінка була на кожному питанні цієї серії. Тепер: шукаємо
+       найдовшу підряд послідовність "ні" довжиною від MIN_RUN і
+       позначаємо runFlag на КОЖНОМУ її питанні, зі спільною довжиною
+       серії в поясненні. */
+    var MIN_RUN = 4;
     var runFlag = {};
     Q.blocks.forEach(function(blk){
       if (!blk.gates) return;
       var expandIndex = S.events.findIndex(function(e){ return e.type==="expand" && map[e.q] && map[e.q].block===blk.id; });
       if (expandIndex<0) return;
       var remaining = blk.gates.filter(function(g){ return !S.events.slice(0,expandIndex+1).some(function(e){ return e.type==="answer" && e.q===g.id; }); });
-      if (remaining.length<3) return;
+      if (remaining.length<MIN_RUN) return;
       var responses = S.events.slice(expandIndex+1).filter(function(e){ return e.type==="answer" && remaining.some(function(g){ return g.id===e.q; }); });
-      if (responses.length===remaining.length && responses.every(function(e){ return e.value==="no" && rec[e.q].value==="no"; })) runFlag[responses[0].q] = responses.length;
+      var run = [];
+      for (var ri=0; ri<=responses.length; ri++){
+        var isNo = ri<responses.length && responses[ri].value==="no" && rec[responses[ri].q] && rec[responses[ri].q].value==="no";
+        if (isNo) run.push(responses[ri].q);
+        else {
+          if (run.length>=MIN_RUN) run.forEach(function(qid){ runFlag[qid] = run.length; });
+          run = [];
+        }
+      }
     });
+    /* База порівняння для кожного питання: медіана+MAD часу реакції на
+       попередні "ні"-відповіді того самого блоку. Раніше змішувала
+       шлюзи й уточнення будь-якого навантаження в одну вибірку —
+       всупереч власній документації поля load_profile ("зіставляти
+       шлюзи за навантаженням, а не порівнювати шлюзи різної
+       складності напряму"). Тепер: спершу пробуємо вузьку базу з тим
+       самим answer_effort (floor/low в одну групу, medium/high — в
+       іншу, бо перша пара — короткі, майже автоматичні відповіді,
+       друга — ті, що вимагають реального читання чи пригадування);
+       якщо звужена вибірка замала (n<3, той самий поріг довіри, що
+       вже застосований у dataQuality.lowBaseQuestions), відкочуємось
+       на повну базу блоку без фільтра — це і є поведінка "до
+       виправлення", лишена як безпечний резерв, а не спроба видавати
+       ненадійну вузьку вибірку за кращу. */
+    function effortGroup(qid){
+      var lp = (map[qid] && map[qid].loadProfile) || null;
+      var e = lp && lp.answer_effort;
+      if (e==="floor" || e==="low") return "light";
+      if (e==="medium" || e==="high") return "heavy";
+      return null;
+    }
     var bases = {};
+    var BASE_WINDOW = 9; /* Ковзне вікно останніх N "ні"-відповідей блоку.
+       Це інженерне, не наукове число: мета — стабілізувати базу проти
+       дрейфу готовності відповідати всередині довгого (до 10 шлюзів)
+       блоку за 20-30-хвилинну сесію, не даючи базі "розмиватись"
+       відповідями з початку блоку, коли усереднення за ВСІМА
+       попередніми відповідями. Наукового обґрунтування саме числа 9 в
+       літературі з RT-CIT/аналізу поведінкових даних не знайдено —
+       якщо накопичиться достатньо реальних сесій, це число варто
+       підібрати емпірично (порівнюючи стабільність z-показника при
+       різних розмірах вікна), а не лишати як довільну константу. */
     Object.keys(rec).forEach(function(id){
       var m = map[id]; if (!m) return;
-      var vals = Object.keys(rec).filter(function(k){
-        return map[k] && map[k].block===m.block && rec[k].firstAt<rec[id].firstAt && rec[k].value==="no" && rec[k].timingValid && !damped[k] && norm[k]>0;
-      }).sort(function(a,b){ return rec[a].firstAt-rec[b].firstAt; }).slice(-9).map(function(k){ return norm[k]; });
+      var eg = effortGroup(id);
+      function collect(matchEffort){
+        return Object.keys(rec).filter(function(k){
+          if (!map[k] || map[k].block!==m.block) return false;
+          if (matchEffort && effortGroup(k)!==eg) return false;
+          return rec[k].firstAt<rec[id].firstAt && rec[k].value==="no" && rec[k].timingValid && !damped[k] && norm[k]>0;
+        }).sort(function(a,b){ return rec[a].firstAt-rec[b].firstAt; }).slice(-BASE_WINDOW).map(function(k){ return norm[k]; });
+      }
+      var vals = eg ? collect(true) : [];
+      if (vals.length < 3) vals = collect(false);
       var med = median(vals);
       bases[id] = { median:med, spread:Math.max(mad(vals,med), med*FLOOR, 0.02), n:vals.length };
     });
@@ -178,7 +245,18 @@ var PI_STAT = (function(){
       }
       var bl = bases[id], z = 0;
       if (bl && bl.n>=3 && norm[id]>0){
-        z = (norm[id]-bl.median)/bl.spread;
+        /* MAD на малих вибірках систематично занижує справжню дисперсію
+           (Akinshin, 2022; Rousseeuw & Croux, 1993) — константа 1.4826
+           асимптотична, коректна лише для великих n. З заниженим spread
+           z-показник виходить завищеним саме там, де база найменш
+           надійна (n тільки-но перетнуло поріг 3) — це системно підвищує
+           хибнопозитивні спрацювання на бідній базі. Компенсуємо
+           за аналогією з поправкою Хеджа на малу вибірку (той самий
+           клас систематичного зміщення, що й у стандартизованої різниці
+           середніх): ділимо на (1 - 3/(4n-5)), що для n=3 збільшує
+           ефективний spread на ~23%, а до n≈15 ефект стає малопомітним. */
+        var effSpread = effectiveSpread(bl);
+        z = (norm[id]-bl.median)/effSpread;
         var first = firstOfBlock[m.block]===id;
         if (first){ if (z>=2.5){ machine+=1; why.push(T("w_block_pause",{z:z.toFixed(1)})); } }
         else if (z>=2.5){ machine+=3; why.push(T("w_lat_high",{z:z.toFixed(1)})); }
@@ -194,7 +272,31 @@ var PI_STAT = (function(){
       if (attention[id] && attention[id].length){ machine+=1; why.push(T("w_attention",{n:attention[id].length})); }
       if (returns[id] && returns[id].length){ machine+=1; why.push(T("w_return")); }
       if (runFlag[id]){ machine+=2; why.push(T("w_run",{n:runFlag[id]})); }
-      if (r.value==="yes" && (m.baseline!=="high" || m.relevant || m.kind==="closing")){ machine+=1; why.push(T("w_yes")); }
+      /* w_yes: "так" на шлюзі, де це не було очікуваним. Раніше давало
+         однаковий +1 незалежно від того, наскільки рідкісною була ця
+         відповідь (baseline_yes: "medium" і "low" важили порівну) —
+         хоча сама методика анкети (baseline_yes у промпті генерації)
+         явно розрізняє "звичайну деталізацію" від "рідкісного й
+         значущого". Це узгоджується й з теорією конфлікту реакції в
+         RT-CIT дослідженнях (Verschuere et al.; огляд Suchotzki et al.,
+         2017): затримка/реактивність зростають там, де відповідь
+         суперечить очікуваній нормі — чим очікуваніша була "ні", тим
+         сильніший конфлікт при фактичному "так". Тому low важить
+         більше за medium. */
+      if (r.value==="yes" && (m.baseline!=="high" || m.relevant || m.kind==="closing")){
+        if (m.baseline==="low"){ machine+=2; why.push(T("w_yes_rare")); }
+        else { machine+=1; why.push(T("w_yes")); }
+      }
+      /* w_relevant: сам факт relevant_candidate додавав бал лише коли
+         вже є інший сигнал (machine>0) — якщо відповідь на релевантне
+         питання минула зовсім спокійно, факт релевантності повністю
+         зникав із звіту, хоча промпт генерації прямо позначає такі
+         шлюзи як методично важливі кандидати для самого тесту на
+         поліграфі. Лишаємо бал умовним (не додаємо бали "нізвідки"
+         для спокійної відповіді — це і далі методичний вибір, не
+         помилка), але тепер separately фіксуємо сам факт у полі
+         relevantCandidate точки, щоб поліграфолог бачив позначку
+         навіть за відсутності інших сигналів. */
       if (m.relevant && machine>0){ machine+=1; why.push(T("w_relevant")); }
       if (r.value==="declined" || r.value==="na"){ machine=0; why=[]; }
       score = machine;
@@ -208,7 +310,17 @@ var PI_STAT = (function(){
 
       if (score>0 || ov)
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
-          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2 });
+          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant });
+      else if (m.relevant)
+        /* Релевантне питання без жодного поведінкового сигналу: раніше
+           зникало зі звіту повністю — поліграфолог не міг дізнатися
+           навіть постфактум, що анкета вважала цей шлюз кандидатом для
+           тесту. score:0 тут навмисний і не впливає на сортування чи
+           top[] (обидва фільтрують/сортують за score); картка лишається
+           доступною лише через повну карту питань, як нейтральна
+           інформація "це кандидат, відповідь минула спокійно". */
+        out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
+          value:r.value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:true });
     }
 
     var scoreOf = {}; for (var pi2=0;pi2<out.length;pi2++) scoreOf[out[pi2].id] = out[pi2];
@@ -216,7 +328,7 @@ var PI_STAT = (function(){
     for (var sj=0;sj<seq.length;sj++){
       var qid2 = seq[sj], mm = map[qid2]; if (!mm) continue;
       var bb = bases[qid2], zz = 0;
-      if (bb && bb.n>=3 && norm[qid2]>0) zz = (norm[qid2]-bb.median)/bb.spread;
+      if (bb && bb.n>=3 && norm[qid2]>0) zz = (norm[qid2]-bb.median)/effectiveSpread(bb);
       var pnt = scoreOf[qid2];
       sequence.push({ id:qid2, block:mm.block, blockIndex:mm.blockIndex, kind:mm.kind, value:rec[qid2].value, at:rec[qid2].at,
         z: firstOfBlock[mm.block]===qid2 ? 0 : zz, timingAvailable: !!bb && bb.n>=3 && norm[qid2]>0,
@@ -262,7 +374,7 @@ var PI_STAT = (function(){
         idleTail: Math.max(0, lastEvent(S)-activeUntil(S))
       },
       points: out,
-      top: out.filter(function(p){ return !p.damped; }).slice(0,5),
+      top: out.filter(function(p){ return !p.damped && p.score>0; }).slice(0,5),
       lonely: lonely, base: base, pen: S.pen||{}, counted: Object.keys(rec).length
     };
   }
