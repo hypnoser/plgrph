@@ -60,6 +60,18 @@ el("case-save").addEventListener("click", async function(){
   if (!PI_SAVE.hasHandle() && window.showSaveFilePicker && !PI_SAVE.casePath()){
     try { await PI_SAVE.chooseFile(CASE.id); } catch(e){ CASE = { id:null, label:"", created:null }; updateStartCard(); return; }
   }
+  /* PI_CONSENT.current() (activeConsent()) тепер повертає S.consent_record
+     замість CONSENT_DRAFT, ЩОЙНО з'являється активна сесія (S) — саме
+     так виправлено витік чорнила між респондентами (див. коментар у
+     07_consent.js). Але це саме означає, що читати "чи є ще не
+     прикріплена чернетка" треба СТРОГО ДО PI_FILL.initEmpty() нижче:
+     той рядок і створює S, тож якщо PI_CONSENT.current() викликати
+     після нього, він уже поверне S.consent_record щойно створеної
+     (порожньої) сесії замість реальної чернетки — легітимний сценарій
+     "підписали до збереження справи" зламався б так само, як щойно
+     виправлений витік, тільки в інший бік (втрата підпису замість
+     плутанини між респондентами). */
+  var preExistingDraft = PI_CONSENT.current();
   PI_FILL.initEmpty(CASE);
   PI_SAVE.bind(function(){ return PI_FILL.session(); });
   /* Нова справа — новий респондент: мова екрана респондента не має
@@ -70,7 +82,7 @@ el("case-save").addEventListener("click", async function(){
   /* Якщо до створення справи вже намальована згода — переносимо її
      чернетку у щойно створений об'єкт сесії одразу, без очікування
      старту заповнення. */
-  if (PI_CONSENT.current()) PI_CONSENT.attachToCase();
+  if (preExistingDraft) PI_CONSENT.attachToCase();
   PI_SAVE.touched();
   await PI_SAVE.now();
   updateStartCard();

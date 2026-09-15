@@ -143,6 +143,23 @@ var PI_CONSENT = (function(){
     return null;
   }
 
+  /* Джерело правди для того, "яка згода зараз оформлена": якщо активна
+     сесія вже існує — це ЗАВЖДИ S.consent_record цієї сесії, ніколи
+     CONSENT_DRAFT. CONSENT_DRAFT — лише тимчасовий місток для єдиного
+     сценарію "підписали до того, як справу взагалі створено" (тоді
+     сесії ще немає, консент нікуди прикріпити, крім localStorage).
+     Без цього розрізнення відкриття іншого файлу сесії (іншого
+     респондента) в тій самій вкладці браузера показувало чорнило
+     ОСТАННЬОЇ сесії, з якою реально працювали в цій вкладці, — не
+     того респондента, чий файл щойно відкрито: CONSENT_DRAFT
+     оновлюється лише зсередини pointerup/saveDraft() і ніколи не
+     скидається чи не підміняється при завантаженні чужого S. */
+  function activeConsent(){
+    var S = PI_FILL.session();
+    if (S) return S.consent_record || null;
+    return CONSENT_DRAFT;
+  }
+
   var LS_KEY = "intake_consent_draft";
 
   /* До того, як створено файл сесії (введено ПІБ і збережено справу),
@@ -151,12 +168,20 @@ var PI_CONSENT = (function(){
      переноситься туди (attachToCase) і локальна копія більше не потрібна. */
   function saveDraft(){
     var img = ink();
-    CONSENT_DRAFT = { paragraphs:(STATE.data && STATE.data.consent && STATE.data.consent.paragraphs)||[], ink:img, savedAt:new Date().toISOString() };
+    var record = { paragraphs:(STATE.data && STATE.data.consent && STATE.data.consent.paragraphs)||[], ink:img, savedAt:new Date().toISOString() };
     var S = PI_FILL.session();
     if (S && !S.finished){
-      S.consent_record = JSON.parse(JSON.stringify(CONSENT_DRAFT));
+      /* CONSENT_DRAFT свідомо НЕ оновлюємо тут: коли сесія активна,
+         S.consent_record — єдине джерело правди (activeConsent() вище
+         його й читає), і залишати паралельний, застарілий запис у
+         CONSENT_DRAFT — це рівно той стан, що спричиняв плутанину між
+         респондентами (наступне відкриття іншого файлу бачило б чуже
+         щойно намальоване чорнило, якби якийсь код колись знову почав
+         читати CONSENT_DRAFT напряму, як open() робив раніше). */
+      S.consent_record = record;
       PI_SAVE.touched();
     } else {
+      CONSENT_DRAFT = record;
       try { localStorage.setItem(LS_KEY, JSON.stringify(CONSENT_DRAFT)); } catch(e){}
     }
   }
@@ -184,7 +209,7 @@ var PI_CONSENT = (function(){
   function open(){
     win = PI_MON.spawn(["s-consent"]);
     if (!win){ alert("Браузер заблокував друге вікно. Дозвольте спливні вікна й спробуйте ще раз."); return; }
-    mount(win.document, CONSENT_DRAFT);
+    mount(win.document, activeConsent());
     win.document.getElementById("s-consent").classList.add("on");
     if (!pollTimer) pollTimer = setInterval(updateStartCard, 700);
     win.addEventListener("beforeunload", function(){
@@ -211,6 +236,6 @@ var PI_CONSENT = (function(){
 
   loadDraftFromBrowser();
 
-  return { open:open, print:printHere, current:function(){ return CONSENT_DRAFT; }, attachToCase:attachToCase,
+  return { open:open, print:printHere, current:activeConsent, attachToCase:attachToCase,
     reset:function(){ CONSENT_DRAFT = null; canvas = null; ctx = null; try { localStorage.removeItem(LS_KEY); } catch(e){} if (pollTimer){ clearInterval(pollTimer); pollTimer=null; } if (win && !win.closed) win.close(); } };
 })();
