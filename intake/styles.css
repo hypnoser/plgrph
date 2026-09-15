@@ -32,13 +32,23 @@ h2{font-size:18px;font-weight:600;margin:0 0 6px}
 .lede{color:var(--muted);margin:0 0 24px;max-width:60ch}
 
 .top{border-bottom:1px solid var(--rule);background:var(--card)}
-.top .wrap{display:flex;align-items:center;gap:14px;padding:16px 20px;max-width:1120px}
+.top .wrap{display:flex;align-items:center;gap:14px;padding:16px 20px;max-width:840px;margin:0 auto}
 .mark{font-size:17px}
 .mark-thin{font-weight:300}
 .mark-bold{font-weight:700}
 .top .spacer{flex:1}
 .top button.icon{background:transparent;color:var(--muted);border:0;padding:8px;min-height:36px}
 .top button.icon:hover{background:var(--rule-soft);color:var(--ink)}
+.top-divider{width:1px;height:22px;background:var(--rule);flex-shrink:0}
+/* .icon-link — той самий квадрат 36x36, що button.icon (padding:8px +
+   svg 20x20 = 36x36), але для зовнішнього посилання: favicon сервісу є
+   вже кольоровим квадратом сам по собі (синій фон, біла "P"), тому тут
+   немає padding навколо іконки, як у монохромних SVG-кнопок поруч —
+   інакше квадрат favicon виглядав би вдвічі меншим за сусідні кнопки
+   замість однакового з ними розміру. */
+.top a.icon.icon-link{display:flex;align-items:center;justify-content:center;width:36px;height:38px;padding:0;border-radius:6px;flex-shrink:0}
+.top a.icon.icon-link svg{width:22px;height:22px;border-radius:5px}
+.top a.icon.icon-link:hover{background:var(--rule-soft)}
 
 .screen{display:none;padding:28px 0 90px}
 .screen.on{display:block}
@@ -214,7 +224,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .review-question:hover{background:var(--accent-soft)!important}
 .review-question b{color:var(--accent)}
 
-.mon-wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.mon-wrap{max-width:840px;margin:0 auto;padding:0 20px}
 .mon-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
 .mon-header .title{font-size:15px;font-weight:500}
 .mon-card{border-radius:var(--radius-lg);border:1px solid var(--rule);background:var(--card);padding:20px}
@@ -241,7 +251,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .mon-finish .show-password{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:14px}
 .mon-finish .row{display:flex;gap:10px;flex-wrap:wrap}
 
-.rep-wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.rep-wrap{max-width:840px;margin:0 auto;padding:0 20px}
 .rep-summary{border-radius:var(--radius-lg);background:var(--rule-soft);padding:18px 20px;margin-bottom:20px}
 .rep-summary .label{font-size:13px;color:var(--muted);margin-bottom:10px}
 .rep-summary .text{font-size:15px;line-height:1.7}
