@@ -49,7 +49,19 @@ var PI_SAVE = (function(){
     try {
       var h = await window.showDirectoryPicker({ mode:"readwrite", id:"intake_sessions" });
       dir = h; caseDir = null; casePath = "";
-      await idb("readwrite", function(st){ return st.put(h, "dir"); }).catch(function(){});
+      /* Мовчазний catch тут навмисний лише для того, ЩО він ковтає:
+         збереження handle в IndexedDB — це "бонус" (персистентність між
+         перезапусками браузера), не критична дія цього кліку — сама
+         тека вже працює в поточній сесії незалежно від того, чи вдасться
+         записати її в IndexedDB. Але мовчати повністю небезпечно: якщо
+         запис і справді впаде (переповнена квота сховища, приватний
+         режим перегляду блокує IndexedDB), користувач через тиждень
+         побачить "тека не обрана" після кожного перезапуску без жодного
+         натяку на причину. Лишаємо дію без блокуючого UI, але фіксуємо
+         в консоль розробника — цього досить для будь-якого технічного
+         розбору, не заважаючи поліграфологу. */
+      await idb("readwrite", function(st){ return st.put(h, "dir"); })
+        .catch(function(e){ try { console.warn("Не вдалося зберегти робочу теку для наступних запусків:", e); } catch(x){} });
       return h;
     } catch(e){ return null; }
   }
@@ -82,10 +94,19 @@ var PI_SAVE = (function(){
   }
   async function chooseFile(id){
     if (!window.showSaveFilePicker) throw new Error("Цей браузер не підтримує прямий запис у файл. Відкрийте програму в Microsoft Edge або Chrome на комп'ютері.");
-    var selected = await window.showSaveFilePicker({
+    var opts = {
       suggestedName: "session_" + id + (key ? ".pgi" : ".json"),
       types: [{ description:"Сесія анкетування", accept:{ "application/json":[".json",".pgi"] } }]
-    });
+    };
+    /* startIn: якщо в Налаштуваннях уже обрано робочу теку — діалог
+       збереження відкривається одразу в ній, а не там, де користувач
+       востаннє зберігав щось у ЦЬОМУ браузері (типова поведінка
+       showSaveFilePicker без startIn). startIn приймає сам
+       FileSystemDirectoryHandle і working незалежно від того, чи його
+       дозвіл прямо зараз "granted" — це не операція читання/запису в
+       теку, лише підказка, звідки почати показ вікна вибору. */
+    if (dir) opts.startIn = dir;
+    var selected = await window.showSaveFilePicker(opts);
     if (running) await running;
     handle = selected; lastError = ""; return true;
   }
@@ -98,11 +119,13 @@ var PI_SAVE = (function(){
      не відбудеться взагалі, викликач має впасти на input[type=file]). */
   async function openForResume(){
     if (!window.showOpenFilePicker) return null;
-    var picked = await window.showOpenFilePicker({
+    var opts = {
       types: [{ description:"Сесія анкетування", accept:{ "application/json":[".json",".pgi"] } }],
       excludeAcceptAllOption: false,
       mode: "readwrite"
-    });
+    };
+    if (dir) opts.startIn = dir;
+    var picked = await window.showOpenFilePicker(opts);
     var h = picked[0];
     var file = await h.getFile();
     return { file:file, handle:h };

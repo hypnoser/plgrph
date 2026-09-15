@@ -348,6 +348,21 @@ el("settings-pin-input").addEventListener("keydown", function(e){ if (e.key === 
 el("settings-back").addEventListener("click", function(){ navBack("s-start"); });
 
 el("set-dir-btn").addEventListener("click", async function(){
+  /* Якщо тека вже обиралась раніше (handle відновлено з IndexedDB при
+     старті), але браузер після перезапуску скинув сам ДОЗВІЛ на неї
+     до "prompt" (стандартна поведінка File System Access API — сам
+     handle переживає перезапуск, дозвіл на запис — ні), кнопка мала б
+     просто перепідтвердити той самий handle (grantDir(), один клік,
+     без діалогу вибору), а не щоразу відкривати повний showDirectoryPicker
+     і змушувати користувача заново шукати ту саму теку на диску. Лише
+     коли реально немає жодного збереженого handle (dirState()==="none")
+     — відкриваємо вибір нової теки. */
+  var current = await PI_SAVE.dirState();
+  if (current === "prompt"){
+    var granted = await PI_SAVE.grantDir();
+    el("set-dir-state").textContent = granted === "granted" ? PI_SAVE.dirName() : "не обрано";
+    return;
+  }
   var h = await PI_SAVE.chooseDir();
   el("set-dir-state").textContent = h ? h.name : "не обрано";
 });
@@ -401,7 +416,18 @@ el("help-back").addEventListener("click", function(){ navBack("s-start"); });
 
 /* ---------- ініціалізація ---------- */
 PI_SAVE.loadDir().then(function(st){
-  el("set-dir-state").textContent = st === "granted" ? PI_SAVE.dirName() : "не обрано";
+  /* st==="granted": дозвіл активний, усе працює одразу.
+     st==="prompt": handle теки успішно відновлено з IndexedDB (сама
+     тека "пам'ятається" між запусками браузера), але File System
+     Access API вимагає повторного явного підтвердження дозволу після
+     кожного перезапуску — це обмеження самого браузера, не щось, що
+     можна обійти автоматично без кліку користувача. Показуємо назву
+     теки одразу (вона відома), з приміткою, а не "не обрано" — раніше
+     тут показувалось "не обрано" для стану "prompt", хоча тека
+     фактично була збережена, просто не підтверджена. */
+  if (st === "granted") el("set-dir-state").textContent = PI_SAVE.dirName();
+  else if (st === "prompt") el("set-dir-state").textContent = PI_SAVE.dirName() + " (потрібне підтвердження)";
+  else el("set-dir-state").textContent = "не обрано";
 });
 if (SETTINGS_PIN) el("set-pin").value = SETTINGS_PIN;
 updateStartCard();
