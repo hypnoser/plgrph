@@ -343,7 +343,8 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .asheet h1{font-size:1.5em;text-align:center;margin:0 0 1em;letter-spacing:.05em}
 .asheet .as-ident{margin-bottom:1.3em}
 .asheet .as-ident p{margin:0 0 .3em}
-.asheet .as-identimg{display:block;max-width:340px;max-height:2.4em;margin:.15em 0 .5em;vertical-align:top}
+.asheet .as-identimg{display:block;max-width:340px;max-height:3.6em;margin:.15em 0 .5em;vertical-align:top}
+.asheet .as-expimg{display:block;max-width:100%;max-height:5em;margin:.2em 0}
 .asheet .as-block{margin-bottom:1.6em;page-break-inside:avoid}
 .asheet .as-block-title{font-weight:700;margin-bottom:.5em;border-bottom:1px solid #000;padding-bottom:.2em}
 .asheet .as-q{margin:0 0 .45em;padding-left:1.4em;text-indent:-1.4em}
@@ -351,7 +352,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .asheet .as-exp{margin:.15em 0 .45em 1.4em;font-style:italic;color:#333}
 .asheet .as-sub{margin-left:1.6em}
 .asheet .as-sign{margin-top:2.4em}
-.asheet .as-sign img{display:block;max-width:280px;max-height:80px;margin:.3em 0}
+.asheet .as-signimg{display:block;max-width:280px;max-height:110px;margin:.3em 0}
 .asheet .as-sign .ln{display:inline-block;border-bottom:1px solid #000;width:29%;vertical-align:baseline;height:1.1em}
 @media print{
   /* @page{margin} — єдиний CSS-важіль, яким сторінка може вплинути на

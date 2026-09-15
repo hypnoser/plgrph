@@ -348,10 +348,56 @@ function renderAnswerSheet(){
   tag("p", null, root, "передтестового опитування з використанням поліграфа");
 
   var ident = tag("div", "as-ident", root);
+  /* Поля ідентифікації (ПІБ/дата народження/документ/посада) — це
+     canvas.toDataURL() усього поля вводу, з прозорим фоном довкола
+     реального чорнила. Респонденти пишуть по-різному: хтось займає
+     всю ширину поля, хтось лише чверть — а <img> з max-width/max-height
+     масштабує ЦІЛЕ зображення (порожній прозорий фон і все), тому
+     компактний підпис лишається дрібним усередині свого прямокутника,
+     хоча місця для збільшення вистачає. Обрізаємо кожне зображення до
+     фактичних меж чорнила (bounding box непрозорих пікселів) перед
+     вставкою — тоді браузер масштабує вже сам підпис, а не порожнечу
+     навколо нього, і однакова max-height візуально показує однакову
+     висоту символів для всіх респондентів, а не однакову висоту поля. */
+  function cropToInk(dataUrl, cb){
+    var img = new Image();
+    img.onload = function(){
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      var cx = c.getContext("2d");
+      cx.drawImage(img, 0, 0);
+      var data;
+      try { data = cx.getImageData(0, 0, c.width, c.height).data; }
+      catch(e){ cb(dataUrl); return; } /* CORS чи інша похибка — лишаємо як є */
+      var minX=c.width, minY=c.height, maxX=0, maxY=0, found=false;
+      for (var y=0;y<c.height;y++){
+        for (var x=0;x<c.width;x++){
+          if (data[(y*c.width+x)*4+3] > 10){
+            found = true;
+            if (x<minX) minX=x; if (x>maxX) maxX=x;
+            if (y<minY) minY=y; if (y>maxY) maxY=y;
+          }
+        }
+      }
+      if (!found){ cb(dataUrl); return; }
+      var pad = 6; /* невеликий відступ, щоб не обрізати впритул до штриха */
+      minX = Math.max(0, minX-pad); minY = Math.max(0, minY-pad);
+      maxX = Math.min(c.width-1, maxX+pad); maxY = Math.min(c.height-1, maxY+pad);
+      var w = maxX-minX+1, h = maxY-minY+1;
+      var out = document.createElement("canvas"); out.width = w; out.height = h;
+      out.getContext("2d").drawImage(c, minX, minY, w, h, 0, 0, w, h);
+      cb(out.toDataURL("image/png"));
+    };
+    img.onerror = function(){ cb(dataUrl); };
+    img.src = dataUrl;
+  }
   function identRow(label, imgSrc){
     var p = tag("p", null, ident);
     tag("span", null, p, label + ": ");
-    if (imgSrc){ var img = tag("img", "as-identimg", p); img.src = imgSrc; }
+    if (imgSrc){
+      var img = tag("img", "as-identimg", p); img.src = imgSrc;
+      cropToInk(imgSrc, function(cropped){ img.src = cropped; });
+    }
     else tag("span", "ln", p);
   }
   identRow("Прізвище, ім'я та по батькові", S.identity.fio);
@@ -384,7 +430,8 @@ function renderAnswerSheet(){
         var exp = S.explanations[g.id];
         if (exp){
           var e = tag("p", "as-exp", wrap); e.textContent = "Пояснення:";
-          var eimg = tag("img", null, e); eimg.src = exp; eimg.style.display = "block"; eimg.style.maxWidth = "100%"; eimg.style.maxHeight = "4em";
+          var eimg = tag("img", "as-expimg", e); eimg.src = exp;
+          cropToInk(exp, function(cropped){ eimg.src = cropped; });
         }
         if (anchorsAfter[g.id]) anchorsAfter[g.id].forEach(function(a){ renderQuestion(a, false); });
       });
@@ -394,7 +441,10 @@ function renderAnswerSheet(){
 
   var signWrap = tag("div", "as-sign", root);
   tag("p", null, signWrap, "Підпис до анкети в цілому:");
-  if (S.signatures.final){ var img = tag("img", null, signWrap); img.src = S.signatures.final; }
+  if (S.signatures.final){
+    var img = tag("img", "as-signimg", signWrap); img.src = S.signatures.final;
+    cropToInk(S.signatures.final, function(cropped){ img.src = cropped; });
+  }
   else tag("span", "ln", signWrap);
 }
 
