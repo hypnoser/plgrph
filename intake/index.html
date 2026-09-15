@@ -1905,7 +1905,7 @@ el("qv-replace").addEventListener("click", function(){
 var VERSION = "4.1";
 var ANALYTICS_VERSION = "2.1";
 var PEN_INK = "#5B2C8F";
-function penWidth(e){ return 0.5 + (e.pressure || 0.5) * 2.25; }
+function penWidth(e){ return 1 + (e.pressure || 0.5) * 4.5; }
 function newId(){
   var d = new Date(), day = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
   return day + "_" + crypto.randomUUID();
