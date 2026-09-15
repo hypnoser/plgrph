@@ -477,6 +477,26 @@ var PI_FILL = (function(){
     var row = target.closest(".pad") || target;
     row.classList.add("needs-attention"); row.scrollIntoView({block:"center",behavior:"auto"}); row.tabIndex = -1; row.focus({preventScroll:true});
   }
+  /* Підсвічує ВСІ незаповнені питання одразу, не лише перше — раніше
+     клік "Далі" з кількома пропущеними питаннями показував рамку лише
+     на першому з них (revealMissing(miss[0])), і респондент бачив
+     решту пропусків лише по черзі, після повторних кліків. Скрол і
+     фокус лишаються на першому незаповненому (щоб клавіатурна
+     навігація й читання екрана працювали передбачувано), решта просто
+     отримують ту саму візуальну обводку без скролу до кожного. */
+  function revealMissingAll(ids){
+    D.querySelectorAll(".needs-attention").forEach(function(n){ n.classList.remove("needs-attention"); });
+    var rows = [];
+    ids.forEach(function(id){
+      var target = id.indexOf("sig_")===0 ? (pads[id]&&pads[id].element) : id.indexOf("pad_")===0 ? (pads[id]&&pads[id].element)
+        : Array.from(D.querySelectorAll("[data-question]")).find(function(n){ return n.dataset.question===id; });
+      if (!target) return;
+      var row = target.closest(".pad") || target;
+      row.classList.add("needs-attention");
+      rows.push(row);
+    });
+    if (rows.length){ rows[0].scrollIntoView({block:"center",behavior:"auto"}); rows[0].tabIndex = -1; rows[0].focus({preventScroll:true}); }
+  }
   function why(text){ var e = D.getElementById(blockIdx===-1 ? "fb-why" : "fq-why"); if (e) e.textContent = text || ""; }
 
   function missing(){
@@ -492,7 +512,7 @@ var PI_FILL = (function(){
     var miss = missing();
     if (miss.length){
       why(miss.length===1 ? R_R("r_left_one",{list:miss[0]}) : R_R("r_left_many",{list:miss.slice(0,6).join(", ")}));
-      revealMissing(miss[0]); return;
+      revealMissingAll(miss); return;
     }
     if (nodes.signPad && !nodes.signPad.has()){ why(R_R("r_why_sign")); revealMissing(nodes.signPad.key); return; }
     if (nodes.confirmBox && !nodes.confirmBox.has()){ why(R_R("r_why_confirm")); nodes.confirmBox.element.closest(".block-confirm").classList.add("needs-attention"); return; }
@@ -712,7 +732,7 @@ var PI_FILL = (function(){
     S.intake_ack = { at:new Date().toISOString(), paragraphs:(Q.consent&&Q.consent.paragraphs)||[] };
     if (!pads.pad_fio.has() || !pads.pad_birth.has() || !pads.pad_doc.has()){
       why(R_R("r_why_identity"));
-      revealMissing(["pad_fio","pad_birth","pad_doc"].find(function(k){ return !pads[k].has(); }));
+      revealMissingAll(["pad_fio","pad_birth","pad_doc"].filter(function(k){ return !pads[k].has(); }));
       return;
     }
     collectPads();
