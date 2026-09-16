@@ -58,6 +58,16 @@ var PI_MON = (function(){
     });
     w.addEventListener("unload", function(){
       var S = PI_FILL.session();
+      /* Одразу при реальному закритті вікна повертаємо PI_FILL на
+         головний document. document.defaultView того вікна не завжди
+         стає null негайно після unload (залежить від рушія) — покладатись
+         на це постфактум у complete()/renderBlock() ненадійно й раніше
+         давало необроблений виняток ("Cannot read properties of null
+         (reading 'scrollTo')"), що обривав mo-end на середині виконання.
+         Тут маємо стовідсотково надійний сигнал самої події закриття —
+         відкочуємо D одразу, а не чекаємо, поки хтось спробує писати в
+         мертвий DOM і впаде. */
+      PI_FILL.setDocument(document);
       if (S && !S.finished) noteWindowLost();
     });
   }

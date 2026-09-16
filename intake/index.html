@@ -1970,6 +1970,29 @@ var PI_FILL = (function(){
   var attentionCleanups = [];
   var onEvent = null;
 
+  /* Захист від звернення до DOM закритого вікна респондента. D — це
+     document дочірнього вікна (PI_MON.setDocument()); якщо респондент
+     (чи хтось інший) закрив те вікно, а поліграфолог потім натискає
+     "Завершити анкетування" НЕ через "Перевідкрити вікно" спочатку —
+     complete()/renderBlock() усередині неї намагаються писати в DOM,
+     якого фізично більше не існує. Закрите вікно лишає свій колишній
+     D.defaultView === null (сам об'єкт document ще існує в пам'яті як
+     "мертвий" об'єкт, але звернення до методів на кшталt scrollTo чи
+     querySelector на відірваному від вікна документі кидає виняток).
+     Раніше цей виняток ніде не перехоплювався: complete() обривалась
+     на середині, mo-end так і не викликала finishPanel(), інтерфейс
+     "зависав" на моніторі, а натискання "До старту" після цього
+     показувало стартовий екран так, ніби сесія скинулась — хоча
+     S.answers фізично лишались непошкодженими в пам'яті й у файлі.
+     Тут — не намагатись писати в мертвий документ: відкочуємось на
+     document (головне вікно поліграфолога), де complete() і так
+     переважно працює лише з S (даними), а не з візуальним DOM
+     заповнення (то було вікно РЕСПОНДЕНТА, не потрібне для збереження
+     й підрахунку самого факту завершення). */
+  function ensureLiveDocument(){
+    if (D && D !== document && !D.defaultView) D = document;
+  }
+
   function LB_R(kind){ return R_R("r_" + kind); }
   function now(){ var n = Date.now() - t0; lastNow = Math.max(lastNow, n); return lastNow; }
 
@@ -2472,6 +2495,14 @@ var PI_FILL = (function(){
   }
   async function complete(status){
     if (!S || S.finished || closing) return false;
+    /* windowClosed: тепер D уже коректно == document ще ДО цього виклику
+       (guardWindowClose() у 05_monitor.js відкочує D в самому unload-
+       обробнику вікна респондента, надійніше за перевірку
+       D.defaultView постфактум — той не завжди стає null одразу після
+       закриття). ensureLiveDocument() лишається як друга лінія захисту
+       для будь-якого іншого шляху втрати вікна, який міг це пропустити. */
+    ensureLiveDocument();
+    var windowClosed = D === document;
     closing = true; snapshot();
     if (status !== "aborted"){
       for (var bi = 0; bi < Q.blocks.length; bi++){
@@ -2480,7 +2511,31 @@ var PI_FILL = (function(){
         (b.gates||[]).forEach(function(g){ var a = S.answers[g.id]; if (a && (a.value==="yes"||a.value==="explain")) required = required.concat(g.expansion); });
         var miss = required.some(function(q){ return !S.answers[q.id]; });
         if (miss || !S.signatures[bi===Q.blocks.length-1 ? "final" : b.id]){
-          closing = false; collectPads(); renderBlock(bi); why(miss ? R_R("r_why_fill_all") : R_R("r_why_sign_block"));
+          closing = false;
+          /* Якщо вікно респондента вже закрите — немає куди рендерити
+             renderBlock(bi) (немає #fq-list у документі поліграфолога),
+             і немає кому дописувати відповіді. Раніше цей виняток був
+             необробленим і обривав виконання mo-end на середині, через
+             що finishPanel() ніколи не викликалась, а натискання
+             "До старту" після цього показувало стартовий екран так,
+             ніби сесія скинулась — хоча S.answers лишався цілим у
+             пам'яті й у файлі весь цей час.
+             Тепер: якщо є куди рендерити — як і раніше, показуємо
+             респонденту, чого бракує. Якщо вікна вже немає — поліграфолог
+             реально може мати причину завершити саме зараз (респондент
+             іде на повторне тестування, потрібно замінити анкету тощо),
+             тому даємо явний вибір через confirm(), а не лише
+             інформуємо: погодження завершує сесію як status:"aborted"
+             (той статус і так існував у коді — complete("aborted")
+             пропускає цю саму перевірку на повноту рядком вище — але
+             раніше не мав жодного шляху виклику з інтерфейсу). Відмова
+             лишає сесію активною, як і раніше, для "Перевідкрити вікно". */
+          if (windowClosed){
+            var abortNow = confirm("Анкету не заповнено повністю, а вікно респондента вже закрито.\n\nНатисніть «Скасувати», щоб перевідкрити вікно і дати респонденту доповнити відповіді.\n\nНатисніть «OK», якщо тестування дійсно потрібно завершити зараз (наприклад, респондент проходитиме тест повторно або анкету буде замінено) — сесія збережеться як перервана, з позначкою про це в звіті.");
+            if (abortNow) return complete("aborted");
+          } else {
+            collectPads(); renderBlock(bi); why(miss ? R_R("r_why_fill_all") : R_R("r_why_sign_block"));
+          }
           return false;
         }
       }
@@ -2489,9 +2544,17 @@ var PI_FILL = (function(){
     ev("session_end", { status:S.status });
     S.analysis_snapshot = PI_STAT.analyse(S); S.analysis_version = ANALYTICS_VERSION;
     S.analysis_created = new Date().toISOString(); PI_SAVE.touched();
-    D.querySelector("#s-done h1").textContent = S.status==="aborted" ? R_R("r_aborted_head") : R_R("r_done_head");
-    D.getElementById("fd-note").textContent = S.status==="aborted" ? R_R("r_aborted_note") : R_R("r_done_note");
-    fillShow("s-done");
+    /* Той самий запобіжник: показати "Анкету заповнено" є сенс лише в
+       документі дочірнього вікна (де живе #s-done) — якщо D зараз
+       document (вікно респондента вже закрите чи ніколи не існувало
+       для цього виклику, наприклад complete("aborted") з монітора),
+       пропускаємо спробу писати в неіснуючий там #s-done замість
+       падіння на новому винятку. */
+    if (D !== document){
+      var h1 = D.querySelector("#s-done h1"); if (h1) h1.textContent = S.status==="aborted" ? R_R("r_aborted_head") : R_R("r_done_head");
+      var note = D.getElementById("fd-note"); if (note) note.textContent = S.status==="aborted" ? R_R("r_aborted_note") : R_R("r_done_note");
+      fillShow("s-done");
+    }
     var ok = await PI_SAVE.now();
     scheduleAutoClose();
     return ok;
@@ -3144,6 +3207,16 @@ var PI_MON = (function(){
     });
     w.addEventListener("unload", function(){
       var S = PI_FILL.session();
+      /* Одразу при реальному закритті вікна повертаємо PI_FILL на
+         головний document. document.defaultView того вікна не завжди
+         стає null негайно після unload (залежить від рушія) — покладатись
+         на це постфактум у complete()/renderBlock() ненадійно й раніше
+         давало необроблений виняток ("Cannot read properties of null
+         (reading 'scrollTo')"), що обривав mo-end на середині виконання.
+         Тут маємо стовідсотково надійний сигнал самої події закриття —
+         відкочуємо D одразу, а не чекаємо, поки хтось спробує писати в
+         мертвий DOM і впаде. */
+      PI_FILL.setDocument(document);
       if (S && !S.finished) noteWindowLost();
     });
   }
