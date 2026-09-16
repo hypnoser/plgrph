@@ -60,6 +60,7 @@ var PI_FILL = (function(){
   function scaleFill(){
     var w = D.defaultView ? D.defaultView.innerWidth : 1000;
     var fs = Math.max(17, Math.min(24, Math.round(w / 62)));
+    fs = Math.round(fs * getTextZoom() / 100);
     if (D.documentElement) D.documentElement.style.setProperty("--fill-fs", fs + "px");
   }
   function fillShow(id){
@@ -816,11 +817,40 @@ var PI_FILL = (function(){
     load:function(saved){ S = saved; Q = saved.questionnaire; if (!S.marks) S.marks = []; return true; },
     initEmpty:initEmpty, attachQuestionnaire:attachQuestionnaire,
     snapshot:snapshot, remount:remount,
+    /* applyTextZoom: викликається кнопкою масштабу на екрані респондента.
+       scaleFill() читає getTextZoom() (00_core.js) щоразу заново — тут
+       лише примушуємо її перерахувати --fill-fs НЕГАЙНО, не чекаючи
+       наступного fillShow() (переходу між блоками), бо респондент може
+       натиснути "Збільшити" просто серед поточного блоку питань. */
+    applyTextZoom:function(){ scaleFill(); },
     wire:function(){
       var go = D.getElementById("fb-go"), nx = D.getElementById("fq-next"), review = D.getElementById("fq-review");
       if (go && !go.__wired){ go.__wired = true; go.addEventListener("click", beginQuestions); }
       if (nx && !nx.__wired){ nx.__wired = true; nx.addEventListener("click", next); }
       if (review && !review.__wired){ review.__wired = true; review.addEventListener("click", openReview); }
+      /* Кнопки масштабу тексту дублюються на двох екранах (брифінг і
+         блок питань) — обидва набори синхронізуються між собою: клік
+         на будь-якому з них одразу оновлює вигляд "on" в іншому наборі
+         теж, щоб респондент, перейшовши з брифінгу на перше питання, не
+         бачив, ніби масштаб "скинувся" (він не скидається — просто
+         кнопки іншого екрана мали б інакше показувати активний стан,
+         якби ми їх не синхронізували тут явно). */
+      var zoomGroups = D.querySelectorAll(".text-zoom");
+      zoomGroups.forEach(function(group){
+        if (group.__wired) return; group.__wired = true;
+        group.querySelectorAll(".zoom-opt").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var pct = parseInt(btn.getAttribute("data-zoom"), 10);
+            setTextZoom(pct);
+            zoomGroups.forEach(function(g){
+              g.querySelectorAll(".zoom-opt").forEach(function(b){
+                b.classList.toggle("on", parseInt(b.getAttribute("data-zoom"),10) === pct);
+              });
+            });
+            scaleFill();
+          });
+        });
+      });
     }
   };
 })();

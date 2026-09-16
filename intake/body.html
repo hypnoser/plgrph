@@ -131,7 +131,14 @@
 
 <div class="screen fill" id="s-brief">
   <div class="wrap">
-    <h1 id="fb-title">Перед початком</h1>
+    <div class="fill-toolbar">
+      <h1 id="fb-title">Перед початком</h1>
+      <div class="text-zoom" id="fq-zoom-brief" role="group" aria-label="Розмір тексту">
+        <button type="button" class="zoom-opt on" data-zoom="100">100%</button>
+        <button type="button" class="zoom-opt" data-zoom="150">150%</button>
+        <button type="button" class="zoom-opt" data-zoom="200">200%</button>
+      </div>
+    </div>
     <div class="brief" id="fb-brief"></div>
     <details class="consent-read" open><summary id="fb-consent-title">Ознайомлення перед анкетуванням</summary><div id="fb-consent-text"></div></details>
     <label class="ack"><input type="checkbox" id="fb-ack"> <span id="fb-ack-label">Я прочитав(-ла) інформацію та бажаю почати анкетування</span></label>
@@ -162,6 +169,11 @@
       <div class="blockbar">
         <span class="step" id="fq-step"></span>
         <span class="name" id="fq-name"></span>
+        <div class="text-zoom" id="fq-zoom-block" role="group" aria-label="Розмір тексту">
+          <button type="button" class="zoom-opt on" data-zoom="100">100%</button>
+          <button type="button" class="zoom-opt" data-zoom="150">150%</button>
+          <button type="button" class="zoom-opt" data-zoom="200">200%</button>
+        </div>
       </div>
       <div class="bprog" id="fq-prog"></div>
       <div class="blockctx" id="fq-ctx"></div>
