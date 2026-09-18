@@ -175,7 +175,12 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .qhead{padding:.5em 0 .4em;color:var(--muted);box-shadow:inset 0 -1px 0 var(--rule)}
 .qhead .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;font-size:1.05em}
 .qhead .cols span{text-align:center}
-.q{padding:.85em 0;border-bottom:1px solid var(--rule-soft)}
+.q{padding:.85em 2.4em .85em 0;border-bottom:1px solid var(--rule-soft);position:relative}
+.q-confused{position:absolute;top:.7em;right:0;width:1.7em;height:1.7em;padding:0;border-radius:50%;
+  border:1.5px solid var(--rule);background:var(--card);color:var(--faint);font-size:.85em;font-weight:700;
+  min-height:auto;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.q-confused:hover{border-color:var(--muted);color:var(--muted)}
+.q-confused.on{background:var(--warn);border-color:var(--warn);color:#fff}
 .q:last-child{border-bottom:0}
 .qnum{color:var(--muted);font-variant-numeric:tabular-nums;padding-top:1px}
 .qtext{padding-top:0;color:#000}
@@ -250,8 +255,11 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 
 .mon-wrap{max-width:840px;margin:0 auto;padding:0 20px}
 .mon-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.mon-progress{font-size:13px;color:var(--muted);white-space:nowrap}
 .mon-header .title{font-size:15px;font-weight:500}
 .mon-card{border-radius:var(--radius-lg);border:1px solid var(--rule);background:var(--card);padding:20px}
+.mon-card.paused{background:var(--warn-bg);border-color:var(--warn)}
+#mo-pause.on{background:var(--warn);border-color:var(--warn);color:#fff}
 .mon-card .qmeta{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
 .mon-card .qid{font-size:13px;color:var(--faint)}
 .mon-dot{width:12px;height:12px;border-radius:50%;background:var(--rule);margin-top:2px;flex-shrink:0}
@@ -302,6 +310,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-dot-attention{background:#4C7A3D}
 .rep-dot-time{background:#C9A227}
 .rep-dot-observer{background:#3A6EA5}
+.rep-dot-confused{background:var(--warn)}
 .rep-map-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:12px;color:var(--muted)}
 .rep-map-legend span{display:flex;align-items:center;gap:6px}
 .rep-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--faint);margin:14px 0 22px}
@@ -745,6 +754,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
     </button>
     <div class="mon-header">
       <span class="title" id="mo-blockname">Блок</span>
+      <span class="mon-progress" id="mo-progress"></span>
     </div>
 
     <div class="mon-card">
@@ -768,6 +778,7 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
         <span id="mo-savestate-text">Збережено</span>
       </span>
       <span style="display:flex;gap:8px">
+        <button id="mo-pause" class="mini ghost">Пауза</button>
         <button id="mo-reopen" class="mini ghost hidden" style="color:var(--bad);border-color:var(--bad)">Перевідкрити вікно</button>
         <button id="mo-end" class="mini">Завершити анкетування</button>
       </span>
@@ -2013,6 +2024,7 @@ var PI_FILL = (function(){
   var blockIdx = 0, t0 = 0, lastTouch = 0;
   var penSeen = false;
   var closing = false, lockedFill = false, lastNow = 0, timingInvalid = false;
+  var pauseStart = 0;
   var attentionCleanups = [];
   var onEvent = null;
 
@@ -2285,6 +2297,29 @@ var PI_FILL = (function(){
         });
       })(all[i]);
     }
+    /* Тиха позначка "не зрозумів питання" — окремо від самої відповіді
+       так/ні/поясню, не змінює rec.value і не впливає на жоден шлюз чи
+       розгортання. Респондентам у скринінговій ситуації психологічно
+       дорожче вголос перепитати поліграфолога (брифінг це рекомендує,
+       але частина людей просто відповість навмання, аби не зізнаватись
+       у нерозумінні) — ця кнопка дає той самий сигнал без усного
+       контакту. Дублікат на те саме питання не додається (той самий
+       принцип, що вже діє для міток поліграфолога на моніторі):
+       повторний клік знімає позначку, а не множить її. */
+    var confusedBtn = tag("button", "q-confused" + (S.confused && S.confused[q.id] ? " on" : ""), wrap);
+    confusedBtn.type = "button";
+    confusedBtn.title = "Не зрозуміло питання";
+    confusedBtn.setAttribute("aria-label", q.id + " — позначити як незрозуміле");
+    confusedBtn.textContent = "?";
+    confusedBtn.addEventListener("click", function(){
+      if (S.finished || closing || lockedFill) return;
+      if (!S.confused) S.confused = {};
+      var wasOn = !!S.confused[q.id];
+      if (wasOn){ delete S.confused[q.id]; ev("confused_withdraw", { q:q.id }); }
+      else { S.confused[q.id] = { at:new Date().toISOString() }; ev("confused", { q:q.id }); }
+      confusedBtn.classList.toggle("on", !wasOn);
+      touch();
+    });
     return wrap;
   }
 
@@ -2809,6 +2844,35 @@ var PI_FILL = (function(){
       if (!S || S.finished) return;
       snapshot(); lockedFill = !!on; timingInvalid = true; touch();
     },
+    /* Пауза: поліграфолог зупиняє відлік часу (респондента відволікли,
+       вийшов, технічна заминка) — на відміну від просто lock(), яка
+       блокує ввід, але не чіпає сам годинник. Без зсуву t0 час паузи
+       "з'їдав" би латентність питання, на якому респондента застали —
+       за формулою since = now() - lastNow ця пауза додалася б до
+       затримки відповіді, спотворюючи саме той сигнал, заради якого
+       вся система латентності й існує. pauseStart запам'ятовує момент
+       lock(true); resumeTiming зсуває t0 вперед рівно на тривалість
+       паузи, тож now() одразу після паузи повертається до того самого
+       значення, що було на момент lock(true) — пауза "вирізається" з
+       таймлайну, а не додається до нього. Обидва боки паузи пишуться
+       в S.events як звичайні поведінкові події (pause/resume), щоб
+       за потреби це було видно в повному логу, а не приховано мовчки. */
+    pauseTiming:function(){
+      if (!S || S.finished || lockedFill) return false;
+      lockedFill = true; timingInvalid = true; pauseStart = Date.now();
+      ev("pause", {});
+      touch();
+      return true;
+    },
+    resumeTiming:function(){
+      if (!S || S.finished || !lockedFill || !pauseStart) return false;
+      var pausedMs = Date.now() - pauseStart;
+      t0 += pausedMs; pauseStart = 0; lockedFill = false; timingInvalid = true;
+      ev("resume_after_pause", { ms: pausedMs });
+      touch();
+      return true;
+    },
+    isPaused:function(){ return !!pauseStart; },
     resume:resume,
     load:function(saved){ S = saved; Q = saved.questionnaire; if (!S.marks) S.marks = []; return true; },
     initEmpty:initEmpty, attachQuestionnaire:attachQuestionnaire,
@@ -3106,7 +3170,28 @@ var PI_STAT = (function(){
 
     var out = [];
     for (var id in rec){
-      var m = map[id]; if (!m || m.kind==="plain" || m.kind==="anchor") continue;
+      var m = map[id]; if (!m || m.kind==="anchor") continue;
+      /* kind==="plain" (звичайне калібрувальне питання B0, не шлюз) —
+         свідомо виключене з поведінкового аналізу: калібрувальні питання
+         нейтральні за задумом і не мають ставати "точками уваги" через
+         латентність чи зміну відповіді. Але якщо респондент натиснув
+         "?" саме на такому питанні — цей факт не про поведінковий
+         аналіз, а про якість самої формулировки в конкретному пункті
+         B0, і мовчки губити його тут (як робилось раніше, суцільним
+         continue на plain) означало б, що частина сигналів "не
+         зрозумів" ніколи не долетить до поліграфолога залежно від
+         типу питання, на якому респондент її поставив — довільна,
+         не мотивована різниця з погляду самого функціоналу кнопки.
+         Тому: plain-питання без confused пропускаються як і раніше;
+         plain-питання З confused проходять напряму в "тиху" картку
+         нижче, минаючи всю решту (латентність/зміни/бали), яка для
+         plain і не мала рахуватись. */
+      if (m.kind === "plain"){
+        if (S.confused && S.confused[id])
+          out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:rec[id].at, kind:m.kind, gate:null,
+            value:rec[id].value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:false, confused:true });
+        continue;
+      }
       var r = rec[id], why = [], score = 0, machine = 0, ov = null;
 
       if (damped[id]){
@@ -3181,17 +3266,28 @@ var PI_STAT = (function(){
 
       if (score>0 || ov)
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
-          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant });
-      else if (m.relevant)
+          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant,
+          confused:!!(S.confused && S.confused[id]) });
+      else if (m.relevant || (S.confused && S.confused[id]))
         /* Релевантне питання без жодного поведінкового сигналу: раніше
            зникало зі звіту повністю — поліграфолог не міг дізнатися
            навіть постфактум, що анкета вважала цей шлюз кандидатом для
            тесту. score:0 тут навмисний і не впливає на сортування чи
            top[] (обидва фільтрують/сортують за score); картка лишається
            доступною лише через повну карту питань, як нейтральна
-           інформація "це кандидат, відповідь минула спокійно". */
+           інформація "це кандидат, відповідь минула спокійно".
+           Той самий принцип для confused: респондент, який чесно
+           попросив уточнення питання (кнопка "?" на 03_fill.js, окрема
+           від самої відповіді так/ні/поясню), — це прохання про
+           допомогу, не поведінкова аномалія. Додавати йому бал
+           значущості було б методично неправильно — карати за чесний
+           сигнал незрозумілості. Тому й тут score:0, лише видимість у
+           звіті через прапорець confused, щоб поліграфолог знав, яке
+           саме формулювання варто буде пояснити в передтестовій
+           бесіді, а не намагався вгадувати це заднім числом. */
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
-          value:r.value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:true });
+          value:r.value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:!!m.relevant,
+          confused:!!(S.confused && S.confused[id]) });
     }
 
     var scoreOf = {}; for (var pi2=0;pi2<out.length;pi2++) scoreOf[out[pi2].id] = out[pi2];
@@ -3346,6 +3442,10 @@ var PI_MON = (function(){
     el("mo-qtext").textContent = "Очікую перший дотик";
     el("mo-dot").classList.remove("hot");
     el("mo-reopen").classList.add("hidden");
+    var pauseBtn = el("mo-pause");
+    if (pauseBtn){ pauseBtn.textContent = "Пауза"; pauseBtn.classList.remove("on"); }
+    var monCard = document.querySelector(".mon-card");
+    if (monCard) monCard.classList.remove("paused");
     buildMarks();
     target(null);
 
@@ -3385,6 +3485,35 @@ var PI_MON = (function(){
     box.classList.toggle("bad", !!st.error);
     if (!el("mo-reopen").classList.contains("hidden")) return; /* повідомлення про втрачене вікно має пріоритет */
     text.textContent = st.error ? "Помилка запису" : st.busy ? "Запис…" : st.dirty ? "Незбережені зміни" : (st.encrypted ? "Збережено · зашифровано" : "Збережено");
+    updateProgress();
+  }
+
+  /* Раніше монітор показував лише назву анкети (встановлену один раз
+     при старті) і поточне питання — поліграфолог не бачив, на якому
+     блоці з скількох перебуває респондент, скільки основних питань уже
+     відповіджено, чи скільки часу триває сесія, і мусив зазирати через
+     плече на екран респондента, щоб це зрозуміти — саме те, чого
+     окремий монітор мав позбавити. Рахуємо тут ЛИШЕ основні питання
+     кожного блоку (questions/gates + closing) як знаменник: розгортання
+     (expansion) з'являються динамічно залежно від відповідей і не
+     мають фіксованої кількості наперед, тому в прогрес не входять —
+     інакше "скільки лишилось" стрибало б щоразу, коли респондент
+     відповідає "так" на новий шлюз. */
+  function updateProgress(){
+    var box = el("mo-progress"); if (!box) return;
+    var S = PI_FILL.session(); if (!S || !S.questionnaire){ box.textContent = ""; return; }
+    var Q = S.questionnaire, blockIdx = PI_FILL.currentBlock();
+    if (blockIdx == null || blockIdx < 0){ box.textContent = ""; return; }
+    var total = 0, done = 0;
+    Q.blocks.forEach(function(b){
+      var core = (b.questions || b.gates || []).slice();
+      if (b.closing) core.push(b.closing);
+      total += core.length;
+      core.forEach(function(q){ if (S.answers[q.id]) done++; });
+    });
+    var elapsedMin = S.startedAt ? Math.max(0, Math.round((Date.now() - S.startedAt) / 60000)) : 0;
+    box.textContent = "Блок " + (blockIdx + 1) + " з " + Q.blocks.length +
+      " · питання " + done + " з " + total + " · " + elapsedMin + " хв";
   }
 
   function describeEvent(e){
@@ -3401,7 +3530,19 @@ var PI_MON = (function(){
   }
   function onEvent(e){
     var d = describeEvent(e);
-    if (d.q && e.type !== "mark"){ current = d.q; target(d.q); if (d.hot) el("mo-dot").classList.add("hot"); }
+    /* Раніше mo-dot.classList.add("hot") лишався засвіченим до кінця
+       сесії — знімався лише при старті (begin/resume) і при кліку на
+       мітку-перешкоду, тобто сигнал спрацьовував один раз і потім
+       нічого не означав аж до завершення анкети. target(d.q) уже
+       викликається на кожен перехід до нового питання (кожна відповідь
+       генерує подію з новим q) — саме тут, ДО того, як (можливо) знову
+       додати "hot" для НОВОЇ події, знімаємо клас від попередньої: тоді
+       крапка відображає стан лише поточного питання, як і задумано. */
+    if (d.q && e.type !== "mark"){
+      el("mo-dot").classList.remove("hot");
+      current = d.q; target(d.q);
+      if (d.hot) el("mo-dot").classList.add("hot");
+    }
     if (d.end) { stop(); finishPanel(); }
   }
 
@@ -3487,6 +3628,25 @@ var PI_MON = (function(){
 })();
 
 el("mo-reopen").addEventListener("click", function(){ PI_MON.reopen(); });
+/* Пауза зупиняє відлік латентності (t0 зсувається на тривалість паузи
+   в PI_FILL.resumeTiming(), див. коментар у 03_fill.js) і блокує ввід
+   респондента на час, доки поліграфолог не зніме її — інакше клацання
+   під час відволікання (респондента покликали, технічна заминка)
+   потрапило б у ту саму латентність, яку аналіз потім порівнює з
+   базою блоку, спотворюючи саме той сигнал, заради якого вимірювання
+   часу взагалі існує. */
+el("mo-pause").addEventListener("click", function(){
+  var btn = el("mo-pause"), card = document.querySelector(".mon-card");
+  if (PI_FILL.isPaused()){
+    PI_FILL.resumeTiming();
+    btn.textContent = "Пауза"; btn.classList.remove("on");
+    if (card) card.classList.remove("paused");
+  } else {
+    PI_FILL.pauseTiming();
+    btn.textContent = "Продовжити"; btn.classList.add("on");
+    if (card) card.classList.add("paused");
+  }
+});
 el("mo-end").addEventListener("click", async function(){
   if (!confirm("Завершити анкетування? Зібрані відповіді буде збережено.")) return;
   await PI_FILL.complete("completed");
@@ -3533,6 +3693,7 @@ function eventFlags(point){
   if (why.some(function(w){ return /стилус/.test(w); })) flags.push("attention");
   if (why.some(function(w){ return /пауза/.test(w); })) flags.push("time");
   if ((point.marks||[]).length) flags.push("observer");
+  if (point.confused) flags.push("confused");
   return flags;
 }
 /* Тепловий фон плашки: плавний градієнт по вже наявній 4-рівневій шкалі
@@ -3666,7 +3827,7 @@ function renderReport(){
     });
   });
   var legend = tag("div", "rep-map-legend", mapRoot);
-  [["route","Зміна / повернення"],["attention","Увага стилусом"],["time","Часова подія"],["observer","Ваше спостереження"]].forEach(function(pair){
+  [["route","Зміна / повернення"],["attention","Увага стилусом"],["time","Часова подія"],["observer","Ваше спостереження"],["confused","Респондент не зрозумів"]].forEach(function(pair){
     var item = tag("span", "", legend);
     tag("i", "rep-dot rep-dot-"+pair[0], item);
     item.appendChild(document.createTextNode(pair[1]));
@@ -3690,6 +3851,7 @@ function selectQuestion(id, silent){
   var point = byId[id];
   var isAnchor = meta.kind === "anchor";
   var isQuietCandidate = !isAnchor && point && point.relevantCandidate && point.score === 0;
+  var wasConfused = !isAnchor && point && point.confused;
   var sev = point ? severityOf(point.score) : 0;
 
   document.querySelectorAll(".rep-cell").forEach(function(c){ c.classList.remove("selected"); });
@@ -3711,6 +3873,14 @@ function selectQuestion(id, silent){
   if (isAnchor) tag("span", "rep-sev-badge sev-anchor", head, "Контрольне питання");
   else if (isQuietCandidate) tag("span", "rep-sev-badge sev-anchor", head, "Кандидат · спокійно");
   else tag("span", "rep-sev-badge sev-"+(sev||1), head, severityLabel(sev));
+  /* confused — ОКРЕМИЙ, ДОДАТКОВИЙ бейдж, не альтернатива основному:
+     респондент міг натиснути "не зрозуміло" І водночас показати реальний
+     поведінковий сигнал на тому самому питанні (обидва факти правдиві
+     одночасно, на відміну від isQuietCandidate, яка існує лише коли
+     score===0). Тому додається поруч з основним бейджем, не замість
+     нього — інакше реальний сигнал тривоги міг би "загубитися" за
+     виглядом нейтральної позначки про нерозуміння. */
+  if (wasConfused) tag("span", "rep-sev-badge sev-anchor", head, "Респондент не зрозумів");
   tag("div", "qtext", card, meta.text);
   var answerText = S.answers[id] ? S.answers[id].value : null;
   var answerLabel = { yes:"так", no:"ні", explain:"поясню", declined:"відмова", na:"не стосується" }[answerText] || "—";
@@ -3718,6 +3888,9 @@ function selectQuestion(id, silent){
   ans.appendChild(document.createTextNode("Відповідь: "));
   tag("b", "", ans, answerLabel);
 
+  if (wasConfused){
+    tag("div", "foot-row", card, "Респондент позначив це формулювання як незрозуміле під час заповнення — варто пояснити або переформулювати перед повторним використанням цієї анкети.");
+  }
   if (isAnchor){
     tag("div", "foot-row", card, "Нейтральне контрольне питання — не оцінюється за значущістю, використовується двигуном лише для порівняння часу реакції всередині блоку.");
   } else if (isQuietCandidate){

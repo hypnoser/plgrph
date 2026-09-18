@@ -35,6 +35,7 @@ function eventFlags(point){
   if (why.some(function(w){ return /стилус/.test(w); })) flags.push("attention");
   if (why.some(function(w){ return /пауза/.test(w); })) flags.push("time");
   if ((point.marks||[]).length) flags.push("observer");
+  if (point.confused) flags.push("confused");
   return flags;
 }
 /* Тепловий фон плашки: плавний градієнт по вже наявній 4-рівневій шкалі
@@ -168,7 +169,7 @@ function renderReport(){
     });
   });
   var legend = tag("div", "rep-map-legend", mapRoot);
-  [["route","Зміна / повернення"],["attention","Увага стилусом"],["time","Часова подія"],["observer","Ваше спостереження"]].forEach(function(pair){
+  [["route","Зміна / повернення"],["attention","Увага стилусом"],["time","Часова подія"],["observer","Ваше спостереження"],["confused","Респондент не зрозумів"]].forEach(function(pair){
     var item = tag("span", "", legend);
     tag("i", "rep-dot rep-dot-"+pair[0], item);
     item.appendChild(document.createTextNode(pair[1]));
@@ -192,6 +193,7 @@ function selectQuestion(id, silent){
   var point = byId[id];
   var isAnchor = meta.kind === "anchor";
   var isQuietCandidate = !isAnchor && point && point.relevantCandidate && point.score === 0;
+  var wasConfused = !isAnchor && point && point.confused;
   var sev = point ? severityOf(point.score) : 0;
 
   document.querySelectorAll(".rep-cell").forEach(function(c){ c.classList.remove("selected"); });
@@ -213,6 +215,14 @@ function selectQuestion(id, silent){
   if (isAnchor) tag("span", "rep-sev-badge sev-anchor", head, "Контрольне питання");
   else if (isQuietCandidate) tag("span", "rep-sev-badge sev-anchor", head, "Кандидат · спокійно");
   else tag("span", "rep-sev-badge sev-"+(sev||1), head, severityLabel(sev));
+  /* confused — ОКРЕМИЙ, ДОДАТКОВИЙ бейдж, не альтернатива основному:
+     респондент міг натиснути "не зрозуміло" І водночас показати реальний
+     поведінковий сигнал на тому самому питанні (обидва факти правдиві
+     одночасно, на відміну від isQuietCandidate, яка існує лише коли
+     score===0). Тому додається поруч з основним бейджем, не замість
+     нього — інакше реальний сигнал тривоги міг би "загубитися" за
+     виглядом нейтральної позначки про нерозуміння. */
+  if (wasConfused) tag("span", "rep-sev-badge sev-anchor", head, "Респондент не зрозумів");
   tag("div", "qtext", card, meta.text);
   var answerText = S.answers[id] ? S.answers[id].value : null;
   var answerLabel = { yes:"так", no:"ні", explain:"поясню", declined:"відмова", na:"не стосується" }[answerText] || "—";
@@ -220,6 +230,9 @@ function selectQuestion(id, silent){
   ans.appendChild(document.createTextNode("Відповідь: "));
   tag("b", "", ans, answerLabel);
 
+  if (wasConfused){
+    tag("div", "foot-row", card, "Респондент позначив це формулювання як незрозуміле під час заповнення — варто пояснити або переформулювати перед повторним використанням цієї анкети.");
+  }
   if (isAnchor){
     tag("div", "foot-row", card, "Нейтральне контрольне питання — не оцінюється за значущістю, використовується двигуном лише для порівняння часу реакції всередині блоку.");
   } else if (isQuietCandidate){

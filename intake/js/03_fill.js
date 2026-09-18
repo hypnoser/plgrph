@@ -28,6 +28,7 @@ var PI_FILL = (function(){
   var blockIdx = 0, t0 = 0, lastTouch = 0;
   var penSeen = false;
   var closing = false, lockedFill = false, lastNow = 0, timingInvalid = false;
+  var pauseStart = 0;
   var attentionCleanups = [];
   var onEvent = null;
 
@@ -300,6 +301,29 @@ var PI_FILL = (function(){
         });
       })(all[i]);
     }
+    /* Тиха позначка "не зрозумів питання" — окремо від самої відповіді
+       так/ні/поясню, не змінює rec.value і не впливає на жоден шлюз чи
+       розгортання. Респондентам у скринінговій ситуації психологічно
+       дорожче вголос перепитати поліграфолога (брифінг це рекомендує,
+       але частина людей просто відповість навмання, аби не зізнаватись
+       у нерозумінні) — ця кнопка дає той самий сигнал без усного
+       контакту. Дублікат на те саме питання не додається (той самий
+       принцип, що вже діє для міток поліграфолога на моніторі):
+       повторний клік знімає позначку, а не множить її. */
+    var confusedBtn = tag("button", "q-confused" + (S.confused && S.confused[q.id] ? " on" : ""), wrap);
+    confusedBtn.type = "button";
+    confusedBtn.title = "Не зрозуміло питання";
+    confusedBtn.setAttribute("aria-label", q.id + " — позначити як незрозуміле");
+    confusedBtn.textContent = "?";
+    confusedBtn.addEventListener("click", function(){
+      if (S.finished || closing || lockedFill) return;
+      if (!S.confused) S.confused = {};
+      var wasOn = !!S.confused[q.id];
+      if (wasOn){ delete S.confused[q.id]; ev("confused_withdraw", { q:q.id }); }
+      else { S.confused[q.id] = { at:new Date().toISOString() }; ev("confused", { q:q.id }); }
+      confusedBtn.classList.toggle("on", !wasOn);
+      touch();
+    });
     return wrap;
   }
 
@@ -824,6 +848,35 @@ var PI_FILL = (function(){
       if (!S || S.finished) return;
       snapshot(); lockedFill = !!on; timingInvalid = true; touch();
     },
+    /* Пауза: поліграфолог зупиняє відлік часу (респондента відволікли,
+       вийшов, технічна заминка) — на відміну від просто lock(), яка
+       блокує ввід, але не чіпає сам годинник. Без зсуву t0 час паузи
+       "з'їдав" би латентність питання, на якому респондента застали —
+       за формулою since = now() - lastNow ця пауза додалася б до
+       затримки відповіді, спотворюючи саме той сигнал, заради якого
+       вся система латентності й існує. pauseStart запам'ятовує момент
+       lock(true); resumeTiming зсуває t0 вперед рівно на тривалість
+       паузи, тож now() одразу після паузи повертається до того самого
+       значення, що було на момент lock(true) — пауза "вирізається" з
+       таймлайну, а не додається до нього. Обидва боки паузи пишуться
+       в S.events як звичайні поведінкові події (pause/resume), щоб
+       за потреби це було видно в повному логу, а не приховано мовчки. */
+    pauseTiming:function(){
+      if (!S || S.finished || lockedFill) return false;
+      lockedFill = true; timingInvalid = true; pauseStart = Date.now();
+      ev("pause", {});
+      touch();
+      return true;
+    },
+    resumeTiming:function(){
+      if (!S || S.finished || !lockedFill || !pauseStart) return false;
+      var pausedMs = Date.now() - pauseStart;
+      t0 += pausedMs; pauseStart = 0; lockedFill = false; timingInvalid = true;
+      ev("resume_after_pause", { ms: pausedMs });
+      touch();
+      return true;
+    },
+    isPaused:function(){ return !!pauseStart; },
     resume:resume,
     load:function(saved){ S = saved; Q = saved.questionnaire; if (!S.marks) S.marks = []; return true; },
     initEmpty:initEmpty, attachQuestionnaire:attachQuestionnaire,

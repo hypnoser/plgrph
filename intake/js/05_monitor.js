@@ -92,6 +92,10 @@ var PI_MON = (function(){
     el("mo-qtext").textContent = "Очікую перший дотик";
     el("mo-dot").classList.remove("hot");
     el("mo-reopen").classList.add("hidden");
+    var pauseBtn = el("mo-pause");
+    if (pauseBtn){ pauseBtn.textContent = "Пауза"; pauseBtn.classList.remove("on"); }
+    var monCard = document.querySelector(".mon-card");
+    if (monCard) monCard.classList.remove("paused");
     buildMarks();
     target(null);
 
@@ -131,6 +135,35 @@ var PI_MON = (function(){
     box.classList.toggle("bad", !!st.error);
     if (!el("mo-reopen").classList.contains("hidden")) return; /* повідомлення про втрачене вікно має пріоритет */
     text.textContent = st.error ? "Помилка запису" : st.busy ? "Запис…" : st.dirty ? "Незбережені зміни" : (st.encrypted ? "Збережено · зашифровано" : "Збережено");
+    updateProgress();
+  }
+
+  /* Раніше монітор показував лише назву анкети (встановлену один раз
+     при старті) і поточне питання — поліграфолог не бачив, на якому
+     блоці з скількох перебуває респондент, скільки основних питань уже
+     відповіджено, чи скільки часу триває сесія, і мусив зазирати через
+     плече на екран респондента, щоб це зрозуміти — саме те, чого
+     окремий монітор мав позбавити. Рахуємо тут ЛИШЕ основні питання
+     кожного блоку (questions/gates + closing) як знаменник: розгортання
+     (expansion) з'являються динамічно залежно від відповідей і не
+     мають фіксованої кількості наперед, тому в прогрес не входять —
+     інакше "скільки лишилось" стрибало б щоразу, коли респондент
+     відповідає "так" на новий шлюз. */
+  function updateProgress(){
+    var box = el("mo-progress"); if (!box) return;
+    var S = PI_FILL.session(); if (!S || !S.questionnaire){ box.textContent = ""; return; }
+    var Q = S.questionnaire, blockIdx = PI_FILL.currentBlock();
+    if (blockIdx == null || blockIdx < 0){ box.textContent = ""; return; }
+    var total = 0, done = 0;
+    Q.blocks.forEach(function(b){
+      var core = (b.questions || b.gates || []).slice();
+      if (b.closing) core.push(b.closing);
+      total += core.length;
+      core.forEach(function(q){ if (S.answers[q.id]) done++; });
+    });
+    var elapsedMin = S.startedAt ? Math.max(0, Math.round((Date.now() - S.startedAt) / 60000)) : 0;
+    box.textContent = "Блок " + (blockIdx + 1) + " з " + Q.blocks.length +
+      " · питання " + done + " з " + total + " · " + elapsedMin + " хв";
   }
 
   function describeEvent(e){
@@ -147,7 +180,19 @@ var PI_MON = (function(){
   }
   function onEvent(e){
     var d = describeEvent(e);
-    if (d.q && e.type !== "mark"){ current = d.q; target(d.q); if (d.hot) el("mo-dot").classList.add("hot"); }
+    /* Раніше mo-dot.classList.add("hot") лишався засвіченим до кінця
+       сесії — знімався лише при старті (begin/resume) і при кліку на
+       мітку-перешкоду, тобто сигнал спрацьовував один раз і потім
+       нічого не означав аж до завершення анкети. target(d.q) уже
+       викликається на кожен перехід до нового питання (кожна відповідь
+       генерує подію з новим q) — саме тут, ДО того, як (можливо) знову
+       додати "hot" для НОВОЇ події, знімаємо клас від попередньої: тоді
+       крапка відображає стан лише поточного питання, як і задумано. */
+    if (d.q && e.type !== "mark"){
+      el("mo-dot").classList.remove("hot");
+      current = d.q; target(d.q);
+      if (d.hot) el("mo-dot").classList.add("hot");
+    }
     if (d.end) { stop(); finishPanel(); }
   }
 
@@ -233,6 +278,25 @@ var PI_MON = (function(){
 })();
 
 el("mo-reopen").addEventListener("click", function(){ PI_MON.reopen(); });
+/* Пауза зупиняє відлік латентності (t0 зсувається на тривалість паузи
+   в PI_FILL.resumeTiming(), див. коментар у 03_fill.js) і блокує ввід
+   респондента на час, доки поліграфолог не зніме її — інакше клацання
+   під час відволікання (респондента покликали, технічна заминка)
+   потрапило б у ту саму латентність, яку аналіз потім порівнює з
+   базою блоку, спотворюючи саме той сигнал, заради якого вимірювання
+   часу взагалі існує. */
+el("mo-pause").addEventListener("click", function(){
+  var btn = el("mo-pause"), card = document.querySelector(".mon-card");
+  if (PI_FILL.isPaused()){
+    PI_FILL.resumeTiming();
+    btn.textContent = "Пауза"; btn.classList.remove("on");
+    if (card) card.classList.remove("paused");
+  } else {
+    PI_FILL.pauseTiming();
+    btn.textContent = "Продовжити"; btn.classList.add("on");
+    if (card) card.classList.add("paused");
+  }
+});
 el("mo-end").addEventListener("click", async function(){
   if (!confirm("Завершити анкетування? Зібрані відповіді буде збережено.")) return;
   await PI_FILL.complete("completed");

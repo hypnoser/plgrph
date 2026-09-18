@@ -235,7 +235,28 @@ var PI_STAT = (function(){
 
     var out = [];
     for (var id in rec){
-      var m = map[id]; if (!m || m.kind==="plain" || m.kind==="anchor") continue;
+      var m = map[id]; if (!m || m.kind==="anchor") continue;
+      /* kind==="plain" (звичайне калібрувальне питання B0, не шлюз) —
+         свідомо виключене з поведінкового аналізу: калібрувальні питання
+         нейтральні за задумом і не мають ставати "точками уваги" через
+         латентність чи зміну відповіді. Але якщо респондент натиснув
+         "?" саме на такому питанні — цей факт не про поведінковий
+         аналіз, а про якість самої формулировки в конкретному пункті
+         B0, і мовчки губити його тут (як робилось раніше, суцільним
+         continue на plain) означало б, що частина сигналів "не
+         зрозумів" ніколи не долетить до поліграфолога залежно від
+         типу питання, на якому респондент її поставив — довільна,
+         не мотивована різниця з погляду самого функціоналу кнопки.
+         Тому: plain-питання без confused пропускаються як і раніше;
+         plain-питання З confused проходять напряму в "тиху" картку
+         нижче, минаючи всю решту (латентність/зміни/бали), яка для
+         plain і не мала рахуватись. */
+      if (m.kind === "plain"){
+        if (S.confused && S.confused[id])
+          out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:rec[id].at, kind:m.kind, gate:null,
+            value:rec[id].value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:false, confused:true });
+        continue;
+      }
       var r = rec[id], why = [], score = 0, machine = 0, ov = null;
 
       if (damped[id]){
@@ -310,17 +331,28 @@ var PI_STAT = (function(){
 
       if (score>0 || ov)
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
-          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant });
-      else if (m.relevant)
+          value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant,
+          confused:!!(S.confused && S.confused[id]) });
+      else if (m.relevant || (S.confused && S.confused[id]))
         /* Релевантне питання без жодного поведінкового сигналу: раніше
            зникало зі звіту повністю — поліграфолог не міг дізнатися
            навіть постфактум, що анкета вважала цей шлюз кандидатом для
            тесту. score:0 тут навмисний і не впливає на сортування чи
            top[] (обидва фільтрують/сортують за score); картка лишається
            доступною лише через повну карту питань, як нейтральна
-           інформація "це кандидат, відповідь минула спокійно". */
+           інформація "це кандидат, відповідь минула спокійно".
+           Той самий принцип для confused: респондент, який чесно
+           попросив уточнення питання (кнопка "?" на 03_fill.js, окрема
+           від самої відповіді так/ні/поясню), — це прохання про
+           допомогу, не поведінкова аномалія. Додавати йому бал
+           значущості було б методично неправильно — карати за чесний
+           сигнал незрозумілості. Тому й тут score:0, лише видимість у
+           звіті через прапорець confused, щоб поліграфолог знав, яке
+           саме формулювання варто буде пояснити в передтестовій
+           бесіді, а не намагався вгадувати це заднім числом. */
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
-          value:r.value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:true });
+          value:r.value, score:0, machine:0, damped:false, why:[], marks:[], relevantCandidate:!!m.relevant,
+          confused:!!(S.confused && S.confused[id]) });
     }
 
     var scoreOf = {}; for (var pi2=0;pi2<out.length;pi2++) scoreOf[out[pi2].id] = out[pi2];
