@@ -21,7 +21,7 @@ PLGRPH працює з 2013 року. Спеціалізується на пол
 
 ## Контакти
 
-- Telegram: [t.me/plgrph_ukr](https://t.me/plgrph_ukr)
+- Telegram: [t.me/PLGRPHBot](https://t.me/PLGRPHBot)
 - Email: [plgrph@protonmail.com](mailto:plgrph@protonmail.com)
 - Сайт: [https://plgrph.com/](https://plgrph.com/)
 
