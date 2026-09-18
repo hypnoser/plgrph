@@ -2148,7 +2148,18 @@ var PI_FILL = (function(){
         var img = new (D.defaultView.Image)();
         img.onload = function(){ var r = canvas.getBoundingClientRect(); ctx.drawImage(img,0,0,r.width,r.height); };
         img.src = url; strokes = 1; updateInkClass();
-      }
+      },
+      /* resize: перебудовує растр canvas під поточний getBoundingClientRect().
+         Потрібна для виклику ЗОВНІ (applyTextZoom нижче), коли розмір
+         поля змінюється через CSS (--fill-fs у em, не window resize) —
+         такі зміни НЕ викликають подію "resize" на window, тому size()
+         інакше ніколи б не перевиконалась: canvas.width/height лишились
+         би розрахованими під СТАРИЙ, менший розмір поля, а pt(e) уже
+         рахував би координати відносно НОВОГО, більшого
+         getBoundingClientRect() — новий мазок пера потрапляв би у
+         неправильно змасштабовану точку растра, саме тому лінія
+         "малювалась не там, де торкався стилус" на 150%/200%. */
+      resize:size
     };
     pads[key] = pad;
     return pad;
@@ -2806,8 +2817,21 @@ var PI_FILL = (function(){
        scaleFill() читає getTextZoom() (00_core.js) щоразу заново — тут
        лише примушуємо її перерахувати --fill-fs НЕГАЙНО, не чекаючи
        наступного fillShow() (переходу між блоками), бо респондент може
-       натиснути "Збільшити" просто серед поточного блоку питань. */
-    applyTextZoom:function(){ scaleFill(); },
+       натиснути "Збільшити" просто серед поточного блоку питань.
+       Одразу після цього перебудовуємо КОЖЕН активний canvas (pads) —
+       розмір полів ПІБ/дати народження/документа/підпису заданий у
+       styles.css через em (.pad.line canvas{height:4.4em}), тобто
+       залежить від --fill-fs, а не від window resize. Без явного
+       виклику pad.resize() тут canvas.width/height (растр) лишався б
+       розрахованим під старий, дозумовий розмір поля, тоді як
+       getBoundingClientRect() уже показував би новий, збільшений —
+       координати мазка пера (pt(e) у 03_fill.js) рахувались би
+       відносно нового розміру, але проєктувались у растр старого
+       масштабу: лінія малювалась би не там, де торкався стилус. */
+    applyTextZoom:function(){
+      scaleFill();
+      for (var k in pads) if (pads[k] && pads[k].resize) pads[k].resize();
+    },
     wire:function(){
       var go = D.getElementById("fb-go"), nx = D.getElementById("fq-next"), review = D.getElementById("fq-review");
       if (go && !go.__wired){ go.__wired = true; go.addEventListener("click", beginQuestions); }
@@ -2833,6 +2857,11 @@ var PI_FILL = (function(){
               });
             });
             scaleFill();
+            /* Ті самі pads, які applyTextZoom() перебудовує при виклику
+               ззовні — тут прямий доступ до pads уже є (той самий
+               модульний closure), тож викликаємо resize() безпосередньо
+               замість проксі через публічний applyTextZoom(). */
+            for (var k in pads) if (pads[k] && pads[k].resize) pads[k].resize();
           });
         });
       });
