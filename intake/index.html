@@ -2099,10 +2099,33 @@ var PI_FILL = (function(){
       var r = canvas.getBoundingClientRect();
       if (!r.width){ if (tries++ < 60) D.defaultView.requestAnimationFrame(size); return; }
       var keep = strokes ? canvas.toDataURL() : null;
+      var prevW = canvas.width / dpr, prevH = canvas.height / dpr; /* старі CSS-розміри ДО перебудови, потрібні нижче для пропорційного відновлення */
       canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = PEN_INK;
-      if (keep){ var img = new (D.defaultView.Image)(); img.onload = function(){ ctx.drawImage(img,0,0,r.width,r.height); }; img.src = keep; }
+      if (keep){
+        var img = new (D.defaultView.Image)();
+        img.onload = function(){
+          /* Раніше: ctx.drawImage(img, 0, 0, r.width, r.height) — розтягувало
+             старе зображення на ВЕСЬ новий прямокутник поля, незалежно від
+             того, як саме змінились його розміри. Ширина поля (r.width)
+             майже завжди лишається сталою — висота ж (r.height) залежить
+             від --fill-fs (em) і росте разом із масштабом тексту 150%/200%.
+             Розтягування зображення зі старим (вужчим по висоті)
+             співвідношенням сторін на новий, вищий прямокутник спотворює
+             сам штрих по вертикалі — саме той "розтягнутий підпис", про
+             який ідеться. Замість розтягування на весь новий прямокутник
+             малюємо зі СПІЛЬНИМ масштабом (менший з двох множників
+             ширина/висота), зберігаючи пропорції штриха, і прив'язуємо
+             до ЛІВОГО ВЕРХНЬОГО кута — це природне місце, де респондент
+             і так починає писати зліва, тож зміна масштабу не зсуває вже
+             написане, а просто залишає більше вільного простору знизу
+             для продовження на новому, більшому полі. */
+          var scale = Math.min(r.width / prevW, r.height / prevH);
+          ctx.drawImage(img, 0, 0, prevW * scale, prevH * scale);
+        };
+        img.src = keep;
+      }
     }
     size();
 
