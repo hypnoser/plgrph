@@ -317,6 +317,8 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-detail .answer{font-size:12px;color:var(--muted);margin-bottom:12px}
 .rep-detail .answer b{color:var(--ink);font-weight:500}
 .rep-pills{display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--rule)}
+.rep-concentration{font-size:12px;color:var(--muted);margin-top:6px}
+.rep-concentration.concentrated{color:var(--warn)}
 .rep-pill{font-size:12px;padding:4px 9px;border-radius:999px}
 .rep-pill.w-4{background:var(--sev-4);color:#fff}
 .rep-pill.w-3{background:var(--sev-3);color:#fff}

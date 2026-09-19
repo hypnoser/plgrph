@@ -328,6 +328,8 @@ button.icon-only{width:44px;height:36px;padding:0;display:flex;align-items:cente
 .rep-detail .answer{font-size:12px;color:var(--muted);margin-bottom:12px}
 .rep-detail .answer b{color:var(--ink);font-weight:500}
 .rep-pills{display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--rule)}
+.rep-concentration{font-size:12px;color:var(--muted);margin-top:6px}
+.rep-concentration.concentrated{color:var(--warn)}
 .rep-pill{font-size:12px;padding:4px 9px;border-radius:999px}
 .rep-pill.w-4{background:var(--sev-4);color:#fff}
 .rep-pill.w-3{background:var(--sev-3);color:#fff}
@@ -2890,7 +2892,18 @@ var PI_FILL = (function(){
     resumeTiming:function(){
       if (!S || S.finished || !lockedFill || !pauseStart) return false;
       var pausedMs = Date.now() - pauseStart;
-      t0 += pausedMs; pauseStart = 0; lockedFill = false; timingInvalid = true;
+      /* t0 зсувається на тривалість паузи (як і раніше — вирізає паузу
+         з внутрішньої латентності, від якої рахує все 04_stat.js), і
+         ТЕПЕР так само зсувається S.startedAt — те окреме поле, яке
+         05_monitor.js читає напряму (Date.now() - S.startedAt) для
+         живого рядка прогресу "N хв" на моніторі. Без цього другого
+         зсуву монітор і фінальний звіт показували б дві РІЗНІ цифри
+         для того самого поняття "скільки триває сесія": монітор —
+         повний годинниковий час, що включає паузи, звіт (S.elapsedMs,
+         похідне від t0) — час без пауз. Обидва мають рахувати
+         однаково, тому startedAt синхронізується з тим самим зсувом. */
+      t0 += pausedMs; S.startedAt += pausedMs;
+      pauseStart = 0; lockedFill = false; timingInvalid = true;
       ev("resume_after_pause", { ms: pausedMs });
       touch();
       return true;
@@ -3216,6 +3229,18 @@ var PI_STAT = (function(){
         continue;
       }
       var r = rec[id], why = [], score = 0, machine = 0, ov = null;
+      /* maxSingle: найбільший ОДИН внесок серед усіх спрацьованих
+         причин цього питання — потрібен нижче, щоб відрізнити "одне
+         сильне, зосереджене вагання" від "кілька дрібних сигналів, що
+         випадково зійшлися". Формула цього раніше не розрізняла:
+         питання з одним w_lat_high (+3, реальна тривала пауза — сильний,
+         зосереджений сигнал) і питання з трьома незалежними +1 (кожен
+         окремо міг бути шумом — стилус торкнувся екрана, зміна порядку,
+         повернення до блоку) отримували однаковий підсумковий machine=3,
+         хоча перше набагато довірливіше. add() трекає це прозоро для
+         кожного виклику, не змінюючи саму суму machine. */
+      var maxSingle = 0;
+      function add(delta, key, params){ machine += delta; if (delta > maxSingle) maxSingle = delta; why.push(T(key, params)); }
 
       if (damped[id]){
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
@@ -3237,34 +3262,53 @@ var PI_STAT = (function(){
         var effSpread = effectiveSpread(bl);
         z = (norm[id]-bl.median)/effSpread;
         var first = firstOfBlock[m.block]===id;
-        if (first){ if (z>=2.5){ machine+=1; why.push(T("w_block_pause",{z:z.toFixed(1)})); } }
-        else if (z>=2.5){ machine+=3; why.push(T("w_lat_high",{z:z.toFixed(1)})); }
-        else if (z>=1.5){ machine+=2; why.push(T("w_lat",{z:z.toFixed(1)})); }
+        if (first){ if (z>=2.5) add(1, "w_block_pause", {z:z.toFixed(1)}); }
+        else if (z>=2.5) add(3, "w_lat_high", {z:z.toFixed(1)});
+        else if (z>=1.5) add(2, "w_lat", {z:z.toFixed(1)});
       }
+      /* w_change: раніше фіксований +2 незалежно від r.changes, хоча
+         текст пояснення й так показував реальне число ("змінював
+         відповідь {n} раз") — тобто респондент, що передумав 1 раз, і
+         той, що передумав 5 разів, отримували однаковий внесок у бал,
+         а текст обіцяв градацію, якої не було в самій математиці.
+         Тепер перша зміна важить найбільше (+2, сам факт передумати
+         вже сигнал), кожна наступна додає менше (+1, спадна гранична
+         вага — друга й треті зміни підтверджують перше вагання, не
+         є настільки ж новою інформацією кожна окремо) до стелі +5:
+         далі це вже, найімовірніше, технічна незручність інтерфейсу
+         чи звичка респондента "передумувати", а не зростаюча стратегічна
+         вага, і необмежене накопичення бала за це було б нічим не
+         обґрунтованим. */
       if (r.changes>0){
-        if (r.afterExpand){ machine+=4; why.push(T("w_change_after")); }
-        else { machine+=2; why.push(T("w_change",{n:r.changes})); }
+        if (r.afterExpand) add(4, "w_change_after");
+        else add(Math.min(2 + (r.changes-1), 5), "w_change", {n:r.changes});
       }
-      if (m.kind==="gate" && collapsed[id] && !collapsed[id].answered){ machine+=3; why.push(T("w_collapsed")); }
-      if (m.kind==="gate" && r.value==="explain" && blanks[id]==="before"){ machine+=2; why.push(T("w_blank")); }
-      if (jumps[id]){ machine+=1; why.push(T("w_jump")); }
-      if (attention[id] && attention[id].length){ machine+=1; why.push(T("w_attention",{n:attention[id].length})); }
-      if (returns[id] && returns[id].length){ machine+=1; why.push(T("w_return")); }
-      if (runFlag[id]){ machine+=2; why.push(T("w_run",{n:runFlag[id]})); }
-      /* w_yes: "так" на шлюзі, де це не було очікуваним. Раніше давало
-         однаковий +1 незалежно від того, наскільки рідкісною була ця
-         відповідь (baseline_yes: "medium" і "low" важили порівну) —
-         хоча сама методика анкети (baseline_yes у промпті генерації)
-         явно розрізняє "звичайну деталізацію" від "рідкісного й
-         значущого". Це узгоджується й з теорією конфлікту реакції в
-         RT-CIT дослідженнях (Verschuere et al.; огляд Suchotzki et al.,
-         2017): затримка/реактивність зростають там, де відповідь
-         суперечить очікуваній нормі — чим очікуваніша була "ні", тим
-         сильніший конфлікт при фактичному "так". Тому low важить
-         більше за medium. */
-      if (r.value==="yes" && (m.baseline!=="high" || m.relevant || m.kind==="closing")){
-        if (m.baseline==="low"){ machine+=2; why.push(T("w_yes_rare")); }
-        else { machine+=1; why.push(T("w_yes")); }
+      if (m.kind==="gate" && collapsed[id] && !collapsed[id].answered) add(3, "w_collapsed");
+      if (m.kind==="gate" && r.value==="explain" && blanks[id]==="before") add(2, "w_blank");
+      if (jumps[id]) add(1, "w_jump");
+      if (attention[id] && attention[id].length) add(1, "w_attention", {n:attention[id].length});
+      if (returns[id] && returns[id].length) add(1, "w_return");
+      if (runFlag[id]) add(2, "w_run", {n:runFlag[id]});
+      /* w_yes: "так" на шлюзі, де це не було очікуваним ЗА РІВНЕМ
+         ОЧІКУВАНОСТІ САМОЇ ВІДПОВІДІ (baseline_yes), а не за тим, чи
+         питання окремо позначене relevant_candidate — це дві РІЗНІ
+         методичні властивості: перша про рідкість конкретної відповіді
+         (узгоджено з теорією конфлікту реакції в RT-CIT дослідженнях,
+         Verschuere et al.; огляд Suchotzki et al., 2017 — затримка й
+         реактивність зростають там, де відповідь суперечить очікуваній
+         нормі), друга — про важливість самого питання для тесту на
+         поліграфі, незалежно від того, наскільки очікуваною була
+         відповідь на нього. Раніше m.relevant теж розблоковував цю
+         умову напряму — тобто на "так" питання з baseline_yes:"high"
+         (де "так" за визначенням очікуване, жодного конфлікту реакції
+         немає) однаково нараховувався w_yes лише через relevant_candidate,
+         а потім ще +1 окремо через w_relevant нижче — той самий факт
+         релевантності рахувався двічі різними формулюваннями в тому
+         самому звіті. Тепер: relevant_candidate впливає ЛИШЕ через
+         w_relevant нижче, w_yes — лише через реальну рідкість відповіді. */
+      if (r.value==="yes" && (m.baseline!=="high" || m.kind==="closing")){
+        if (m.baseline==="low") add(2, "w_yes_rare");
+        else add(1, "w_yes");
       }
       /* w_relevant: сам факт relevant_candidate додавав бал лише коли
          вже є інший сигнал (machine>0) — якщо відповідь на релевантне
@@ -3276,9 +3320,54 @@ var PI_STAT = (function(){
          помилка), але тепер separately фіксуємо сам факт у полі
          relevantCandidate точки, щоб поліграфолог бачив позначку
          навіть за відсутності інших сигналів. */
-      if (m.relevant && machine>0){ machine+=1; why.push(T("w_relevant")); }
-      if (r.value==="declined" || r.value==="na"){ machine=0; why=[]; }
+      if (m.relevant && machine>0) add(1, "w_relevant");
+      if (r.value==="declined" || r.value==="na"){ machine=0; maxSingle=0; why=[]; }
+      /* Стеля на АВТОМАТИЧНУ частину бала (machine), до override і
+         ручних міток поліграфолога нижче: раніше сума незалежних
+         сигналів не мала верхньої межі, тоді як теплова шкала карти
+         (06_report.js, HEAT_MAX=8) і найвищий рівень бейджа
+         ("Критично значуще" з score>=8) насичуються значно раніше.
+         Питання з machine=9 і питання з machine=25 виглядали б
+         однаково темно-червоними на карті — різниця масштабу губилася
+         саме там, де вона могла б бути найкориснішою: у найгостріших
+         випадках.
+         MACHINE_CAP=16, не 20: перша спроба (20) виявилась практично
+         недосяжною під час unit-тестування — w_lat_high (+3) і
+         w_change_after (+4), два найважчі окремі внески, СТРУКТУРНО
+         взаємовиключні на одному питанні (зміна відповіді ставить
+         r.timingValid=false, після чого norm[id]=0 і вся гілка
+         латентності вимкнена для цього id назавжди в цьому проході —
+         не збіг тестових даних, а властивість самої формули). Реальний
+         теоретичний максимум однієї сумісної комбінації (w_change_after
+         АБО w_lat_high, не обидва одразу, плюс усе інше: collapsed,
+         blank, jump, attention, return, run, yes_rare, relevant) — 17.
+         16 — трохи нижче цього стелі, щоб вона реально могла іноді
+         спрацьовувати на справді екстремальному, але досяжному збігу,
+         а не бути суто теоретичною гарантією, яка ніколи не активується.
+         Ручне рішення поліграфолога (override, мітки нижче) — свідоме
+         судження людини, не автоматична сума, тому воно НЕ обмежується
+         цією стелею: якщо поліграфолог зважено підняв питання вище,
+         це не те саме, що формула, яка просто накопичила багато
+         дрібниць. */
+      var MACHINE_CAP = 16;
+      if (machine > MACHINE_CAP) machine = MACHINE_CAP;
       score = machine;
+
+      /* concentrated: чи підсумковий бал зібраний переважно ОДНИМ
+         сильним сигналом, а не кількома дрібними, що випадково зійшлися.
+         Поріг 60% — інженерний вибір, не каліброване число (як і
+         BASE_WINDOW вище): при machine=3 з одного w_lat_high (+3) це
+         100% від одного джерела — явно концентровано; при machine=3 з
+         трьох незалежних +1 (jump, attention, return) кожен окремо дає
+         лише 33% — явно розмазано. Респондент, застряглий рівно
+         посередині (наприклад один сигнал +2 із загальних +3, 67%),
+         має свідомо піти в "концентровано": коли одна причина вже сама
+         по собі становить більшість бала, застереження про "можливо
+         випадковий збіг" тут менш доречне, ніж коли жодна причина
+         поодинці навіть не наближається до половини. Це нова, суто
+         інформаційна позначка для деталь-картки — не впливає ні на сам
+         score, ні на сортування чи top[]. */
+      var concentrated = machine > 0 && (maxSingle / machine) >= 0.6;
 
       ov = (S.overrides||{})[id];
       if (ov){ score += (ov.dir==="up"?6:-6); why.push(T("o_applied",{dir:T(ov.dir==="up"?"o_up_word":"o_down_word"),why:ov.why})); }
@@ -3290,7 +3379,7 @@ var PI_STAT = (function(){
       if (score>0 || ov)
         out.push({ id:id, text:m.text, block:m.block, blockIndex:m.blockIndex, at:r.at, kind:m.kind, gate:m.gate,
           value:r.value, score:score, machine:machine, damped:false, why:why, marks:mk2, relevantCandidate:!!m.relevant,
-          confused:!!(S.confused && S.confused[id]) });
+          confused:!!(S.confused && S.confused[id]), concentrated:concentrated });
       else if (m.relevant || (S.confused && S.confused[id]))
         /* Релевантне питання без жодного поведінкового сигналу: раніше
            зникало зі звіту повністю — поліграфолог не міг дізнатися
@@ -3919,6 +4008,13 @@ function selectQuestion(id, silent){
   } else if (isQuietCandidate){
     tag("div", "foot-row", card, "Анкета позначила це питання як кандидата в релевантні для самого тесту на поліграфі — але саме анкетування не виявило на ньому жодного поведінкового відхилення. Це нейтральна інформація для передтестової бесіди, не сигнал тривоги.");
   } else if (point && point.why && point.why.length){
+    /* concentrated: показуємо лише коли причин кілька (point.why.length>1)
+       — при одній причині саме поняття "зосереджений проти розмазаний"
+       не має сенсу, там і так очевидно, що весь бал з одного джерела. */
+    if (point.why.length > 1){
+      var concNote = tag("div", "rep-concentration " + (point.concentrated ? "concentrated" : "spread"), card,
+        point.concentrated ? "Бал переважно з одного сильного сигналу" : "Бал зібраний з кількох окремих сигналів");
+    }
     var pills = tag("div", "rep-pills", card);
     point.why.forEach(function(w){
       var weight = reasonWeight(w);

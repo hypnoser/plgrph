@@ -238,6 +238,13 @@ function selectQuestion(id, silent){
   } else if (isQuietCandidate){
     tag("div", "foot-row", card, "Анкета позначила це питання як кандидата в релевантні для самого тесту на поліграфі — але саме анкетування не виявило на ньому жодного поведінкового відхилення. Це нейтральна інформація для передтестової бесіди, не сигнал тривоги.");
   } else if (point && point.why && point.why.length){
+    /* concentrated: показуємо лише коли причин кілька (point.why.length>1)
+       — при одній причині саме поняття "зосереджений проти розмазаний"
+       не має сенсу, там і так очевидно, що весь бал з одного джерела. */
+    if (point.why.length > 1){
+      var concNote = tag("div", "rep-concentration " + (point.concentrated ? "concentrated" : "spread"), card,
+        point.concentrated ? "Бал переважно з одного сильного сигналу" : "Бал зібраний з кількох окремих сигналів");
+    }
     var pills = tag("div", "rep-pills", card);
     point.why.forEach(function(w){
       var weight = reasonWeight(w);

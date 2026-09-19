@@ -894,7 +894,18 @@ var PI_FILL = (function(){
     resumeTiming:function(){
       if (!S || S.finished || !lockedFill || !pauseStart) return false;
       var pausedMs = Date.now() - pauseStart;
-      t0 += pausedMs; pauseStart = 0; lockedFill = false; timingInvalid = true;
+      /* t0 зсувається на тривалість паузи (як і раніше — вирізає паузу
+         з внутрішньої латентності, від якої рахує все 04_stat.js), і
+         ТЕПЕР так само зсувається S.startedAt — те окреме поле, яке
+         05_monitor.js читає напряму (Date.now() - S.startedAt) для
+         живого рядка прогресу "N хв" на моніторі. Без цього другого
+         зсуву монітор і фінальний звіт показували б дві РІЗНІ цифри
+         для того самого поняття "скільки триває сесія": монітор —
+         повний годинниковий час, що включає паузи, звіт (S.elapsedMs,
+         похідне від t0) — час без пауз. Обидва мають рахувати
+         однаково, тому startedAt синхронізується з тим самим зсувом. */
+      t0 += pausedMs; S.startedAt += pausedMs;
+      pauseStart = 0; lockedFill = false; timingInvalid = true;
       ev("resume_after_pause", { ms: pausedMs });
       touch();
       return true;
