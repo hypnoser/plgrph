@@ -6,12 +6,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets/images");
   eleventyConfig.addPassthroughCopy("src/assets/favicon");
 
-  // /ps/ (Polygraph Suite) — окремий діючий продукт, живе в корені репозиторію
-  // поза src/. Копіюється в _site/ps/ незмінним, логіку/код НЕ чіпаємо.
-  eleventyConfig.addPassthroughCopy({ ps: "ps" });
-
-  // /intake/ — копіюється в _site/intake/ незмінним (аналогічно до ps)
-  eleventyConfig.addPassthroughCopy({ intake: "intake" });
+  // Колишні копії /ps/ та /intake/ прибрано 2026-11-19: plgrph.com/ps/* → pc.plgrph.com,
+  // plgrph.com/intake/* → ps.plgrph.com (Redirect Rules Cloudflare).
 
   // ---- Колекції ----
   // Блог/статті: усі markdown-файли з src/blog/, крім index

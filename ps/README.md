@@ -1,2 +1,0 @@
-# polys
-Polygraph Suite
